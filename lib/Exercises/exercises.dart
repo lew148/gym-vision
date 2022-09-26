@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gymvision/Exercises/category_view.dart';
+import 'package:gymvision/exercises/category_view.dart';
 import 'package:gymvision/db/helpers/categories_helper.dart';
 import 'package:gymvision/db/classes/category.dart';
 

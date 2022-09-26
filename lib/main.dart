@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gymvision/Exercises/exercises.dart';
-import 'package:gymvision/workout.dart';
+import 'package:gymvision/exercises/exercises.dart';
+import 'package:gymvision/workouts.dart';
 
 void main() => runApp(const MyApp());
 
@@ -36,7 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   static const List<Widget> _widgetPages = <Widget>[
-    Workout(),
+    Workouts(),
     Exercises(),
   ];
 
@@ -51,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.format_list_bulleted),
-            label: 'Workout',
+            label: 'Workouts',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.fitness_center),
