@@ -1,0 +1,52 @@
+class Exercise {
+  int? id;
+  final int categoryId;
+  String name;
+  double weight;
+  double max;
+  int reps;
+  bool isSingle;
+
+  Exercise({
+    this.id,
+    required this.categoryId,
+    required this.name,
+    required this.weight,
+    required this.max,
+    required this.reps,
+    required this.isSingle,
+  });
+
+  String getWeightAsString() =>
+      weight % 1 == 0 ? weight.toStringAsFixed(0) : weight.toStringAsFixed(2);
+
+  String getWeightString({bool showNone = true}) {
+    if (weight == 0) return showNone ? 'None' : '';
+    return '${getWeightAsString()}kg';
+  }
+
+  String getNumberedWeightString({bool showNone = true}) {
+    if (weight == 0) return showNone ? 'None' : '';
+    return '${isSingle ? '' : '2 x'} ${getWeightString(showNone: showNone)}';
+  }
+
+  String getMaxAsString() =>
+      max % 1 == 0 ? max.toStringAsFixed(0) : max.toStringAsFixed(2);
+
+  String getMaxString() {
+    if (max == 0) return 'None';
+    return '${getMaxAsString()}kg';
+  }
+
+  String getIsSingleString() => isSingle ? 'Yes' : 'No';
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'categoryId': categoryId,
+        'name': name,
+        'weight': weight,
+        'max': max,
+        'reps': reps,
+        'isSingle': isSingle,
+      };
+}
