@@ -21,17 +21,7 @@ class _CategoryViewState extends State<CategoryView> {
   Widget getExerciseWidget(Exercise exercise) => Row(
         children: [
           Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 0.5,
-                  color: Colors.grey[600]!,
-                ),
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
-                color: Colors.grey[100],
-              ),
-              padding: const EdgeInsets.all(20),
-              margin: const EdgeInsets.fromLTRB(10, 10, 10, 5),
+            child: Card(
               child: InkWell(
                 onTap: () => Navigator.of(context)
                     .push(
@@ -44,37 +34,41 @@ class _CategoryViewState extends State<CategoryView> {
                     )
                     .then((value) => setState(() {})),
                 onLongPress: () => showDeleteExerciseConfirm(exercise.id!),
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 5,
-                      child: Text(
-                        exercise.name,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w500,
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  margin: const EdgeInsets.fromLTRB(10, 10, 10, 5),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 5,
+                        child: Text(
+                          exercise.name,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 3,
-                      child: Text(
-                        exercise.getNumberedWeightString(showNone: false),
-                        style: const TextStyle(
-                          fontSize: 15,
+                      Expanded(
+                        flex: 3,
+                        child: Text(
+                          exercise.getNumberedWeightString(showNone: false),
+                          style: const TextStyle(
+                            fontSize: 15,
+                          ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: Text(
-                        '${exercise.reps} reps',
-                        style: const TextStyle(
-                          fontSize: 15,
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          '${exercise.reps} reps',
+                          style: const TextStyle(
+                            fontSize: 15,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

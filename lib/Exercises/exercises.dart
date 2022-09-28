@@ -13,32 +13,40 @@ class Exercises extends StatefulWidget {
 class _ExercisesState extends State<Exercises> {
   final Future<List<Category>> _categories = CategoriesHelper().getCategories();
 
-  Widget getCategoryWidget(int id, String name) => Container(
+  Widget getCategoryWidget(Category category) => Container(
         margin: const EdgeInsets.only(bottom: 20),
         child: InkWell(
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => CategoryView(
-                categoryId: id,
-                categoryName: name,
+                categoryId: category.id!,
+                categoryName: category.name,
               ),
             ),
           ),
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                width: 0.5,
-                color: Colors.grey[600]!,
+          child: Card(
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    category.emoji ?? '❔',
+                    style: const TextStyle(
+                      fontSize: 35,
+                    ),
+                  ),
+                  const Divider(),
+                  Text(
+                    category.name,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              color: Colors.grey[100],
-            ),
-            width: 200,
-            padding: const EdgeInsets.all(20),
-            child: Text(
-              name,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
             ),
           ),
         ),
@@ -53,9 +61,16 @@ class _ExercisesState extends State<Exercises> {
 
       rows.add(Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: categoriesForRow
-            .map<Widget>((c) => getCategoryWidget(c.id!, c.name))
-            .toList(),
+        children: [
+          Expanded(
+            flex: 5,
+            child: getCategoryWidget(categoriesForRow[0]),
+          ),
+          Expanded(
+            flex: 5,
+            child: getCategoryWidget(categoriesForRow[1]),
+          ),
+        ],
       ));
     }
 
@@ -65,7 +80,7 @@ class _ExercisesState extends State<Exercises> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(10, 30, 10, 30),
+      padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
       child: FutureBuilder<List<Category>>(
         future: _categories,
         builder: (context, snapshot) {

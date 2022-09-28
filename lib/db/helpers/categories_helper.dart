@@ -4,12 +4,13 @@ import 'package:gymvision/db/db.dart';
 class CategoriesHelper {
   Future<List<Category>> getCategories() async {
     final db = await DatabaseHelper().getDb();
-    final List<Map<String, dynamic>> categoriesMaps = await db.query('categories');
+    final List<Map<String, dynamic>> maps = await db.query('categories');
     return List.generate(
-      categoriesMaps.length,
+      maps.length,
       (i) => Category(
-        id: categoriesMaps[i]['id'],
-        name: categoriesMaps[i]['name'],
+        id: maps[i]['id'],
+        name: maps[i]['name'],
+        emoji: maps[i]['emoji'],
       ),
     );
   }

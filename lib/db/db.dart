@@ -13,23 +13,48 @@ class DatabaseHelper {
         Batch batch = db.batch();
 
         batch.execute('''
-          CREATE TABLE categories(
+          CREATE TABLE workouts(
             id INTEGER PRIMARY KEY,
-            name TEXT
+            date TEXT NOT NULL
           );
         ''');
 
         batch.execute('''
-          INSERT INTO categories(id, name)
+          CREATE TABLE workout_exercises(
+            id INTEGER PRIMARY KEY,
+            workoutId INTEGER,
+            exerciseId INTEGER,
+            sets INTEGER
+          );
+        ''');
+
+        batch.execute('''
+          CREATE TABLE workout_categories(
+            id INTEGER PRIMARY KEY,
+            workoutId INTEGER,
+            categoryId INTEGER
+          );
+        ''');
+
+        batch.execute('''
+          CREATE TABLE categories(
+            id INTEGER PRIMARY KEY,
+            name TEXT,
+            emoji TEXT
+          );
+        ''');
+
+        batch.execute('''
+          INSERT INTO categories(id, name, emoji)
           VALUES
-            (1, "Shoulders"),
-            (2, "Chest"),
-            (3, "Back"),
-            (4, "Biceps"),
-            (5, "Triceps"),
-            (6, "Core"),
-            (7, "Hamstrings & Glutes"),
-            (8, "Quadriceps & Calves");
+            (1, "Shoulders", "🪨"),
+            (2, "Chest", "🍒"),
+            (3, "Back", "🎒"),
+            (4, "Biceps", "💪"),
+            (5, "Triceps", "🔱"),
+            (6, "Core", "🍫"),
+            (7, "Hamstrings & Glutes", "🍑"),
+            (8, "Quadriceps & Calves", "🦿");
         ''');
 
         batch.execute('''
@@ -135,7 +160,7 @@ class DatabaseHelper {
             (55, 6, "Suspended Leg Lifts", 0, 0, 12, 1),
             (56, 6, "Oblique Lift", 25, 0, 8, 0),
             (57, 6, "Bench Sit-Ups", 10, 0, 10, 1),
-            (58, 6, "Russian Twists", 25, 0, 16, 1),
+            (58, 6, "Russian Twists", 25, 0, 12, 1),
             (59, 6, "Cable Ab Crunch", 45, 47.5, 10, 1),
             (60, 6, "Vaccums", 0, 0, 12, 1);
         ''');

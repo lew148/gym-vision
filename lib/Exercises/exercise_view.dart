@@ -18,46 +18,59 @@ class ExerciseView extends StatefulWidget {
 class _ExerciseViewState extends State<ExerciseView> {
   reloadState() => setState(() {});
 
-  Widget getExerciseViewWidget(Exercise exercise) => Column(
+  Widget getExerciseViewWidget(Exercise exercise) => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          getValueDisplay(
-            'Weight',
-            exercise.getWeightString(),
-            () => openEditExerciseFieldForm(
-              exercise,
-              ExerciseEditableField.weight,
+          Expanded(
+            flex: 2,
+            child: getValueDisplay(
               'Weight',
-              exercise.getWeightAsString(),
+              exercise.getWeightString(),
+              () => openEditExerciseFieldForm(
+                exercise,
+                ExerciseEditableField.weight,
+                'Weight',
+                exercise.getWeightAsString(),
+              ),
             ),
           ),
-          getValueDisplay(
-            'Max',
-            exercise.getMaxString(),
-            () => openEditExerciseFieldForm(
-              exercise,
-              ExerciseEditableField.max,
+          Expanded(
+            flex: 2,
+            child: getValueDisplay(
               'Max',
-              exercise.getMaxAsString(),
+              exercise.getMaxString(),
+              () => openEditExerciseFieldForm(
+                exercise,
+                ExerciseEditableField.max,
+                'Max',
+                exercise.getMaxAsString(),
+              ),
             ),
           ),
-          getValueDisplay(
-            'Reps',
-            exercise.reps.toString(),
-            () => openEditExerciseFieldForm(
-              exercise,
-              ExerciseEditableField.reps,
+          Expanded(
+            flex: 2,
+            child: getValueDisplay(
               'Reps',
               exercise.reps.toString(),
+              () => openEditExerciseFieldForm(
+                exercise,
+                ExerciseEditableField.reps,
+                'Reps',
+                exercise.reps.toString(),
+              ),
             ),
           ),
-          getValueDisplay(
-            'Is Single',
-            exercise.getIsSingleString(),
-            () async {
-              exercise.isSingle = !exercise.isSingle;
-              ExercisesHelper().updateExercise(exercise);
-              reloadState();
-            },
+          Expanded(
+            flex: 2,
+            child: getValueDisplay(
+              'Is Single',
+              exercise.getIsSingleString(),
+              () async {
+                exercise.isSingle = !exercise.isSingle;
+                ExercisesHelper().updateExercise(exercise);
+                reloadState();
+              },
+            ),
           ),
         ],
       );
@@ -92,34 +105,32 @@ class _ExerciseViewState extends State<ExerciseView> {
         ),
       );
 
-  Widget getValueDisplay(String label, String value, Function() onTap) =>
-      InkWell(
-        onTap: onTap,
-        child: Container(
-          margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-          padding: const EdgeInsets.all(5),
-          decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                width: 0.5,
-                color: Colors.grey[600]!,
-              ),
+  Widget getValueDisplay(String label, String value, Function() onTap) => Card(
+        child: InkWell(
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(label),
+                    const Padding(padding: EdgeInsets.all(5)),
+                    Text(
+                      value,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 17),
+                    ),
+                  ],
+                ),
+                const Icon(
+                  Icons.edit,
+                  size: 18,
+                ),
+              ],
             ),
-            color: Colors.grey[100],
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                label,
-                style:
-                    const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-              ),
-              Text(
-                value,
-                style: const TextStyle(fontSize: 15),
-              ),
-            ],
           ),
         ),
       );
@@ -142,9 +153,14 @@ class _ExerciseViewState extends State<ExerciseView> {
             );
           }
 
-          return Container(
-            margin: const EdgeInsets.fromLTRB(20, 10, 20, 20),
-            child: getExerciseViewWidget(snapshot.data!),
+          return Column(
+            children: [
+              Container(
+                margin: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+                child: getExerciseViewWidget(snapshot.data!),
+              ),
+              const Divider(),
+            ],
           );
         },
       ),

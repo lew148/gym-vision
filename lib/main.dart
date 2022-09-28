@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/exercises/exercises.dart';
-import 'package:gymvision/workouts.dart';
+import 'package:gymvision/workouts/workouts.dart';
 
 void main() => runApp(const MyApp());
 
@@ -12,7 +12,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Gym Vision',
       theme: ThemeData(
-        primarySwatch: Colors.indigo,
+        colorScheme: ColorScheme.light(
+          primary: Colors.indigo[400]!,
+        ),
       ),
       home: const MyHomePage(),
     );
@@ -59,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.indigo[300],
+        selectedItemColor: Theme.of(context).colorScheme.primary,
         onTap: _onItemTapped,
       ),
     );
