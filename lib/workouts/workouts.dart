@@ -12,7 +12,52 @@ class Workouts extends StatefulWidget {
 }
 
 class _WorkoutsState extends State<Workouts> {
-  final Future<List<Workout>> _workouts = WorkoutsHelper().getWorkouts();
+  reloadState() => setState(() {});
+
+  void showDeleteWorkoutConfirm(int workoutId) {
+    Widget cancelButton = TextButton(
+      child: const Text("No"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+
+    Widget continueButton = TextButton(
+      child: const Text(
+        "Yes",
+        style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+      ),
+      onPressed: () async {
+        Navigator.pop(context);
+
+        try {
+          await WorkoutsHelper().deleteWorkout(workoutId);
+        } catch (ex) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text('Failed to delete Workout: ${ex.toString()}')),
+          );
+        }
+
+        reloadState();
+      },
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: const Text("Delete Workout?"),
+      content:
+          const Text("Are you sure you would like to delete this W0orkout?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) => alert,
+    );
+  }
 
   Widget getWorkoutWidget(Workout workout) => Row(
         children: [
@@ -29,6 +74,7 @@ class _WorkoutsState extends State<Workouts> {
                       ),
                     )
                     .then((value) => setState(() {})),
+                onLongPress: () => showDeleteWorkoutConfirm(workout.id!),
                 child: Container(
                   padding: const EdgeInsets.all(20),
                   child: Row(
@@ -43,7 +89,8 @@ class _WorkoutsState extends State<Workouts> {
                       ),
                       if (workout.categoryStrings != null &&
                           workout.categoryStrings!.isNotEmpty)
-                        getWorkoutCategoryStringsWidget(workout.categoryStrings!),
+                        getWorkoutCategoryStringsWidget(
+                            workout.categoryStrings!),
                     ],
                   ),
                 ),
@@ -59,7 +106,18 @@ class _WorkoutsState extends State<Workouts> {
 
   void onAddWorkoutPress() async {
     try {
-      await WorkoutsHelper.insertWorkout(Workout(date: DateTime.now()));
+      final now = DateTime.now();
+      final newWorkoutId =
+          await WorkoutsHelper.insertWorkout(Workout(date: now));
+
+      if (!mounted) return;
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => WorkoutView(
+            workoutId: newWorkoutId,
+          ),
+        ),
+      );
     } catch (ex) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to add workout: $ex')),
@@ -69,6 +127,8 @@ class _WorkoutsState extends State<Workouts> {
 
   @override
   Widget build(BuildContext context) {
+    final Future<List<Workout>> workouts = WorkoutsHelper().getWorkouts();
+
     return Container(
       padding: const EdgeInsets.all(10),
       child: Column(
@@ -91,27 +151,34 @@ class _WorkoutsState extends State<Workouts> {
             ],
           ),
           const Divider(),
-          FutureBuilder<List<Workout>>(
-            future: _workouts,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(
-                  child: Text('Loading...'),
-                );
-              }
+          Expanded(
+            child: SingleChildScrollView(
+              child: Container(
+                margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
+                child: FutureBuilder<List<Workout>>(
+                  future: workouts,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const Center(
+                        child: Text('Loading...'),
+                      );
+                    }
 
-              if (snapshot.data!.isEmpty) {
-                return const Center(
-                  child: Text('No Workouts here :('),
-                );
-              }
+                    if (snapshot.data!.isEmpty) {
+                      return const Center(
+                        child: Text('No Workouts here :('),
+                      );
+                    }
 
-              return Column(
-                children: snapshot.data!
-                    .map<Widget>((c) => getWorkoutWidget(c))
-                    .toList(),
-              );
-            },
+                    return Column(
+                      children: snapshot.data!
+                          .map<Widget>((c) => getWorkoutWidget(c))
+                          .toList(),
+                    );
+                  },
+                ),
+              ),
+            ),
           ),
         ],
       ),

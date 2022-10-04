@@ -6,12 +6,17 @@ class Workout {
   int? id;
   DateTime date;
 
-  // non-db fields
-  List<WorkoutExercise>? exercises;
+  List<WorkoutExercise>? workoutExercises;
   List<WorkoutCategory>? categories;
   List<String>? categoryStrings;
 
-  Workout({this.id, required this.date, this.exercises, this.categories, this.categoryStrings});
+  Workout({
+    this.id,
+    required this.date,
+    this.workoutExercises,
+    this.categories,
+    this.categoryStrings,
+  });
 
   Map<String, dynamic> toMap() => {'id': id, 'date': date.toString()};
 

@@ -3,19 +3,36 @@ import 'package:gymvision/db/db.dart';
 import 'package:sqflite/sqflite.dart';
 
 class ExercisesHelper {
-  Future<List<Exercise>> getExercisesForCategory(int categoryId) async {
+  Future<List<Exercise>> getExercisesForCategory(int categoryId) async =>
+      await getExercises(where: 'categoryId = ?', whereArgs: [categoryId]);
+
+  Future<List<Exercise>> getAllExercises() async => await getExercises();
+
+  Future<List<Exercise>> getAllExercisesExcludingIds(
+      List<int> excludedExerciseIds) async {
+    return await getExercises(
+      where:
+          'id NOT IN (${List.filled(excludedExerciseIds.length, '?').join(',')})',
+      whereArgs: excludedExerciseIds,
+    );
+  }
+
+  Future<List<Exercise>> getExercises({
+    String? where,
+    List<Object?>? whereArgs,
+  }) async {
     final db = await DatabaseHelper().getDb();
     final List<Map<String, dynamic>> maps = await db.query(
       'exercises',
-      where: 'categoryId = ?',
-      whereArgs: [categoryId],
+      where: where,
+      whereArgs: whereArgs,
     );
 
     return List.generate(
       maps.length,
       (i) => Exercise(
         id: maps[i]['id'],
-        categoryId: categoryId,
+        categoryId: maps[i]['categoryId'],
         name: maps[i]['name'],
         weight: maps[i]['weight'],
         max: maps[i]['max'],

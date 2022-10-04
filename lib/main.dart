@@ -14,6 +14,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.light(
           primary: Colors.indigo[400]!,
+          shadow: Colors.grey[600],
         ),
       ),
       home: const MyHomePage(),
