@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymvision/db/classes/workout_category.dart';
 import 'package:gymvision/workouts/workout_view.dart';
 
 import '../db/classes/workout.dart';
@@ -31,7 +32,7 @@ class _WorkoutsState extends State<Workouts> {
         Navigator.pop(context);
 
         try {
-          await WorkoutsHelper().deleteWorkout(workoutId);
+          await WorkoutsHelper.deleteWorkout(workoutId);
         } catch (ex) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -80,17 +81,27 @@ class _WorkoutsState extends State<Workouts> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        workout.getDateString(),
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            workout.getDateString(),
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            '@ ${workout.getTimeString()}',
+                            style: TextStyle(
+                                fontSize: 15,
+                                color: Theme.of(context).colorScheme.shadow),
+                          ),
+                        ],
                       ),
-                      if (workout.categoryStrings != null &&
-                          workout.categoryStrings!.isNotEmpty)
-                        getWorkoutCategoryStringsWidget(
-                            workout.categoryStrings!),
+                      if (workout.workoutCategories != null &&
+                          workout.workoutCategories!.isNotEmpty)
+                        getWorkoutCategoriesWidget(workout.workoutCategories!),
                     ],
                   ),
                 ),
@@ -100,15 +111,36 @@ class _WorkoutsState extends State<Workouts> {
         ],
       );
 
-  Widget getWorkoutCategoryStringsWidget(List<String> categoryStrings) {
-    return Text('lol');
+  Widget getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: workoutCategories
+          .map((wc) => Container(
+                margin: const EdgeInsets.only(left: 15),
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    width: 0.75,
+                    color: Theme.of(context).colorScheme.onBackground,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  wc.category!.getDisplayName(),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ))
+          .toList(),
+    );
   }
 
   void onAddWorkoutPress() async {
     try {
-      final now = DateTime.now();
       final newWorkoutId =
-          await WorkoutsHelper.insertWorkout(Workout(date: now));
+          await WorkoutsHelper.insertWorkout(Workout(date: DateTime.now()));
 
       if (!mounted) return;
       Navigator.of(context).push(
@@ -117,7 +149,7 @@ class _WorkoutsState extends State<Workouts> {
             workoutId: newWorkoutId,
           ),
         ),
-      );
+      ).then((value) => reloadState());
     } catch (ex) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to add workout: $ex')),
@@ -134,18 +166,29 @@ class _WorkoutsState extends State<Workouts> {
       child: Column(
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              TextButton(
-                style: TextButton.styleFrom(
-                  textStyle: const TextStyle(
-                    fontSize: 25,
-                  ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Workouts',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.shadow,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
+              ),
+              OutlinedButton(
                 onPressed: onAddWorkoutPress,
                 child: const Icon(
                   Icons.add,
-                  size: 35,
+                  size: 25,
                 ),
               ),
             ],

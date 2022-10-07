@@ -2,9 +2,16 @@ import 'package:gymvision/db/classes/category.dart';
 import 'package:gymvision/db/db.dart';
 
 class CategoriesHelper {
-  Future<List<Category>> getCategories() async {
+  Future<List<Category>> getCategories({
+    String? where,
+    List<Object?>? whereArgs,
+  }) async {
     final db = await DatabaseHelper().getDb();
-    final List<Map<String, dynamic>> maps = await db.query('categories');
+    final List<Map<String, dynamic>> maps = await db.query(
+      'categories',
+      where: where,
+      whereArgs: whereArgs,
+    );
     return List.generate(
       maps.length,
       (i) => Category(
@@ -12,6 +19,14 @@ class CategoriesHelper {
         name: maps[i]['name'],
         emoji: maps[i]['emoji'],
       ),
+    );
+  }
+
+  Future<List<Category>> getAllCategoriesExcludingIds(
+      List<int> excludedIds) async {
+    return await getCategories(
+      where: 'id NOT IN (${List.filled(excludedIds.length, '?').join(',')})',
+      whereArgs: excludedIds,
     );
   }
 }

@@ -6,19 +6,19 @@ class Workout {
   int? id;
   DateTime date;
 
+  List<WorkoutCategory>? workoutCategories;
   List<WorkoutExercise>? workoutExercises;
-  List<WorkoutCategory>? categories;
-  List<String>? categoryStrings;
 
   Workout({
     this.id,
     required this.date,
     this.workoutExercises,
-    this.categories,
-    this.categoryStrings,
+    this.workoutCategories,
   });
 
   Map<String, dynamic> toMap() => {'id': id, 'date': date.toString()};
 
-  String getDateString() => DateFormat.yMEd().format(date);
+  String getDateString() => DateFormat('EEEE, d MMM').format(date);
+
+  String getTimeString() => DateFormat('Hm').format(date);
 }

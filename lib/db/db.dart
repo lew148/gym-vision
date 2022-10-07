@@ -20,19 +20,19 @@ class DatabaseHelper {
         ''');
 
         batch.execute('''
+          CREATE TABLE workout_categories(
+            id INTEGER PRIMARY KEY,
+            workoutId INTEGER,
+            categoryId INTEGER
+          );
+        ''');
+
+        batch.execute('''
           CREATE TABLE workout_exercises(
             id INTEGER PRIMARY KEY,
             workoutId INTEGER,
             exerciseId INTEGER,
             sets INTEGER
-          );
-        ''');
-
-        batch.execute('''
-          CREATE TABLE workout_categories(
-            id INTEGER PRIMARY KEY,
-            workoutId INTEGER,
-            categoryId INTEGER
           );
         ''');
 
