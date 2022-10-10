@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/workout_exercise.dart';
+import 'package:gymvision/exercises/category_view.dart';
+import 'package:gymvision/exercises/exercise_view.dart';
 import 'package:gymvision/workouts/add_exercise_to_workout_form.dart';
 
 import '../db/classes/workout.dart';
@@ -188,6 +190,16 @@ class _WorkoutViewState extends State<WorkoutView> {
                 child: InkWell(
                   onLongPress: () =>
                       showRemoveCategoryFromWorkoutConfirm(wc.id!),
+                  onTap: () => Navigator.of(context)
+                      .push(
+                        MaterialPageRoute(
+                          builder: (context) => CategoryView(
+                            categoryId: wc.categoryId,
+                            categoryName: wc.category!.name,
+                          ),
+                        ),
+                      )
+                      .then((value) => setState(() {})),
                   child: Container(
                     padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
@@ -225,6 +237,16 @@ class _WorkoutViewState extends State<WorkoutView> {
           (we) => Card(
             child: InkWell(
               onLongPress: () => showRemoveExerciseFromWorkoutConfirm(we.id!),
+              onTap: () => Navigator.of(context)
+                  .push(
+                    MaterialPageRoute(
+                      builder: (context) => ExerciseView(
+                        exerciseId: we.exerciseId,
+                        exerciseName: we.exercise!.name,
+                      ),
+                    ),
+                  )
+                  .then((value) => setState(() {})),
               child: Padding(
                 padding: const EdgeInsets.all(20),
                 child: Row(

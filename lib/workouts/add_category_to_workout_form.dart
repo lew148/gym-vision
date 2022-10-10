@@ -95,7 +95,7 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
                 child: Column(
                   children: [
                     SearchChoices.multiple(
-                      autofocus: true,
+                      autofocus: false,
                       items: items,
                       selectedItems: selectedItems,
                       hint: const Padding(

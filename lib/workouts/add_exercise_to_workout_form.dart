@@ -96,6 +96,7 @@ class _AddExerciseToWorkoutFormState extends State<AddExerciseToWorkoutForm> {
                   children: [
                     SearchChoices.multiple(
                       items: items,
+                      autofocus: false,
                       selectedItems: selectedItems,
                       hint: const Padding(
                         padding: EdgeInsets.all(12.0),

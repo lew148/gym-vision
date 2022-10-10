@@ -20,7 +20,8 @@ class WorkoutsHelper {
         categories.emoji
       FROM workouts
       LEFT JOIN workout_categories ON workouts.id = workout_categories.workoutId
-      LEFT JOIN categories ON workout_categories.categoryId = categories.id;
+      LEFT JOIN categories ON workout_categories.categoryId = categories.id
+      ORDER BY workouts.date DESC;
     ''');
 
     final Map<int, List<Map<String, dynamic>>> groupedMaps =
@@ -42,7 +43,7 @@ class WorkoutsHelper {
 
   List<WorkoutCategory>? processWorkoutCategories(
       List<Map<String, dynamic>> list) {
-    if (list.length == 1) return null;
+    if (list.isEmpty) return null;
 
     List<WorkoutCategory> workoutCategories = [];
     for (var m in list) {
