@@ -208,6 +208,21 @@ class WorkoutsHelper {
     }
   }
 
+  static addExerciseToWorkouts(int exerciseId, List<int> workoutIds) async {
+    final db = await DatabaseHelper().getDb();
+    for (var wId in workoutIds) {
+      await db.insert(
+        'workout_exercises',
+        WorkoutExercise(
+          workoutId: wId,
+          exerciseId: exerciseId,
+          sets: 3,
+        ).toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    }
+  }
+
   static removeCategoryFromWorkout(int workoutCategoryId) async {
     final db = await DatabaseHelper().getDb();
     await db.delete(

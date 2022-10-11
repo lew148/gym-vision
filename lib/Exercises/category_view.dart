@@ -4,6 +4,7 @@ import 'package:gymvision/db/helpers/workouts_helper.dart';
 
 import '../db/helpers/exercises_helper.dart';
 import 'add_exercise_form.dart';
+import 'add_exercise_to_workouts_form.dart';
 import 'exercise_view.dart';
 
 class CategoryView extends StatefulWidget {
@@ -81,7 +82,7 @@ class _CategoryViewState extends State<CategoryView> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) => Padding(
-        padding: const EdgeInsets.all(30),
+        padding: const EdgeInsets.all(25),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -197,7 +198,23 @@ class _CategoryViewState extends State<CategoryView> {
 
   void onAddExerciseToWorkoutTap(int exerciseId) {
     try {
-      // todo: select workout(s)
+      showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: AddExerciseToWorkoutsForm(exerciseId: exerciseId),
+            ),
+          ],
+        ),
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+      );
+
       WorkoutsHelper.addExerciseToWorkout(0, exerciseId);
     } catch (ex) {
       ScaffoldMessenger.of(context).showSnackBar(
