@@ -190,6 +190,9 @@ class WorkoutsHelper {
     }
   }
 
+  static addExerciseToWorkout(int workoutId, int exerciseId) async =>
+      await addCategoriesToWorkout(workoutId, [exerciseId]);
+
   static addExercisesToWorkout(int workoutId, List<int> exerciseIds) async {
     final db = await DatabaseHelper().getDb();
     for (var exId in exerciseIds) {

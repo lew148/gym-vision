@@ -26,6 +26,7 @@ class ExercisesHelper {
       'exercises',
       where: where,
       whereArgs: whereArgs,
+      orderBy: 'name ASC',
     );
 
     return List.generate(

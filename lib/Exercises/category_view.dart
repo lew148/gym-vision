@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/exercise.dart';
+import 'package:gymvision/db/helpers/workouts_helper.dart';
 
 import '../db/helpers/exercises_helper.dart';
 import 'add_exercise_form.dart';
@@ -33,7 +34,7 @@ class _CategoryViewState extends State<CategoryView> {
                       ),
                     )
                     .then((value) => setState(() {})),
-                onLongPress: () => showDeleteExerciseConfirm(exercise.id!),
+                onLongPress: () => showLongPressMenu(exercise),
                 child: Container(
                   padding: const EdgeInsets.all(20),
                   margin: const EdgeInsets.fromLTRB(10, 10, 10, 5),
@@ -76,7 +77,80 @@ class _CategoryViewState extends State<CategoryView> {
         ],
       );
 
-  void showDeleteExerciseConfirm(int id) {
+  void showLongPressMenu(Exercise exercise) async {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) => Padding(
+        padding: const EdgeInsets.all(30),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  exercise.name,
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: Theme.of(context).colorScheme.shadow,
+                  ),
+                ),
+              ],
+            ),
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
+              child: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                  showDeleteExerciseConfirm(exercise.id!);
+                },
+                child: Row(
+                  children: const [
+                    Icon(Icons.delete),
+                    Padding(padding: EdgeInsets.all(5)),
+                    Text(
+                      'Delete',
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
+              child: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                  onAddExerciseToWorkoutTap(exercise.id!);
+                },
+                child: Row(
+                  children: const [
+                    Icon(Icons.add),
+                    Padding(padding: EdgeInsets.all(5)),
+                    Text(
+                      'Add to workout',
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const Divider(),
+          ],
+        ),
+      ),
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
+    );
+  }
+
+  void showDeleteExerciseConfirm(int exerciseId) {
     Widget cancelButton = TextButton(
       child: const Text("No"),
       onPressed: () {
@@ -93,7 +167,7 @@ class _CategoryViewState extends State<CategoryView> {
         Navigator.pop(context);
 
         try {
-          ExercisesHelper().deleteExercise(id);
+          ExercisesHelper().deleteExercise(exerciseId);
         } catch (ex) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -119,6 +193,17 @@ class _CategoryViewState extends State<CategoryView> {
       context: context,
       builder: (context) => alert,
     );
+  }
+
+  void onAddExerciseToWorkoutTap(int exerciseId) {
+    try {
+      // todo: select workout(s)
+      WorkoutsHelper.addExerciseToWorkout(0, exerciseId);
+    } catch (ex) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to add exercise to workout: $ex')),
+      );
+    }
   }
 
   void openAddExerciseForm() => showModalBottomSheet(
