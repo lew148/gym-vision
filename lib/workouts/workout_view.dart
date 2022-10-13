@@ -223,7 +223,8 @@ class _WorkoutViewState extends State<WorkoutView> {
     );
   }
 
-  getWorkoutExercisesWidget(List<WorkoutExercise>? workoutExercises) {
+  List<Widget> getWorkoutExercisesWidget(
+      List<WorkoutExercise>? workoutExercises) {
     if (workoutExercises == null || workoutExercises.isEmpty) {
       return const [
         Center(
@@ -283,99 +284,103 @@ class _WorkoutViewState extends State<WorkoutView> {
         title: Text(widget.workoutDateString ?? 'New Workout'),
       ),
       body: FutureBuilder<Workout>(
-          future: workout,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(
-                child: Text('Loading...'),
-              );
-            }
-
-            if (snapshot.data!.workoutCategories != null &&
-                snapshot.data!.workoutCategories!.isNotEmpty) {
-              existingCategoryIds = snapshot.data!.workoutCategories!
-                  .map((we) => we.categoryId)
-                  .toList();
-            } else {
-              existingCategoryIds = [];
-            }
-
-            if (snapshot.data!.workoutExercises != null &&
-                snapshot.data!.workoutExercises!.isNotEmpty) {
-              existingExerciseIds = snapshot.data!.workoutExercises!
-                  .map((we) => we.exerciseId)
-                  .toList();
-            } else {
-              existingExerciseIds = [];
-            }
-
-            return Column(
-              children: [
-                const Padding(padding: EdgeInsets.all(10)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    getSectionTitle('Categories'),
-                    Container(
-                      margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                      child: Row(
-                        children: [
-                          OutlinedButton(
-                            onPressed: () =>
-                                onAddCategoryClick(existingCategoryIds),
-                            child: const Icon(
-                              Icons.add,
-                              size: 25,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const Divider(),
-                Container(
-                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                  padding: const EdgeInsets.all(10),
-                  child: getWorkoutCategoriesWidget(
-                    snapshot.data!.workoutCategories,
-                  ),
-                ),
-                const Padding(padding: EdgeInsets.all(10)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    getSectionTitle('Exercises'),
-                    Container(
-                      margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                      child: Row(
-                        children: [
-                          OutlinedButton(
-                            onPressed: () =>
-                                onAddExerciseClick(existingExerciseIds),
-                            child: const Icon(
-                              Icons.add,
-                              size: 25,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const Divider(),
-                Container(
-                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                  padding: const EdgeInsets.all(10),
-                  child: Column(
-                    children: getWorkoutExercisesWidget(
-                      snapshot.data!.workoutExercises,
-                    ),
-                  ),
-                ),
-              ],
+        future: workout,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(
+              child: Text('Loading...'),
             );
-          }),
+          }
+
+          if (snapshot.data!.workoutCategories != null &&
+              snapshot.data!.workoutCategories!.isNotEmpty) {
+            existingCategoryIds = snapshot.data!.workoutCategories!
+                .map((we) => we.categoryId)
+                .toList();
+          } else {
+            existingCategoryIds = [];
+          }
+
+          if (snapshot.data!.workoutExercises != null &&
+              snapshot.data!.workoutExercises!.isNotEmpty) {
+            existingExerciseIds = snapshot.data!.workoutExercises!
+                .map((we) => we.exerciseId)
+                .toList();
+          } else {
+            existingExerciseIds = [];
+          }
+
+          return Column(
+            children: [
+              const Padding(padding: EdgeInsets.all(10)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  getSectionTitle('Categories'),
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    child: Row(
+                      children: [
+                        OutlinedButton(
+                          onPressed: () =>
+                              onAddCategoryClick(existingCategoryIds),
+                          child: const Icon(
+                            Icons.add,
+                            size: 25,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const Divider(),
+              Container(
+                margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+                padding: const EdgeInsets.all(10),
+                child: getWorkoutCategoriesWidget(
+                  snapshot.data!.workoutCategories,
+                ),
+              ),
+              const Padding(padding: EdgeInsets.all(10)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  getSectionTitle('Exercises'),
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    child: Row(
+                      children: [
+                        OutlinedButton(
+                          onPressed: () =>
+                              onAddExerciseClick(existingExerciseIds),
+                          child: const Icon(
+                            Icons.add,
+                            size: 25,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const Divider(),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      children: getWorkoutExercisesWidget(
+                        snapshot.data!.workoutExercises,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }
