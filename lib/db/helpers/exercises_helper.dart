@@ -65,6 +65,15 @@ class ExercisesHelper {
 
   Future<void> insertExercise(Exercise exercise) async {
     final db = await DatabaseHelper().getDb();
+
+    final count = Sqflite.firstIntValue(await db.rawQuery('''
+      SELECT COUNT(name)
+      FROM exercises
+      WHERE name = '${exercise.name}';
+    '''));
+
+    if (count != null && count > 0) throw Exception('Exercise with this name already exists.');
+
     await db.insert(
       'exercises',
       exercise.toMap(),

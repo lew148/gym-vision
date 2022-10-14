@@ -29,14 +29,18 @@ class _AddExerciseFormState extends State<AddExerciseForm> {
       Navigator.pop(context);
 
       try {
-        await ExercisesHelper().insertExercise(Exercise(
-          categoryId: widget.categoryId,
-          name: nameController.text,
-          weight: double.parse(getNumberOrDefault(weightController.text)),
-          max: 0, // to set in edit
-          reps: int.parse(getNumberOrDefault(repsController.text)),
-          isSingle: isSingleValue,
-        ));
+        await ExercisesHelper()
+            .insertExercise(Exercise(
+              categoryId: widget.categoryId,
+              name: nameController.text,
+              weight: double.parse(getNumberOrDefault(weightController.text)),
+              max: 0, // to set in edit
+              reps: int.parse(getNumberOrDefault(repsController.text)),
+              isSingle: isSingleValue,
+            ))
+            .then((value) => ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Successfully added Exercise!')),
+                ));
       } catch (ex) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to add exercise: $ex')),
