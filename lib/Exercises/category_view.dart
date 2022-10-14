@@ -35,39 +35,68 @@ class _CategoryViewState extends State<CategoryView> {
                       ),
                     )
                     .then((value) => setState(() {})),
-                onLongPress: () => showLongPressMenu(exercise),
                 child: Container(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(10),
                   margin: const EdgeInsets.fromLTRB(10, 10, 10, 5),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(
-                        flex: 5,
-                        child: Text(
-                          exercise.name,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            exercise.name,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                        ),
+                          const Padding(padding: EdgeInsets.all(8)),
+                          if (exercise.hasWeight())
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 5),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.fitness_center,
+                                    size: 15,
+                                    color: Theme.of(context).colorScheme.shadow,
+                                  ),
+                                  const Padding(padding: EdgeInsets.all(5)),
+                                  Text(
+                                    exercise.getNumberedWeightString(
+                                        showNone: false),
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color:
+                                          Theme.of(context).colorScheme.shadow,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.repeat,
+                                size: 15,
+                                color: Theme.of(context).colorScheme.shadow,
+                              ),
+                              const Padding(padding: EdgeInsets.all(5)),
+                              Text(
+                                '${exercise.reps} reps',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  color: Theme.of(context).colorScheme.shadow,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                      Expanded(
-                        flex: 3,
-                        child: Text(
-                          exercise.getNumberedWeightString(showNone: false),
-                          style: const TextStyle(
-                            fontSize: 15,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          '${exercise.reps} reps',
-                          style: const TextStyle(
-                            fontSize: 15,
-                          ),
-                        ),
+                      IconButton(
+                        icon: const Icon(Icons.more_vert),
+                        onPressed: () => showMoreMenu(exercise),
                       ),
                     ],
                   ),
@@ -78,7 +107,7 @@ class _CategoryViewState extends State<CategoryView> {
         ],
       );
 
-  void showLongPressMenu(Exercise exercise) async {
+  void showMoreMenu(Exercise exercise) async {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) => Padding(

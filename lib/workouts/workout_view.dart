@@ -182,43 +182,44 @@ class _WorkoutViewState extends State<WorkoutView> {
       );
     }
 
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Wrap(
+      alignment: WrapAlignment.spaceEvenly,
       children: workoutCategories
-          .map((wc) => Padding(
-                padding: const EdgeInsets.only(left: 15),
-                child: InkWell(
-                  onLongPress: () =>
-                      showRemoveCategoryFromWorkoutConfirm(wc.id!),
-                  onTap: () => Navigator.of(context)
-                      .push(
-                        MaterialPageRoute(
-                          builder: (context) => CategoryView(
-                            categoryId: wc.categoryId,
-                            categoryName: wc.category!.name,
-                          ),
+          .map(
+            (wc) => Padding(
+              padding: const EdgeInsets.all(5),
+              child: InkWell(
+                onLongPress: () => showRemoveCategoryFromWorkoutConfirm(wc.id!),
+                onTap: () => Navigator.of(context)
+                    .push(
+                      MaterialPageRoute(
+                        builder: (context) => CategoryView(
+                          categoryId: wc.categoryId,
+                          categoryName: wc.category!.name,
                         ),
-                      )
-                      .then((value) => setState(() {})),
-                  child: Container(
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 0.75,
-                        color: Theme.of(context).colorScheme.onBackground,
                       ),
-                      borderRadius: BorderRadius.circular(10),
+                    )
+                    .then((value) => setState(() {})),
+                child: Container(
+                  padding: const EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 0.75,
+                      color: Theme.of(context).colorScheme.onBackground,
                     ),
-                    child: Text(
-                      wc.category!.getDisplayName(),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    wc.category!.getDisplayName(),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ),
-              ))
+              ),
+            ),
+          )
           .toList(),
     );
   }

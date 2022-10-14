@@ -13,7 +13,8 @@ class MyApp extends StatelessWidget {
       title: 'Gym Vision',
       theme: ThemeData(
         colorScheme: ColorScheme.light(
-          primary: Colors.indigo[400]!,
+          primary: Colors.green[400]!,
+          secondary: Colors.blue[100]!,
           shadow: Colors.grey[600],
         ),
       ),

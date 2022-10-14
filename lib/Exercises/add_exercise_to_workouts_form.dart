@@ -3,6 +3,8 @@ import 'package:gymvision/db/classes/workout.dart';
 import 'package:gymvision/db/helpers/workouts_helper.dart';
 import 'package:search_choices/search_choices.dart';
 
+import '../globals.dart';
+
 class AddExerciseToWorkoutsForm extends StatefulWidget {
   final int exerciseId;
 
@@ -26,20 +28,30 @@ class _AddExerciseToWorkoutsFormState extends State<AddExerciseToWorkoutsForm> {
   }
 
   final formKey = GlobalKey<FormState>();
+  final setsController = TextEditingController(text: '3');
   List<Workout> workoutsRef = [];
   List<int> selectedItems = [];
   List<DropdownMenuItem> items = [];
 
   void onSubmit() async {
+    final List<int> workoutIdsToAddTo =
+        selectedItems.map((si) => workoutsRef[si].id!).toList();
+    addExerciseToWorkouts(workoutIdsToAddTo);
+  }
+
+  void onRecentWorkoutButtonPress(int recentWorkoutId) async =>
+      addExerciseToWorkouts([recentWorkoutId]);
+
+  void addExerciseToWorkouts(List<int> workoutIds) async {
     if (formKey.currentState!.validate()) {
       Navigator.pop(context);
 
       try {
-        final List<int> workoutIdsToAddTo =
-            selectedItems.map((si) => workoutsRef[si].id!).toList();
-
         await WorkoutsHelper.addExerciseToWorkouts(
-            widget.exerciseId, workoutIdsToAddTo);
+          widget.exerciseId,
+          workoutIds,
+          int.parse(getNumberOrDefault(setsController.text)),
+        );
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -80,6 +92,7 @@ class _AddExerciseToWorkoutsFormState extends State<AddExerciseToWorkoutsForm> {
                 );
               }
 
+              final mostRecentWorkout = snapshot.data![0];
               workoutsRef = snapshot.data!;
               items = snapshot.data!
                   .map((e) => DropdownMenuItem(
@@ -93,39 +106,52 @@ class _AddExerciseToWorkoutsFormState extends State<AddExerciseToWorkoutsForm> {
                 key: formKey,
                 child: Column(
                   children: [
-                    SearchChoices.multiple(
-                      items: items,
-                      autofocus: false,
-                      selectedItems: selectedItems,
-                      hint: const Padding(
-                        padding: EdgeInsets.all(12.0),
-                        child: Text("Select Workouts"),
+                    if (snapshot.data!.any((w) => w.isToday()))
+                      SearchChoices.multiple(
+                        items: items,
+                        autofocus: false,
+                        selectedItems: selectedItems,
+                        hint: const Padding(
+                          padding: EdgeInsets.all(12.0),
+                          child: Text("Select Workouts"),
+                        ),
+                        searchHint: '',
+                        onChanged: (value) {
+                          setState(() {
+                            selectedItems = value;
+                          });
+                        },
+                        closeButton: (selectedItems) {
+                          return (selectedItems.isNotEmpty
+                              ? "Select ${selectedItems.length == 1 ? '"${items[selectedItems.first].value}"' : '(${selectedItems.length})'}"
+                              : "Cancel");
+                        },
+                        doneButton: '',
+                        isExpanded: true,
                       ),
-                      searchHint: '',
-                      onChanged: (value) {
-                        setState(() {
-                          selectedItems = value;
-                        });
-                      },
-                      closeButton: (selectedItems) {
-                        return (selectedItems.isNotEmpty
-                            ? "Select ${selectedItems.length == 1 ? '"${items[selectedItems.first].value}"' : '(${selectedItems.length})'}"
-                            : "Cancel");
-                      },
-                      doneButton: '',
-                      isExpanded: true,
+                    TextFormField(
+                      controller: setsController,
+                      keyboardType: TextInputType.number,
+                      decoration: const InputDecoration(
+                        labelText: 'Sets',
+                      ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 20.0),
-                          child: ElevatedButton(
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          OutlinedButton(
+                            onPressed: () => onRecentWorkoutButtonPress(
+                                mostRecentWorkout.id!),
+                            child: const Text('Add to Most Recent'),
+                          ),
+                          ElevatedButton(
                             onPressed: onSubmit,
                             child: const Text('Save'),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),

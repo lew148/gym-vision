@@ -4,6 +4,7 @@ import 'package:gymvision/workouts/workout_view.dart';
 
 import '../db/classes/workout.dart';
 import '../db/helpers/workouts_helper.dart';
+import 'flavour_text_card.dart';
 
 class Workouts extends StatefulWidget {
   const Workouts({super.key});
@@ -47,7 +48,7 @@ class _WorkoutsState extends State<Workouts> {
     AlertDialog alert = AlertDialog(
       title: const Text("Delete Workout?"),
       content:
-          const Text("Are you sure you would like to delete this W0orkout?"),
+          const Text("Are you sure you would like to delete this Workout?"),
       actions: [
         cancelButton,
         continueButton,
@@ -99,6 +100,7 @@ class _WorkoutsState extends State<Workouts> {
                           ),
                         ],
                       ),
+                      const Padding(padding: EdgeInsets.all(10)),
                       if (workout.workoutCategories != null &&
                           workout.workoutCategories!.isNotEmpty)
                         getWorkoutCategoriesWidget(workout.workoutCategories!),
@@ -112,11 +114,13 @@ class _WorkoutsState extends State<Workouts> {
       );
 
   Widget getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: workoutCategories
-          .map((wc) => Container(
-                margin: const EdgeInsets.only(left: 15),
+    return Expanded(
+      child: Wrap(
+        alignment: WrapAlignment.end,
+        children: workoutCategories
+            .map(
+              (wc) => Container(
+                margin: const EdgeInsets.all(2),
                 padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                   border: Border.all(
@@ -132,8 +136,10 @@ class _WorkoutsState extends State<Workouts> {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-              ))
-          .toList(),
+              ),
+            )
+            .toList(),
+      ),
     );
   }
 
@@ -143,13 +149,15 @@ class _WorkoutsState extends State<Workouts> {
           await WorkoutsHelper.insertWorkout(Workout(date: DateTime.now()));
 
       if (!mounted) return;
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => WorkoutView(
-            workoutId: newWorkoutId,
-          ),
-        ),
-      ).then((value) => reloadState());
+      Navigator.of(context)
+          .push(
+            MaterialPageRoute(
+              builder: (context) => WorkoutView(
+                workoutId: newWorkoutId,
+              ),
+            ),
+          )
+          .then((value) => reloadState());
     } catch (ex) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to add workout: $ex')),
@@ -165,6 +173,10 @@ class _WorkoutsState extends State<Workouts> {
       padding: const EdgeInsets.all(10),
       child: Column(
         children: [
+          const FlavourTextCard(),
+          const Padding(padding: EdgeInsets.all(5)),
+
+          // workouts
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

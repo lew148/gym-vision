@@ -21,7 +21,7 @@ class _AddExerciseFormState extends State<AddExerciseForm> {
   final formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final weightController = TextEditingController();
-  final repsController = TextEditingController(text: '3');
+  final repsController = TextEditingController();
   bool isSingleValue = false;
 
   void onSubmit() async {

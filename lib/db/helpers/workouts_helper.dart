@@ -208,7 +208,7 @@ class WorkoutsHelper {
     }
   }
 
-  static addExerciseToWorkouts(int exerciseId, List<int> workoutIds) async {
+  static addExerciseToWorkouts(int exerciseId, List<int> workoutIds, int sets) async {
     final db = await DatabaseHelper().getDb();
     for (var wId in workoutIds) {
       await db.insert(
@@ -216,7 +216,7 @@ class WorkoutsHelper {
         WorkoutExercise(
           workoutId: wId,
           exerciseId: exerciseId,
-          sets: 3,
+          sets: sets,
         ).toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );

@@ -27,8 +27,10 @@ class Exercise {
 
   String getNumberedWeightString({bool showNone = true}) {
     if (weight == 0) return showNone ? 'None' : '';
-    return '${isSingle ? '' : '2 x'} ${getWeightString(showNone: showNone)}';
+    return '${isSingle ? '' : '2 x '}${getWeightString(showNone: showNone)}';
   }
+
+  bool hasWeight() => weight > 0;
 
   String getMaxAsString() =>
       max % 1 == 0 ? max.toStringAsFixed(0) : max.toStringAsFixed(2);
