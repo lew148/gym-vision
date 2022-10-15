@@ -1,3 +1,4 @@
+import 'package:gymvision/db/db_migrations.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -8,7 +9,12 @@ class DatabaseHelper {
     // await deleteDatabase('gymvision.db');
     database = openDatabase(
       join(await getDatabasesPath(), 'gymvision.db'),
-      version: 1,
+      version: MigrationsHelper.migrationsQty(),
+      onUpgrade: (db, oldVersion, newVersion) async {
+        for (int i = oldVersion + 1; i <= newVersion; i++) {
+          await db.execute(MigrationsHelper.migrationScripts[i]!);
+        }
+      },
       onCreate: (db, version) async {
         Batch batch = db.batch();
 
