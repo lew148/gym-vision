@@ -22,6 +22,17 @@ class MigrationsHelper {
               (10, "Be extra careful when hitting PRs!"),
               (11, "If you keep showing up, you'll be unbeatable!");
       ''',
+    4: '''
+        CREATE TABLE user_settings(
+          id INTEGER PRIMARY KEY,
+          theme TEXT
+        );
+      ''',
+    5: '''
+        INSERT INTO user_settings(id, theme)
+          VALUES
+            (1, "system");
+      ''',
   };
 
   static migrationsQty() => migrationScripts.length;
