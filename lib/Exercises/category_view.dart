@@ -51,7 +51,7 @@ class _CategoryViewState extends State<CategoryView> {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          const Padding(padding: EdgeInsets.all(8)),
+                          const Padding(padding: EdgeInsets.all(4)),
                           if (exercise.hasWeight())
                             Padding(
                               padding: const EdgeInsets.only(bottom: 5),

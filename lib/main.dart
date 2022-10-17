@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.dark(
           primary: Colors.green[400]!,
           secondary: Colors.blue[100]!,
-          shadow: Colors.grey[600],
+          shadow: Colors.grey[400],
         ),
       ),
       themeMode: EasyDynamicTheme.of(context).themeMode,
