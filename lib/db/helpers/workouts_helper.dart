@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/src/material/time.dart';
 import 'package:gymvision/db/classes/category.dart';
 import 'package:gymvision/db/classes/workout_category.dart';
 import 'package:gymvision/db/classes/workout_exercise.dart';
@@ -68,7 +69,7 @@ class WorkoutsHelper {
     return workoutCategories;
   }
 
-  Future<Workout> getWorkout({
+  static Future<Workout> getWorkout({
     required int workoutId,
     bool includeCategories = false,
     bool includeExercises = false,
@@ -92,7 +93,7 @@ class WorkoutsHelper {
     );
   }
 
-  Future<List<WorkoutCategory>?> getWorkoutCategoriesForWorkout(
+  static Future<List<WorkoutCategory>?> getWorkoutCategoriesForWorkout(
       int workoutId) async {
     final db = await DatabaseHelper().getDb();
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
@@ -124,7 +125,7 @@ class WorkoutsHelper {
         .toList();
   }
 
-  Future<List<WorkoutExercise>?> getWorkoutExercisesForWorkout(
+  static Future<List<WorkoutExercise>?> getWorkoutExercisesForWorkout(
       int workoutId) async {
     final db = await DatabaseHelper().getDb();
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
@@ -208,7 +209,8 @@ class WorkoutsHelper {
     }
   }
 
-  static addExerciseToWorkouts(int exerciseId, List<int> workoutIds, int sets) async {
+  static addExerciseToWorkouts(
+      int exerciseId, List<int> workoutIds, int sets) async {
     final db = await DatabaseHelper().getDb();
     for (var wId in workoutIds) {
       await db.insert(
@@ -259,6 +261,32 @@ class WorkoutsHelper {
       'workouts',
       where: 'id = ?',
       whereArgs: [workoutId],
+    );
+  }
+
+  static updateDate(int id, DateTime newDate) async {
+    final db = await DatabaseHelper().getDb();
+    final workout = await getWorkout(workoutId: id);
+    workout.date = DateTime(newDate.year, newDate.month, newDate.day,
+        workout.date.hour, workout.date.minute);
+    await db.update(
+      'workouts',
+      workout.toMap(),
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  static updateTime(int id, TimeOfDay newTime) async {
+    final db = await DatabaseHelper().getDb();
+    final workout = await getWorkout(workoutId: id);
+    workout.date = DateTime(workout.date.year, workout.date.month,
+        workout.date.day, newTime.hour, newTime.minute);
+    await db.update(
+      'workouts',
+      workout.toMap(),
+      where: 'id = ?',
+      whereArgs: [id],
     );
   }
 }

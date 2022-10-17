@@ -11,9 +11,7 @@ import 'add_category_to_workout_form.dart';
 
 class WorkoutView extends StatefulWidget {
   final int workoutId;
-  final String? workoutDateString;
-  const WorkoutView(
-      {super.key, required this.workoutId, this.workoutDateString});
+  const WorkoutView({super.key, required this.workoutId});
 
   @override
   State<WorkoutView> createState() => _WorkoutViewState();
@@ -270,48 +268,159 @@ class _WorkoutViewState extends State<WorkoutView> {
         .toList();
   }
 
+  void showEditDate(Workout workout, void Function() reloadState) async {
+    final newDate = await showDatePicker(
+      context: context,
+      initialDate: workout.date,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2050),
+    );
+
+    try {
+      await WorkoutsHelper.updateDate(workout.id!, newDate!);
+    } catch (ex) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update date: $ex')),
+      );
+    }
+
+    reloadState();
+  }
+
+  void showEditTime(Workout workout, void Function() reloadState) async {
+    final newTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(workout.date),
+    );
+
+    try {
+      await WorkoutsHelper.updateTime(workout.id!, newTime!);
+    } catch (ex) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update time: $ex')),
+      );
+    }
+
+    reloadState();
+  }
+
+  void showMoreMenu(Workout workout, void Function() reloadState) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) => Padding(
+        padding: const EdgeInsets.all(25),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
+              child: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                  showEditDate(workout, reloadState);
+                },
+                child: Row(
+                  children: const [
+                    Icon(Icons.calendar_today),
+                    Padding(padding: EdgeInsets.all(5)),
+                    Text(
+                      'Edit Date',
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
+              child: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                  showEditTime(workout, reloadState);
+                },
+                child: Row(
+                  children: const [
+                    Icon(Icons.watch),
+                    Padding(padding: EdgeInsets.all(5)),
+                    Text(
+                      'Edit Time',
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    Future<Workout> workout = WorkoutsHelper().getWorkout(
+    Future<Workout> workout = WorkoutsHelper.getWorkout(
       workoutId: widget.workoutId,
       includeCategories: true,
       includeExercises: true,
     );
+
     List<int> existingCategoryIds = [];
     List<int> existingExerciseIds = [];
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.workoutDateString ?? 'New Workout'),
-      ),
-      body: FutureBuilder<Workout>(
-        future: workout,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(
-              child: Text('Loading...'),
-            );
-          }
+    reloadState() => setState(() {});
 
-          if (snapshot.data!.workoutCategories != null &&
-              snapshot.data!.workoutCategories!.isNotEmpty) {
-            existingCategoryIds = snapshot.data!.workoutCategories!
-                .map((we) => we.categoryId)
-                .toList();
-          } else {
-            existingCategoryIds = [];
-          }
+    return FutureBuilder<Workout>(
+      future: workout,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(
+            child: Scaffold(
+              body: Text('Loading...'),
+            ),
+          );
+        }
 
-          if (snapshot.data!.workoutExercises != null &&
-              snapshot.data!.workoutExercises!.isNotEmpty) {
-            existingExerciseIds = snapshot.data!.workoutExercises!
-                .map((we) => we.exerciseId)
-                .toList();
-          } else {
-            existingExerciseIds = [];
-          }
+        final workout = snapshot.data!;
 
-          return Column(
+        if (workout.workoutCategories != null &&
+            workout.workoutCategories!.isNotEmpty) {
+          existingCategoryIds =
+              workout.workoutCategories!.map((we) => we.categoryId).toList();
+        } else {
+          existingCategoryIds = [];
+        }
+
+        if (workout.workoutExercises != null &&
+            workout.workoutExercises!.isNotEmpty) {
+          existingExerciseIds =
+              workout.workoutExercises!.map((we) => we.exerciseId).toList();
+        } else {
+          existingExerciseIds = [];
+        }
+
+        return Scaffold(
+          appBar: AppBar(
+            title:
+                Text('${workout.getDateString()} @ ${workout.getTimeString()}'),
+            actions: [
+              IconButton(
+                icon: const Icon(
+                  Icons.more_vert,
+                ),
+                onPressed: () => showMoreMenu(workout, reloadState),
+              )
+            ],
+          ),
+          body: Column(
             children: [
               const Padding(padding: EdgeInsets.all(10)),
               Row(
@@ -340,7 +449,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                 margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
                 padding: const EdgeInsets.all(10),
                 child: getWorkoutCategoriesWidget(
-                  snapshot.data!.workoutCategories,
+                  workout.workoutCategories,
                 ),
               ),
               const Padding(padding: EdgeInsets.all(10)),
@@ -372,16 +481,16 @@ class _WorkoutViewState extends State<WorkoutView> {
                     padding: const EdgeInsets.all(10),
                     child: Column(
                       children: getWorkoutExercisesWidget(
-                        snapshot.data!.workoutExercises,
+                        workout.workoutExercises,
                       ),
                     ),
                   ),
                 ),
               ),
             ],
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

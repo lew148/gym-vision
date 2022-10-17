@@ -70,7 +70,6 @@ class _WorkoutsState extends State<Workouts> {
                       MaterialPageRoute(
                         builder: (context) => WorkoutView(
                           workoutId: workout.id!,
-                          workoutDateString: workout.getDateString(),
                         ),
                       ),
                     )

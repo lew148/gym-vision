@@ -27,18 +27,20 @@ class Workout {
     }
 
     if (date.day == now.day + 1 &&
-        date.month == now.month + 1 &&
-        date.year == now.year + 1) {
+        date.month == now.month &&
+        date.year == now.year) {
       return 'Tomorrow';
     }
 
     if (date.day == now.day - 1 &&
-        date.month == now.month - 1 &&
-        date.year == now.year - 1) {
+        date.month == now.month &&
+        date.year == now.year) {
       return 'Yesterday';
     }
 
-    return DateFormat('EEEE, d MMM').format(date);
+    return date.year == now.year
+        ? DateFormat('EEEE, d MMM').format(date)
+        : DateFormat('EEEE, d MMM yyyy').format(date);
   }
 
   bool isSameDayAs(DateTime otherDate) =>
