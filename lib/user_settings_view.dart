@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/user_settings.dart';
 import 'package:gymvision/enums.dart';
 import 'db/helpers/user_settings_helper.dart';
+import 'globals.dart';
 
 class UserSettingsView extends StatefulWidget {
   const UserSettingsView({super.key});
@@ -81,7 +82,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                   ],
                 ),
                 const Padding(padding: EdgeInsets.all(20)),
-                const Center(child: Text('V 1.0.0.3')),
+                Center(child: Text(appVersion)),
               ],
             );
           },
