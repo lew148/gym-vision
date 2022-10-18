@@ -65,15 +65,7 @@ class ExercisesHelper {
 
   Future<void> insertExercise(Exercise exercise) async {
     final db = await DatabaseHelper().getDb();
-
-    final count = Sqflite.firstIntValue(await db.rawQuery('''
-      SELECT COUNT(name)
-      FROM exercises
-      WHERE name = '${exercise.name}';
-    '''));
-
-    if (count != null && count > 0) throw Exception('Exercise with this name already exists.');
-
+    exerciseIsValidAndUnique(db, exercise);
     await db.insert(
       'exercises',
       exercise.toMap(),
@@ -92,11 +84,26 @@ class ExercisesHelper {
 
   Future<void> updateExercise(Exercise exercise) async {
     final db = await DatabaseHelper().getDb();
+    await exerciseIsValidAndUnique(db, exercise);
     await db.update(
       'exercises',
       exercise.toMap(),
       where: 'id = ?',
       whereArgs: [exercise.id],
     );
+  }
+
+  exerciseIsValidAndUnique(Database db, Exercise exercise) async {
+    if (exercise.name.isEmpty) throw Exception('Exercise must have a name.');
+
+    final numWithSameName = Sqflite.firstIntValue(await db.rawQuery('''
+      SELECT COUNT(name)
+      FROM exercises
+      WHERE name = '${exercise.name}';
+    '''));
+
+    if (numWithSameName != null && numWithSameName > 0) {
+      throw Exception('Exercise with this name already exists.');
+    }
   }
 }

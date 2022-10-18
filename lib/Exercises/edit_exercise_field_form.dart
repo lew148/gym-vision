@@ -61,6 +61,8 @@ class _EditExerciseFieldFormState extends State<EditExerciseFieldForm> {
     }
 
     void onSubmit() async {
+      bool doUpdate = true;
+
       if (formKey.currentState!.validate()) {
         Navigator.pop(context);
 
@@ -68,29 +70,60 @@ class _EditExerciseFieldFormState extends State<EditExerciseFieldForm> {
           switch (widget.editableField) {
             case ExerciseEditableField.name:
               {
+                if (widget.exercise.name == fieldController.text) {
+                  doUpdate = false;
+                  break;
+                }
+
                 widget.exercise.name = fieldController.text;
                 break;
               }
             case ExerciseEditableField.weight:
               {
-                widget.exercise.weight =
-                    double.parse(getNumberOrDefault(fieldController.text));
+                final newValue = double.parse(
+                    getNumberStringOrDefault(fieldController.text));
+
+                if (widget.exercise.weight == newValue) {
+                  doUpdate = false;
+                  break;
+                }
+
+                widget.exercise.weight = newValue;
                 break;
               }
             case ExerciseEditableField.max:
               {
-                widget.exercise.max =
-                    double.parse(getNumberOrDefault(fieldController.text));
+                final newValue = double.parse(
+                    getNumberStringOrDefault(fieldController.text));
+
+                if (widget.exercise.max == newValue) {
+                  doUpdate = false;
+                  break;
+                }
+
+                widget.exercise.max = newValue;
                 break;
               }
             case ExerciseEditableField.reps:
               {
-                widget.exercise.reps =
-                    int.parse(getNumberOrDefault(fieldController.text));
+                final newValue = int.tryParse(
+                    getNumberStringOrDefault(fieldController.text));
+
+                if (newValue == null) {
+                  throw Exception('Inputted reps is not a valid integer');
+                }
+
+                if (widget.exercise.reps == newValue) {
+                  doUpdate = false;
+                  break;
+                }
+
+                widget.exercise.reps = newValue;
                 break;
               }
           }
 
+          if (!doUpdate) return;
           await ExercisesHelper().updateExercise(widget.exercise);
         } catch (ex) {
           ScaffoldMessenger.of(context).showSnackBar(

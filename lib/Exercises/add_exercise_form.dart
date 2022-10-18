@@ -33,9 +33,10 @@ class _AddExerciseFormState extends State<AddExerciseForm> {
             .insertExercise(Exercise(
               categoryId: widget.categoryId,
               name: nameController.text,
-              weight: double.parse(getNumberOrDefault(weightController.text)),
+              weight:
+                  double.parse(getNumberStringOrDefault(weightController.text)),
               max: 0, // to set in edit
-              reps: int.parse(getNumberOrDefault(repsController.text)),
+              reps: int.parse(getNumberStringOrDefault(repsController.text)),
               isSingle: isSingleValue,
             ))
             .then((value) => ScaffoldMessenger.of(context).showSnackBar(

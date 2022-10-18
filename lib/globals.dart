@@ -1,1 +1,1 @@
-getNumberOrDefault(String value) => value == '' ? '0' : value;
+getNumberStringOrDefault(String value) => value == '' ? '0' : value;
