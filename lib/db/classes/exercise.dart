@@ -40,8 +40,6 @@ class Exercise {
     return '${getMaxAsString()}kg';
   }
 
-  String getIsSingleString() => isSingle ? 'Yes' : 'No';
-
   Map<String, dynamic> toMap() => {
         'id': id,
         'categoryId': categoryId,

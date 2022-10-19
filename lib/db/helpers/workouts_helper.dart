@@ -167,6 +167,36 @@ class WorkoutsHelper {
         .toList();
   }
 
+  static Future<List<WorkoutExercise>> getWorkoutExercisesForExercise(
+      int exerciseId) async {
+    final db = await DatabaseHelper().getDb();
+    final List<Map<String, dynamic>> maps = await db.rawQuery('''
+      SELECT
+        workout_exercises.id,
+        workout_exercises.sets,
+        workout_exercises.exerciseId,
+        workouts.id AS workoutId,
+        workouts.date
+      FROM workout_exercises
+      LEFT JOIN workouts ON workout_exercises.workoutId = workouts.id
+      WHERE workout_exercises.exerciseId = $exerciseId;
+    ''');
+
+    return List.generate(
+      maps.length,
+      (i) => WorkoutExercise(
+        id: maps[i]['id'],
+        workoutId: maps[i]['workoutId'],
+        exerciseId: exerciseId,
+        sets: maps[i]['sets'],
+        workout: Workout(
+          id: maps[i]['workoutId'],
+          date: DateTime.parse(maps[i]['date']),
+        ),
+      ),
+    );
+  }
+
   static Future<int> insertWorkout(Workout workout) async {
     final db = await DatabaseHelper().getDb();
     final workoutId = await db.insert(

@@ -1,4 +1,5 @@
 import 'package:gymvision/db/classes/exercise.dart';
+import 'package:gymvision/db/classes/workout.dart';
 
 class WorkoutExercise {
   int? id;
@@ -6,6 +7,7 @@ class WorkoutExercise {
   final int exerciseId;
   int? sets;
 
+  Workout? workout;
   Exercise? exercise;
 
   WorkoutExercise({
@@ -13,6 +15,7 @@ class WorkoutExercise {
     required this.workoutId,
     required this.exerciseId,
     this.sets,
+    this.workout,
     this.exercise,
   });
 
