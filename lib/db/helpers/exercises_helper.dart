@@ -99,7 +99,8 @@ class ExercisesHelper {
     final numWithSameName = Sqflite.firstIntValue(await db.rawQuery('''
       SELECT COUNT(name)
       FROM exercises
-      WHERE name = '${exercise.name}';
+      WHERE lower(name) = lower('${exercise.name}')
+      AND id is not ${exercise.id};
     '''));
 
     if (numWithSameName != null && numWithSameName > 0) {

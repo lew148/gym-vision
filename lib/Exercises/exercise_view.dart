@@ -67,7 +67,7 @@ class _ExerciseViewState extends State<ExerciseView> {
               exercise.getIsSingleString(),
               () async {
                 exercise.isSingle = !exercise.isSingle;
-                ExercisesHelper().updateExercise(exercise);
+                await ExercisesHelper().updateExercise(exercise);
                 reloadState();
               },
             ),
