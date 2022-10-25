@@ -43,7 +43,7 @@ class ExercisesHelper {
     );
   }
 
-  Future<Exercise> getExercise(int id) async {
+  static Future<Exercise> getExercise(int id) async {
     final db = await DatabaseHelper().getDb();
     final List<Map<String, dynamic>> maps = await db.query(
       'exercises',
@@ -73,7 +73,7 @@ class ExercisesHelper {
     );
   }
 
-  Future<void> deleteExercise(int id) async {
+  static Future<void> deleteExercise(int id) async {
     final db = await DatabaseHelper().getDb();
     await db.delete(
       'exercises',

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/workout_category.dart';
+import 'package:gymvision/shared/ui_helper.dart';
 import 'package:gymvision/workouts/workout_view.dart';
 
 import '../db/classes/workout.dart';
@@ -165,7 +166,7 @@ class _WorkoutsState extends State<Workouts> {
 
   @override
   Widget build(BuildContext context) {
-    final Future<List<Workout>> workouts = WorkoutsHelper().getWorkouts();
+    final Future<List<Workout>> workouts = WorkoutsHelper.getWorkouts();
 
     return Container(
       padding: const EdgeInsets.all(10),
@@ -178,22 +179,7 @@ class _WorkoutsState extends State<Workouts> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Workouts',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.shadow,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              getSectionTitle(context, 'Workouts'),
               OutlinedButton(
                 onPressed: onAddWorkoutPress,
                 child: const Icon(

@@ -6,6 +6,8 @@ class WorkoutExercise {
   final int workoutId;
   final int exerciseId;
   int? sets;
+  double? weight;
+  int? reps;
 
   Workout? workout;
   Exercise? exercise;
@@ -15,6 +17,8 @@ class WorkoutExercise {
     required this.workoutId,
     required this.exerciseId,
     this.sets,
+    this.weight,
+    this.reps,
     this.workout,
     this.exercise,
   });
@@ -23,6 +27,25 @@ class WorkoutExercise {
         'id': id,
         'workoutId': workoutId,
         'exerciseId': exerciseId,
-        'sets': sets
+        'sets': sets,
+        'weight': weight,
+        'reps': reps,
       };
+
+  String getWeightAsString() {
+    if (weight == null) return '0';
+    return weight! % 1 == 0 ? weight!.toStringAsFixed(0) : weight!.toStringAsFixed(2);
+  }
+
+  String getWeightString({bool showNone = true}) {
+    if (weight == null || weight == 0) return showNone ? 'None' : '';
+    return '${getWeightAsString()}kg';
+  }
+
+  String getNumberedWeightString({bool showNone = true}) {
+    if (weight == 0) return showNone ? 'None' : '';
+    return '${exercise!.isSingle ? '' : '2 x '}${getWeightString(showNone: showNone)}';
+  }
+
+  bool hasWeight() => weight != null && weight! > 0;
 }

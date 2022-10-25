@@ -3,7 +3,7 @@ class Exercise {
   final int categoryId;
   String name;
   double weight;
-  double max;
+  double? max;
   int reps;
   bool isSingle;
 
@@ -32,11 +32,13 @@ class Exercise {
 
   bool hasWeight() => weight > 0;
 
-  String getMaxAsString() =>
-      max % 1 == 0 ? max.toStringAsFixed(0) : max.toStringAsFixed(2);
+  String getMaxAsString() {
+    if (max == null) return '0';
+    return max! % 1 == 0 ? max!.toStringAsFixed(0) : max!.toStringAsFixed(2);
+  }
 
   String getMaxString() {
-    if (max == 0) return 'None';
+    if (max == null || max == 0) return 'None';
     return '${getMaxAsString()}kg';
   }
 

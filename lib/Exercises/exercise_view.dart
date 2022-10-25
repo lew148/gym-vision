@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/exercise.dart';
-import 'package:gymvision/db/classes/workout.dart';
 import 'package:gymvision/db/classes/workout_exercise.dart';
 import 'package:gymvision/db/helpers/workouts_helper.dart';
+import 'package:gymvision/exercises/exercise_more_menu_button.dart';
 
 import '../db/helpers/exercises_helper.dart';
 import '../enums.dart';
+import '../shared/ui_helper.dart';
 import 'edit_exercise_field_form.dart';
 
 class ExerciseView extends StatefulWidget {
@@ -192,56 +193,67 @@ class _ExerciseViewState extends State<ExerciseView> {
   @override
   Widget build(BuildContext context) {
     final Future<Exercise> exercise =
-        ExercisesHelper().getExercise(widget.exerciseId);
+        ExercisesHelper.getExercise(widget.exerciseId);
     final Future<List<WorkoutExercise>> workoutExercises =
         WorkoutsHelper.getWorkoutExercisesForExercise(widget.exerciseId);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.exerciseName),
-      ),
-      body: Column(
-        children: [
-          FutureBuilder<Exercise>(
-            future: exercise,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(
-                  child: Text('Loading...'),
-                );
-              }
+    return FutureBuilder<Exercise>(
+      future: exercise,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Scaffold(
+            appBar: AppBar(),
+            body: const Center(
+              child: Text('Loading...'),
+            ),
+          );
+        }
 
-              return Container(
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(snapshot.data!.name),
+            actions: [
+              ExerciseMoreMenuButton(
+                exercise: snapshot.data!,
+                reloadState: reloadState,
+                onDelete: () => Navigator.pop(context),
+              )
+            ],
+          ),
+          body: Column(
+            children: [
+              Container(
                 margin: const EdgeInsets.fromLTRB(0, 20, 0, 20),
                 child: getExerciseViewWidget(snapshot.data!),
-              );
-            },
+              ),
+              getSectionTitle(context, 'Recent Uses'),
+              const Divider(),
+              const Padding(padding: EdgeInsets.all(5)),
+              FutureBuilder<List<WorkoutExercise>?>(
+                future: workoutExercises,
+                builder: (context, weSnapshot) {
+                  if (!weSnapshot.hasData) {
+                    return const Center(
+                      child: Text('Loading...'),
+                    );
+                  }
+
+                  if (weSnapshot.data == null || weSnapshot.data!.isEmpty) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Text('No recent uses of this exercise.'),
+                      ),
+                    );
+                  }
+
+                  return getWorkoutExercisesWidget(weSnapshot.data!);
+                },
+              )
+            ],
           ),
-          const Divider(),
-          const Padding(padding: EdgeInsets.all(5)),
-          FutureBuilder<List<WorkoutExercise>?>(
-            future: workoutExercises,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(
-                  child: Text('Loading...'),
-                );
-              }
-
-              if (snapshot.data == null || snapshot.data!.isEmpty) {
-                return const Center(
-                  child: Padding(
-                    padding: EdgeInsets.all(20),
-                    child: Text('No recent uses of this exercise.'),
-                  ),
-                );
-              }
-
-              return getWorkoutExercisesWidget(snapshot.data!);
-            },
-          )
-        ],
-      ),
+        );
+      },
     );
   }
 }

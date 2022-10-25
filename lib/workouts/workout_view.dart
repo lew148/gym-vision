@@ -1,12 +1,14 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/workout_exercise.dart';
 import 'package:gymvision/exercises/category_view.dart';
-import 'package:gymvision/exercises/exercise_view.dart';
 import 'package:gymvision/workouts/add_exercise_to_workout_form.dart';
+import 'package:gymvision/workouts/workout_exercise_widget.dart';
 
 import '../db/classes/workout.dart';
 import '../db/classes/workout_category.dart';
 import '../db/helpers/workouts_helper.dart';
+import '../shared/ui_helper.dart';
 import 'add_category_to_workout_form.dart';
 
 class WorkoutView extends StatefulWidget {
@@ -64,23 +66,6 @@ class _WorkoutViewState extends State<WorkoutView> {
             borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
       );
 
-  Widget getSectionTitle(String title) => Padding(
-        padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.shadow,
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      );
-
   void showRemoveCategoryFromWorkoutConfirm(int workoutCategoryId) {
     Widget cancelButton = TextButton(
       child: const Text("No"),
@@ -102,8 +87,10 @@ class _WorkoutViewState extends State<WorkoutView> {
         } catch (ex) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-                content: Text(
-                    'Failed to remove Category from workout: ${ex.toString()}')),
+              content: Text(
+                'Failed to remove Category from workout: ${ex.toString()}',
+              ),
+            ),
           );
         }
 
@@ -114,53 +101,8 @@ class _WorkoutViewState extends State<WorkoutView> {
     AlertDialog alert = AlertDialog(
       title: const Text("Remove Category from Workout?"),
       content: const Text(
-          "Are you sure you would like to remove this Category from this workout?"),
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-
-    showDialog(
-      context: context,
-      builder: (context) => alert,
-    );
-  }
-
-  void showRemoveExerciseFromWorkoutConfirm(int workoutExerciseId) {
-    Widget cancelButton = TextButton(
-      child: const Text("No"),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-
-    Widget continueButton = TextButton(
-      child: const Text(
-        "Yes",
-        style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+        "Are you sure you would like to remove this Category from this workout?",
       ),
-      onPressed: () async {
-        Navigator.pop(context);
-
-        try {
-          await WorkoutsHelper.removeExerciseFromWorkout(workoutExerciseId);
-        } catch (ex) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                content: Text(
-                    'Failed to remove Exercise from workout: ${ex.toString()}')),
-          );
-        }
-
-        reloadState();
-      },
-    );
-
-    AlertDialog alert = AlertDialog(
-      title: const Text("Remove Exercise from Workout?"),
-      content: const Text(
-          "Are you sure you would like to remove this Exercise from this workout?"),
       actions: [
         cancelButton,
         continueButton,
@@ -176,7 +118,7 @@ class _WorkoutViewState extends State<WorkoutView> {
   getWorkoutCategoriesWidget(List<WorkoutCategory>? workoutCategories) {
     if (workoutCategories == null || workoutCategories.isEmpty) {
       return const Center(
-        child: Text('No Category has been set yet...'),
+        child: Text('No Category set yet.'),
       );
     }
 
@@ -227,45 +169,31 @@ class _WorkoutViewState extends State<WorkoutView> {
     if (workoutExercises == null || workoutExercises.isEmpty) {
       return const [
         Center(
-          child: Text('No exercises here...'),
+          child: Text('No Exercises added yet.'),
         ),
       ];
     }
 
-    return workoutExercises
-        .map(
-          (we) => Card(
-            child: InkWell(
-              onLongPress: () => showRemoveExerciseFromWorkoutConfirm(we.id!),
-              onTap: () => Navigator.of(context)
-                  .push(
-                    MaterialPageRoute(
-                      builder: (context) => ExerciseView(
-                        exerciseId: we.exerciseId,
-                        exerciseName: we.exercise!.name,
-                      ),
-                    ),
-                  )
-                  .then((value) => setState(() {})),
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      we.exercise!.name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text('${we.sets} sets'),
-                  ],
-                ),
-              ),
-            ),
+    final Map<int, List<WorkoutExercise>> groupedWorkoutExercises =
+        groupBy<WorkoutExercise, int>(
+      workoutExercises,
+      (x) => x.exerciseId,
+    );
+
+    List<Widget> weWidgets = [];
+    groupedWorkoutExercises.forEach((key, value) {
+      weWidgets.add(
+        Padding(
+          padding: const EdgeInsets.only(top: 5, bottom: 5),
+          child: WorkoutExerciseWidget(
+            workoutExercises: value,
+            reloadState: reloadState,
           ),
-        )
-        .toList();
+        ),
+      );
+    });
+
+    return weWidgets;
   }
 
   void showEditDate(Workout workout, void Function() reloadState) async {
@@ -426,7 +354,7 @@ class _WorkoutViewState extends State<WorkoutView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  getSectionTitle('Categories'),
+                  getSectionTitle(context, 'Categories'),
                   Container(
                     margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                     child: Row(
@@ -456,7 +384,7 @@ class _WorkoutViewState extends State<WorkoutView> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  getSectionTitle('Exercises'),
+                  getSectionTitle(context, 'Exercises'),
                   Container(
                     margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                     child: Row(

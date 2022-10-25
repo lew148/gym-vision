@@ -33,6 +33,12 @@ class MigrationsHelper {
           VALUES
             (1, "system");
       ''',
+    6: '''
+        ALTER TABLE workout_exercises ADD COLUMN weight REAL;
+      ''',
+    7: '''
+        ALTER TABLE workout_exercises ADD COLUMN reps INTEGER;
+      ''',
   };
 
   static migrationsQty() => migrationScripts.length;

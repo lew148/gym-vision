@@ -10,7 +10,7 @@ import '../classes/workout.dart';
 import '../db.dart';
 
 class WorkoutsHelper {
-  Future<List<Workout>> getWorkouts() async {
+  static Future<List<Workout>> getWorkouts() async {
     final db = await DatabaseHelper().getDb();
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
       SELECT
@@ -42,7 +42,7 @@ class WorkoutsHelper {
     return workouts;
   }
 
-  List<WorkoutCategory>? processWorkoutCategories(
+  static List<WorkoutCategory>? processWorkoutCategories(
       List<Map<String, dynamic>> list) {
     if (list.isEmpty) return null;
 
@@ -125,19 +125,20 @@ class WorkoutsHelper {
         .toList();
   }
 
-  static Future<List<WorkoutExercise>?> getWorkoutExercisesForWorkout(
-      int workoutId) async {
+  static Future<List<WorkoutExercise>?> getWorkoutExercisesForWorkout(int workoutId) async {
     final db = await DatabaseHelper().getDb();
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
       SELECT
         workout_exercises.id,
+        workout_exercises.weight,
+        workout_exercises.reps,
         workout_exercises.sets,
         workout_exercises.exerciseId,
         exercises.categoryId,
         exercises.name,
-        exercises.weight,
+        exercises.weight AS exerciseWeight,
         exercises.max,
-        exercises.reps,
+        exercises.reps AS exerciseReps,
         exercises.isSingle
       FROM workout_exercises
       LEFT JOIN exercises ON workout_exercises.exerciseId = exercises.id
@@ -152,14 +153,16 @@ class WorkoutsHelper {
             id: map['id'],
             workoutId: workoutId,
             exerciseId: map['exerciseId'],
+            weight: map['weight'],
+            reps: map['reps'],
             sets: map['sets'],
             exercise: Exercise(
               id: map['exerciseId'],
               categoryId: map['categoryId'],
               name: map['name'],
-              weight: map['weight'],
+              weight: map['exerciseWeight'],
               max: map['max'],
-              reps: map['reps'],
+              reps: map['exerciseReps'],
               isSingle: map['isSingle'] == 1,
             ),
           ),
@@ -167,8 +170,7 @@ class WorkoutsHelper {
         .toList();
   }
 
-  static Future<List<WorkoutExercise>> getWorkoutExercisesForExercise(
-      int exerciseId) async {
+  static Future<List<WorkoutExercise>> getWorkoutExercisesForExercise(int exerciseId) async {
     final db = await DatabaseHelper().getDb();
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
       SELECT
@@ -179,7 +181,8 @@ class WorkoutsHelper {
         workouts.date
       FROM workout_exercises
       LEFT JOIN workouts ON workout_exercises.workoutId = workouts.id
-      WHERE workout_exercises.exerciseId = $exerciseId;
+      WHERE workout_exercises.exerciseId = $exerciseId
+      ORDER BY workouts.date DESC;
     ''');
 
     return List.generate(
@@ -240,7 +243,12 @@ class WorkoutsHelper {
   }
 
   static addExerciseToWorkouts(
-      int exerciseId, List<int> workoutIds, int sets) async {
+    int exerciseId,
+    List<int> workoutIds,
+    double weight,
+    int reps,
+    int sets,
+  ) async {
     final db = await DatabaseHelper().getDb();
     for (var wId in workoutIds) {
       await db.insert(
@@ -249,6 +257,8 @@ class WorkoutsHelper {
           workoutId: wId,
           exerciseId: exerciseId,
           sets: sets,
+          weight: weight,
+          reps: reps,
         ).toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );

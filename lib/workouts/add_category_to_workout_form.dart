@@ -110,7 +110,7 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
                       },
                       closeButton: (selectedItems) {
                         return (selectedItems.isNotEmpty
-                            ? "Select ${selectedItems.length == 1 ? '"${items[selectedItems.first].value}"' : '(${selectedItems.length})'}"
+                            ? "Select${selectedItems.length == 1 ? '' : ' (${selectedItems.length})'}"
                             : "Cancel");
                       },
                       doneButton: '',
