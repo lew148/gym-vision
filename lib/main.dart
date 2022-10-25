@@ -90,7 +90,9 @@ class _MyHomePageState extends State<MyHomePage> {
               Icons.settings,
             ),
             onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const UserSettingsView()),
+              MaterialPageRoute(
+                builder: (context) => const UserSettingsView(),
+              ),
             ),
           )
         ],

@@ -1,5 +1,6 @@
 import 'package:gymvision/db/classes/workout_category.dart';
 import 'package:gymvision/db/classes/workout_exercise.dart';
+import 'package:gymvision/globals.dart';
 import 'package:intl/intl.dart';
 
 class Workout {
@@ -19,40 +20,26 @@ class Workout {
   Map<String, dynamic> toMap() => {'id': id, 'date': date.toString()};
 
   String getDateString() {
-    final now = DateTime.now();
-    if (date.day == now.day &&
-        date.month == now.month &&
-        date.year == now.year) {
+    final today = DateTime.now();
+    if (areSameDay(today, date)) {
       return 'Today';
     }
 
-    if (date.day == now.day + 1 &&
-        date.month == now.month &&
-        date.year == now.year) {
+    if (date.day == today.day + 1 &&
+        date.month == today.month &&
+        date.year == today.year) {
       return 'Tomorrow';
     }
 
-    if (date.day == now.day - 1 &&
-        date.month == now.month &&
-        date.year == now.year) {
+    if (date.day == today.day - 1 &&
+        date.month == today.month &&
+        date.year == today.year) {
       return 'Yesterday';
     }
 
-    return date.year == now.year
+    return date.year == today.year
         ? DateFormat('EEEE, d MMM').format(date)
         : DateFormat('EEEE, d MMM yyyy').format(date);
-  }
-
-  bool isSameDayAs(DateTime otherDate) =>
-      date.day == otherDate.day &&
-      date.month == otherDate.month &&
-      date.year == otherDate.year;
-
-  bool isToday() {
-    final now = DateTime.now();
-    return date.day == now.day &&
-        date.month == now.month &&
-        date.year == now.year;
   }
 
   String getTimeString() => DateFormat('Hm').format(date);

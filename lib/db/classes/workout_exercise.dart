@@ -34,7 +34,9 @@ class WorkoutExercise {
 
   String getWeightAsString() {
     if (weight == null) return '0';
-    return weight! % 1 == 0 ? weight!.toStringAsFixed(0) : weight!.toStringAsFixed(2);
+    return weight! % 1 == 0
+        ? weight!.toStringAsFixed(0)
+        : weight!.toStringAsFixed(2);
   }
 
   String getWeightString({bool showNone = true}) {
@@ -48,4 +50,7 @@ class WorkoutExercise {
   }
 
   bool hasWeight() => weight != null && weight! > 0;
+
+  bool thisOrExerciseHasWeight() =>
+      hasWeight() || exercise != null && exercise!.hasWeight();
 }

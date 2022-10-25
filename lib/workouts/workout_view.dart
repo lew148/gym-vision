@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/workout_exercise.dart';
 import 'package:gymvision/exercises/category_view.dart';
-import 'package:gymvision/workouts/add_exercise_to_workout_form.dart';
 import 'package:gymvision/workouts/workout_exercise_widget.dart';
 
 import '../db/classes/workout.dart';
@@ -22,27 +21,27 @@ class WorkoutView extends StatefulWidget {
 class _WorkoutViewState extends State<WorkoutView> {
   reloadState() => setState(() {});
 
-  void onAddExerciseClick(List<int> existingExerciseIds) =>
-      showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) => Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: AddExerciseToWorkoutForm(
-                workoutId: widget.workoutId,
-                existingExerciseIds: existingExerciseIds,
-                reloadState: reloadState,
-              ),
-            ),
-          ],
-        ),
-        isScrollControlled: true,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
-      );
+  // void onAddExerciseClick(List<int> existingExerciseIds) => 
+      // showModalBottomSheet(
+      //   context: context,
+      //   builder: (BuildContext context) => Column(
+      //     mainAxisSize: MainAxisSize.min,
+      //     children: [
+      //       Padding(
+      //         padding: EdgeInsets.only(
+      //             bottom: MediaQuery.of(context).viewInsets.bottom),
+      //         child: AddExerciseToWorkoutForm(
+      //           workoutId: widget.workoutId,
+      //           existingExerciseIds: existingExerciseIds,
+      //           reloadState: reloadState,
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      //   isScrollControlled: true,
+      //   shape: const RoundedRectangleBorder(
+      //       borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+      // );
 
   void onAddCategoryClick(List<int> existingCategoryIds) =>
       showModalBottomSheet(
@@ -385,21 +384,21 @@ class _WorkoutViewState extends State<WorkoutView> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   getSectionTitle(context, 'Exercises'),
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                    child: Row(
-                      children: [
-                        OutlinedButton(
-                          onPressed: () =>
-                              onAddExerciseClick(existingExerciseIds),
-                          child: const Icon(
-                            Icons.add,
-                            size: 25,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // Container(
+                  //   margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  //   child: Row(
+                  //     children: [
+                  //       OutlinedButton(
+                  //         onPressed: () =>
+                  //             onAddExerciseClick(existingExerciseIds),
+                  //         child: const Icon(
+                  //           Icons.add,
+                  //           size: 25,
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                 ],
               ),
               const Divider(),

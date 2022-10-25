@@ -5,6 +5,7 @@ import 'package:gymvision/workouts/workout_view.dart';
 
 import '../db/classes/workout.dart';
 import '../db/helpers/workouts_helper.dart';
+import 'flavour_text_card.dart';
 
 class Workouts extends StatefulWidget {
   const Workouts({super.key});
@@ -172,8 +173,9 @@ class _WorkoutsState extends State<Workouts> {
       padding: const EdgeInsets.all(10),
       child: Column(
         children: [
-          // const FlavourTextCard(),
-          // const Padding(padding: EdgeInsets.all(5)),
+          // flavour text
+          const FlavourTextCard(),
+          const Padding(padding: EdgeInsets.all(5)),
 
           // workouts
           Row(

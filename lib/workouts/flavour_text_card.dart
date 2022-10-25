@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gymvision/db/classes/flavour_text.dart';
 import 'package:gymvision/db/helpers/flavour_text_helper.dart';
+
+import '../db/classes/flavour_text_schedule.dart';
 
 class FlavourTextCard extends StatefulWidget {
   const FlavourTextCard({super.key});
@@ -10,52 +11,66 @@ class FlavourTextCard extends StatefulWidget {
 }
 
 class _FlavourTextCardState extends State<FlavourTextCard> {
-  final Future<FlavourText> flavourText =
-      FlavourTextHelper().getRandomFlavourText();
-  var isHidden = false;
+  final Future<FlavourTextSchedule> flavourTextSchedule =
+      FlavourTextHelper.getTodaysFlavourTextSchedule();
+
+  void onDismissTap(FlavourTextSchedule fts) async {
+    try {
+      await FlavourTextHelper.setFlavourTextScheduleDismissed(fts);
+    } catch (ex) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Failed to dismiss Flavour Text: $ex',
+          ),
+        ),
+      );
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
-    return isHidden
-        ? const SizedBox.shrink()
-        : FutureBuilder<FlavourText>(
-            future: flavourText,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const SizedBox.shrink();
-              }
+    return FutureBuilder<FlavourTextSchedule>(
+      future: flavourTextSchedule,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData || snapshot.data!.dismissed) {
+          return const SizedBox.shrink();
+        }
 
-              return Row(
-                children: [
-                  Expanded(
-                    child: Card(
-                      color: Theme.of(context).colorScheme.secondary,
-                      child: Container(
-                        padding: const EdgeInsets.fromLTRB(20, 10, 5, 10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              snapshot.data!.message,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: () => setState(() {
-                                isHidden = true;
-                              }),
-                              icon: const Icon(Icons.close),
-                            ),
-                          ],
+        return Row(
+          children: [
+            Expanded(
+              child: Card(
+                color: Theme.of(context).colorScheme.secondary,
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 5, 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        snapshot.data!.flavourText!.message,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w400,
+                          color: Theme.of(context).colorScheme.onSecondary,
                         ),
                       ),
-                    ),
+                      IconButton(
+                        onPressed: () => onDismissTap(snapshot.data!),
+                        icon: Icon(
+                          Icons.close,
+                          color: Theme.of(context).colorScheme.onSecondary,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              );
-            },
-          );
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

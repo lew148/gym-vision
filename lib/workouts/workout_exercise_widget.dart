@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/workout_exercise.dart';
 import 'package:gymvision/exercises/add_exercise_to_workouts_form.dart';
+import 'package:gymvision/workouts/edit_workout_exercise_form.dart';
 
 import '../db/classes/exercise.dart';
 import '../db/helpers/workouts_helper.dart';
@@ -71,6 +72,28 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     );
   }
 
+  void onEditWorkoutExerciseTap(WorkoutExercise we) => showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: EditWorkoutExerciseForm(
+                workoutExercise: we,
+                reloadState: widget.reloadState,
+              ),
+            ),
+          ],
+        ),
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+        ),
+      );
+
   void showMoreMenu(WorkoutExercise we) async {
     showModalBottomSheet(
       context: context,
@@ -83,23 +106,15 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
               padding: const EdgeInsets.only(top: 10, bottom: 10),
               child: InkWell(
                 onTap: () {
-                  Navigator.of(context)
-                      .push(
-                        MaterialPageRoute(
-                          builder: (context) => ExerciseView(
-                            exerciseId: we.exerciseId,
-                            exerciseName: we.exercise!.name,
-                          ),
-                        ),
-                      )
-                      .then((value) => widget.reloadState());
+                  Navigator.pop(context);
+                  onEditWorkoutExerciseTap(we);
                 },
                 child: Row(
                   children: const [
-                    Icon(Icons.visibility),
+                    Icon(Icons.edit),
                     Padding(padding: EdgeInsets.all(5)),
                     Text(
-                      'View Exercise',
+                      'Edit Workout Exercise',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w400,
@@ -148,9 +163,14 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       builder: (BuildContext context) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          AddExerciseToWorkoutsForm(
-            exercise: exercise,
-            workoutId: workoutId,
+          Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom,
+            ),
+            child: AddExerciseToWorkoutsForm(
+              exercise: exercise,
+              workoutId: workoutId,
+            ),
           ),
         ],
       ),
@@ -166,50 +186,70 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         .map(
           (we) => Padding(
             padding: const EdgeInsets.only(right: 10, left: 10),
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 3,
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.fitness_center,
-                            size: 15,
-                          ),
-                          const Padding(padding: EdgeInsets.all(5)),
-                          Text(we.getNumberedWeightString(showNone: false)),
-                        ],
+            child: InkWell(
+              onTap: () => Navigator.of(context)
+                  .push(
+                    MaterialPageRoute(
+                      builder: (context) => ExerciseView(
+                        exerciseId: we.exerciseId,
+                        exerciseName: we.exercise!.name,
                       ),
                     ),
-                    Expanded(
-                      flex: 3,
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.repeat,
-                            size: 15,
-                          ),
-                          const Padding(padding: EdgeInsets.all(5)),
-                          Text('${we.reps} reps'),
-                        ],
+                  )
+                  .then((value) => widget.reloadState()),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: we.thisOrExerciseHasWeight()
+                            ? Row(
+                                children: [
+                                  const Icon(
+                                    Icons.fitness_center,
+                                    size: 15,
+                                  ),
+                                  const Padding(padding: EdgeInsets.all(5)),
+                                  Text(we.hasWeight() ? we.getNumberedWeightString(
+                                      showNone: false) : we.exercise!.getNumberedWeightString(showNone: false)),
+                                ],
+                              )
+                            : const Center(
+                                child: Text(
+                                  '-',
+                                  style: TextStyle(fontSize: 30),
+                                ),
+                              ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 3,
-                      child: Text('${we.sets} sets'),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: IconButton(
-                        splashRadius: 20,
-                        onPressed: () => showMoreMenu(we),
-                        icon: const Icon(Icons.more_vert),
+                      Expanded(
+                        flex: 3,
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.repeat,
+                              size: 15,
+                            ),
+                            const Padding(padding: EdgeInsets.all(5)),
+                            Text('${we.reps ?? we.exercise!.reps} reps'),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                      Expanded(
+                        flex: 3,
+                        child: Text('${we.sets} sets'),
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: IconButton(
+                          splashRadius: 20,
+                          onPressed: () => showMoreMenu(we),
+                          icon: const Icon(Icons.more_vert),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

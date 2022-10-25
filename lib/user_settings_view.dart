@@ -2,6 +2,7 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/user_settings.dart';
+import 'package:gymvision/db/helpers/flavour_text_helper.dart';
 import 'package:gymvision/enums.dart';
 import 'db/helpers/user_settings_helper.dart';
 import 'globals.dart';
@@ -36,6 +37,22 @@ class _UserSettingsViewState extends State<UserSettingsView> {
 
             return Column(
               children: [
+
+                // dev buttons
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () async {
+                        await FlavourTextHelper
+                            .setRecentFlavourTextScheduleNotDismissed();
+                      },
+                      child: const Text('Un-Dismiss Flavour Text'),
+                    ),
+                  ],
+                ),
+                const Padding(padding: EdgeInsets.all(5)),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

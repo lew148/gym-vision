@@ -39,6 +39,14 @@ class MigrationsHelper {
     7: '''
         ALTER TABLE workout_exercises ADD COLUMN reps INTEGER;
       ''',
+    8: '''
+        CREATE TABLE flavour_text_schedules(
+          id INTEGER PRIMARY KEY,
+          flavourTextId INTEGER NOT NULL,
+          date TEXT NOT NULL,
+          dismissed INTEGER NOT NULL DEFAULT 0
+        );
+      ''',
   };
 
   static migrationsQty() => migrationScripts.length;

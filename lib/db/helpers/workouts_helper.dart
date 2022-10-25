@@ -94,7 +94,8 @@ class WorkoutsHelper {
   }
 
   static Future<List<WorkoutCategory>?> getWorkoutCategoriesForWorkout(
-      int workoutId) async {
+    int workoutId,
+  ) async {
     final db = await DatabaseHelper().getDb();
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
       SELECT
@@ -125,7 +126,9 @@ class WorkoutsHelper {
         .toList();
   }
 
-  static Future<List<WorkoutExercise>?> getWorkoutExercisesForWorkout(int workoutId) async {
+  static Future<List<WorkoutExercise>?> getWorkoutExercisesForWorkout(
+    int workoutId,
+  ) async {
     final db = await DatabaseHelper().getDb();
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
       SELECT
@@ -170,7 +173,9 @@ class WorkoutsHelper {
         .toList();
   }
 
-  static Future<List<WorkoutExercise>> getWorkoutExercisesForExercise(int exerciseId) async {
+  static Future<List<WorkoutExercise>> getWorkoutExercisesForExercise(
+    int exerciseId,
+  ) async {
     final db = await DatabaseHelper().getDb();
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
       SELECT
@@ -263,6 +268,16 @@ class WorkoutsHelper {
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
     }
+  }
+
+  static updateWorkoutExercise(WorkoutExercise we) async {
+    final db = await DatabaseHelper().getDb();
+    await db.update(
+      'workout_exercises',
+      we.toMap(),
+      where: 'id = ?',
+      whereArgs: [we.id],
+    );
   }
 
   static removeCategoryFromWorkout(int workoutCategoryId) async {

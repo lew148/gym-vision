@@ -23,7 +23,8 @@ class CategoriesHelper {
   }
 
   Future<List<Category>> getAllCategoriesExcludingIds(
-      List<int> excludedIds) async {
+    List<int> excludedIds,
+  ) async {
     return await getCategories(
       where: 'id NOT IN (${List.filled(excludedIds.length, '?').join(',')})',
       whereArgs: excludedIds,

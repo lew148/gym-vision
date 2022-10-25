@@ -56,6 +56,7 @@ class _AddExerciseToWorkoutsFormState extends State<AddExerciseToWorkoutsForm> {
 
       if (formKey.currentState!.validate()) {
         Navigator.pop(context);
+
         try {
           await WorkoutsHelper.addExerciseToWorkouts(
             widget.exercise.id!,
