@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/helpers/exercises_helper.dart';
 import 'package:gymvision/enums.dart';
-import '../db/classes/exercise.dart';
-import '../globals.dart';
+import '../../db/classes/exercise.dart';
+import '../../globals.dart';
 
 class EditExerciseFieldForm extends StatefulWidget {
   final Exercise exercise;
@@ -28,7 +28,9 @@ class _EditExerciseFieldFormState extends State<EditExerciseFieldForm> {
   @override
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
-    final fieldController = TextEditingController(text: widget.currentValue);
+    final fieldController = TextEditingController(
+      text: widget.currentValue == '0' ? null : widget.currentValue,
+    );
 
     Widget textField() => TextFormField(
           controller: fieldController,
@@ -147,7 +149,20 @@ class _EditExerciseFieldFormState extends State<EditExerciseFieldForm> {
             key: formKey,
             child: Column(
               children: [
-                getField(),
+                Row(
+                  children: [
+                    Expanded(
+                      child: getField(),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 10, 5, 0),
+                      child: OutlinedButton(
+                        onPressed: () => fieldController.text = '',
+                        child: const Text('None'),
+                      ),
+                    ),
+                  ],
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [

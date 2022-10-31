@@ -3,7 +3,7 @@ import 'package:gymvision/db/classes/exercise.dart';
 import 'package:gymvision/exercises/exercise_more_menu_button.dart';
 
 import '../db/helpers/exercises_helper.dart';
-import 'add_exercise_form.dart';
+import '../shared/forms/add_exercise_form.dart';
 import 'exercise_view.dart';
 
 class CategoryView extends StatefulWidget {

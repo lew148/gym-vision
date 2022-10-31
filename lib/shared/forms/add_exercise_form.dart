@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/helpers/exercises_helper.dart';
-import '../db/classes/exercise.dart';
-import '../globals.dart';
+import '../../db/classes/exercise.dart';
+import '../../globals.dart';
 
 class AddExerciseForm extends StatefulWidget {
   final int categoryId;

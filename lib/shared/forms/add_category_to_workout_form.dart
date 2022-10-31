@@ -1,39 +1,39 @@
 import 'package:flutter/material.dart';
-import 'package:gymvision/db/helpers/exercises_helper.dart';
+import 'package:gymvision/db/classes/category.dart';
 import 'package:gymvision/db/helpers/workouts_helper.dart';
 import 'package:search_choices/search_choices.dart';
 
-import '../db/classes/exercise.dart';
+import '../../db/helpers/categories_helper.dart';
 
-class AddExerciseToWorkoutForm extends StatefulWidget {
+class AddCategoryToWorkoutForm extends StatefulWidget {
   final int workoutId;
-  final List<int>? existingExerciseIds;
+  final List<int>? existingCategoryIds;
   final void Function() reloadState;
 
-  const AddExerciseToWorkoutForm({
+  const AddCategoryToWorkoutForm({
     Key? key,
     required this.workoutId,
-    required this.existingExerciseIds,
+    required this.existingCategoryIds,
     required this.reloadState,
   }) : super(key: key);
 
   @override
-  State<AddExerciseToWorkoutForm> createState() =>
-      _AddExerciseToWorkoutFormState();
+  State<AddCategoryToWorkoutForm> createState() =>
+      _AddCategoryToWorkoutFormState();
 }
 
-class _AddExerciseToWorkoutFormState extends State<AddExerciseToWorkoutForm> {
-  late Future<List<Exercise>> exercises;
+class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
+  late Future<List<Category>> categories;
 
   @override
   void initState() {
     super.initState();
-    exercises = ExercisesHelper()
-        .getAllExercisesExcludingIds(widget.existingExerciseIds!);
+    categories = CategoriesHelper()
+        .getAllCategoriesExcludingIds(widget.existingCategoryIds!);
   }
 
   final formKey = GlobalKey<FormState>();
-  List<Exercise> exercisesRef = [];
+  List<Category> categoriesRef = [];
   List<int> selectedItems = [];
   List<DropdownMenuItem> items = [];
 
@@ -42,14 +42,14 @@ class _AddExerciseToWorkoutFormState extends State<AddExerciseToWorkoutForm> {
       Navigator.pop(context);
 
       try {
-        final List<int> exerciseIdsToAdd =
-            selectedItems.map((si) => exercisesRef[si].id!).toList();
+        final List<int> categoryIdsToAdd =
+            selectedItems.map((si) => categoriesRef[si].id!).toList();
 
-        await WorkoutsHelper.addExercisesToWorkout(
-            widget.workoutId, exerciseIdsToAdd);
+        await WorkoutsHelper.addCategoriesToWorkout(
+            widget.workoutId, categoryIdsToAdd);
       } catch (ex) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to add exercises to workout: $ex')),
+          SnackBar(content: Text('Failed to add categories to workout: $ex')),
         );
       }
 
@@ -64,11 +64,11 @@ class _AddExerciseToWorkoutFormState extends State<AddExerciseToWorkoutForm> {
       child: Column(
         children: [
           const Text(
-            'Add Exercises',
+            'Add Categories',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
-          FutureBuilder<List<Exercise>>(
-            future: exercises,
+          FutureBuilder<List<Category>>(
+            future: categories,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return const Center(
@@ -78,15 +78,15 @@ class _AddExerciseToWorkoutFormState extends State<AddExerciseToWorkoutForm> {
 
               if (snapshot.data!.isEmpty) {
                 return const Center(
-                  child: Text('No Exercises here :('),
+                  child: Text('No Categories here :('),
                 );
               }
 
-              exercisesRef = snapshot.data!;
+              categoriesRef = snapshot.data!;
               items = snapshot.data!
-                  .map((e) => DropdownMenuItem(
-                        value: e.name,
-                        child: Text(e.name),
+                  .map((c) => DropdownMenuItem(
+                        value: c.name,
+                        child: Text(c.getDisplayName()),
                       ))
                   .toList();
 
@@ -95,12 +95,12 @@ class _AddExerciseToWorkoutFormState extends State<AddExerciseToWorkoutForm> {
                 child: Column(
                   children: [
                     SearchChoices.multiple(
-                      items: items,
                       autofocus: false,
+                      items: items,
                       selectedItems: selectedItems,
                       hint: const Padding(
                         padding: EdgeInsets.all(12.0),
-                        child: Text("Select Exercises"),
+                        child: Text("Select Categories"),
                       ),
                       searchHint: '',
                       onChanged: (value) {

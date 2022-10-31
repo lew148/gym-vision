@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/workout_exercise.dart';
-import 'package:gymvision/exercises/add_exercise_to_workouts_form.dart';
-import 'package:gymvision/workouts/edit_workout_exercise_form.dart';
+import 'package:gymvision/shared/forms/add_exercise_to_workouts_form.dart';
+import 'package:gymvision/shared/forms/edit_workout_exercise_form.dart';
 
 import '../db/classes/exercise.dart';
 import '../db/helpers/workouts_helper.dart';
@@ -10,11 +10,13 @@ import '../exercises/exercise_view.dart';
 class WorkoutExerciseWidget extends StatefulWidget {
   final List<WorkoutExercise> workoutExercises;
   final Function() reloadState;
+  final bool displayOnly;
 
   const WorkoutExerciseWidget({
     super.key,
     required this.workoutExercises,
     required this.reloadState,
+    this.displayOnly = false,
   });
 
   @override
@@ -59,7 +61,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     AlertDialog alert = AlertDialog(
       title: const Text("Remove Exercise from Workout?"),
       content: const Text(
-          "Are you sure you would like to remove this Exercise from this workout?"),
+        "Are you sure you would like to remove this Exercise from this workout?",
+      ),
       actions: [
         cancelButton,
         continueButton,
@@ -94,6 +97,28 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         ),
       );
 
+  void onSplitASetTap(WorkoutExercise we) async {
+    try {
+      if (we.sets == null || we.sets! <= 0) {
+        throw Exception('Cannot Split a Workout Exercise with no Sets');
+      }
+
+      if (we.sets == 1) {
+        throw Exception('Cannot Split a Workout Exercise with only 1 Set');
+      }
+
+      await WorkoutsHelper.splitAWorkoutExerciseSet(we);
+    } catch (ex) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(ex.toString()),
+        ),
+      );
+    }
+
+    widget.reloadState();
+  }
+
   void showMoreMenu(WorkoutExercise we) async {
     showModalBottomSheet(
       context: context,
@@ -115,6 +140,29 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                     Padding(padding: EdgeInsets.all(5)),
                     Text(
                       'Edit Workout Exercise',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
+              child: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                  onSplitASetTap(we);
+                },
+                child: Row(
+                  children: const [
+                    Icon(Icons.move_down),
+                    Padding(padding: EdgeInsets.all(5)),
+                    Text(
+                      'Split a Set',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w400,
@@ -187,16 +235,18 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           (we) => Padding(
             padding: const EdgeInsets.only(right: 10, left: 10),
             child: InkWell(
-              onTap: () => Navigator.of(context)
-                  .push(
-                    MaterialPageRoute(
-                      builder: (context) => ExerciseView(
-                        exerciseId: we.exerciseId,
-                        exerciseName: we.exercise!.name,
-                      ),
-                    ),
-                  )
-                  .then((value) => widget.reloadState()),
+              onTap: widget.displayOnly
+                  ? null
+                  : () => Navigator.of(context)
+                      .push(
+                        MaterialPageRoute(
+                          builder: (context) => ExerciseView(
+                            exerciseId: we.exerciseId,
+                            exerciseName: we.exercise!.name,
+                          ),
+                        ),
+                      )
+                      .then((value) => widget.reloadState()),
               child: Card(
                 child: Padding(
                   padding: const EdgeInsets.all(10),
@@ -212,8 +262,11 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                                     size: 15,
                                   ),
                                   const Padding(padding: EdgeInsets.all(5)),
-                                  Text(we.hasWeight() ? we.getNumberedWeightString(
-                                      showNone: false) : we.exercise!.getNumberedWeightString(showNone: false)),
+                                  Text(we.hasWeight()
+                                      ? we.getNumberedWeightString(
+                                          showNone: false)
+                                      : we.exercise!.getNumberedWeightString(
+                                          showNone: false)),
                                 ],
                               )
                             : const Center(
@@ -240,14 +293,15 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                         flex: 3,
                         child: Text('${we.sets} sets'),
                       ),
-                      Expanded(
-                        flex: 1,
-                        child: IconButton(
-                          splashRadius: 20,
-                          onPressed: () => showMoreMenu(we),
-                          icon: const Icon(Icons.more_vert),
+                      if (!widget.displayOnly)
+                        Expanded(
+                          flex: 1,
+                          child: IconButton(
+                            splashRadius: 20,
+                            onPressed: () => showMoreMenu(we),
+                            icon: const Icon(Icons.more_vert),
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),
@@ -256,6 +310,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           ),
         )
         .toList();
+
+    if (widget.displayOnly) return widgets; // no add button on display
 
     widgets.add(
       Padding(

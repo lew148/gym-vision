@@ -44,16 +44,18 @@ class _FlavourTextCardState extends State<FlavourTextCard> {
               child: Card(
                 color: Theme.of(context).colorScheme.secondary,
                 child: Container(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 5, 10),
+                  padding: const EdgeInsets.fromLTRB(10, 10, 5, 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        snapshot.data!.flavourText!.message,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w400,
-                          color: Theme.of(context).colorScheme.onSecondary,
+                      Flexible(
+                        child: Text(
+                          snapshot.data!.flavourText!.message,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                            color: Theme.of(context).colorScheme.onSecondary,
+                          ),
                         ),
                       ),
                       IconButton(

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../db/classes/exercise.dart';
 import '../db/helpers/exercises_helper.dart';
 import '../enums.dart';
-import 'add_exercise_to_workouts_form.dart';
-import 'edit_exercise_field_form.dart';
+import '../shared/forms/add_exercise_to_workouts_form.dart';
+import '../shared/forms/edit_exercise_field_form.dart';
 
 class ExerciseMoreMenuButton extends StatefulWidget {
   final Exercise exercise;

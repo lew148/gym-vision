@@ -66,6 +66,7 @@ class FlavourTextHelper {
     int ftsId = await db.insert(
       'flavour_text_schedules',
       newFlavourTextSchedule.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
     newFlavourTextSchedule.id = ftsId;
@@ -94,7 +95,12 @@ class FlavourTextHelper {
   static setFlavourTextScheduleDismissed(FlavourTextSchedule fts) async {
     final db = await DatabaseHelper().getDb();
     fts.dismissed = true;
-    await db.update('flavour_text_schedules', fts.toMap());
+    await db.update(
+      'flavour_text_schedules',
+      fts.toMap(),
+      where: 'id = ?',
+      whereArgs: [fts.id],
+    );
   }
 
   static setRecentFlavourTextScheduleNotDismissed() async {
@@ -102,7 +108,12 @@ class FlavourTextHelper {
     final FlavourTextSchedule mostRecentFTS =
         await getMostRecentFlavourTextSchedule(db);
     mostRecentFTS.dismissed = false;
-    await db.update('flavour_text_schedules', mostRecentFTS.toMap());
+    await db.update(
+      'flavour_text_schedules',
+      mostRecentFTS.toMap(),
+      where: 'id = ?',
+      whereArgs: [mostRecentFTS.id],
+    );
   }
 
   static Future<FlavourTextSchedule> getMostRecentFlavourTextSchedule(

@@ -128,6 +128,17 @@ class WorkoutsHelper {
 
   static Future<List<WorkoutExercise>?> getWorkoutExercisesForWorkout(
     int workoutId,
+  ) async =>
+      await getWorkoutExercises('workoutId', workoutId);
+
+  static Future<List<WorkoutExercise>?> getWorkoutExercisesForExercise(
+    int exerciseId,
+  ) async =>
+      await getWorkoutExercises('exerciseId', exerciseId);
+
+  static Future<List<WorkoutExercise>> getWorkoutExercises(
+    String whereProp,
+    int value,
   ) async {
     final db = await DatabaseHelper().getDb();
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
@@ -136,6 +147,7 @@ class WorkoutsHelper {
         workout_exercises.weight,
         workout_exercises.reps,
         workout_exercises.sets,
+        workout_exercises.workoutId,
         workout_exercises.exerciseId,
         exercises.categoryId,
         exercises.name,
@@ -145,16 +157,14 @@ class WorkoutsHelper {
         exercises.isSingle
       FROM workout_exercises
       LEFT JOIN exercises ON workout_exercises.exerciseId = exercises.id
-      WHERE workout_exercises.workoutId = $workoutId;
+      WHERE workout_exercises.$whereProp = $value;
     ''');
-
-    if (maps.isEmpty) return null;
 
     return maps
         .map(
           (map) => WorkoutExercise(
             id: map['id'],
-            workoutId: workoutId,
+            workoutId: map['workoutId'],
             exerciseId: map['exerciseId'],
             weight: map['weight'],
             reps: map['reps'],
@@ -171,38 +181,6 @@ class WorkoutsHelper {
           ),
         )
         .toList();
-  }
-
-  static Future<List<WorkoutExercise>> getWorkoutExercisesForExercise(
-    int exerciseId,
-  ) async {
-    final db = await DatabaseHelper().getDb();
-    final List<Map<String, dynamic>> maps = await db.rawQuery('''
-      SELECT
-        workout_exercises.id,
-        workout_exercises.sets,
-        workout_exercises.exerciseId,
-        workouts.id AS workoutId,
-        workouts.date
-      FROM workout_exercises
-      LEFT JOIN workouts ON workout_exercises.workoutId = workouts.id
-      WHERE workout_exercises.exerciseId = $exerciseId
-      ORDER BY workouts.date DESC;
-    ''');
-
-    return List.generate(
-      maps.length,
-      (i) => WorkoutExercise(
-        id: maps[i]['id'],
-        workoutId: maps[i]['workoutId'],
-        exerciseId: exerciseId,
-        sets: maps[i]['sets'],
-        workout: Workout(
-          id: maps[i]['workoutId'],
-          date: DateTime.parse(maps[i]['date']),
-        ),
-      ),
-    );
   }
 
   static Future<int> insertWorkout(Workout workout) async {
@@ -278,6 +256,30 @@ class WorkoutsHelper {
       where: 'id = ?',
       whereArgs: [we.id],
     );
+  }
+
+  static splitAWorkoutExerciseSet(WorkoutExercise we) async {
+    final db = await DatabaseHelper().getDb();
+
+    we.sets = we.sets! - 1;
+    await db.update(
+      'workout_exercises',
+      we.toMap(),
+      where: 'id = ?',
+      whereArgs: [we.id],
+    );
+
+    await db.insert(
+        'workout_exercises',
+        WorkoutExercise(
+          workoutId: we.workoutId,
+          exerciseId: we.exerciseId,
+          sets: 1,
+          weight: we.weight,
+          reps: we.reps,
+        ).toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
   }
 
   static removeCategoryFromWorkout(int workoutCategoryId) async {

@@ -65,7 +65,7 @@ class ExercisesHelper {
 
   Future<void> insertExercise(Exercise exercise) async {
     final db = await DatabaseHelper().getDb();
-    exerciseIsValidAndUnique(db, exercise);
+    await exerciseIsValidAndUnique(db, exercise);
     await db.insert(
       'exercises',
       exercise.toMap(),

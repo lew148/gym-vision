@@ -4,8 +4,8 @@ import 'package:gymvision/db/helpers/workouts_helper.dart';
 import 'package:gymvision/shared/ui_helper.dart';
 import 'package:search_choices/search_choices.dart';
 
-import '../db/classes/exercise.dart';
-import '../globals.dart';
+import '../../db/classes/exercise.dart';
+import '../../globals.dart';
 
 class AddExerciseToWorkoutsForm extends StatefulWidget {
   final Exercise exercise;

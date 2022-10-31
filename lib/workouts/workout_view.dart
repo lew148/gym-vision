@@ -8,7 +8,7 @@ import '../db/classes/workout.dart';
 import '../db/classes/workout_category.dart';
 import '../db/helpers/workouts_helper.dart';
 import '../shared/ui_helper.dart';
-import 'add_category_to_workout_form.dart';
+import '../shared/forms/add_category_to_workout_form.dart';
 
 class WorkoutView extends StatefulWidget {
   final int workoutId;
@@ -21,27 +21,27 @@ class WorkoutView extends StatefulWidget {
 class _WorkoutViewState extends State<WorkoutView> {
   reloadState() => setState(() {});
 
-  // void onAddExerciseClick(List<int> existingExerciseIds) => 
-      // showModalBottomSheet(
-      //   context: context,
-      //   builder: (BuildContext context) => Column(
-      //     mainAxisSize: MainAxisSize.min,
-      //     children: [
-      //       Padding(
-      //         padding: EdgeInsets.only(
-      //             bottom: MediaQuery.of(context).viewInsets.bottom),
-      //         child: AddExerciseToWorkoutForm(
-      //           workoutId: widget.workoutId,
-      //           existingExerciseIds: existingExerciseIds,
-      //           reloadState: reloadState,
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      //   isScrollControlled: true,
-      //   shape: const RoundedRectangleBorder(
-      //       borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
-      // );
+  // void onAddExerciseClick(List<int> existingExerciseIds) =>
+  // showModalBottomSheet(
+  //   context: context,
+  //   builder: (BuildContext context) => Column(
+  //     mainAxisSize: MainAxisSize.min,
+  //     children: [
+  //       Padding(
+  //         padding: EdgeInsets.only(
+  //             bottom: MediaQuery.of(context).viewInsets.bottom),
+  //         child: AddExerciseToWorkoutForm(
+  //           workoutId: widget.workoutId,
+  //           existingExerciseIds: existingExerciseIds,
+  //           reloadState: reloadState,
+  //         ),
+  //       ),
+  //     ],
+  //   ),
+  //   isScrollControlled: true,
+  //   shape: const RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+  // );
 
   void onAddCategoryClick(List<int> existingCategoryIds) =>
       showModalBottomSheet(
@@ -148,12 +148,17 @@ class _WorkoutViewState extends State<WorkoutView> {
                     ),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Text(
-                    wc.category!.getDisplayName(),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
+                  child: Wrap(
+                    children: [
+                      Text(
+                        wc.category!.getDisplayName(),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const Icon(Icons.chevron_right, size: 18)
+                    ],
                   ),
                 ),
               ),

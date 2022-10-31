@@ -32,6 +32,10 @@ class WorkoutExercise {
         'reps': reps,
       };
 
+  String getRepsAsString() => reps == null ? '0' : reps.toString();
+
+  String getSetsAsString() => sets == null ? '0' : sets.toString();
+
   String getWeightAsString() {
     if (weight == null) return '0';
     return weight! % 1 == 0

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/db/helpers/workouts_helper.dart';
 import 'package:gymvision/globals.dart';
 
-import '../db/classes/workout_exercise.dart';
+import '../../db/classes/workout_exercise.dart';
 
 class EditWorkoutExerciseForm extends StatefulWidget {
   final WorkoutExercise workoutExercise;
@@ -31,9 +31,9 @@ class _EditWorkoutExerciseFormState extends State<EditWorkoutExerciseForm> {
     weightController =
         TextEditingController(text: widget.workoutExercise.getWeightAsString());
     repsController =
-        TextEditingController(text: widget.workoutExercise.reps.toString());
+        TextEditingController(text: widget.workoutExercise.getRepsAsString());
     setsController =
-        TextEditingController(text: widget.workoutExercise.sets.toString());
+        TextEditingController(text: widget.workoutExercise.getSetsAsString());
   }
 
   void onSubmit() async {
@@ -91,20 +91,51 @@ class _EditWorkoutExerciseFormState extends State<EditWorkoutExerciseForm> {
             key: formKey,
             child: Column(
               children: [
-                TextFormField(
-                  controller: weightController,
-                  keyboardType: TextInputType.number,
-                  autofocus: true,
-                  decoration: InputDecoration(
-                    labelText: 'Weight',
-                    suffix: const Text('kg'),
-                    prefix: Text(widget.workoutExercise.exercise!.isSingle ? '' : '2 x '),
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: weightController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: 'Weight',
+                          suffix: const Text('kg'),
+                          prefix: Text(widget.workoutExercise.exercise!.isSingle
+                              ? ''
+                              : '2 x '),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 10, 5, 0),
+                      child: OutlinedButton(
+                        onPressed: () => setState(() {
+                          weightController.text = widget
+                              .workoutExercise.exercise!
+                              .getWeightAsString();
+                        }),
+                        child: const Text('Default'),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                      child: OutlinedButton(
+                        onPressed: () => setState(() {
+                          weightController.text =
+                              widget.workoutExercise.exercise!.max == 0
+                                  ? widget.workoutExercise.exercise!
+                                      .getWeightAsString()
+                                  : widget.workoutExercise.exercise!
+                                      .getMaxAsString();
+                        }),
+                        child: const Text('Max'),
+                      ),
+                    ),
+                  ],
                 ),
                 TextFormField(
                   controller: repsController,
                   keyboardType: TextInputType.number,
-                  autofocus: true,
                   decoration: const InputDecoration(
                     labelText: 'reps',
                   ),
@@ -112,7 +143,6 @@ class _EditWorkoutExerciseFormState extends State<EditWorkoutExerciseForm> {
                 TextFormField(
                   controller: setsController,
                   keyboardType: TextInputType.number,
-                  autofocus: true,
                   decoration: const InputDecoration(
                     labelText: 'sets',
                   ),

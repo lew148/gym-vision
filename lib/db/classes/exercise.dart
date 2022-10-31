@@ -37,10 +37,10 @@ class Exercise {
     return max! % 1 == 0 ? max!.toStringAsFixed(0) : max!.toStringAsFixed(2);
   }
 
-  String getMaxString() {
-    if (max == null || max == 0) return 'None';
-    return '${getMaxAsString()}kg';
-  }
+  String getMaxString() =>
+      max == null || max == 0 ? 'None' : '${getMaxAsString()}kg';
+
+  String getRepsString() => reps <= 0 ? 'None' : reps.toString();
 
   Map<String, dynamic> toMap() => {
         'id': id,

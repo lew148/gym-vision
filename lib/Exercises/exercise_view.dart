@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/exercise.dart';
 import 'package:gymvision/db/classes/workout_exercise.dart';
@@ -7,7 +8,8 @@ import 'package:gymvision/exercises/exercise_more_menu_button.dart';
 import '../db/helpers/exercises_helper.dart';
 import '../enums.dart';
 import '../shared/ui_helper.dart';
-import 'edit_exercise_field_form.dart';
+import '../shared/forms/edit_exercise_field_form.dart';
+import '../workouts/workout_exercise_widget.dart';
 
 class ExerciseView extends StatefulWidget {
   final int exerciseId;
@@ -34,7 +36,9 @@ class _ExerciseViewState extends State<ExerciseView> {
                   Text(
                     exercise.getWeightString(),
                     style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 17),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17,
+                    ),
                   ),
                   () => openEditExerciseFieldForm(
                     exercise,
@@ -50,7 +54,9 @@ class _ExerciseViewState extends State<ExerciseView> {
                   Text(
                     exercise.getMaxString(),
                     style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 17),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17,
+                    ),
                   ),
                   () => openEditExerciseFieldForm(
                     exercise,
@@ -68,7 +74,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                 child: getValueDisplay(
                   'Reps',
                   Text(
-                    exercise.reps.toString(),
+                    exercise.getRepsString(),
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 17,
@@ -165,36 +171,36 @@ class _ExerciseViewState extends State<ExerciseView> {
         ),
       );
 
-  Widget getWorkoutExercisesWidget(List<WorkoutExercise> workoutExercises) =>
-      Column(
-        children: workoutExercises
-            .map(
-              (we) => Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '${we.workout!.getDateString()} @ ${we.workout!.getTimeString()}',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text('${we.sets} sets'),
-                    ],
-                  ),
-                ),
-              ),
-            )
-            .toList(),
+  List<Widget> getWorkoutExercisesWidget(
+      List<WorkoutExercise> workoutExercises) {
+    final Map<int, List<WorkoutExercise>> groupedWorkoutExercises =
+        groupBy<WorkoutExercise, int>(
+      workoutExercises,
+      (x) => x.workoutId,
+    );
+
+    List<Widget> weWidgets = [];
+    groupedWorkoutExercises.forEach((key, value) {
+      weWidgets.add(
+        Padding(
+          padding: const EdgeInsets.only(top: 5, bottom: 5),
+          child: WorkoutExerciseWidget(
+            workoutExercises: value,
+            reloadState: reloadState,
+            displayOnly: true,
+          ),
+        ),
       );
+    });
+
+    return weWidgets;
+  }
 
   @override
   Widget build(BuildContext context) {
     final Future<Exercise> exercise =
         ExercisesHelper.getExercise(widget.exerciseId);
-    final Future<List<WorkoutExercise>> workoutExercises =
+    final Future<List<WorkoutExercise>?> workoutExercises =
         WorkoutsHelper.getWorkoutExercisesForExercise(widget.exerciseId);
 
     return FutureBuilder<Exercise>(
@@ -247,7 +253,18 @@ class _ExerciseViewState extends State<ExerciseView> {
                     );
                   }
 
-                  return getWorkoutExercisesWidget(weSnapshot.data!);
+                  return Expanded(
+                    child: SingleChildScrollView(
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          children: getWorkoutExercisesWidget(
+                            weSnapshot.data!,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
                 },
               )
             ],
