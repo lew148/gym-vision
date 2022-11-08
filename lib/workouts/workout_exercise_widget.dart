@@ -346,6 +346,29 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     return widgets;
   }
 
+  void onGroupedWorkoutExercisesDoneTap(bool? done) async {
+    if (done == null) return;
+
+    try {
+      for (var we in widget.workoutExercises) {
+        we.done = done;
+        await WorkoutsHelper.updateWorkoutExercise(
+          we,
+        );
+      }
+    } catch (ex) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Could not set Workout Exercises ${done ? '' : 'not '}done: $ex',
+          ),
+        ),
+      );
+    }
+
+    widget.reloadState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -360,10 +383,33 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    widget.workoutExercises[0].exercise!.name,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
+                  widget.displayOnly
+                      ? Text(
+                          widget.workoutExercises[0].workout!
+                              .getDateAndTimeString(),
+                          style: const TextStyle(fontWeight: FontWeight.w600),
+                        )
+                      : Row(
+                          children: [
+                            Checkbox(
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap,
+                              checkColor: Colors.white,
+                              fillColor: MaterialStateProperty.all(
+                                  Theme.of(context).colorScheme.primary),
+                              value: widget.workoutExercises[0].done,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5)),
+                              onChanged: (bool? value) =>
+                                  onGroupedWorkoutExercisesDoneTap(value),
+                            ),
+                            Text(
+                              widget.workoutExercises[0].exercise!.name,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        ),
                   Icon(
                     tapped ? Icons.arrow_drop_up : Icons.arrow_drop_down,
                     size: 30,

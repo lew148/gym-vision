@@ -308,7 +308,6 @@ class _WorkoutViewState extends State<WorkoutView> {
     List<int> existingCategoryIds = [];
     List<int> existingExerciseIds = [];
 
-    reloadState() => setState(() {});
 
     return FutureBuilder<Workout>(
       future: workout,

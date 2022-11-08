@@ -171,8 +171,7 @@ class _ExerciseViewState extends State<ExerciseView> {
         ),
       );
 
-  List<Widget> getWorkoutExercisesWidget(
-      List<WorkoutExercise> workoutExercises) {
+  List<Widget> getRecentUsesWidget(List<WorkoutExercise> workoutExercises) {
     final Map<int, List<WorkoutExercise>> groupedWorkoutExercises =
         groupBy<WorkoutExercise, int>(
       workoutExercises,
@@ -258,7 +257,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         child: Column(
-                          children: getWorkoutExercisesWidget(
+                          children: getRecentUsesWidget(
                             weSnapshot.data!,
                           ),
                         ),

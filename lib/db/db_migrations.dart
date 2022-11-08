@@ -47,6 +47,9 @@ class MigrationsHelper {
           dismissed INTEGER NOT NULL DEFAULT 0
         );
       ''',
+    9: '''
+        ALTER TABLE workout_exercises ADD COLUMN done INTEGER DEFAULT 0;
+        ''',
   };
 
   static migrationsQty() => migrationScripts.length;

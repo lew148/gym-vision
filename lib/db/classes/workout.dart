@@ -43,4 +43,6 @@ class Workout {
   }
 
   String getTimeString() => DateFormat('Hm').format(date);
+
+  String getDateAndTimeString() => '${getDateString()} @ ${getTimeString()}';
 }

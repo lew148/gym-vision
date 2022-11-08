@@ -45,7 +45,7 @@ class _AddExerciseToWorkoutFormState extends State<AddExerciseToWorkoutForm> {
         final List<int> exerciseIdsToAdd =
             selectedItems.map((si) => exercisesRef[si].id!).toList();
 
-        await WorkoutsHelper.addExercisesToWorkout(
+        await WorkoutsHelper.toremove_addExercisesToWorkout(
             widget.workoutId, exerciseIdsToAdd);
       } catch (ex) {
         ScaffoldMessenger.of(context).showSnackBar(

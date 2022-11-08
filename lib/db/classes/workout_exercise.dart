@@ -8,6 +8,7 @@ class WorkoutExercise {
   int? sets;
   double? weight;
   int? reps;
+  bool done;
 
   Workout? workout;
   Exercise? exercise;
@@ -19,6 +20,7 @@ class WorkoutExercise {
     this.sets,
     this.weight,
     this.reps,
+    required this.done,
     this.workout,
     this.exercise,
   });
@@ -30,6 +32,7 @@ class WorkoutExercise {
         'sets': sets,
         'weight': weight,
         'reps': reps,
+        'done': done
       };
 
   String getRepsAsString() => reps == null ? '0' : reps.toString();

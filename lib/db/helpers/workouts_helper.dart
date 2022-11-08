@@ -147,8 +147,10 @@ class WorkoutsHelper {
         workout_exercises.weight,
         workout_exercises.reps,
         workout_exercises.sets,
+        workout_exercises.done,
         workout_exercises.workoutId,
         workout_exercises.exerciseId,
+        workouts.date,
         exercises.categoryId,
         exercises.name,
         exercises.weight AS exerciseWeight,
@@ -157,6 +159,7 @@ class WorkoutsHelper {
         exercises.isSingle
       FROM workout_exercises
       LEFT JOIN exercises ON workout_exercises.exerciseId = exercises.id
+      LEFT JOIN workouts ON workout_exercises.workoutId = workouts.id
       WHERE workout_exercises.$whereProp = $value;
     ''');
 
@@ -169,6 +172,7 @@ class WorkoutsHelper {
             weight: map['weight'],
             reps: map['reps'],
             sets: map['sets'],
+            done: map['done'] == 1,
             exercise: Exercise(
               id: map['exerciseId'],
               categoryId: map['categoryId'],
@@ -177,6 +181,10 @@ class WorkoutsHelper {
               max: map['max'],
               reps: map['exerciseReps'],
               isSingle: map['isSingle'] == 1,
+            ),
+            workout: Workout(
+              id: map['workoutId'],
+              date: DateTime.parse(map['date']),
             ),
           ),
         )
@@ -207,10 +215,8 @@ class WorkoutsHelper {
     }
   }
 
-  static addExerciseToWorkout(int workoutId, int exerciseId) async =>
-      await addCategoriesToWorkout(workoutId, [exerciseId]);
-
-  static addExercisesToWorkout(int workoutId, List<int> exerciseIds) async {
+  static toremove_addExercisesToWorkout(
+      int workoutId, List<int> exerciseIds) async {
     final db = await DatabaseHelper().getDb();
     for (var exId in exerciseIds) {
       await db.insert(
@@ -218,6 +224,7 @@ class WorkoutsHelper {
         WorkoutExercise(
           workoutId: workoutId,
           exerciseId: exId,
+          done: false,
           sets: 3,
         ).toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
@@ -225,13 +232,14 @@ class WorkoutsHelper {
     }
   }
 
-  static addExerciseToWorkouts(
-    int exerciseId,
-    List<int> workoutIds,
-    double weight,
-    int reps,
-    int sets,
-  ) async {
+  static addExerciseToWorkouts({
+    required int exerciseId,
+    required List<int> workoutIds,
+    double? weight,
+    int? reps,
+    int? sets,
+    bool? done,
+  }) async {
     final db = await DatabaseHelper().getDb();
     for (var wId in workoutIds) {
       await db.insert(
@@ -239,14 +247,32 @@ class WorkoutsHelper {
         WorkoutExercise(
           workoutId: wId,
           exerciseId: exerciseId,
-          sets: sets,
-          weight: weight,
-          reps: reps,
+          sets: sets ?? 3,
+          weight: weight ?? 0,
+          reps: reps ?? 0,
+          done: done ?? false,
         ).toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
     }
   }
+
+  static addExerciseToWorkout({
+    required int exerciseId,
+    required int workoutId,
+    double? weight,
+    int? reps,
+    int? sets,
+    bool? done,
+  }) async =>
+      await addExerciseToWorkouts(
+        exerciseId: exerciseId,
+        workoutIds: [workoutId],
+        weight: weight,
+        reps: reps,
+        sets: sets,
+        done: done,
+      );
 
   static updateWorkoutExercise(WorkoutExercise we) async {
     final db = await DatabaseHelper().getDb();
@@ -269,17 +295,14 @@ class WorkoutsHelper {
       whereArgs: [we.id],
     );
 
-    await db.insert(
-        'workout_exercises',
-        WorkoutExercise(
-          workoutId: we.workoutId,
-          exerciseId: we.exerciseId,
-          sets: 1,
-          weight: we.weight,
-          reps: we.reps,
-        ).toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
+    await addExerciseToWorkout(
+      exerciseId: we.exerciseId,
+      workoutId: we.workoutId,
+      weight: we.weight,
+      reps: we.reps!,
+      sets: 1,
+      done: we.done,
+    );
   }
 
   static removeCategoryFromWorkout(int workoutCategoryId) async {

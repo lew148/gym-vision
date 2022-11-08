@@ -59,11 +59,12 @@ class _AddExerciseToWorkoutsFormState extends State<AddExerciseToWorkoutsForm> {
 
         try {
           await WorkoutsHelper.addExerciseToWorkouts(
-            widget.exercise.id!,
-            workoutIdsToAddTo,
-            double.parse(getNumberStringOrDefault(weightController.text)),
-            int.parse(getNumberStringOrDefault(repsController.text)),
-            int.parse(getNumberStringOrDefault(setsController.text)),
+            exerciseId: widget.exercise.id!,
+            workoutIds: workoutIdsToAddTo,
+            weight:
+                double.parse(getNumberStringOrDefault(weightController.text)),
+            reps: int.parse(getNumberStringOrDefault(repsController.text)),
+            sets: int.parse(getNumberStringOrDefault(setsController.text)),
           );
 
           if (mounted) {
