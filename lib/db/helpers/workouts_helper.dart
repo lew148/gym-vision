@@ -201,9 +201,23 @@ class WorkoutsHelper {
     return workoutId;
   }
 
-  static addCategoriesToWorkout(int workoutId, List<int> categoryIds) async {
+  static setWorkoutCategories(int workoutId, List<int> categoryIds) async {
     final db = await DatabaseHelper().getDb();
-    for (var exId in categoryIds) {
+
+    final existingWCs = await getWorkoutCategoriesForWorkout(workoutId);
+    final newCategoryIds = categoryIds;
+
+    if (existingWCs != null && existingWCs.isNotEmpty) {
+      for (var ewc in existingWCs) {
+        if (categoryIds.contains(ewc.categoryId)) {
+          newCategoryIds.remove(ewc.categoryId);
+        } else {
+          await removeCategoryFromWorkout(ewc.id!);
+        }
+      }
+    }
+
+    for (var exId in newCategoryIds) {
       await db.insert(
         'workout_categories',
         WorkoutCategory(

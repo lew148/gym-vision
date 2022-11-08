@@ -21,28 +21,6 @@ class WorkoutView extends StatefulWidget {
 class _WorkoutViewState extends State<WorkoutView> {
   reloadState() => setState(() {});
 
-  // void onAddExerciseClick(List<int> existingExerciseIds) =>
-  // showModalBottomSheet(
-  //   context: context,
-  //   builder: (BuildContext context) => Column(
-  //     mainAxisSize: MainAxisSize.min,
-  //     children: [
-  //       Padding(
-  //         padding: EdgeInsets.only(
-  //             bottom: MediaQuery.of(context).viewInsets.bottom),
-  //         child: AddExerciseToWorkoutForm(
-  //           workoutId: widget.workoutId,
-  //           existingExerciseIds: existingExerciseIds,
-  //           reloadState: reloadState,
-  //         ),
-  //       ),
-  //     ],
-  //   ),
-  //   isScrollControlled: true,
-  //   shape: const RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
-  // );
-
   void onAddCategoryClick(List<int> existingCategoryIds) =>
       showModalBottomSheet(
         context: context,
@@ -54,7 +32,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                   bottom: MediaQuery.of(context).viewInsets.bottom),
               child: AddCategoryToWorkoutForm(
                 workoutId: widget.workoutId,
-                existingCategoryIds: existingCategoryIds,
+                selectedCategoryIds: existingCategoryIds,
                 reloadState: reloadState,
               ),
             ),
@@ -62,57 +40,9 @@ class _WorkoutViewState extends State<WorkoutView> {
         ),
         isScrollControlled: true,
         shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+        ),
       );
-
-  void showRemoveCategoryFromWorkoutConfirm(int workoutCategoryId) {
-    Widget cancelButton = TextButton(
-      child: const Text("No"),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-
-    Widget continueButton = TextButton(
-      child: const Text(
-        "Yes",
-        style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-      ),
-      onPressed: () async {
-        Navigator.pop(context);
-
-        try {
-          await WorkoutsHelper.removeCategoryFromWorkout(workoutCategoryId);
-        } catch (ex) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Failed to remove Category from workout: ${ex.toString()}',
-              ),
-            ),
-          );
-        }
-
-        reloadState();
-      },
-    );
-
-    AlertDialog alert = AlertDialog(
-      title: const Text("Remove Category from Workout?"),
-      content: const Text(
-        "Are you sure you would like to remove this Category from this workout?",
-      ),
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-
-    showDialog(
-      context: context,
-      builder: (context) => alert,
-    );
-  }
 
   getWorkoutCategoriesWidget(List<WorkoutCategory>? workoutCategories) {
     if (workoutCategories == null || workoutCategories.isEmpty) {
@@ -126,9 +56,8 @@ class _WorkoutViewState extends State<WorkoutView> {
       children: workoutCategories
           .map(
             (wc) => Padding(
-              padding: const EdgeInsets.all(5),
+              padding: const EdgeInsets.all(10),
               child: InkWell(
-                onLongPress: () => showRemoveCategoryFromWorkoutConfirm(wc.id!),
                 onTap: () => Navigator.of(context)
                     .push(
                       MaterialPageRoute(
@@ -140,7 +69,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                     )
                     .then((value) => setState(() {})),
                 child: Container(
-                  padding: const EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     border: Border.all(
                       width: 0.75,
@@ -167,6 +96,28 @@ class _WorkoutViewState extends State<WorkoutView> {
           .toList(),
     );
   }
+
+  // void onAddExerciseClick(List<int> existingExerciseIds) =>
+  // showModalBottomSheet(
+  //   context: context,
+  //   builder: (BuildContext context) => Column(
+  //     mainAxisSize: MainAxisSize.min,
+  //     children: [
+  //       Padding(
+  //         padding: EdgeInsets.only(
+  //             bottom: MediaQuery.of(context).viewInsets.bottom),
+  //         child: AddExerciseToWorkoutForm(
+  //           workoutId: widget.workoutId,
+  //           existingExerciseIds: existingExerciseIds,
+  //           reloadState: reloadState,
+  //         ),
+  //       ),
+  //     ],
+  //   ),
+  //   isScrollControlled: true,
+  //   shape: const RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+  // );
 
   List<Widget> getWorkoutExercisesWidget(
       List<WorkoutExercise>? workoutExercises) {
@@ -306,8 +257,6 @@ class _WorkoutViewState extends State<WorkoutView> {
     );
 
     List<int> existingCategoryIds = [];
-    List<int> existingExerciseIds = [];
-
 
     return FutureBuilder<Workout>(
       future: workout,
@@ -324,18 +273,11 @@ class _WorkoutViewState extends State<WorkoutView> {
 
         if (workout.workoutCategories != null &&
             workout.workoutCategories!.isNotEmpty) {
-          existingCategoryIds =
-              workout.workoutCategories!.map((we) => we.categoryId).toList();
-        } else {
-          existingCategoryIds = [];
-        }
-
-        if (workout.workoutExercises != null &&
-            workout.workoutExercises!.isNotEmpty) {
-          existingExerciseIds =
-              workout.workoutExercises!.map((we) => we.exerciseId).toList();
-        } else {
-          existingExerciseIds = [];
+          existingCategoryIds = workout.workoutCategories!
+              .map(
+                (we) => we.categoryId,
+              )
+              .toList();
         }
 
         return Scaffold(
@@ -365,8 +307,8 @@ class _WorkoutViewState extends State<WorkoutView> {
                         OutlinedButton(
                           onPressed: () =>
                               onAddCategoryClick(existingCategoryIds),
-                          child: const Icon(
-                            Icons.add,
+                          child: Icon(
+                            workout.workoutCategories == null || workout.workoutCategories!.isEmpty ? Icons.add : Icons.edit,
                             size: 25,
                           ),
                         ),
@@ -376,35 +318,9 @@ class _WorkoutViewState extends State<WorkoutView> {
                 ],
               ),
               const Divider(),
-              Container(
-                margin: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                padding: const EdgeInsets.all(10),
-                child: getWorkoutCategoriesWidget(
-                  workout.workoutCategories,
-                ),
-              ),
+              getWorkoutCategoriesWidget(workout.workoutCategories),
               const Padding(padding: EdgeInsets.all(10)),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  getSectionTitle(context, 'Exercises'),
-                  // Container(
-                  //   margin: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  //   child: Row(
-                  //     children: [
-                  //       OutlinedButton(
-                  //         onPressed: () =>
-                  //             onAddExerciseClick(existingExerciseIds),
-                  //         child: const Icon(
-                  //           Icons.add,
-                  //           size: 25,
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-                ],
-              ),
+              getSectionTitle(context, 'Exercises'),
               const Divider(),
               Expanded(
                 child: SingleChildScrollView(

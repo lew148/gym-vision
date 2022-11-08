@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/category.dart';
 import 'package:gymvision/db/helpers/workouts_helper.dart';
-import 'package:search_choices/search_choices.dart';
 
 import '../../db/helpers/categories_helper.dart';
 
 class AddCategoryToWorkoutForm extends StatefulWidget {
   final int workoutId;
-  final List<int>? existingCategoryIds;
+  final List<int> selectedCategoryIds;
   final void Function() reloadState;
 
   const AddCategoryToWorkoutForm({
     Key? key,
     required this.workoutId,
-    required this.existingCategoryIds,
+    required this.selectedCategoryIds,
     required this.reloadState,
   }) : super(key: key);
 
@@ -24,29 +23,63 @@ class AddCategoryToWorkoutForm extends StatefulWidget {
 
 class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
   late Future<List<Category>> categories;
+  late List<int> selectedIds;
 
   @override
   void initState() {
     super.initState();
-    categories = CategoriesHelper()
-        .getAllCategoriesExcludingIds(widget.existingCategoryIds!);
+    categories = CategoriesHelper().getCategories();
+    selectedIds = widget.selectedCategoryIds;
   }
 
-  final formKey = GlobalKey<FormState>();
-  List<Category> categoriesRef = [];
-  List<int> selectedItems = [];
-  List<DropdownMenuItem> items = [];
+  void onCategoryTap(int categoryId) {
+    setState(() {
+      selectedIds.contains(categoryId)
+          ? selectedIds.remove(categoryId)
+          : selectedIds.add(categoryId);
+    });
+  }
 
-  void onSubmit() async {
-    if (formKey.currentState!.validate()) {
+  @override
+  Widget build(BuildContext context) {
+    Widget getCategorySelect(List<Category> categories) => Wrap(
+          alignment: WrapAlignment.center,
+          children: categories
+              .map(
+                (c) => Padding(
+                  padding: const EdgeInsets.all(2),
+                  child: GestureDetector(
+                    onTap: () => onCategoryTap(c.id!),
+                    child: Card(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(5)),
+                          border: Border.all(
+                            width: 2,
+                            color: selectedIds.contains(c.id)
+                                ? Theme.of(context).colorScheme.primary
+                                : Colors.transparent,
+                          ),
+                        ),
+                        padding: const EdgeInsets.fromLTRB(25, 20, 25, 20),
+                        child: Text(c.getDisplayName()),
+                      ),
+                    ),
+                  ),
+                ),
+              )
+              .toList(),
+        );
+
+    void onSubmit() async {
       Navigator.pop(context);
 
       try {
-        final List<int> categoryIdsToAdd =
-            selectedItems.map((si) => categoriesRef[si].id!).toList();
-
-        await WorkoutsHelper.addCategoriesToWorkout(
-            widget.workoutId, categoryIdsToAdd);
+        await WorkoutsHelper.setWorkoutCategories(
+          widget.workoutId,
+          selectedIds,
+        );
       } catch (ex) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to add categories to workout: $ex')),
@@ -55,10 +88,7 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
 
       widget.reloadState();
     }
-  }
 
-  @override
-  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -82,54 +112,21 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
                 );
               }
 
-              categoriesRef = snapshot.data!;
-              items = snapshot.data!
-                  .map((c) => DropdownMenuItem(
-                        value: c.name,
-                        child: Text(c.getDisplayName()),
-                      ))
-                  .toList();
-
-              return Form(
-                key: formKey,
-                child: Column(
-                  children: [
-                    SearchChoices.multiple(
-                      autofocus: false,
-                      items: items,
-                      selectedItems: selectedItems,
-                      hint: const Padding(
-                        padding: EdgeInsets.all(12.0),
-                        child: Text("Select Categories"),
+              return Column(
+                children: [
+                  const Padding(padding: EdgeInsets.all(15)),
+                  getCategorySelect(snapshot.data!),
+                  const Padding(padding: EdgeInsets.all(15)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      ElevatedButton(
+                        onPressed: onSubmit,
+                        child: const Text('Save'),
                       ),
-                      searchHint: '',
-                      onChanged: (value) {
-                        setState(() {
-                          selectedItems = value;
-                        });
-                      },
-                      closeButton: (selectedItems) {
-                        return (selectedItems.isNotEmpty
-                            ? "Select${selectedItems.length == 1 ? '' : ' (${selectedItems.length})'}"
-                            : "Cancel");
-                      },
-                      doneButton: '',
-                      isExpanded: true,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 20.0),
-                          child: ElevatedButton(
-                            onPressed: onSubmit,
-                            child: const Text('Save'),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                ],
               );
             },
           ),
