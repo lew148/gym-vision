@@ -7,22 +7,22 @@ import 'package:search_choices/search_choices.dart';
 import '../../db/classes/exercise.dart';
 import '../../globals.dart';
 
-class AddExerciseToWorkoutsForm extends StatefulWidget {
+class AddExerciseToWorkoutForm extends StatefulWidget {
   final Exercise exercise;
   final int? workoutId;
 
-  const AddExerciseToWorkoutsForm({
+  const AddExerciseToWorkoutForm({
     Key? key,
     required this.exercise,
     this.workoutId,
   }) : super(key: key);
 
   @override
-  State<AddExerciseToWorkoutsForm> createState() =>
-      _AddExerciseToWorkoutsFormState();
+  State<AddExerciseToWorkoutForm> createState() =>
+      _AddExerciseToWorkoutFormState();
 }
 
-class _AddExerciseToWorkoutsFormState extends State<AddExerciseToWorkoutsForm> {
+class _AddExerciseToWorkoutFormState extends State<AddExerciseToWorkoutForm> {
   final formKey = GlobalKey<FormState>();
   List<Workout> workoutsRef = [];
   List<int> selectedItems = [];
