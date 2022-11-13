@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/workout.dart';
-import 'package:gymvision/db/helpers/workouts_helper.dart';
-import 'package:gymvision/shared/ui_helper.dart';
-import 'package:search_choices/search_choices.dart';
 
 import '../../db/classes/exercise.dart';
-import '../../globals.dart';
+import 'fields/exercise_picker.dart';
+import 'fields/workout_picker.dart';
 
 class AddExerciseToWorkoutForm extends StatefulWidget {
-  final Exercise exercise;
   final int? workoutId;
+  final int? exerciseId;
+  final bool disableWorkoutPicker;
+  final bool disableExercisePicker;
+  final Function reloadState;
 
   const AddExerciseToWorkoutForm({
     Key? key,
-    required this.exercise,
     this.workoutId,
+    this.exerciseId,
+    this.disableWorkoutPicker = false,
+    this.disableExercisePicker = false,
+    required this.reloadState,
   }) : super(key: key);
 
   @override
@@ -23,56 +27,88 @@ class AddExerciseToWorkoutForm extends StatefulWidget {
 }
 
 class _AddExerciseToWorkoutFormState extends State<AddExerciseToWorkoutForm> {
+  Workout? selectedWorkout;
+  Exercise? selectedExercise;
+
   final formKey = GlobalKey<FormState>();
-  List<Workout> workoutsRef = [];
-  List<int> selectedItems = [];
-  List<DropdownMenuItem> items = [];
-
   final setsController = TextEditingController(text: '3');
-  late TextEditingController weightController;
-  late TextEditingController repsController;
+  TextEditingController weightController = TextEditingController();
+  TextEditingController repsController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    weightController =
-        TextEditingController(text: widget.exercise.getWeightAsString());
-    repsController =
-        TextEditingController(text: widget.exercise.reps.toString());
+  void setWeightAndRepControllers(Exercise ex) {
+    weightController.text = ex.getWeightAsString();
+    repsController.text = ex.reps.toString();
   }
+
+  List<Widget> getExerciseFields(Exercise ex) => [
+        Row(
+          children: [
+            Expanded(
+              child: TextFormField(
+                controller: weightController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Weight',
+                  prefix: ex.isSingle ? const Text('') : const Text('2 x '),
+                  suffix: const Text('kg'),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 10, 5, 0),
+              child: OutlinedButton(
+                onPressed: () => setState(() {
+                  weightController.text = ex.getWeightAsString();
+                }),
+                child: const Text('Default'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+              child: OutlinedButton(
+                onPressed: () => setState(() {
+                  weightController.text = ex.max == 0
+                      ? ex.getWeightAsString()
+                      : ex.getMaxAsString();
+                }),
+                child: const Text('Max'),
+              ),
+            ),
+          ],
+        ),
+        TextFormField(
+          controller: repsController,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(
+            labelText: 'Reps',
+          ),
+        ),
+      ];
 
   @override
   Widget build(BuildContext context) {
-    Future<List<Workout>> workouts = WorkoutsHelper.getWorkouts();
-
     void onSubmit() async {
-      final List<int> workoutIdsToAddTo = widget.workoutId == null
-          ? selectedItems.map((si) => workoutsRef[si].id!).toList()
-          : [widget.workoutId!];
-
-      if (workoutIdsToAddTo.isEmpty) {
-        return;
+      if (selectedExercise == null || selectedWorkout == null) {
+        return; // todo: show error
       }
 
       if (formKey.currentState!.validate()) {
         Navigator.pop(context);
 
         try {
-          await WorkoutsHelper.addExerciseToWorkouts(
-            exerciseId: widget.exercise.id!,
-            workoutIds: workoutIdsToAddTo,
-            weight:
-                double.parse(getNumberStringOrDefault(weightController.text)),
-            reps: int.parse(getNumberStringOrDefault(repsController.text)),
-            sets: int.parse(getNumberStringOrDefault(setsController.text)),
-          );
+          // await WorkoutsHelper.addExerciseToWorkouts(
+          //   exerciseId: exercise!.id!,
+          //   workoutId: workout!.id,
+          //   weight:
+          //       double.parse(getNumberStringOrDefault(weightController.text)),
+          //   reps: int.parse(getNumberStringOrDefault(repsController.text)),
+          //   sets: int.parse(getNumberStringOrDefault(setsController.text)),
+          // );
 
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  'Added exercise to workout${workoutIdsToAddTo.length == 1 ? '' : 's'}!',
-                ),
+              const SnackBar(
+                content: Text('Successfully Added exercise to workout!'),
               ),
             );
           }
@@ -80,166 +116,70 @@ class _AddExerciseToWorkoutFormState extends State<AddExerciseToWorkoutForm> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                'Failed to add exercise to workout${workoutIdsToAddTo.length == 1 ? '' : 's'}: $ex',
+                'Failed to add exercise to workout: $ex',
               ),
             ),
           );
         }
+
+        widget.reloadState();
       }
     }
 
     return Container(
       padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          const Text(
-            'Add Exercise To Workouts',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-          ),
-          const Padding(padding: EdgeInsets.all(10)),
-          getSectionTitle(context, widget.exercise.name),
-          const Divider(),
-          FutureBuilder<List<Workout>>(
-            future: workouts,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(
-                  child: Text('Loading...'),
-                );
-              }
-
-              if (snapshot.data!.isEmpty) {
-                return const Center(
-                  child: Text('No Workouts to Add Exercises to :('),
-                );
-              }
-
-              final mostRecentWorkoutIndex = snapshot.data!
-                  .indexWhere((w) => w.date.isBefore(DateTime.now()));
-
-              workoutsRef = snapshot.data!;
-              items = snapshot.data!
-                  .map(
-                    (e) => DropdownMenuItem(
-                      value: e.id,
-                      child:
-                          Text('${e.getDateString()} @ ${e.getTimeString()}'),
-                    ),
-                  )
-                  .toList();
-
-              return Form(
-                key: formKey,
-                child: Column(
-                  children: [
-                    if (widget.workoutId == null)
-                      Row(
-                        children: [
-                          Expanded(
-                            child: SearchChoices.multiple(
-                              items: items,
-                              autofocus: false,
-                              selectedItems: selectedItems,
-                              hint: const Padding(
-                                padding: EdgeInsets.all(12.0),
-                                child: Text("Select Workouts"),
-                              ),
-                              searchHint: '',
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedItems = value;
-                                });
-                              },
-                              closeButton: (selectedItems) {
-                                return (selectedItems.isNotEmpty
-                                    ? "Select${selectedItems.length == 1 ? '' : ' (${selectedItems.length})'}"
-                                    : "Cancel");
-                              },
-                              doneButton: '',
-                              isExpanded: true,
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(10, 10, 5, 0),
-                            child: OutlinedButton(
-                              onPressed: () => setState(() {
-                                selectedItems = [mostRecentWorkoutIndex];
-                              }),
-                              child: const Text('Most Recent'),
-                            ),
-                          ),
-                        ],
-                      ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: TextFormField(
-                            controller: weightController,
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              labelText: 'Weight',
-                              prefix: widget.exercise.isSingle
-                                  ? const Text('')
-                                  : const Text('2 x '),
-                              suffix: const Text('kg'),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(10, 10, 5, 0),
-                          child: OutlinedButton(
-                            onPressed: () => setState(() {
-                              weightController.text =
-                                  widget.exercise.getWeightAsString();
-                            }),
-                            child: const Text('Default'),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                          child: OutlinedButton(
-                            onPressed: () => setState(() {
-                              weightController.text = widget.exercise.max == 0
-                                  ? widget.exercise.getWeightAsString()
-                                  : widget.exercise.getMaxAsString();
-                            }),
-                            child: const Text('Max'),
-                          ),
-                        ),
-                      ],
-                    ),
-                    TextFormField(
-                      controller: repsController,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: 'Reps',
-                      ),
-                    ),
-                    TextFormField(
-                      controller: setsController,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(
-                        labelText: 'Sets',
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          ElevatedButton(
-                            onPressed: onSubmit,
-                            child: const Text('Save'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ],
+      child: Form(
+        key: formKey,
+        child: Column(
+          children: [
+            const Text(
+              'Add Exercise To Workouts',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+              ),
+            ),
+            const Divider(),
+            WorkoutPicker(
+              workoutId: widget.workoutId,
+              workout: selectedWorkout,
+              disabled: widget.disableWorkoutPicker,
+              setWorkout: (newWorkout) => setState(() {
+                selectedWorkout = newWorkout;
+              }),
+            ),
+            const Padding(padding: EdgeInsets.all(5)),
+            ExercisePicker(
+              exerciseId: widget.exerciseId,
+              setExercise: (newExercise) => setState(() {
+                selectedExercise = newExercise;
+                setWeightAndRepControllers(newExercise);
+              }),
+            ),
+            const Padding(padding: EdgeInsets.all(5)),
+            if (selectedExercise != null)
+              ...getExerciseFields(selectedExercise!),
+            TextFormField(
+              controller: setsController,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: 'Sets',
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 20.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    onPressed: onSubmit,
+                    child: const Text('Save'),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

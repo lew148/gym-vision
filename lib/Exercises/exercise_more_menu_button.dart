@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../db/classes/exercise.dart';
 import '../db/helpers/exercises_helper.dart';
 import '../enums.dart';
-import '../shared/forms/add_exercise_to_workouts_form.dart';
+import '../shared/forms/add_exercise_to_workout_form.dart';
 import '../shared/forms/edit_exercise_field_form.dart';
 
 class ExerciseMoreMenuButton extends StatefulWidget {
@@ -32,7 +32,10 @@ class _ExerciseMoreMenuButtonState extends State<ExerciseMoreMenuButton> {
               Padding(
                 padding: EdgeInsets.only(
                     bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: AddExerciseToWorkoutsForm(exercise: exercise),
+                child: AddExerciseToWorkoutForm(
+                  exerciseId: exercise.id,
+                  reloadState: widget.reloadState,
+                ),
               ),
             ],
           ),

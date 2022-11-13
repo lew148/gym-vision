@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/workout_exercise.dart';
-import 'package:gymvision/shared/forms/add_exercise_to_workouts_form.dart';
+import 'package:gymvision/shared/forms/add_exercise_to_workout_form.dart';
 import 'package:gymvision/shared/forms/edit_workout_exercise_form.dart';
 
 import '../db/classes/exercise.dart';
@@ -215,9 +215,10 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
             padding: EdgeInsets.only(
               bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
-            child: AddExerciseToWorkoutsForm(
-              exercise: exercise,
+            child: AddExerciseToWorkoutForm(
+              exerciseId: exercise.id,
               workoutId: workoutId,
+              reloadState: widget.reloadState,
             ),
           ),
         ],

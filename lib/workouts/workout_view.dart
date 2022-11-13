@@ -98,7 +98,7 @@ class _WorkoutViewState extends State<WorkoutView> {
     );
   }
 
-  void onAddExerciseClick(List<int> existingExerciseIds) =>
+  void onAddExerciseClick(int workoutId, List<int> existingExerciseIds) =>
       showModalBottomSheet(
         context: context,
         builder: (BuildContext context) => Column(
@@ -107,7 +107,11 @@ class _WorkoutViewState extends State<WorkoutView> {
             Padding(
               padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: AddExerciseToWorkoutForm(),
+              child: AddExerciseToWorkoutForm(
+                workoutId: workoutId,
+                disableWorkoutPicker: true,
+                reloadState: reloadState,
+              ),
             ),
           ],
         ),
@@ -329,8 +333,10 @@ class _WorkoutViewState extends State<WorkoutView> {
                     child: Row(
                       children: [
                         OutlinedButton(
-                          onPressed: () =>
-                              onAddExerciseClick(existingCategoryIds),
+                          onPressed: () => onAddExerciseClick(
+                            workout.id!,
+                            existingCategoryIds,
+                          ),
                           child: const Icon(
                             Icons.add,
                             size: 25,

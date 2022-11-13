@@ -53,8 +53,9 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
                     child: Card(
                       child: Container(
                         decoration: BoxDecoration(
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(5)),
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(5),
+                          ),
                           border: Border.all(
                             width: 2,
                             color: selectedIds.contains(c.id)
