@@ -106,9 +106,11 @@ class _WorkoutViewState extends State<WorkoutView> {
           children: [
             Padding(
               padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom),
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
               child: AddExerciseToWorkoutForm(
                 workoutId: workoutId,
+                excludeExerciseIds: existingExerciseIds,
                 disableWorkoutPicker: true,
                 reloadState: reloadState,
               ),
@@ -258,6 +260,7 @@ class _WorkoutViewState extends State<WorkoutView> {
     );
 
     List<int> existingCategoryIds = [];
+    List<int> existingExerciseIds = [];
 
     return FutureBuilder<Workout>(
       future: workout,
@@ -276,7 +279,16 @@ class _WorkoutViewState extends State<WorkoutView> {
             workout.workoutCategories!.isNotEmpty) {
           existingCategoryIds = workout.workoutCategories!
               .map(
-                (we) => we.categoryId,
+                (wc) => wc.categoryId,
+              )
+              .toList();
+        }
+
+        if (workout.workoutExercises != null &&
+            workout.workoutExercises!.isNotEmpty) {
+          existingExerciseIds = workout.workoutExercises!
+              .map(
+                (we) => we.exerciseId,
               )
               .toList();
         }
@@ -335,7 +347,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                         OutlinedButton(
                           onPressed: () => onAddExerciseClick(
                             workout.id!,
-                            existingCategoryIds,
+                            existingExerciseIds,
                           ),
                           child: const Icon(
                             Icons.add,

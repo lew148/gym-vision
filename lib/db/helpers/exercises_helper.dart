@@ -1,33 +1,40 @@
+import 'package:gymvision/db/classes/category.dart';
 import 'package:gymvision/db/classes/exercise.dart';
 import 'package:gymvision/db/db.dart';
 import 'package:sqflite/sqflite.dart';
 
 class ExercisesHelper {
-  Future<List<Exercise>> getExercisesForCategory(int categoryId) async =>
-      await getExercises(where: 'categoryId = ?', whereArgs: [categoryId]);
+  static Future<List<Exercise>> getExercisesForCategory(int categoryId) async =>
+      await getExercises(whereString: 'categoryId = $categoryId');
 
-  Future<List<Exercise>> getAllExercises() async => await getExercises();
+  static Future<List<Exercise>> getAllExercises() async => await getExercises();
 
-  Future<List<Exercise>> getAllExercisesExcludingIds(
-      List<int> excludedExerciseIds) async {
+  static Future<List<Exercise>> getAllExercisesExcludingIds(
+    List<int> excludedExerciseIds,
+  ) async {
     return await getExercises(
-      where:
-          'id NOT IN (${List.filled(excludedExerciseIds.length, '?').join(',')})',
-      whereArgs: excludedExerciseIds,
+      whereString: 'id NOT IN (${excludedExerciseIds.join(',')})',
     );
   }
 
-  Future<List<Exercise>> getExercises({
-    String? where,
-    List<Object?>? whereArgs,
-  }) async {
+  static Future<List<Exercise>> getExercises({String? whereString}) async {
     final db = await DatabaseHelper().getDb();
-    final List<Map<String, dynamic>> maps = await db.query(
-      'exercises',
-      where: where,
-      whereArgs: whereArgs,
-      orderBy: 'name ASC',
-    );
+    final List<Map<String, dynamic>> maps = await db.rawQuery('''
+      SELECT
+        exercises.id,
+        exercises.categoryId,
+        exercises.name,
+        exercises.weight,
+        exercises.max,
+        exercises.reps,
+        exercises.isSingle,
+        categories.name AS categoryName,
+        categories.emoji
+      FROM exercises
+      LEFT JOIN categories ON exercises.categoryId = categories.id
+      ${whereString != null ? 'WHERE $whereString' : ''}
+      ORDER BY exercises.name ASC;
+    ''');
 
     return List.generate(
       maps.length,
@@ -39,6 +46,11 @@ class ExercisesHelper {
         max: maps[i]['max'],
         reps: maps[i]['reps'],
         isSingle: maps[i]['isSingle'] == 1, // saved in db as integer (0 or 1)
+        category: Category(
+          id: maps[i]['categoryId'],
+          name: maps[i]['categoryName'],
+          emoji: maps[i]['emoji'],
+        ),
       ),
     );
   }
@@ -63,7 +75,7 @@ class ExercisesHelper {
     );
   }
 
-  Future<void> insertExercise(Exercise exercise) async {
+  static Future<void> insertExercise(Exercise exercise) async {
     final db = await DatabaseHelper().getDb();
     await exerciseIsValidAndUnique(db, exercise);
     await db.insert(
@@ -82,7 +94,7 @@ class ExercisesHelper {
     );
   }
 
-  Future<void> updateExercise(Exercise exercise) async {
+  static Future<void> updateExercise(Exercise exercise) async {
     final db = await DatabaseHelper().getDb();
     await exerciseIsValidAndUnique(db, exercise);
     await db.update(
@@ -93,7 +105,7 @@ class ExercisesHelper {
     );
   }
 
-  exerciseIsValidAndUnique(Database db, Exercise exercise) async {
+  static exerciseIsValidAndUnique(Database db, Exercise exercise) async {
     if (exercise.name.isEmpty) throw Exception('Exercise must have a name.');
 
     final numWithSameName = Sqflite.firstIntValue(await db.rawQuery('''

@@ -1,3 +1,5 @@
+import 'category.dart';
+
 class Exercise {
   int? id;
   final int categoryId;
@@ -7,6 +9,8 @@ class Exercise {
   int reps;
   bool isSingle;
 
+  Category? category;
+
   Exercise({
     this.id,
     required this.categoryId,
@@ -15,6 +19,7 @@ class Exercise {
     required this.max,
     required this.reps,
     required this.isSingle,
+    this.category,
   });
 
   String getWeightAsString() =>

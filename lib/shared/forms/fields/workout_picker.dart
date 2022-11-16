@@ -5,14 +5,12 @@ import 'package:gymvision/db/helpers/workouts_helper.dart';
 class WorkoutPicker extends StatefulWidget {
   final int? workoutId;
   final Workout? workout;
-  final bool disabled;
   final Function setWorkout;
 
   const WorkoutPicker({
     Key? key,
     this.workoutId,
     this.workout,
-    this.disabled = false,
     required this.setWorkout,
   }) : super(key: key);
 
@@ -153,10 +151,10 @@ class _WorkoutPickerState extends State<WorkoutPicker> {
               children: [
                 Expanded(
                   child: GestureDetector(
-                    onTap: widget.disabled
-                        ? null
-                        : () => showWorkoutPicker(
-                            allWorkoutsSnapshot.data!, workout),
+                    onTap: () => showWorkoutPicker(
+                      allWorkoutsSnapshot.data!,
+                      workout,
+                    ),
                     child: Container(
                       decoration: BoxDecoration(
                         border: Border(
@@ -183,20 +181,19 @@ class _WorkoutPickerState extends State<WorkoutPicker> {
                               ),
                             ),
                           ),
-                          if (!widget.disabled) ...getPickerIcons(),
+                          ...getPickerIcons(),
                         ],
                       ),
                     ),
                   ),
                 ),
-                if (!widget.disabled)
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 10, 5, 0),
-                    child: OutlinedButton(
-                      onPressed: () => widget.setWorkout(mostRecentWorkout),
-                      child: const Text('Most Recent'),
-                    ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 10, 5, 0),
+                  child: OutlinedButton(
+                    onPressed: () => widget.setWorkout(mostRecentWorkout),
+                    child: const Text('Most Recent'),
                   ),
+                ),
               ],
             );
           }),

@@ -29,7 +29,7 @@ class _AddExerciseFormState extends State<AddExerciseForm> {
       Navigator.pop(context);
 
       try {
-        await ExercisesHelper()
+        await ExercisesHelper
             .insertExercise(Exercise(
               categoryId: widget.categoryId,
               name: nameController.text,

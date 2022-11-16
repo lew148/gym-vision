@@ -8,6 +8,8 @@ import 'fields/workout_picker.dart';
 class AddExerciseToWorkoutForm extends StatefulWidget {
   final int? workoutId;
   final int? exerciseId;
+  final List<int>? excludeExerciseIds;
+  final List<int>? categoryIds;
   final bool disableWorkoutPicker;
   final bool disableExercisePicker;
   final Function reloadState;
@@ -16,6 +18,8 @@ class AddExerciseToWorkoutForm extends StatefulWidget {
     Key? key,
     this.workoutId,
     this.exerciseId,
+    this.excludeExerciseIds,
+    this.categoryIds,
     this.disableWorkoutPicker = false,
     this.disableExercisePicker = false,
     required this.reloadState,
@@ -35,9 +39,14 @@ class _AddExerciseToWorkoutFormState extends State<AddExerciseToWorkoutForm> {
   TextEditingController weightController = TextEditingController();
   TextEditingController repsController = TextEditingController();
 
-  void setWeightAndRepControllers(Exercise ex) {
-    weightController.text = ex.getWeightAsString();
-    repsController.text = ex.reps.toString();
+  void setWeightAndRepControllers(Exercise? ex) {
+    if (ex != null) {
+      weightController.text = ex.getWeightAsString();
+      repsController.text = ex.reps.toString();
+    } else {
+      weightController.text = '';
+      repsController.text = '';
+    }
   }
 
   List<Widget> getExerciseFields(Exercise ex) => [
@@ -133,29 +142,32 @@ class _AddExerciseToWorkoutFormState extends State<AddExerciseToWorkoutForm> {
         child: Column(
           children: [
             const Text(
-              'Add Exercise To Workouts',
+              'Add Exercise To Workout',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
               ),
             ),
             const Divider(),
-            WorkoutPicker(
-              workoutId: widget.workoutId,
-              workout: selectedWorkout,
-              disabled: widget.disableWorkoutPicker,
-              setWorkout: (newWorkout) => setState(() {
-                selectedWorkout = newWorkout;
-              }),
-            ),
+            if (!widget.disableWorkoutPicker)
+              WorkoutPicker(
+                workoutId: widget.workoutId,
+                workout: selectedWorkout,
+                setWorkout: (newWorkout) => setState(() {
+                  selectedWorkout = newWorkout;
+                }),
+              ),
             const Padding(padding: EdgeInsets.all(5)),
-            ExercisePicker(
-              exerciseId: widget.exerciseId,
-              setExercise: (newExercise) => setState(() {
-                selectedExercise = newExercise;
-                setWeightAndRepControllers(newExercise);
-              }),
-            ),
+            if (!widget.disableExercisePicker)
+              ExercisePicker(
+                exerciseId: widget.exerciseId,
+                exercise: selectedExercise,
+                excludeIds: widget.excludeExerciseIds,
+                setExercise: (newExercise) => setState(() {
+                  selectedExercise = newExercise;
+                  setWeightAndRepControllers(newExercise);
+                }),
+              ),
             const Padding(padding: EdgeInsets.all(5)),
             if (selectedExercise != null)
               ...getExerciseFields(selectedExercise!),

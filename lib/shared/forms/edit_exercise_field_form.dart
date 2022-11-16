@@ -126,7 +126,7 @@ class _EditExerciseFieldFormState extends State<EditExerciseFieldForm> {
           }
 
           if (!doUpdate) return;
-          await ExercisesHelper().updateExercise(widget.exercise);
+          await ExercisesHelper.updateExercise(widget.exercise);
         } catch (ex) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Failed to edit exercise: $ex')),

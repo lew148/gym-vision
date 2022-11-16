@@ -129,7 +129,7 @@ class _CategoryViewState extends State<CategoryView> {
   @override
   Widget build(BuildContext context) {
     final Future<List<Exercise>> exercises =
-        ExercisesHelper().getExercisesForCategory(widget.categoryId);
+        ExercisesHelper.getExercisesForCategory(widget.categoryId);
 
     return Scaffold(
       appBar: AppBar(
