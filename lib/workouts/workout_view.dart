@@ -30,7 +30,8 @@ class _WorkoutViewState extends State<WorkoutView> {
           children: [
             Padding(
               padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom),
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
               child: AddCategoryToWorkoutForm(
                 workoutId: widget.workoutId,
                 selectedCategoryIds: existingCategoryIds,
@@ -98,7 +99,8 @@ class _WorkoutViewState extends State<WorkoutView> {
     );
   }
 
-  void onAddExerciseClick(int workoutId, List<int> existingExerciseIds, List<int>? categoryIds) =>
+  void onAddExerciseClick(int workoutId, List<int> existingExerciseIds,
+          List<int>? categoryIds) =>
       showModalBottomSheet(
         context: context,
         builder: (BuildContext context) => Column(
@@ -283,6 +285,8 @@ class _WorkoutViewState extends State<WorkoutView> {
                 (wc) => wc.categoryId,
               )
               .toList();
+        } else {
+          existingCategoryIds = [];
         }
 
         if (workout.workoutExercises != null &&
@@ -347,10 +351,11 @@ class _WorkoutViewState extends State<WorkoutView> {
                       children: [
                         OutlinedButton(
                           onPressed: () => onAddExerciseClick(
-                            workout.id!,
-                            existingExerciseIds,
-                            workout.workoutCategories?.map((wc) => wc.categoryId).toList()
-                          ),
+                              workout.id!,
+                              existingExerciseIds,
+                              workout.workoutCategories
+                                  ?.map((wc) => wc.categoryId)
+                                  .toList()),
                           child: const Icon(
                             Icons.add,
                             size: 25,

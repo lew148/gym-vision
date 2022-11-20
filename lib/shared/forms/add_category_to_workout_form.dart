@@ -32,16 +32,35 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
     selectedIds = widget.selectedCategoryIds;
   }
 
-  void onCategoryTap(int categoryId) {
-    setState(() {
-      selectedIds.contains(categoryId)
-          ? selectedIds.remove(categoryId)
-          : selectedIds.add(categoryId);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    onSubmit() async {
+      Navigator.pop(context);
+
+      try {
+        await WorkoutsHelper.setWorkoutCategories(
+          widget.workoutId,
+          selectedIds,
+        );
+      } catch (ex) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to add categories to workout: $ex')),
+        );
+      }
+
+      widget.reloadState();
+    }
+
+    void onCategoryTap(int categoryId) async {
+      setState(() {
+        selectedIds.contains(categoryId)
+            ? selectedIds.remove(categoryId)
+            : selectedIds.add(categoryId);
+      });
+
+      await onSubmit();
+    }
+
     Widget getCategorySelect(List<Category> categories) => Wrap(
           alignment: WrapAlignment.center,
           children: categories
@@ -73,23 +92,6 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
               .toList(),
         );
 
-    void onSubmit() async {
-      Navigator.pop(context);
-
-      try {
-        await WorkoutsHelper.setWorkoutCategories(
-          widget.workoutId,
-          selectedIds,
-        );
-      } catch (ex) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to add categories to workout: $ex')),
-        );
-      }
-
-      widget.reloadState();
-    }
-
     return Container(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -113,21 +115,9 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
                 );
               }
 
-              return Column(
-                children: [
-                  const Padding(padding: EdgeInsets.all(15)),
-                  getCategorySelect(snapshot.data!),
-                  const Padding(padding: EdgeInsets.all(15)),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      ElevatedButton(
-                        onPressed: onSubmit,
-                        child: const Text('Save'),
-                      ),
-                    ],
-                  ),
-                ],
+              return Padding(
+                padding: const EdgeInsets.only(top: 15, bottom: 15),
+                child: getCategorySelect(snapshot.data!),
               );
             },
           ),
