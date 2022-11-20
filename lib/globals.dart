@@ -1,4 +1,4 @@
-String appVersion = 'V 1.0.0.9';
+String appVersion = 'V 1.0.0.10';
 
 getNumberStringOrDefault(String value) => value == '' ? '0' : value;
 
