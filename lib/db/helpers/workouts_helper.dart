@@ -229,48 +229,6 @@ class WorkoutsHelper {
     }
   }
 
-  static toremove_addExercisesToWorkout(
-      int workoutId, List<int> exerciseIds) async {
-    final db = await DatabaseHelper().getDb();
-    for (var exId in exerciseIds) {
-      await db.insert(
-        'workout_exercises',
-        WorkoutExercise(
-          workoutId: workoutId,
-          exerciseId: exId,
-          done: false,
-          sets: 3,
-        ).toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-    }
-  }
-
-  static addExerciseToWorkouts({
-    required int exerciseId,
-    required List<int> workoutIds,
-    double? weight,
-    int? reps,
-    int? sets,
-    bool? done,
-  }) async {
-    final db = await DatabaseHelper().getDb();
-    for (var wId in workoutIds) {
-      await db.insert(
-        'workout_exercises',
-        WorkoutExercise(
-          workoutId: wId,
-          exerciseId: exerciseId,
-          sets: sets ?? 3,
-          weight: weight ?? 0,
-          reps: reps ?? 0,
-          done: done ?? false,
-        ).toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
-    }
-  }
-
   static addExerciseToWorkout({
     required int exerciseId,
     required int workoutId,
@@ -278,15 +236,21 @@ class WorkoutsHelper {
     int? reps,
     int? sets,
     bool? done,
-  }) async =>
-      await addExerciseToWorkouts(
+  }) async {
+    final db = await DatabaseHelper().getDb();
+    await db.insert(
+      'workout_exercises',
+      WorkoutExercise(
+        workoutId: workoutId,
         exerciseId: exerciseId,
-        workoutIds: [workoutId],
-        weight: weight,
-        reps: reps,
-        sets: sets,
-        done: done,
-      );
+        sets: sets ?? 3,
+        weight: weight ?? 0,
+        reps: reps ?? 0,
+        done: done ?? false,
+      ).toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
 
   static updateWorkoutExercise(WorkoutExercise we) async {
     final db = await DatabaseHelper().getDb();

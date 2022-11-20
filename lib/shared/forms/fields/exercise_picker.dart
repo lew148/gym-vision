@@ -8,6 +8,8 @@ class ExercisePicker extends StatefulWidget {
   final int? exerciseId;
   final Exercise? exercise;
   final List<int>? excludeIds;
+  final List<int>? categoryIds;
+  final bool disabled;
   final Function setExercise;
 
   const ExercisePicker({
@@ -15,6 +17,8 @@ class ExercisePicker extends StatefulWidget {
     this.exerciseId,
     this.exercise,
     this.excludeIds,
+    this.categoryIds,
+    this.disabled = false,
     required this.setExercise,
   }) : super(key: key);
 
@@ -29,9 +33,8 @@ class _ExercisePickerState extends State<ExercisePicker> {
   @override
   void initState() {
     super.initState();
-    allExercises = widget.excludeIds != null && widget.excludeIds!.isNotEmpty
-        ? ExercisesHelper.getAllExercisesExcludingIds(widget.excludeIds!)
-        : ExercisesHelper.getAllExercises();
+    allExercises =
+        ExercisesHelper.getAllExercisesExcludingIds(widget.excludeIds, widget.categoryIds);
 
     if (widget.exerciseId != null && widget.exercise == null) {
       selectedExercise = ExercisesHelper.getExercise(widget.exerciseId!);
@@ -184,8 +187,12 @@ class _ExercisePickerState extends State<ExercisePicker> {
                 children: [
                   Expanded(
                     child: GestureDetector(
-                      onTap: () => showExercisePicker(
-                          allExercisesSnapshot.data!, exercise),
+                      onTap: widget.disabled
+                          ? null
+                          : () => showExercisePicker(
+                                allExercisesSnapshot.data!,
+                                exercise,
+                              ),
                       child: Container(
                         decoration: BoxDecoration(
                           border: Border(
@@ -194,25 +201,48 @@ class _ExercisePickerState extends State<ExercisePicker> {
                             ),
                           ),
                         ),
-                        padding: const EdgeInsets.all(10),
-                        height: 50,
+                        padding: const EdgeInsets.only(top: 10, bottom: 5),
+                        height: 60,
                         child: Row(
                           children: [
                             Expanded(
-                              child: Text(
-                                exercise == null
-                                    ? 'Select Exercise'
-                                    : exercise.name,
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w400,
-                                  color: exercise == null
-                                      ? Theme.of(context).colorScheme.shadow
-                                      : null,
-                                ),
+                              child: Column(
+                                children: [
+                                  Row(children: [
+                                    Text(
+                                      exercise == null ? '' : 'Exercise',
+                                      style: TextStyle(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .shadow,
+                                      ),
+                                    ),
+                                  ]),
+                                  const Padding(
+                                    padding: EdgeInsets.only(bottom: 5),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        exercise == null
+                                            ? 'Select Exercise'
+                                            : exercise.name,
+                                        style: TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.w400,
+                                          color: exercise == null
+                                              ? Theme.of(context)
+                                                  .colorScheme
+                                                  .shadow
+                                              : null,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ),
-                            ...getPickerIcons(),
+                            if (!widget.disabled) ...getPickerIcons(),
                           ],
                         ),
                       ),

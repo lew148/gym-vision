@@ -5,12 +5,14 @@ import 'package:gymvision/db/helpers/workouts_helper.dart';
 class WorkoutPicker extends StatefulWidget {
   final int? workoutId;
   final Workout? workout;
+  final bool disabled;
   final Function setWorkout;
 
   const WorkoutPicker({
     Key? key,
     this.workoutId,
     this.workout,
+    this.disabled = false,
     required this.setWorkout,
   }) : super(key: key);
 
@@ -151,10 +153,12 @@ class _WorkoutPickerState extends State<WorkoutPicker> {
               children: [
                 Expanded(
                   child: GestureDetector(
-                    onTap: () => showWorkoutPicker(
-                      allWorkoutsSnapshot.data!,
-                      workout,
-                    ),
+                    onTap: widget.disabled
+                        ? null
+                        : () => showWorkoutPicker(
+                              allWorkoutsSnapshot.data!,
+                              workout,
+                            ),
                     child: Container(
                       decoration: BoxDecoration(
                         border: Border(
@@ -163,37 +167,56 @@ class _WorkoutPickerState extends State<WorkoutPicker> {
                           ),
                         ),
                       ),
-                      padding: const EdgeInsets.all(10),
-                      height: 50,
+                      padding: const EdgeInsets.only(top: 10, bottom: 5),
+                      height: 60,
                       child: Row(
                         children: [
                           Expanded(
-                            child: Text(
-                              workout == null
-                                  ? 'Select Workout'
-                                  : workout.getDateAndTimeString(),
-                              style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w400,
-                                color: workout == null
-                                    ? Theme.of(context).colorScheme.shadow
-                                    : null,
-                              ),
+                            child: Column(
+                              children: [
+                                Row(children: [
+                                  Text(
+                                    workout == null ? '' : 'Workout',
+                                    style: TextStyle(
+                                      color:
+                                          Theme.of(context).colorScheme.shadow,
+                                    ),
+                                  ),
+                                ]),
+                                const Padding(
+                                  padding: EdgeInsets.only(bottom: 5),
+                                ),
+                                Row(children: [
+                                  Text(
+                                    workout == null
+                                        ? 'Select Workout'
+                                        : workout.getDateAndTimeString(),
+                                    style: TextStyle(
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w400,
+                                      color: workout == null
+                                          ? Theme.of(context).colorScheme.shadow
+                                          : null,
+                                    ),
+                                  ),
+                                ]),
+                              ],
                             ),
                           ),
-                          ...getPickerIcons(),
+                          if (!widget.disabled) ...getPickerIcons(),
                         ],
                       ),
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 10, 5, 0),
-                  child: OutlinedButton(
-                    onPressed: () => widget.setWorkout(mostRecentWorkout),
-                    child: const Text('Most Recent'),
+                if (!widget.disabled)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 10, 5, 0),
+                    child: OutlinedButton(
+                      onPressed: () => widget.setWorkout(mostRecentWorkout),
+                      child: const Text('Most Recent'),
+                    ),
                   ),
-                ),
               ],
             );
           }),

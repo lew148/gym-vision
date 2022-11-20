@@ -98,7 +98,7 @@ class _WorkoutViewState extends State<WorkoutView> {
     );
   }
 
-  void onAddExerciseClick(int workoutId, List<int> existingExerciseIds) =>
+  void onAddExerciseClick(int workoutId, List<int> existingExerciseIds, List<int>? categoryIds) =>
       showModalBottomSheet(
         context: context,
         builder: (BuildContext context) => Column(
@@ -111,6 +111,7 @@ class _WorkoutViewState extends State<WorkoutView> {
               child: AddExerciseToWorkoutForm(
                 workoutId: workoutId,
                 excludeExerciseIds: existingExerciseIds,
+                categoryIds: categoryIds,
                 disableWorkoutPicker: true,
                 reloadState: reloadState,
               ),
@@ -348,6 +349,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                           onPressed: () => onAddExerciseClick(
                             workout.id!,
                             existingExerciseIds,
+                            workout.workoutCategories?.map((wc) => wc.categoryId).toList()
                           ),
                           child: const Icon(
                             Icons.add,

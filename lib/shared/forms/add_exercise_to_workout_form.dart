@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/workout.dart';
 
 import '../../db/classes/exercise.dart';
+import '../../db/helpers/workouts_helper.dart';
+import '../../globals.dart';
 import 'fields/exercise_picker.dart';
 import 'fields/workout_picker.dart';
 
@@ -97,22 +99,21 @@ class _AddExerciseToWorkoutFormState extends State<AddExerciseToWorkoutForm> {
   @override
   Widget build(BuildContext context) {
     void onSubmit() async {
-      if (selectedExercise == null || selectedWorkout == null) {
-        return; // todo: show error
-      }
+      if (selectedExercise == null && widget.exerciseId == null) return; // todo: show error
+      if (selectedWorkout == null && widget.workoutId == null) return; // todo: show error
 
       if (formKey.currentState!.validate()) {
         Navigator.pop(context);
 
         try {
-          // await WorkoutsHelper.addExerciseToWorkouts(
-          //   exerciseId: exercise!.id!,
-          //   workoutId: workout!.id,
-          //   weight:
-          //       double.parse(getNumberStringOrDefault(weightController.text)),
-          //   reps: int.parse(getNumberStringOrDefault(repsController.text)),
-          //   sets: int.parse(getNumberStringOrDefault(setsController.text)),
-          // );
+          await WorkoutsHelper.addExerciseToWorkout(
+            exerciseId: selectedExercise?.id ?? widget.exerciseId!,
+            workoutId: selectedWorkout?.id ?? widget.workoutId!,
+            weight:
+                double.parse(getNumberStringOrDefault(weightController.text)),
+            reps: int.parse(getNumberStringOrDefault(repsController.text)),
+            sets: int.parse(getNumberStringOrDefault(setsController.text)),
+          );
 
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -149,25 +150,26 @@ class _AddExerciseToWorkoutFormState extends State<AddExerciseToWorkoutForm> {
               ),
             ),
             const Divider(),
-            if (!widget.disableWorkoutPicker)
-              WorkoutPicker(
-                workoutId: widget.workoutId,
-                workout: selectedWorkout,
-                setWorkout: (newWorkout) => setState(() {
-                  selectedWorkout = newWorkout;
-                }),
-              ),
+            WorkoutPicker(
+              workoutId: widget.workoutId,
+              workout: selectedWorkout,
+              disabled: widget.disableWorkoutPicker,
+              setWorkout: (newWorkout) => setState(() {
+                selectedWorkout = newWorkout;
+              }),
+            ),
             const Padding(padding: EdgeInsets.all(5)),
-            if (!widget.disableExercisePicker)
-              ExercisePicker(
-                exerciseId: widget.exerciseId,
-                exercise: selectedExercise,
-                excludeIds: widget.excludeExerciseIds,
-                setExercise: (newExercise) => setState(() {
-                  selectedExercise = newExercise;
-                  setWeightAndRepControllers(newExercise);
-                }),
-              ),
+            ExercisePicker(
+              exerciseId: widget.exerciseId,
+              exercise: selectedExercise,
+              excludeIds: widget.excludeExerciseIds,
+              categoryIds: widget.categoryIds,
+              disabled: widget.disableExercisePicker,
+              setExercise: (newExercise) => setState(() {
+                selectedExercise = newExercise;
+                setWeightAndRepControllers(newExercise);
+              }),
+            ),
             const Padding(padding: EdgeInsets.all(5)),
             if (selectedExercise != null)
               ...getExerciseFields(selectedExercise!),

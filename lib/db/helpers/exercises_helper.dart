@@ -7,14 +7,29 @@ class ExercisesHelper {
   static Future<List<Exercise>> getExercisesForCategory(int categoryId) async =>
       await getExercises(whereString: 'categoryId = $categoryId');
 
-  static Future<List<Exercise>> getAllExercises() async => await getExercises();
-
   static Future<List<Exercise>> getAllExercisesExcludingIds(
-    List<int> excludedExerciseIds,
+    List<int>? excludedExerciseIds,
+    List<int>? categoryIds,
   ) async {
-    return await getExercises(
-      whereString: 'id NOT IN (${excludedExerciseIds.join(',')})',
-    );
+    StringBuffer? whereString;
+
+    if (excludedExerciseIds != null) {
+      whereString = StringBuffer(
+        'exercises.id NOT IN (${excludedExerciseIds.join(',')})',
+      );
+    }
+
+    if (categoryIds != null) {
+      if (whereString == null) {
+        whereString = StringBuffer();
+      } else {
+        whereString.write(' AND ');
+      }
+
+      whereString.write('exercises.categoryId IN (${categoryIds.join(',')})');
+    }
+
+    return await getExercises(whereString: whereString?.toString());
   }
 
   static Future<List<Exercise>> getExercises({String? whereString}) async {
