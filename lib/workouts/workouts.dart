@@ -114,6 +114,9 @@ class _WorkoutsState extends State<Workouts> {
       );
 
   Widget getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories) {
+    workoutCategories
+        .sort(((a, b) => a.category!.name.compareTo(b.category!.name)));
+
     return Expanded(
       child: Wrap(
         alignment: WrapAlignment.end,

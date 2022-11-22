@@ -55,6 +55,8 @@ class _ExercisesState extends State<Exercises> {
   List<Widget> getCategoriesRows(List<Category> categories) {
     List<Widget> rows = [];
 
+    categories.sort(((a, b) => a.name.compareTo(b.name)));
+
     for (var i = 0; i < categories.length; i += 2) {
       var categoriesForRow = categories.sublist(
           i, i + 2 > categories.length ? categories.length : i + 2);

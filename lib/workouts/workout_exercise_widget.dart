@@ -132,14 +132,23 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
               child: InkWell(
                 onTap: () {
                   Navigator.pop(context);
-                  onEditWorkoutExerciseTap(we);
+                  Navigator.of(context)
+                      .push(
+                        MaterialPageRoute(
+                          builder: (context) => ExerciseView(
+                            exerciseId: we.exerciseId,
+                            exerciseName: we.exercise!.name,
+                          ),
+                        ),
+                      )
+                      .then((value) => widget.reloadState());
                 },
                 child: Row(
                   children: const [
-                    Icon(Icons.edit),
+                    Icon(Icons.visibility),
                     Padding(padding: EdgeInsets.all(5)),
                     Text(
-                      'Edit Workout Exercise',
+                      'View Exercise',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w400,
@@ -238,16 +247,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
             child: InkWell(
               onTap: widget.displayOnly
                   ? null
-                  : () => Navigator.of(context)
-                      .push(
-                        MaterialPageRoute(
-                          builder: (context) => ExerciseView(
-                            exerciseId: we.exerciseId,
-                            exerciseName: we.exercise!.name,
-                          ),
-                        ),
-                      )
-                      .then((value) => widget.reloadState()),
+                  : () => onEditWorkoutExerciseTap(we),
               child: Card(
                 child: Padding(
                   padding: const EdgeInsets.all(10),

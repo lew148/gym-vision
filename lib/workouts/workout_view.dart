@@ -53,6 +53,9 @@ class _WorkoutViewState extends State<WorkoutView> {
       );
     }
 
+    workoutCategories
+        .sort((a, b) => a.category!.name.compareTo(b.category!.name));
+
     return Wrap(
       alignment: WrapAlignment.spaceEvenly,
       children: workoutCategories
@@ -296,6 +299,8 @@ class _WorkoutViewState extends State<WorkoutView> {
                 (we) => we.exerciseId,
               )
               .toList();
+        } else {
+          existingExerciseIds = [];
         }
 
         return Scaffold(

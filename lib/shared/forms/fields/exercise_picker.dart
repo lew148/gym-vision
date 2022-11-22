@@ -33,8 +33,8 @@ class _ExercisePickerState extends State<ExercisePicker> {
   @override
   void initState() {
     super.initState();
-    allExercises =
-        ExercisesHelper.getAllExercisesExcludingIds(widget.excludeIds, widget.categoryIds);
+    allExercises = ExercisesHelper.getAllExercisesExcludingIds(
+        widget.excludeIds, widget.categoryIds);
 
     if (widget.exerciseId != null && widget.exercise == null) {
       selectedExercise = ExercisesHelper.getExercise(widget.exerciseId!);
@@ -90,6 +90,8 @@ class _ExercisePickerState extends State<ExercisePicker> {
     List<Exercise> allExercises,
     Exercise? selectedExercise,
   ) {
+    allExercises.sort(((a, b) => a.category!.name.compareTo(b.category!.name)));
+
     final Map<int, List<Exercise>> groupedExercises =
         groupBy(allExercises, (e) => e.categoryId);
 
@@ -133,6 +135,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                         ),
                         padding: const EdgeInsets.all(15),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
                               e.name,
@@ -140,7 +143,59 @@ class _ExercisePickerState extends State<ExercisePicker> {
                                 fontSize: 17,
                                 fontWeight: FontWeight.w400,
                               ),
-                            )
+                            ),
+                            Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (e.hasWeight())
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 5),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.fitness_center,
+                                            size: 15,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .shadow,
+                                          ),
+                                          const Padding(
+                                              padding: EdgeInsets.all(5)),
+                                          Text(
+                                            e.getNumberedWeightString(
+                                                showNone: false),
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .shadow,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.repeat,
+                                        size: 15,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .shadow,
+                                      ),
+                                      const Padding(padding: EdgeInsets.all(5)),
+                                      Text(
+                                        '${e.reps} reps',
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .shadow,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ]),
                           ],
                         ),
                       ),

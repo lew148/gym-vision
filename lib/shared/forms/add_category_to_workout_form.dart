@@ -61,36 +61,39 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
       await onSubmit();
     }
 
-    Widget getCategorySelect(List<Category> categories) => Wrap(
-          alignment: WrapAlignment.center,
-          children: categories
-              .map(
-                (c) => Padding(
-                  padding: const EdgeInsets.all(2),
-                  child: GestureDetector(
-                    onTap: () => onCategoryTap(c.id!),
-                    child: Card(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(5),
-                          ),
-                          border: Border.all(
-                            width: 2,
-                            color: selectedIds.contains(c.id)
-                                ? Theme.of(context).colorScheme.primary
-                                : Colors.transparent,
-                          ),
+    Widget getCategorySelect(List<Category> categories) {
+      categories.sort(((a, b) => a.name.compareTo(b.name)));
+      return Wrap(
+        alignment: WrapAlignment.center,
+        children: categories
+            .map(
+              (c) => Padding(
+                padding: const EdgeInsets.all(2),
+                child: GestureDetector(
+                  onTap: () => onCategoryTap(c.id!),
+                  child: Card(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(5),
                         ),
-                        padding: const EdgeInsets.fromLTRB(25, 20, 25, 20),
-                        child: Text(c.getDisplayName()),
+                        border: Border.all(
+                          width: 2,
+                          color: selectedIds.contains(c.id)
+                              ? Theme.of(context).colorScheme.primary
+                              : Colors.transparent,
+                        ),
                       ),
+                      padding: const EdgeInsets.fromLTRB(25, 20, 25, 20),
+                      child: Text(c.getDisplayName()),
                     ),
                   ),
                 ),
-              )
-              .toList(),
-        );
+              ),
+            )
+            .toList(),
+      );
+    }
 
     return Container(
       padding: const EdgeInsets.all(20),
