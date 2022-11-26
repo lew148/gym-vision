@@ -240,6 +240,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   }
 
   List<Widget> getWorkoutExerciseWidget(List<WorkoutExercise> wes) {
+    wes.sort((a, b) => b.getWeight().compareTo(a.getWeight()));
+
     List<Widget> widgets = wes.map((we) {
       String getRepsString() {
         int reps = we.reps ?? we.exercise!.reps;
