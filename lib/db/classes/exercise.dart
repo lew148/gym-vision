@@ -47,6 +47,8 @@ class Exercise {
 
   String getRepsString() => reps <= 0 ? 'None' : reps.toString();
 
+  bool singleRep() => reps == 1;
+
   Map<String, dynamic> toMap() => {
         'id': id,
         'categoryId': categoryId,

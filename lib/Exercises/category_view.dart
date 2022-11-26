@@ -83,7 +83,7 @@ class _CategoryViewState extends State<CategoryView> {
                               ),
                               const Padding(padding: EdgeInsets.all(5)),
                               Text(
-                                '${exercise.reps} reps',
+                                '${exercise.reps} rep${exercise.singleRep() ? '' : 's'}',
                                 style: TextStyle(
                                   fontSize: 15,
                                   color: Theme.of(context).colorScheme.shadow,

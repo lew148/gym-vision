@@ -185,7 +185,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                                       ),
                                       const Padding(padding: EdgeInsets.all(5)),
                                       Text(
-                                        '${e.reps} reps',
+                                        '${e.reps} rep${e.singleRep() ? '' : 's'}',
                                         style: TextStyle(
                                           fontSize: 15,
                                           color: Theme.of(context)

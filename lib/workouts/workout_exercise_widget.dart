@@ -240,77 +240,82 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   }
 
   List<Widget> getWorkoutExerciseWidget(List<WorkoutExercise> wes) {
-    List<Widget> widgets = wes
-        .map(
-          (we) => Padding(
-            padding: const EdgeInsets.only(right: 10, left: 10),
-            child: InkWell(
-              onTap: widget.displayOnly
-                  ? null
-                  : () => onEditWorkoutExerciseTap(we),
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: we.thisOrExerciseHasWeight()
-                            ? Row(
-                                children: [
-                                  const Icon(
-                                    Icons.fitness_center,
-                                    size: 15,
-                                  ),
-                                  const Padding(padding: EdgeInsets.all(5)),
-                                  Text(we.hasWeight()
-                                      ? we.getNumberedWeightString(
-                                          showNone: false)
-                                      : we.exercise!.getNumberedWeightString(
-                                          showNone: false)),
-                                ],
-                              )
-                            : const Center(
-                                child: Text(
-                                  '-',
-                                  style: TextStyle(fontSize: 30),
-                                ),
+    List<Widget> widgets = wes.map((we) {
+      String getRepsString() {
+        int reps = we.reps ?? we.exercise!.reps;
+        return '$reps rep${reps == 1 ? '' : 's'}';
+      }
+
+      String getSetsString() {
+        int sets = we.sets!;
+        return '$sets set${sets == 1 ? '' : 's'}';
+      }
+
+      return Padding(
+        padding: const EdgeInsets.only(right: 10, left: 10),
+        child: InkWell(
+          onTap: widget.displayOnly ? null : () => onEditWorkoutExerciseTap(we),
+          child: Card(
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: we.thisOrExerciseHasWeight()
+                        ? Row(
+                            children: [
+                              const Icon(
+                                Icons.fitness_center,
+                                size: 15,
                               ),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.repeat,
-                              size: 15,
+                              const Padding(padding: EdgeInsets.all(5)),
+                              Text(we.hasWeight()
+                                  ? we.getNumberedWeightString(showNone: false)
+                                  : we.exercise!.getNumberedWeightString(
+                                      showNone: false)),
+                            ],
+                          )
+                        : const Center(
+                            child: Text(
+                              '-',
+                              style: TextStyle(fontSize: 30),
                             ),
-                            const Padding(padding: EdgeInsets.all(5)),
-                            Text('${we.reps ?? we.exercise!.reps} reps'),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: Text('${we.sets} sets'),
-                      ),
-                      if (!widget.displayOnly)
-                        Expanded(
-                          flex: 1,
-                          child: IconButton(
-                            splashRadius: 20,
-                            onPressed: () => showMoreMenu(we),
-                            icon: const Icon(Icons.more_vert),
                           ),
-                        ),
-                    ],
                   ),
-                ),
+                  Expanded(
+                    flex: 3,
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.repeat,
+                          size: 15,
+                        ),
+                        const Padding(padding: EdgeInsets.all(5)),
+                        Text(getRepsString()),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 3,
+                    child: Text(getSetsString()),
+                  ),
+                  if (!widget.displayOnly)
+                    Expanded(
+                      flex: 1,
+                      child: IconButton(
+                        splashRadius: 20,
+                        onPressed: () => showMoreMenu(we),
+                        icon: const Icon(Icons.more_vert),
+                      ),
+                    ),
+                ],
               ),
             ),
           ),
-        )
-        .toList();
+        ),
+      );
+    }).toList();
 
     if (widget.displayOnly) return widgets; // no add button on display
 
