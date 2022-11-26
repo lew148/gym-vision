@@ -264,7 +264,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                 children: [
                   Expanded(
                     flex: 3,
-                    child: we.thisOrExerciseHasWeight()
+                    child: we.hasWeight()
                         ? Row(
                             children: [
                               const Icon(
@@ -272,10 +272,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                                 size: 15,
                               ),
                               const Padding(padding: EdgeInsets.all(5)),
-                              Text(we.hasWeight()
-                                  ? we.getNumberedWeightString(showNone: false)
-                                  : we.exercise!.getNumberedWeightString(
-                                      showNone: false)),
+                              Text(we.getNumberedWeightString(showNone: false)),
                             ],
                           )
                         : const Center(

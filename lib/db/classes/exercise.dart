@@ -35,7 +35,7 @@ class Exercise {
     return '${isSingle ? '' : '2 x '}${getWeightString(showNone: showNone)}';
   }
 
-  bool hasWeight() => weight > 0;
+  bool hasWeight() => weight != 0;
 
   String getMaxAsString() {
     if (max == null) return '0';

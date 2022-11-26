@@ -34,7 +34,9 @@ class _ExercisePickerState extends State<ExercisePicker> {
   void initState() {
     super.initState();
     allExercises = ExercisesHelper.getAllExercisesExcludingIds(
-        widget.excludeIds, widget.categoryIds);
+      widget.excludeIds,
+      widget.categoryIds,
+    );
 
     if (widget.exerciseId != null && widget.exercise == null) {
       selectedExercise = ExercisesHelper.getExercise(widget.exerciseId!);
@@ -237,6 +239,13 @@ class _ExercisePickerState extends State<ExercisePicker> {
             future: selectedExercise,
             builder: ((context, snapshot) {
               final exercise = widget.exercise ?? snapshot.data;
+
+              // first build of pre-selected exercise
+              if (widget.exerciseId != null && widget.exercise == null) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  widget.setExercise(exercise);
+                });
+              }
 
               return Row(
                 children: [

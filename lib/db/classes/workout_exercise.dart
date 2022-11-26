@@ -58,8 +58,5 @@ class WorkoutExercise {
     return '${exercise!.isSingle ? '' : '2 x '}${getWeightString(showNone: showNone)}';
   }
 
-  bool hasWeight() => weight != null && weight! > 0;
-
-  bool thisOrExerciseHasWeight() =>
-      hasWeight() || exercise != null && exercise!.hasWeight();
+  bool hasWeight() => weight != null && weight != 0;
 }
