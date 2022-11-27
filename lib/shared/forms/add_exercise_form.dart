@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/helpers/exercises_helper.dart';
+import 'package:gymvision/shared/forms/fields/custom_form_fields.dart';
 import '../../db/classes/exercise.dart';
 import '../../globals.dart';
 
@@ -29,19 +30,16 @@ class _AddExerciseFormState extends State<AddExerciseForm> {
       Navigator.pop(context);
 
       try {
-        await ExercisesHelper
-            .insertExercise(Exercise(
-              categoryId: widget.categoryId,
-              name: nameController.text,
-              weight:
-                  double.parse(getNumberStringOrDefault(weightController.text)),
-              max: 0, // to set in edit
-              reps: int.parse(getNumberStringOrDefault(repsController.text)),
-              isSingle: isSingleValue,
-            ))
-            .then((value) => ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Successfully added Exercise!')),
-                ));
+        await ExercisesHelper.insertExercise(Exercise(
+          categoryId: widget.categoryId,
+          name: nameController.text,
+          weight: double.parse(getNumberStringOrDefault(weightController.text)),
+          max: 0, // to set in edit
+          reps: int.parse(getNumberStringOrDefault(repsController.text)),
+          isSingle: isSingleValue,
+        )).then((value) => ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Successfully added Exercise!')),
+            ));
       } catch (ex) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to add exercise: $ex')),
@@ -66,27 +64,13 @@ class _AddExerciseFormState extends State<AddExerciseForm> {
             key: formKey,
             child: Column(
               children: [
-                TextFormField(
-                  controller: nameController,
-                  autofocus: true,
-                  textCapitalization: TextCapitalization.sentences,
-                  decoration: const InputDecoration(
-                    labelText: 'Name',
-                  ),
-                ),
-                TextFormField(
-                  controller: weightController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                      labelText: 'Weight', suffix: Text('kg')),
-                ),
-                TextFormField(
-                  controller: repsController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: 'Reps',
-                  ),
-                ),
+                CustomFormFields.stringField(
+                    controller: nameController,
+                    label: 'Name',
+                    autofocus: true,
+                    canBeBlank: false),
+                CustomFormFields.weightField(weightController, 'Weight'),
+                CustomFormFields.intField(repsController, 'Reps'),
                 FormField(
                   builder: (field) => CheckboxListTile(
                     contentPadding: EdgeInsets.zero,
