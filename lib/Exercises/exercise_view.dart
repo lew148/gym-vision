@@ -34,7 +34,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                 child: getValueDisplay(
                   'Weight',
                   Text(
-                    exercise.getWeightString(),
+                    exercise.getWeightString() ?? '',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 17,
@@ -44,7 +44,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                     exercise,
                     ExerciseEditableField.weight,
                     'Weight',
-                    exercise.getWeightAsString(),
+                    exercise.getWeightAsString() ?? '',
                   ),
                 ),
               ),
@@ -62,7 +62,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                     exercise,
                     ExerciseEditableField.max,
                     'Max',
-                    exercise.getMaxAsString(),
+                    exercise.getMaxAsString() ?? '',
                   ),
                 ),
               ),

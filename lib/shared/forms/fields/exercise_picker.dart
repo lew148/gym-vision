@@ -165,7 +165,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                                               padding: EdgeInsets.all(5)),
                                           Text(
                                             e.getNumberedWeightString(
-                                                showNone: false),
+                                                showNone: false) ?? '',
                                             style: TextStyle(
                                               fontSize: 15,
                                               color: Theme.of(context)

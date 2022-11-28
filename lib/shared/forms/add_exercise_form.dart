@@ -23,7 +23,7 @@ class _AddExerciseFormState extends State<AddExerciseForm> {
   final nameController = TextEditingController();
   final weightController = TextEditingController();
   final repsController = TextEditingController();
-  bool isSingleValue = false;
+  bool isDoubleValue = false;
 
   void onSubmit() async {
     if (formKey.currentState!.validate()) {
@@ -36,7 +36,7 @@ class _AddExerciseFormState extends State<AddExerciseForm> {
           weight: double.parse(getNumberStringOrDefault(weightController.text)),
           max: 0, // to set in edit
           reps: int.parse(getNumberStringOrDefault(repsController.text)),
-          isSingle: isSingleValue,
+          isSingle: !isDoubleValue,
         )).then((value) => ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Successfully added Exercise!')),
             ));
@@ -69,16 +69,20 @@ class _AddExerciseFormState extends State<AddExerciseForm> {
                     label: 'Name',
                     autofocus: true,
                     canBeBlank: false),
-                CustomFormFields.weightField(weightController, 'Weight'),
-                CustomFormFields.intField(repsController, 'Reps'),
-                FormField(
-                  builder: (field) => CheckboxListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: const Text('Is Single'),
-                    value: isSingleValue,
-                    onChanged: ((value) =>
-                        {setState(() => isSingleValue = value!)}),
-                  ),
+                CustomFormFields.weightField(
+                  controller: weightController,
+                  label: 'Weight',
+                  isSingle: !isDoubleValue,
+                ),
+                CustomFormFields.intField(
+                  controller: repsController,
+                  label: 'Reps',
+                ),
+                CustomFormFields.checkbox(
+                  context,
+                  'Double Weight',
+                  isDoubleValue,
+                  (value) => {setState(() => isDoubleValue = value!)},
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,

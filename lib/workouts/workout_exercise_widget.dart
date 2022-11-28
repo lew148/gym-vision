@@ -272,7 +272,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                                 size: 15,
                               ),
                               const Padding(padding: EdgeInsets.all(5)),
-                              Text(we.getNumberedWeightString(showNone: false)),
+                              Text(we.getNumberedWeightString(showNone: false) ?? ''),
                             ],
                           )
                         : const Center(

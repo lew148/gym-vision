@@ -64,7 +64,8 @@ class _CategoryViewState extends State<CategoryView> {
                                   const Padding(padding: EdgeInsets.all(5)),
                                   Text(
                                     exercise.getNumberedWeightString(
-                                        showNone: false),
+                                            showNone: false) ??
+                                        '',
                                     style: TextStyle(
                                       fontSize: 15,
                                       color:

@@ -4,6 +4,7 @@ import 'package:gymvision/db/classes/workout.dart';
 import '../../db/classes/exercise.dart';
 import '../../db/helpers/workouts_helper.dart';
 import '../../globals.dart';
+import 'fields/custom_form_fields.dart';
 import 'fields/exercise_picker.dart';
 import 'fields/workout_picker.dart';
 
@@ -43,7 +44,7 @@ class _AddExerciseToWorkoutFormState extends State<AddExerciseToWorkoutForm> {
 
   void setWeightAndRepControllers(Exercise? ex) {
     if (ex != null) {
-      weightController.text = ex.getWeightAsString();
+      weightController.text = ex.getWeightAsString() ?? '';
       repsController.text = ex.reps.toString();
     } else {
       weightController.text = '';
@@ -52,55 +53,26 @@ class _AddExerciseToWorkoutFormState extends State<AddExerciseToWorkoutForm> {
   }
 
   List<Widget> getExerciseFields(Exercise ex) => [
-        Row(
-          children: [
-            Expanded(
-              child: TextFormField(
-                controller: weightController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Weight',
-                  prefix: ex.isSingle ? const Text('') : const Text('2 x '),
-                  suffix: const Text('kg'),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 10, 5, 0),
-              child: OutlinedButton(
-                onPressed: () => setState(() {
-                  weightController.text = ex.getWeightAsString();
-                }),
-                child: const Text('Default'),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-              child: OutlinedButton(
-                onPressed: () => setState(() {
-                  weightController.text = ex.max == 0
-                      ? ex.getWeightAsString()
-                      : ex.getMaxAsString();
-                }),
-                child: const Text('Max'),
-              ),
-            ),
-          ],
+        CustomFormFields.weightField(
+          controller: weightController,
+          label: 'Weight',
+          isSingle: ex.isSingle,
+          defaultWeight: ex.getWeightAsString(),
+          max: ex.max == 0 ? ex.getWeightAsString() : ex.getMaxAsString(),
         ),
-        TextFormField(
+        CustomFormFields.intField(
           controller: repsController,
-          keyboardType: TextInputType.number,
-          decoration: const InputDecoration(
-            labelText: 'Reps',
-          ),
+          label: 'Reps',
         ),
       ];
 
   @override
   Widget build(BuildContext context) {
     void onSubmit() async {
-      if (selectedExercise == null && widget.exerciseId == null) return; // todo: show error
-      if (selectedWorkout == null && widget.workoutId == null) return; // todo: show error
+      if (selectedExercise == null && widget.exerciseId == null)
+        return; // todo: show error
+      if (selectedWorkout == null && widget.workoutId == null)
+        return; // todo: show error
 
       if (formKey.currentState!.validate()) {
         Navigator.pop(context);
@@ -173,12 +145,9 @@ class _AddExerciseToWorkoutFormState extends State<AddExerciseToWorkoutForm> {
             const Padding(padding: EdgeInsets.all(5)),
             if (selectedExercise != null)
               ...getExerciseFields(selectedExercise!),
-            TextFormField(
+            CustomFormFields.intField(
               controller: setsController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Sets',
-              ),
+              label: 'Sets',
             ),
             Padding(
               padding: const EdgeInsets.only(top: 20.0),

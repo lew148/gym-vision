@@ -22,28 +22,32 @@ class Exercise {
     this.category,
   });
 
-  String getWeightAsString() =>
-      weight % 1 == 0 ? weight.toStringAsFixed(0) : weight.toStringAsFixed(2);
+  String? getWeightAsString() {
+    if (!hasWeight()) return null;
+    return weight % 1 == 0 ? weight.toStringAsFixed(0) : weight.toStringAsFixed(2);
+  }
 
-  String getWeightString({bool showNone = true}) {
-    if (weight == 0) return showNone ? 'None' : '';
+  String? getWeightString({bool showNone = true}) {
+    if (!hasWeight()) return showNone ? 'None' : null;
     return '${getWeightAsString()}kg';
   }
 
-  String getNumberedWeightString({bool showNone = true}) {
-    if (weight == 0) return showNone ? 'None' : '';
+  String? getNumberedWeightString({bool showNone = true}) {
+    if (!hasWeight()) return showNone ? 'None' : null;
     return '${isSingle ? '' : '2 x '}${getWeightString(showNone: showNone)}';
   }
 
   bool hasWeight() => weight != 0;
 
-  String getMaxAsString() {
-    if (max == null) return '0';
+  bool hasMax() => max != null && max != 0;
+
+  String? getMaxAsString() {
+    if (!hasMax()) return null;
     return max! % 1 == 0 ? max!.toStringAsFixed(0) : max!.toStringAsFixed(2);
   }
 
   String getMaxString() =>
-      max == null || max == 0 ? 'None' : '${getMaxAsString()}kg';
+      hasMax() ? '${getMaxAsString()}kg' : 'None';
 
   String getRepsString() => reps <= 0 ? 'None' : reps.toString();
 

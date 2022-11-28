@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/helpers/exercises_helper.dart';
 import 'package:gymvision/enums.dart';
+import 'package:gymvision/shared/forms/fields/custom_form_fields.dart';
 import '../../db/classes/exercise.dart';
 import '../../globals.dart';
 
@@ -32,33 +33,27 @@ class _EditExerciseFieldFormState extends State<EditExerciseFieldForm> {
       text: widget.currentValue == '0' ? null : widget.currentValue,
     );
 
-    Widget textField() => TextFormField(
-          controller: fieldController,
-          autofocus: true,
-          textCapitalization: TextCapitalization.sentences,
-          decoration: InputDecoration(
-            labelText: widget.label,
-          ),
-        );
-
-    Widget doubleField() => TextFormField(
-          controller: fieldController,
-          keyboardType: TextInputType.number,
-          autofocus: true,
-          decoration: InputDecoration(
-            labelText: widget.label,
-            suffix: const Text('kg'),
-          ),
-        );
-
     Widget getField() {
       switch (widget.editableField) {
         case ExerciseEditableField.name:
-          return textField();
+          return CustomFormFields.stringField(
+            controller: fieldController,
+            label: widget.label,
+            canBeBlank: false,
+            autofocus: true,
+          );
         case ExerciseEditableField.weight:
         case ExerciseEditableField.max:
+          return CustomFormFields.weightField(
+            controller: fieldController,
+            label: widget.label,
+            isSingle: widget.exercise.isSingle,
+          );
         case ExerciseEditableField.reps:
-          return doubleField();
+          return CustomFormFields.intField(
+            controller: fieldController,
+            label: widget.label,
+          );
       }
     }
 
@@ -149,20 +144,7 @@ class _EditExerciseFieldFormState extends State<EditExerciseFieldForm> {
             key: formKey,
             child: Column(
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: getField(),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 10, 5, 0),
-                      child: OutlinedButton(
-                        onPressed: () => fieldController.text = '',
-                        child: const Text('None'),
-                      ),
-                    ),
-                  ],
-                ),
+                getField(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
