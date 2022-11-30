@@ -24,6 +24,7 @@ class CustomFormFields {
     required TextEditingController controller,
     required String label,
     bool isSingle = true,
+    bool autofocus = false,
     String? defaultWeight,
     String? max,
   }) =>
@@ -32,6 +33,7 @@ class CustomFormFields {
           child: TextFormField(
             controller: controller,
             keyboardType: TextInputType.number,
+            autofocus: autofocus,
             decoration: InputDecoration(
               labelText: label,
               prefix: isSingle ? const Text('') : const Text('2 x '),
@@ -85,6 +87,7 @@ class CustomFormFields {
   static intField({
     required TextEditingController controller,
     required String label,
+    bool autofocus = false,
   }) {
     onOperationButtonClick(int num) {
       int? currentValue = int.tryParse(controller.text) ?? 0;
@@ -102,6 +105,7 @@ class CustomFormFields {
       Expanded(
         child: TextFormField(
           controller: controller,
+          autofocus: autofocus,
           keyboardType: TextInputType.number,
           decoration: InputDecoration(labelText: label),
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],

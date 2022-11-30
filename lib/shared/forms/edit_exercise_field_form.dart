@@ -48,11 +48,13 @@ class _EditExerciseFieldFormState extends State<EditExerciseFieldForm> {
             controller: fieldController,
             label: widget.label,
             isSingle: widget.exercise.isSingle,
+            autofocus: true,
           );
         case ExerciseEditableField.reps:
           return CustomFormFields.intField(
             controller: fieldController,
             label: widget.label,
+            autofocus: true,
           );
       }
     }
