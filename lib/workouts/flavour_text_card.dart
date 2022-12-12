@@ -11,8 +11,7 @@ class FlavourTextCard extends StatefulWidget {
 }
 
 class _FlavourTextCardState extends State<FlavourTextCard> {
-  final Future<FlavourTextSchedule> flavourTextSchedule =
-      FlavourTextHelper.getTodaysFlavourTextSchedule();
+  final Future<FlavourTextSchedule> flavourTextSchedule = FlavourTextHelper.getTodaysFlavourTextSchedule();
 
   void onDismissTap(FlavourTextSchedule fts) async {
     try {
@@ -38,39 +37,42 @@ class _FlavourTextCardState extends State<FlavourTextCard> {
           return const SizedBox.shrink();
         }
 
-        return Row(
-          children: [
-            Expanded(
-              child: Card(
-                color: Theme.of(context).colorScheme.secondary,
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(10, 10, 5, 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          snapshot.data!.flavourText!.message,
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w400,
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 5),
+          child: Row(
+            children: [
+              Expanded(
+                child: Card(
+                  color: Theme.of(context).colorScheme.secondary,
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(10, 10, 5, 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            snapshot.data!.flavourText!.message,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w400,
+                              color: Theme.of(context).colorScheme.onSecondary,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => onDismissTap(snapshot.data!),
+                          icon: Icon(
+                            Icons.close,
                             color: Theme.of(context).colorScheme.onSecondary,
                           ),
                         ),
-                      ),
-                      IconButton(
-                        onPressed: () => onDismissTap(snapshot.data!),
-                        icon: Icon(
-                          Icons.close,
-                          color: Theme.of(context).colorScheme.onSecondary,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );

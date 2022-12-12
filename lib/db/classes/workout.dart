@@ -19,30 +19,8 @@ class Workout {
 
   Map<String, dynamic> toMap() => {'id': id, 'date': date.toString()};
 
-  String getDateString() {
-    final today = DateTime.now();
-    if (areSameDay(today, date)) {
-      return 'Today';
-    }
-
-    if (date.day == today.day + 1 &&
-        date.month == today.month &&
-        date.year == today.year) {
-      return 'Tomorrow';
-    }
-
-    if (date.day == today.day - 1 &&
-        date.month == today.month &&
-        date.year == today.year) {
-      return 'Yesterday';
-    }
-
-    return date.year == today.year
-        ? DateFormat('EEEE, d MMM').format(date)
-        : DateFormat('EEEE, d MMM yyyy').format(date);
-  }
-
   String getTimeString() => DateFormat('Hm').format(date);
 
-  String getDateAndTimeString() => '${getDateString()} @ ${getTimeString()}';
+  String getDateAndTimeString() =>
+      '${getDateNumString(date)} @ ${getTimeString()}';
 }

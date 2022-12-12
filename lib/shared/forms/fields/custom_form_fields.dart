@@ -13,11 +13,9 @@ class CustomFormFields {
         autofocus: autofocus,
         textCapitalization: TextCapitalization.sentences,
         decoration: InputDecoration(labelText: label),
-        validator: (value) {
-          if (!canBeBlank && (value == null || value == '')) {
-            return '$label cannot be blank';
-          }
-        },
+        validator: (value) => !canBeBlank && (value == null || value == '')
+            ? '$label cannot be blank'
+            : null,
       );
 
   static weightField({
