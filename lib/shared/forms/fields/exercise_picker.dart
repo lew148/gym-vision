@@ -10,6 +10,7 @@ class ExercisePicker extends StatefulWidget {
   final List<int>? excludeIds;
   final List<int>? categoryIds;
   final bool disabled;
+  final bool autoOpen;
   final Function setExercise;
 
   const ExercisePicker({
@@ -19,6 +20,7 @@ class ExercisePicker extends StatefulWidget {
     this.excludeIds,
     this.categoryIds,
     this.disabled = false,
+    this.autoOpen = false,
     required this.setExercise,
   }) : super(key: key);
 
@@ -72,8 +74,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                       height: 800,
                       child: SingleChildScrollView(
                         child: Column(
-                          children:
-                              getPickerContent(allExercises, selectedExercise),
+                          children: getPickerContent(allExercises, selectedExercise),
                         ),
                       ),
                     ),
@@ -84,8 +85,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
           ],
         ),
         isScrollControlled: true,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
       );
 
   List<Widget> getPickerContent(
@@ -94,8 +94,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
   ) {
     allExercises.sort(((a, b) => a.category!.name.compareTo(b.category!.name)));
 
-    final Map<int, List<Exercise>> groupedExercises =
-        groupBy(allExercises, (e) => e.categoryId);
+    final Map<int, List<Exercise>> groupedExercises = groupBy(allExercises, (e) => e.categoryId);
 
     List<Widget> sections = [];
 
@@ -129,8 +128,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                           ),
                           border: Border.all(
                             width: 2,
-                            color: selectedExercise != null &&
-                                    e.id == selectedExercise.id
+                            color: selectedExercise != null && e.id == selectedExercise.id
                                 ? Theme.of(context).colorScheme.primary
                                 : Colors.transparent,
                           ),
@@ -146,58 +144,46 @@ class _ExercisePickerState extends State<ExercisePicker> {
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
-                            Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (e.hasWeight())
-                                    Padding(
-                                      padding: const EdgeInsets.only(bottom: 5),
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.fitness_center,
-                                            size: 15,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .shadow,
-                                          ),
-                                          const Padding(
-                                              padding: EdgeInsets.all(5)),
-                                          Text(
-                                            e.getNumberedWeightString(
-                                                showNone: false) ?? '',
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .shadow,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  Row(
+                            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                              if (e.hasWeight())
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 5),
+                                  child: Row(
                                     children: [
                                       Icon(
-                                        Icons.repeat,
+                                        Icons.fitness_center_rounded,
                                         size: 15,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .shadow,
+                                        color: Theme.of(context).colorScheme.shadow,
                                       ),
                                       const Padding(padding: EdgeInsets.all(5)),
                                       Text(
-                                        '${e.reps} rep${e.singleRep() ? '' : 's'}',
+                                        e.getNumberedWeightString(showNone: false) ?? '',
                                         style: TextStyle(
                                           fontSize: 15,
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .shadow,
+                                          color: Theme.of(context).colorScheme.shadow,
                                         ),
                                       ),
                                     ],
                                   ),
-                                ]),
+                                ),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.repeat_rounded,
+                                    size: 15,
+                                    color: Theme.of(context).colorScheme.shadow,
+                                  ),
+                                  const Padding(padding: EdgeInsets.all(5)),
+                                  Text(
+                                    '${e.reps} rep${e.singleRep() ? '' : 's'}',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: Theme.of(context).colorScheme.shadow,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ]),
                           ],
                         ),
                       ),
@@ -216,12 +202,12 @@ class _ExercisePickerState extends State<ExercisePicker> {
   List<Widget> getPickerIcons() => [
         const Padding(
           padding: EdgeInsets.all(5),
-          child: Icon(Icons.arrow_drop_down),
+          child: Icon(Icons.arrow_drop_down_rounded),
         ),
         IconButton(
           padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
           onPressed: () => widget.setExercise(null),
-          icon: const Icon(Icons.clear),
+          icon: const Icon(Icons.clear_rounded),
         ),
       ];
 
@@ -230,8 +216,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
     return FutureBuilder<List<Exercise>>(
         future: allExercises,
         builder: (context, allExercisesSnapshot) {
-          if (!allExercisesSnapshot.hasData ||
-              allExercisesSnapshot.data!.isEmpty) {
+          if (!allExercisesSnapshot.hasData || allExercisesSnapshot.data!.isEmpty) {
             return const SizedBox.shrink();
           }
 
@@ -247,73 +232,71 @@ class _ExercisePickerState extends State<ExercisePicker> {
                 });
               }
 
-              return Row(
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: widget.disabled
-                          ? null
-                          : () => showExercisePicker(
-                                allExercisesSnapshot.data!,
-                                exercise,
-                              ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                              color: Theme.of(context).hintColor,
+              if (widget.autoOpen && exercise == null) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  showExercisePicker(allExercisesSnapshot.data!, exercise);
+                });
+              }
+
+              return widget.disabled
+                  ? const SizedBox.shrink()
+                  : Row(
+                      children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () => showExercisePicker(
+                              allExercisesSnapshot.data!,
+                              exercise,
                             ),
-                          ),
-                        ),
-                        padding: const EdgeInsets.only(top: 10, bottom: 5),
-                        height: 60,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: Theme.of(context).hintColor,
+                                  ),
+                                ),
+                              ),
+                              padding: const EdgeInsets.only(top: 10, bottom: 5),
+                              height: 60,
+                              child: Row(
                                 children: [
-                                  Row(children: [
-                                    Text(
-                                      exercise == null ? '' : 'Exercise',
-                                      style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .shadow,
-                                      ),
-                                    ),
-                                  ]),
-                                  const Padding(
-                                    padding: EdgeInsets.only(bottom: 5),
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        exercise == null
-                                            ? 'Select Exercise'
-                                            : exercise.name,
-                                        style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w400,
-                                          color: exercise == null
-                                              ? Theme.of(context)
-                                                  .colorScheme
-                                                  .shadow
-                                              : null,
+                                  Expanded(
+                                    child: Column(
+                                      children: [
+                                        Row(children: [
+                                          Text(
+                                            exercise == null ? '' : 'Exercise',
+                                            style: TextStyle(
+                                              color: Theme.of(context).colorScheme.shadow,
+                                            ),
+                                          ),
+                                        ]),
+                                        const Padding(
+                                          padding: EdgeInsets.only(bottom: 5),
                                         ),
-                                      ),
-                                    ],
+                                        Row(
+                                          children: [
+                                            Text(
+                                              exercise == null ? 'Select Exercise' : exercise.name,
+                                              style: TextStyle(
+                                                fontSize: 17,
+                                                fontWeight: FontWeight.w400,
+                                                color: exercise == null ? Theme.of(context).colorScheme.shadow : null,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
+                                  ...getPickerIcons(),
                                 ],
                               ),
                             ),
-                            if (!widget.disabled) ...getPickerIcons(),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                ],
-              );
+                      ],
+                    );
             }),
           );
         });

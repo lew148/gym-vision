@@ -62,7 +62,7 @@ class _FlavourTextCardState extends State<FlavourTextCard> {
                         IconButton(
                           onPressed: () => onDismissTap(snapshot.data!),
                           icon: Icon(
-                            Icons.close,
+                            Icons.close_rounded,
                             color: Theme.of(context).colorScheme.onSecondary,
                           ),
                         ),

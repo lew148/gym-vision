@@ -29,8 +29,7 @@ class AddExerciseToWorkoutForm extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<AddExerciseToWorkoutForm> createState() =>
-      _AddExerciseToWorkoutFormState();
+  State<AddExerciseToWorkoutForm> createState() => _AddExerciseToWorkoutFormState();
 }
 
 class _AddExerciseToWorkoutFormState extends State<AddExerciseToWorkoutForm> {
@@ -69,10 +68,8 @@ class _AddExerciseToWorkoutFormState extends State<AddExerciseToWorkoutForm> {
   @override
   Widget build(BuildContext context) {
     void onSubmit() async {
-      if (selectedExercise == null && widget.exerciseId == null)
-        return; // todo: show error
-      if (selectedWorkout == null && widget.workoutId == null)
-        return; // todo: show error
+      if (selectedExercise == null && widget.exerciseId == null) return; // todo: show error
+      if (selectedWorkout == null && widget.workoutId == null) return; // todo: show error
 
       if (formKey.currentState!.validate()) {
         Navigator.pop(context);
@@ -81,8 +78,7 @@ class _AddExerciseToWorkoutFormState extends State<AddExerciseToWorkoutForm> {
           await WorkoutsHelper.addExerciseToWorkout(
             exerciseId: selectedExercise?.id ?? widget.exerciseId!,
             workoutId: selectedWorkout?.id ?? widget.workoutId!,
-            weight:
-                double.parse(getNumberStringOrDefault(weightController.text)),
+            weight: double.parse(getNumberStringOrDefault(weightController.text)),
             reps: int.parse(getNumberStringOrDefault(repsController.text)),
             sets: int.parse(getNumberStringOrDefault(setsController.text)),
           );
@@ -130,21 +126,21 @@ class _AddExerciseToWorkoutFormState extends State<AddExerciseToWorkoutForm> {
                 selectedWorkout = newWorkout;
               }),
             ),
-            const Padding(padding: EdgeInsets.all(5)),
+            if (!widget.disableWorkoutPicker) const Padding(padding: EdgeInsets.all(5)),
             ExercisePicker(
               exerciseId: widget.exerciseId,
               exercise: selectedExercise,
               excludeIds: widget.excludeExerciseIds,
               categoryIds: widget.categoryIds,
               disabled: widget.disableExercisePicker,
+              autoOpen: widget.disableWorkoutPicker,
               setExercise: (newExercise) => setState(() {
                 selectedExercise = newExercise;
                 setWeightAndRepControllers(newExercise);
               }),
             ),
-            const Padding(padding: EdgeInsets.all(5)),
-            if (selectedExercise != null)
-              ...getExerciseFields(selectedExercise!),
+            if (!widget.disableExercisePicker) const Padding(padding: EdgeInsets.all(5)),
+            if (selectedExercise != null) ...getExerciseFields(selectedExercise!),
             CustomFormFields.intField(
               controller: setsController,
               label: 'Sets',

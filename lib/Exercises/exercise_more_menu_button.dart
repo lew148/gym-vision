@@ -35,6 +35,7 @@ class _ExerciseMoreMenuButtonState extends State<ExerciseMoreMenuButton> {
                 child: AddExerciseToWorkoutForm(
                   exerciseId: exercise.id,
                   reloadState: widget.reloadState,
+                  disableExercisePicker: true,
                 ),
               ),
             ],
@@ -149,7 +150,7 @@ class _ExerciseMoreMenuButtonState extends State<ExerciseMoreMenuButton> {
                 },
                 child: Row(
                   children: const [
-                    Icon(Icons.add),
+                    Icon(Icons.add_rounded),
                     Padding(padding: EdgeInsets.all(5)),
                     Text(
                       'Add to workout',
@@ -172,7 +173,7 @@ class _ExerciseMoreMenuButtonState extends State<ExerciseMoreMenuButton> {
                 },
                 child: Row(
                   children: const [
-                    Icon(Icons.edit),
+                    Icon(Icons.edit_rounded),
                     Padding(padding: EdgeInsets.all(5)),
                     Text(
                       'Edit Name',
@@ -195,7 +196,7 @@ class _ExerciseMoreMenuButtonState extends State<ExerciseMoreMenuButton> {
                 },
                 child: Row(
                   children: const [
-                    Icon(Icons.delete),
+                    Icon(Icons.delete_rounded),
                     Padding(padding: EdgeInsets.all(5)),
                     Text(
                       'Delete',
@@ -221,7 +222,7 @@ class _ExerciseMoreMenuButtonState extends State<ExerciseMoreMenuButton> {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.more_vert),
+      icon: const Icon(Icons.more_vert_rounded),
       onPressed: () => showMoreMenu(widget.exercise),
     );
   }

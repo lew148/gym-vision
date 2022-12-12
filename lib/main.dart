@@ -87,7 +87,7 @@ class _MyHomePageState extends State<MyHomePage> {
         actions: [
           IconButton(
             icon: const Icon(
-              Icons.settings,
+              Icons.settings_rounded,
             ),
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(
@@ -101,11 +101,11 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.format_list_bulleted),
+            icon: Icon(Icons.format_list_bulleted_rounded),
             label: 'Workouts',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.fitness_center),
+            icon: Icon(Icons.fitness_center_rounded),
             label: 'Exercises',
           ),
         ],

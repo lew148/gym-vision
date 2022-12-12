@@ -160,7 +160,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                     widget,
                     const Padding(padding: EdgeInsets.all(5)),
                     const Icon(
-                      Icons.edit,
+                      Icons.edit_rounded,
                       size: 18,
                     ),
                   ],

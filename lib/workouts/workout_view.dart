@@ -90,7 +90,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      const Icon(Icons.chevron_right, size: 18)
+                      const Icon(Icons.chevron_right_rounded, size: 18)
                     ],
                   ),
                 ),
@@ -209,7 +209,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                 },
                 child: Row(
                   children: const [
-                    Icon(Icons.calendar_today),
+                    Icon(Icons.calendar_today_rounded),
                     Padding(padding: EdgeInsets.all(5)),
                     Text(
                       'Edit Date',
@@ -229,7 +229,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                 },
                 child: Row(
                   children: const [
-                    Icon(Icons.watch),
+                    Icon(Icons.watch_rounded),
                     Padding(padding: EdgeInsets.all(5)),
                     Text(
                       'Edit Time',
@@ -299,7 +299,7 @@ class _WorkoutViewState extends State<WorkoutView> {
             actions: [
               IconButton(
                 icon: const Icon(
-                  Icons.more_vert,
+                  Icons.more_vert_rounded,
                 ),
                 onPressed: () => showMoreMenu(workout, reloadState),
               )
@@ -312,7 +312,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                 getSectionTitleWithAction(
                   context,
                   'Categories',
-                  workout.workoutCategories == null || workout.workoutCategories!.isEmpty ? Icons.add : Icons.edit,
+                  workout.workoutCategories == null || workout.workoutCategories!.isEmpty ? Icons.add_rounded : Icons.edit_rounded,
                   () => onAddCategoryClick(existingCategoryIds),
                 ),
                 const Divider(),

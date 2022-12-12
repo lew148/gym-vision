@@ -20,7 +20,7 @@ class _WorkoutsState extends State<Workouts> {
     final Future<List<Workout>> workouts = WorkoutsHelper.getWorkouts();
 
     return Container(
-      padding: const EdgeInsets.only(right: 5, left: 5, top: 10),
+      padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
       child: Column(
         children: [
           // flavour text

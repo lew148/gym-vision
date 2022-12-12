@@ -310,7 +310,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
     }
 
     return Column(children: [
-      getSectionTitleWithAction(context, 'Workouts', Icons.add, onAddWorkoutPress),
+      getSectionTitleWithAction(context, 'Workouts', Icons.add_rounded, onAddWorkoutPress),
       const Divider(),
       Row(
         children: [

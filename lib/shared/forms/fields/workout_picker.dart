@@ -80,11 +80,8 @@ class _WorkoutPickerState extends State<WorkoutPicker> {
                                           ),
                                           border: Border.all(
                                             width: 2,
-                                            color: selectedWorkout != null &&
-                                                    w.id == selectedWorkout.id
-                                                ? Theme.of(context)
-                                                    .colorScheme
-                                                    .primary
+                                            color: selectedWorkout != null && w.id == selectedWorkout.id
+                                                ? Theme.of(context).colorScheme.primary
                                                 : Colors.transparent,
                                           ),
                                         ),
@@ -116,19 +113,18 @@ class _WorkoutPickerState extends State<WorkoutPicker> {
           ],
         ),
         isScrollControlled: true,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
       );
 
   List<Widget> getPickerIcons() => [
         const Padding(
           padding: EdgeInsets.all(5),
-          child: Icon(Icons.arrow_drop_down),
+          child: Icon(Icons.arrow_drop_down_rounded),
         ),
         IconButton(
           padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
           onPressed: () => widget.setWorkout(null),
-          icon: const Icon(Icons.clear),
+          icon: const Icon(Icons.clear_rounded),
         ),
       ];
 
@@ -141,84 +137,77 @@ class _WorkoutPickerState extends State<WorkoutPicker> {
           return const SizedBox.shrink();
         }
 
-        final mostRecentWorkout = allWorkoutsSnapshot.data!
-            .firstWhere((w) => w.date.isBefore(DateTime.now()));
+        final mostRecentWorkout = allWorkoutsSnapshot.data!.firstWhere((w) => w.date.isBefore(DateTime.now()));
 
         return FutureBuilder<Workout>(
           future: selectedWorkout,
           builder: ((context, snapshot) {
             final workout = widget.workout ?? snapshot.data;
 
-            return Row(
-              children: [
-                Expanded(
-                  child: GestureDetector(
-                    onTap: widget.disabled
-                        ? null
-                        : () => showWorkoutPicker(
-                              allWorkoutsSnapshot.data!,
-                              workout,
-                            ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                            color: Theme.of(context).hintColor,
+            return widget.disabled
+                ? const SizedBox.shrink()
+                : Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => showWorkoutPicker(
+                            allWorkoutsSnapshot.data!,
+                            workout,
                           ),
-                        ),
-                      ),
-                      padding: const EdgeInsets.only(top: 10, bottom: 5),
-                      height: 60,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              children: [
-                                Row(children: [
-                                  Text(
-                                    workout == null ? '' : 'Workout',
-                                    style: TextStyle(
-                                      color:
-                                          Theme.of(context).colorScheme.shadow,
-                                    ),
-                                  ),
-                                ]),
-                                const Padding(
-                                  padding: EdgeInsets.only(bottom: 5),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: Theme.of(context).hintColor,
                                 ),
-                                Row(children: [
-                                  Text(
-                                    workout == null
-                                        ? 'Select Workout'
-                                        : workout.getDateAndTimeString(),
-                                    style: TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w400,
-                                      color: workout == null
-                                          ? Theme.of(context).colorScheme.shadow
-                                          : null,
-                                    ),
+                              ),
+                            ),
+                            padding: const EdgeInsets.only(top: 10, bottom: 5),
+                            height: 60,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    children: [
+                                      Row(children: [
+                                        Text(
+                                          workout == null ? '' : 'Workout',
+                                          style: TextStyle(
+                                            color: Theme.of(context).colorScheme.shadow,
+                                          ),
+                                        ),
+                                      ]),
+                                      const Padding(
+                                        padding: EdgeInsets.only(bottom: 5),
+                                      ),
+                                      Row(children: [
+                                        Text(
+                                          workout == null ? 'Select Workout' : workout.getDateAndTimeString(),
+                                          style: TextStyle(
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w400,
+                                            color: workout == null ? Theme.of(context).colorScheme.shadow : null,
+                                          ),
+                                        ),
+                                      ]),
+                                    ],
                                   ),
-                                ]),
+                                ),
+                                ...getPickerIcons(),
                               ],
                             ),
                           ),
-                          if (!widget.disabled) ...getPickerIcons(),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-                if (!widget.disabled)
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 10, 5, 0),
-                    child: OutlinedButton(
-                      onPressed: () => widget.setWorkout(mostRecentWorkout),
-                      child: const Text('Most Recent'),
-                    ),
-                  ),
-              ],
-            );
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(10, 10, 5, 0),
+                        child: OutlinedButton(
+                          onPressed: () => widget.setWorkout(mostRecentWorkout),
+                          child: const Text('Most Recent'),
+                        ),
+                      ),
+                    ],
+                  );
           }),
         );
       }),

@@ -145,7 +145,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                 },
                 child: Row(
                   children: const [
-                    Icon(Icons.visibility),
+                    Icon(Icons.visibility_rounded),
                     Padding(padding: EdgeInsets.all(5)),
                     Text(
                       'View Exercise',
@@ -168,7 +168,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                 },
                 child: Row(
                   children: const [
-                    Icon(Icons.move_down),
+                    Icon(Icons.move_down_rounded),
                     Padding(padding: EdgeInsets.all(5)),
                     Text(
                       'Split a Set',
@@ -191,7 +191,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                 },
                 child: Row(
                   children: const [
-                    Icon(Icons.delete),
+                    Icon(Icons.delete_rounded),
                     Padding(padding: EdgeInsets.all(5)),
                     Text(
                       'Remove from Workout',
@@ -270,7 +270,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                         ? Row(
                             children: [
                               const Icon(
-                                Icons.fitness_center,
+                                Icons.fitness_center_rounded,
                                 size: 15,
                               ),
                               const Padding(padding: EdgeInsets.all(5)),
@@ -289,7 +289,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                     child: Row(
                       children: [
                         const Icon(
-                          Icons.repeat,
+                          Icons.repeat_rounded,
                           size: 15,
                         ),
                         const Padding(padding: EdgeInsets.all(5)),
@@ -307,7 +307,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                       child: IconButton(
                         splashRadius: 20,
                         onPressed: () => showMoreMenu(we),
-                        icon: const Icon(Icons.more_vert),
+                        icon: const Icon(Icons.more_vert_rounded),
                       ),
                     ),
                 ],
@@ -332,7 +332,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.add,
+                    Icons.add_rounded,
                     color: Theme.of(context).colorScheme.primary,
                   ),
                   const Padding(padding: EdgeInsets.all(2)),
@@ -418,7 +418,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                           ],
                         ),
                   Icon(
-                    tapped ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                    tapped ? Icons.arrow_drop_up_rounded : Icons.arrow_drop_down_rounded,
                     size: 30,
                   )
                 ],

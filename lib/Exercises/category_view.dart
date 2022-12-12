@@ -57,7 +57,7 @@ class _CategoryViewState extends State<CategoryView> {
                               child: Row(
                                 children: [
                                   Icon(
-                                    Icons.fitness_center,
+                                    Icons.fitness_center_rounded,
                                     size: 15,
                                     color: Theme.of(context).colorScheme.shadow,
                                   ),
@@ -78,7 +78,7 @@ class _CategoryViewState extends State<CategoryView> {
                           Row(
                             children: [
                               Icon(
-                                Icons.repeat,
+                                Icons.repeat_rounded,
                                 size: 15,
                                 color: Theme.of(context).colorScheme.shadow,
                               ),

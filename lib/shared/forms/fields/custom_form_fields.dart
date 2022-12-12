@@ -13,9 +13,7 @@ class CustomFormFields {
         autofocus: autofocus,
         textCapitalization: TextCapitalization.sentences,
         decoration: InputDecoration(labelText: label),
-        validator: (value) => !canBeBlank && (value == null || value == '')
-            ? '$label cannot be blank'
-            : null,
+        validator: (value) => !canBeBlank && (value == null || value == '') ? '$label cannot be blank' : null,
       );
 
   static weightField({
@@ -38,9 +36,7 @@ class CustomFormFields {
               suffix: const Text('kg'),
             ),
             validator: (value) =>
-                value != null && value != '' && double.tryParse(value) == null
-                    ? 'Please enter a valid weight'
-                    : null,
+                value != null && value != '' && double.tryParse(value) == null ? 'Please enter a valid weight' : null,
           ),
         ),
         Padding(
@@ -113,14 +109,14 @@ class CustomFormFields {
         padding: const EdgeInsets.fromLTRB(20, 10, 5, 0),
         child: OutlinedButton(
           onPressed: () => onOperationButtonClick(-1),
-          child: const Icon(Icons.arrow_drop_down),
+          child: const Icon(Icons.remove_rounded),
         ),
       ),
       Padding(
         padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
         child: OutlinedButton(
           onPressed: () => onOperationButtonClick(1),
-          child: const Icon(Icons.arrow_drop_up),
+          child: const Icon(Icons.add_rounded),
         ),
       ),
     ]);
@@ -142,8 +138,7 @@ class CustomFormFields {
           value: value,
           onChanged: onChange,
           activeColor: Theme.of(context).colorScheme.primary,
-          checkboxShape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          checkboxShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         ),
       );
 }
