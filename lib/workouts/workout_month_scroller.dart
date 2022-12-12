@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/shared/ui_helper.dart';
 import 'package:gymvision/workouts/workout_view.dart';
-import 'package:path/path.dart';
 
 import '../db/classes/workout.dart';
 import '../db/classes/workout_category.dart';

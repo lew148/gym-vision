@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gymvision/shared/ui_helper.dart';
 import 'package:gymvision/workouts/workout_month_scroller.dart';
-import 'package:gymvision/workouts/workout_view.dart';
 
 import '../db/classes/workout.dart';
 import '../db/helpers/workouts_helper.dart';
