@@ -41,14 +41,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.light(
           primary: Colors.green[400]!,
-          secondary: Colors.blue[100]!,
+          secondary: const Color.fromARGB(255, 255, 216, 250),
           shadow: Colors.grey[600],
         ),
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.dark(
           primary: Colors.green[400]!,
-          secondary: Colors.blue[100]!,
+          secondary: const Color.fromARGB(255, 255, 216, 250),
           shadow: Colors.grey[400],
         ),
       ),

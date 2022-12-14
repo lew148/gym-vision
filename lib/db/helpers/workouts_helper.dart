@@ -25,11 +25,11 @@ class WorkoutsHelper {
       ORDER BY workouts.date DESC;
     ''');
 
-    final Map<int, List<Map<String, dynamic>>> groupedMaps =
-        groupBy<Map<String, dynamic>, int>(maps, (x) => x['id']);
+    final Map<int, List<Map<String, dynamic>>> groupedMaps = groupBy<Map<String, dynamic>, int>(maps, (x) => x['id']);
 
     List<Workout> workouts = [];
-    groupedMaps.forEach((k, v) {
+
+    groupedMaps.forEach((k, v) async {
       workouts.add(
         Workout(
           id: k,
@@ -42,8 +42,7 @@ class WorkoutsHelper {
     return workouts;
   }
 
-  static List<WorkoutCategory>? processWorkoutCategories(
-      List<Map<String, dynamic>> list) {
+  static List<WorkoutCategory>? processWorkoutCategories(List<Map<String, dynamic>> list) {
     if (list.isEmpty) return null;
 
     List<WorkoutCategory> workoutCategories = [];
@@ -84,12 +83,8 @@ class WorkoutsHelper {
     return Workout(
       id: workoutId,
       date: DateTime.parse(maps[0]['date']),
-      workoutCategories: includeCategories
-          ? await getWorkoutCategoriesForWorkout(workoutId)
-          : null,
-      workoutExercises: includeExercises
-          ? await getWorkoutExercisesForWorkout(workoutId)
-          : null,
+      workoutCategories: includeCategories ? await getWorkoutCategoriesForWorkout(workoutId) : null,
+      workoutExercises: includeExercises ? await getWorkoutExercisesForWorkout(workoutId) : null,
     );
   }
 
@@ -325,8 +320,7 @@ class WorkoutsHelper {
   static updateDate(int id, DateTime newDate) async {
     final db = await DatabaseHelper().getDb();
     final workout = await getWorkout(workoutId: id);
-    workout.date = DateTime(newDate.year, newDate.month, newDate.day,
-        workout.date.hour, workout.date.minute);
+    workout.date = DateTime(newDate.year, newDate.month, newDate.day, workout.date.hour, workout.date.minute);
     await db.update(
       'workouts',
       workout.toMap(),
@@ -338,8 +332,7 @@ class WorkoutsHelper {
   static updateTime(int id, TimeOfDay newTime) async {
     final db = await DatabaseHelper().getDb();
     final workout = await getWorkout(workoutId: id);
-    workout.date = DateTime(workout.date.year, workout.date.month,
-        workout.date.day, newTime.hour, newTime.minute);
+    workout.date = DateTime(workout.date.year, workout.date.month, workout.date.day, newTime.hour, newTime.minute);
     await db.update(
       'workouts',
       workout.toMap(),

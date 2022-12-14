@@ -7,12 +7,15 @@ class Workout {
   int? id;
   DateTime date;
 
+  bool? done;
+
   List<WorkoutCategory>? workoutCategories;
   List<WorkoutExercise>? workoutExercises;
 
   Workout({
     this.id,
     required this.date,
+    this.done,
     this.workoutExercises,
     this.workoutCategories,
   });
@@ -21,6 +24,7 @@ class Workout {
 
   String getTimeString() => DateFormat('Hm').format(date);
 
-  String getDateAndTimeString() =>
-      '${getDateNumString(date)} @ ${getTimeString()}';
+  String getDateAndTimeString() => '${getDateString(date)} @ ${getTimeString()}';
+
+  bool isInFuture() => dateIsInFuture(date);
 }

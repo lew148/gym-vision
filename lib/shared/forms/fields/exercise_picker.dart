@@ -230,9 +230,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   widget.setExercise(exercise);
                 });
-              }
-
-              if (widget.autoOpen && exercise == null) {
+              } else if (widget.autoOpen && exercise == null) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   showExercisePicker(allExercisesSnapshot.data!, exercise);
                 });

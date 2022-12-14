@@ -28,6 +28,13 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
   final rn = DateTime.now();
   late DateTime currentMonth;
 
+  void reloadState() => setState(() {
+        currentMonth = rn;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Scrollable.ensureVisible(todayKey.currentContext!);
+        });
+      });
+
   @override
   void initState() {
     super.initState();
@@ -101,8 +108,8 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: Text(
-                    textAlign: TextAlign.center,
                     wc.category!.getDisplayName(),
+                    textAlign: TextAlign.center,
                     style: const TextStyle(fontWeight: FontWeight.w500),
                   ),
                 ),
@@ -112,9 +119,59 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
       );
     }
 
+    Widget getWorkoutDisplay(Workout workout) => InkWell(
+          onTap: () => Navigator.of(context)
+              .push(
+                MaterialPageRoute(
+                  builder: (context) => WorkoutView(
+                    workoutId: workout.id!,
+                  ),
+                ),
+              )
+              .then((value) => widget.reloadState()),
+          onLongPress: () => showDeleteWorkoutConfirm(workout.id!),
+          child: Card(
+            child: Container(
+                padding: const EdgeInsets.all(15),
+                child: Row(
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${workout.isInFuture() ? 'Planned ' : ''}Workout',
+                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          '@ ${workout.getTimeString()}',
+                          style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                        ),
+                      ],
+                    ),
+                    const Padding(padding: EdgeInsets.only(right: 10)),
+                    // if (workout.workoutExercises != null && workout.workoutExercises!.isNotEmpty)
+                    //   Padding(
+                    //     padding: const EdgeInsets.only(right: 10),
+                    //     child: Icon(
+                    //       Icons.check_circle_outline_rounded,
+                    //       size: 25,
+                    //       color: Colors.green[400],
+                    //     ),
+                    //   ),
+                    if (workout.workoutCategories != null && workout.workoutCategories!.isNotEmpty)
+                      getWorkoutCategoriesWidget(
+                        workout.workoutCategories!,
+                        WrapAlignment.end,
+                      ),
+                  ],
+                )),
+          ),
+        );
+
     List<Widget> getWorkoutsWidget(List<Workout> workouts) {
       var rnAndCurrentAreSameMonth = currentMonth.year == rn.year && currentMonth.month == rn.month;
-      var daysInCurrentMonth = DateTime(currentMonth.year, currentMonth.month + 1, 0).day;
+      var daysInCurrentMonth = getDaysInMonth(currentMonth.year, currentMonth.month);
 
       List<Widget> widgets = [];
 
@@ -127,21 +184,13 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
             .toList();
         workoutsForDay.sort((w1, w2) => w1.date.compareTo(w2.date));
 
-        if (isToday) {
-          widgets.insert(
-            0,
-            Divider(
-              color: Theme.of(context).colorScheme.primary,
-              thickness: 2,
-            ),
-          );
-        }
-
         GlobalKey getKey() {
           if (isToday) return todayKey;
           if (isLastDayInMonth) return lastDayInMonthKey;
           return GlobalKey();
         }
+
+        widgets.insert(0, const Divider(thickness: 2));
 
         widgets.insert(
           0, // adds to start of list for most recent date at top
@@ -151,116 +200,53 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
               children: [
                 Expanded(
                   flex: 1,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        getDateNumString(DateTime(rn.year, rn.month, day)),
-                        style: const TextStyle(fontSize: 15),
-                      ),
-                    ],
+                  child: Center(
+                    child: Text(
+                      getDateNumString(DateTime(rn.year, rn.month, day)),
+                      style: const TextStyle(fontSize: 15),
+                    ),
                   ),
                 ),
                 VerticalDivider(
-                  thickness: 1,
-                  color: Theme.of(context).colorScheme.shadow,
+                  thickness: isToday ? 6 : 1,
+                  color: isToday ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.shadow,
                 ),
                 Expanded(
                   flex: 11,
-                  child: Row(
+                  child: Column(
                     children: workoutsForDay.isNotEmpty
-                        ? workoutsForDay
-                            .map<Widget>(
-                              (workout) => Expanded(
-                                child: InkWell(
-                                  onTap: () => Navigator.of(context)
-                                      .push(
-                                        MaterialPageRoute(
-                                          builder: (context) => WorkoutView(
-                                            workoutId: workout.id!,
-                                          ),
-                                        ),
-                                      )
-                                      .then((value) => widget.reloadState()),
-                                  onLongPress: () => showDeleteWorkoutConfirm(workout.id!),
-                                  child: Card(
-                                    child: Container(
-                                      padding: const EdgeInsets.all(20),
-                                      child: workoutsForDay.length == 1
-                                          ? Row(
-                                              children: [
-                                                Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    const Text(
-                                                      'Workout',
-                                                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                                                    ),
-                                                    Text(
-                                                      '@ ${workout.getTimeString()}',
-                                                      style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-                                                    )
-                                                  ],
-                                                ),
-                                                if (workout.workoutCategories != null &&
-                                                    workout.workoutCategories!.isNotEmpty)
-                                                  getWorkoutCategoriesWidget(
-                                                    workout.workoutCategories!,
-                                                    WrapAlignment.end,
-                                                  ),
-                                              ],
-                                            )
-                                          : Column(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    const Text(
-                                                      'Workout',
-                                                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                                                    ),
-                                                    Text(
-                                                      '@ ${workout.getTimeString()}',
-                                                      style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-                                                    )
-                                                  ],
-                                                ),
-                                                if (workout.workoutCategories != null &&
-                                                    workout.workoutCategories!.isNotEmpty)
-                                                  Padding(
-                                                    padding: const EdgeInsets.only(top: 10),
-                                                    child: getWorkoutCategoriesWidget(
-                                                      workout.workoutCategories!,
-                                                      WrapAlignment.start,
-                                                    ),
-                                                  ),
-                                              ],
-                                            ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                            .toList()
+                        ? workoutsForDay.map<Widget>((workout) => getWorkoutDisplay(workout)).toList()
                         : [
-                            Expanded(
-                              child: Container(
-                                padding: const EdgeInsets.all(15),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Rest Day',
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        color: Theme.of(context).colorScheme.shadow,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                            Padding(
+                              padding: const EdgeInsets.all(15),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children:
+                                    dateIsInFuture(DateTime(currentMonth.year, currentMonth.month, day)) || isToday
+                                        ? [
+                                            Text(
+                                              '-',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                color: Theme.of(context).colorScheme.shadow,
+                                              ),
+                                            ),
+                                          ]
+                                        : [
+                                            Icon(
+                                              Icons.hotel_rounded,
+                                              color: Theme.of(context).colorScheme.shadow,
+                                              size: 20,
+                                            ),
+                                            const Padding(padding: EdgeInsets.all(5)),
+                                            Text(
+                                              'Rest Day',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                color: Theme.of(context).colorScheme.shadow,
+                                              ),
+                                            ),
+                                          ],
                               ),
                             ),
                           ],
@@ -270,12 +256,14 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
             ),
           ),
         );
+
+        if (day == daysInCurrentMonth) widgets.insert(0, const Divider(thickness: 2));
       }
 
       return widgets;
     }
 
-    void onAddWorkoutPress() async {
+    void onAddWorkoutButtonTap() async {
       try {
         final newWorkoutId = await WorkoutsHelper.insertWorkout(Workout(date: DateTime.now()));
         if (!mounted) return;
@@ -310,7 +298,14 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
     }
 
     return Column(children: [
-      getSectionTitleWithAction(context, 'Workouts', Icons.add_rounded, onAddWorkoutPress),
+      getSectionTitleWithActions(
+        context,
+        'Workouts',
+        [
+          ActionButton(Icons.today_rounded, reloadState),
+          ActionButton(Icons.add_rounded, onAddWorkoutButtonTap),
+        ],
+      ),
       const Divider(),
       Row(
         children: [
@@ -322,7 +317,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
               onPressed: () => onArrowTap(-1),
               icon: const Icon(
                 Icons.arrow_left_rounded,
-                size: 30,
+                size: 40,
               ),
             ),
           ),
@@ -343,7 +338,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
               onPressed: () => onArrowTap(1),
               icon: const Icon(
                 Icons.arrow_right_rounded,
-                size: 30,
+                size: 40,
               ),
             ),
           ),

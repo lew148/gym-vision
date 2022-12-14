@@ -7,7 +7,6 @@ import 'package:gymvision/workouts/workout_exercise_widget.dart';
 import '../db/classes/workout.dart';
 import '../db/classes/workout_category.dart';
 import '../db/helpers/workouts_helper.dart';
-import '../globals.dart';
 import '../shared/forms/add_exercise_to_workout_form.dart';
 import '../shared/ui_helper.dart';
 import '../shared/forms/add_category_to_workout_form.dart';
@@ -295,7 +294,7 @@ class _WorkoutViewState extends State<WorkoutView> {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text('${getDateNumString(workout.date)} @ ${workout.getTimeString()}'),
+            title: Text(workout.getDateAndTimeString()),
             actions: [
               IconButton(
                 icon: const Icon(
@@ -312,8 +311,12 @@ class _WorkoutViewState extends State<WorkoutView> {
                 getSectionTitleWithAction(
                   context,
                   'Categories',
-                  workout.workoutCategories == null || workout.workoutCategories!.isEmpty ? Icons.add_rounded : Icons.edit_rounded,
-                  () => onAddCategoryClick(existingCategoryIds),
+                  ActionButton(
+                    workout.workoutCategories == null || workout.workoutCategories!.isEmpty
+                        ? Icons.add_rounded
+                        : Icons.edit_rounded,
+                    () => onAddCategoryClick(existingCategoryIds),
+                  ),
                 ),
                 const Divider(),
                 getWorkoutCategoriesWidget(workout.workoutCategories),
@@ -321,9 +324,11 @@ class _WorkoutViewState extends State<WorkoutView> {
                 getSectionTitleWithAction(
                   context,
                   'Exercises',
-                  Icons.add,
-                  () => onAddExerciseClick(
-                      workout.id!, existingExerciseIds, workout.workoutCategories?.map((wc) => wc.categoryId).toList()),
+                  ActionButton(
+                    Icons.add,
+                    () => onAddExerciseClick(workout.id!, existingExerciseIds,
+                        workout.workoutCategories?.map((wc) => wc.categoryId).toList()),
+                  ),
                 ),
                 const Divider(),
                 Expanded(

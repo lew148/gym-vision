@@ -28,11 +28,29 @@ Widget getPrimaryButton(IconData icon, Function() onPressed) => OutlinedButton(
       ),
     );
 
-Widget getSectionTitleWithAction(BuildContext context, String title, IconData actionIcon, Function() actionOnPressed) =>
-    Row(
+class ActionButton {
+  IconData actionIcon;
+  Function() actionOnPressed;
+
+  ActionButton(this.actionIcon, this.actionOnPressed);
+}
+
+Widget getSectionTitleWithAction(BuildContext context, String title, ActionButton actionButton) =>
+    getSectionTitleWithActions(context, title, [actionButton]);
+
+Widget getSectionTitleWithActions(BuildContext context, String title, List<ActionButton> actionButtons) => Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         getSectionTitle(context, title),
-        getPrimaryButton(actionIcon, actionOnPressed),
+        Row(
+          children: actionButtons
+              .map(
+                (ab) => Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: getPrimaryButton(ab.actionIcon, ab.actionOnPressed),
+                ),
+              )
+              .toList(),
+        ),
       ],
     );
