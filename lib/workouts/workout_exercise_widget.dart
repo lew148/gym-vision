@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/workout_exercise.dart';
 import 'package:gymvision/shared/forms/add_exercise_to_workout_form.dart';
 import 'package:gymvision/shared/forms/edit_workout_exercise_form.dart';
+import 'package:gymvision/shared/ui_helper.dart';
 
 import '../db/classes/exercise.dart';
 import '../db/helpers/workouts_helper.dart';
@@ -24,57 +25,6 @@ class WorkoutExerciseWidget extends StatefulWidget {
 }
 
 class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
-  var tapped = false;
-
-  void showRemoveExerciseFromWorkoutConfirm(int workoutExerciseId) {
-    Widget cancelButton = TextButton(
-      child: const Text("No"),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-
-    Widget continueButton = TextButton(
-      child: const Text(
-        "Yes",
-        style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-      ),
-      onPressed: () async {
-        Navigator.pop(context);
-
-        try {
-          await WorkoutsHelper.removeExerciseFromWorkout(workoutExerciseId);
-        } catch (ex) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Failed to remove Exercise from workout: ${ex.toString()}',
-              ),
-            ),
-          );
-        }
-
-        widget.reloadState();
-      },
-    );
-
-    AlertDialog alert = AlertDialog(
-      title: const Text("Remove Exercise from Workout?"),
-      content: const Text(
-        "Are you sure you would like to remove this Exercise from this workout?",
-      ),
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-
-    showDialog(
-      context: context,
-      builder: (context) => alert,
-    );
-  }
-
   void onEditWorkoutExerciseTap(WorkoutExercise we) => showModalBottomSheet(
         context: context,
         builder: (BuildContext context) => Column(
@@ -132,38 +82,6 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
               child: InkWell(
                 onTap: () {
                   Navigator.pop(context);
-                  Navigator.of(context)
-                      .push(
-                        MaterialPageRoute(
-                          builder: (context) => ExerciseView(
-                            exerciseId: we.exerciseId,
-                            exerciseName: we.exercise!.name,
-                          ),
-                        ),
-                      )
-                      .then((value) => widget.reloadState());
-                },
-                child: Row(
-                  children: const [
-                    Icon(Icons.visibility_rounded),
-                    Padding(padding: EdgeInsets.all(5)),
-                    Text(
-                      'View Exercise',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const Divider(),
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: InkWell(
-                onTap: () {
-                  Navigator.pop(context);
                   onSplitASetTap(we);
                 },
                 child: Row(
@@ -185,9 +103,22 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
             Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 10),
               child: InkWell(
-                onTap: () {
+                onTap: () async {
                   Navigator.pop(context);
-                  showRemoveExerciseFromWorkoutConfirm(we.id!);
+
+                  try {
+                    await WorkoutsHelper.removeExerciseFromWorkout(we.id!);
+                  } catch (ex) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Failed to remove Set from workout: ${ex.toString()}',
+                        ),
+                      ),
+                    );
+                  }
+
+                  widget.reloadState();
                 },
                 child: Row(
                   children: const [
@@ -255,100 +186,75 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         return '$sets set${sets == 1 ? '' : 's'}';
       }
 
-      return Padding(
-        padding: const EdgeInsets.only(right: 10, left: 10),
-        child: InkWell(
+      return Column(children: [
+        const Divider(height: 0),
+        InkWell(
           onTap: widget.displayOnly ? null : () => onEditWorkoutExerciseTap(we),
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 3,
-                    child: we.hasWeight()
-                        ? Row(
-                            children: [
-                              const Icon(
-                                Icons.fitness_center_rounded,
-                                size: 15,
-                              ),
-                              const Padding(padding: EdgeInsets.all(5)),
-                              Text(we.getNumberedWeightString(showNone: false) ?? ''),
-                            ],
-                          )
-                        : const Center(
-                            child: Text(
-                              '-',
-                              style: TextStyle(fontSize: 30),
+          child: Padding(
+            padding: widget.displayOnly ? const EdgeInsets.all(15) : const EdgeInsets.fromLTRB(15, 5, 15, 5),
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: we.hasWeight()
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const Icon(
+                              Icons.fitness_center_rounded,
+                              size: 15,
                             ),
+                            const Padding(padding: EdgeInsets.all(5)),
+                            Text(we.getNumberedWeightString(showNone: false) ?? ''),
+                          ],
+                        )
+                      : const Center(
+                          child: Text(
+                            '-',
+                            style: TextStyle(fontSize: 30),
                           ),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.repeat_rounded,
-                          size: 15,
                         ),
-                        const Padding(padding: EdgeInsets.all(5)),
-                        Text(getRepsString()),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.repeat_rounded,
+                        size: 15,
+                      ),
+                      const Padding(padding: EdgeInsets.all(5)),
+                      Text(getRepsString()),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 3,
+                  child: Center(child: Text(getSetsString())),
+                ),
+                if (!widget.displayOnly)
+                  Expanded(
+                    flex: 1,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          child: IconButton(
+                            splashRadius: 20,
+                            onPressed: () => showMoreMenu(we),
+                            icon: const Icon(Icons.more_vert_rounded),
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                  Expanded(
-                    flex: 3,
-                    child: Text(getSetsString()),
-                  ),
-                  if (!widget.displayOnly)
-                    Expanded(
-                      flex: 1,
-                      child: IconButton(
-                        splashRadius: 20,
-                        onPressed: () => showMoreMenu(we),
-                        icon: const Icon(Icons.more_vert_rounded),
-                      ),
-                    ),
-                ],
-              ),
+              ],
             ),
           ),
         ),
-      );
+      ]);
     }).toList();
-
-    if (widget.displayOnly) return widgets; // no add button on display
-
-    widgets.add(
-      Padding(
-        padding: const EdgeInsets.only(right: 10, left: 10),
-        child: InkWell(
-          onTap: () => onAddSetsButtonTap(wes[0].exercise!, wes[0].workoutId),
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.add_rounded,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  const Padding(padding: EdgeInsets.all(2)),
-                  Text(
-                    'Add Sets',
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
 
     return widgets;
   }
@@ -376,57 +282,121 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     widget.reloadState();
   }
 
+  void showDeleteGroupedWorkoutExercisesConfirm() {
+    Widget cancelButton = TextButton(
+      child: const Text("No"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+
+    Widget continueButton = TextButton(
+      child: const Text(
+        "Yes",
+        style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+      ),
+      onPressed: () async {
+        Navigator.pop(context);
+
+        try {
+          await WorkoutsHelper.removegroupedExercisesFromWorkout(
+              widget.workoutExercises[0].workoutId, widget.workoutExercises[0].exerciseId);
+        } catch (ex) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Failed to remove Exercises from workout: ${ex.toString()}',
+              ),
+            ),
+          );
+        }
+
+        widget.reloadState();
+      },
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: const Text("Delete Exercise?"),
+      content: const Text("Are you sure you would like to delete this exercise?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) => alert,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        InkWell(
-          onTap: () => setState(() {
-            tapped = !tapped;
-          }),
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  widget.displayOnly
-                      ? Text(
-                          widget.workoutExercises[0].workout!
-                              .getDateAndTimeString(),
-                          style: const TextStyle(fontWeight: FontWeight.w600),
+        Card(
+          child: Column(
+            children: [
+              InkWell(
+                onLongPress: widget.displayOnly ? null : showDeleteGroupedWorkoutExercisesConfirm,
+                onTap: widget.displayOnly
+                    ? null
+                    : () => Navigator.of(context)
+                        .push(
+                          MaterialPageRoute(
+                            builder: (context) => ExerciseView(
+                              exerciseId: widget.workoutExercises[0].exerciseId,
+                              exerciseName: widget.workoutExercises[0].exercise!.name,
+                            ),
+                          ),
                         )
-                      : Row(
-                          children: [
-                            Checkbox(
-                              materialTapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap,
-                              checkColor: Colors.white,
-                              fillColor: MaterialStateProperty.all(
-                                  Theme.of(context).colorScheme.primary),
-                              value: widget.workoutExercises[0].done,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(5)),
-                              onChanged: (bool? value) =>
-                                  onGroupedWorkoutExercisesDoneTap(value),
+                        .then((value) => widget.reloadState()),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 10, bottom: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      widget.displayOnly
+                          ? Padding(
+                              padding: const EdgeInsets.all(15),
+                              child: Text(
+                                widget.workoutExercises[0].workout!.getDateAndTimeString(),
+                                style: const TextStyle(fontWeight: FontWeight.w600),
+                              ),
+                            )
+                          : Row(
+                              children: [
+                                Checkbox(
+                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  checkColor: Colors.white,
+                                  fillColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
+                                  value: widget.workoutExercises[0].done,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                                  onChanged: (bool? value) => onGroupedWorkoutExercisesDoneTap(value),
+                                ),
+                                Text(
+                                  widget.workoutExercises[0].exercise!.name,
+                                  style: const TextStyle(fontWeight: FontWeight.w600),
+                                ),
+                              ],
                             ),
-                            Text(
-                              widget.workoutExercises[0].exercise!.name,
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.w600),
-                            ),
-                          ],
-                        ),
-                  Icon(
-                    tapped ? Icons.arrow_drop_up_rounded : Icons.arrow_drop_down_rounded,
-                    size: 30,
-                  )
-                ],
+                      if (!widget.displayOnly)
+                        getPrimaryButton(
+                          icon: Icons.add_rounded,
+                          onPressed: () => onAddSetsButtonTap(
+                            widget.workoutExercises[0].exercise!,
+                            widget.workoutExercises[0].workoutId,
+                          ),
+                          padding: 0,
+                        )
+                    ],
+                  ),
+                ),
               ),
-            ),
+              ...getWorkoutExerciseWidget(widget.workoutExercises),
+            ],
           ),
         ),
-        if (tapped) ...getWorkoutExerciseWidget(widget.workoutExercises),
       ],
     );
   }

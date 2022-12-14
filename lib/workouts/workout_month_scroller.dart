@@ -190,7 +190,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
           return GlobalKey();
         }
 
-        widgets.insert(0, const Divider(thickness: 2));
+        widgets.insert(0, const Divider());
 
         widgets.insert(
           0, // adds to start of list for most recent date at top

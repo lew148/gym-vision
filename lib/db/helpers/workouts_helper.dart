@@ -287,6 +287,15 @@ class WorkoutsHelper {
     );
   }
 
+   static removegroupedExercisesFromWorkout(int workoutId, int exerciseId) async {
+    final db = await DatabaseHelper().getDb();
+    await db.delete(
+      'workout_exercises',
+      where: 'workoutId = ? AND exerciseId = ?',
+      whereArgs: [workoutId, exerciseId],
+    );
+  }
+
   static removeExerciseFromWorkout(int workoutExerciseId) async {
     final db = await DatabaseHelper().getDb();
     await db.delete(

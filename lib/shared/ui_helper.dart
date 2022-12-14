@@ -17,13 +17,16 @@ Widget getSectionTitle(BuildContext context, String title) => Padding(
       ),
     );
 
-Widget getPrimaryButton(IconData icon, Function() onPressed) => OutlinedButton(
-      onPressed: onPressed,
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Icon(
-          icon,
-          size: 25,
+Widget getPrimaryButton({required IconData icon, required Function() onPressed, double? padding}) => Padding(
+      padding: const EdgeInsets.only(right: 10, left: 10),
+      child: OutlinedButton(
+        onPressed: onPressed,
+        child: Padding(
+          padding: EdgeInsets.all(padding ?? 10),
+          child: Icon(
+            icon,
+            size: 25,
+          ),
         ),
       ),
     );
@@ -43,14 +46,7 @@ Widget getSectionTitleWithActions(BuildContext context, String title, List<Actio
       children: [
         getSectionTitle(context, title),
         Row(
-          children: actionButtons
-              .map(
-                (ab) => Padding(
-                  padding: const EdgeInsets.only(left: 10),
-                  child: getPrimaryButton(ab.actionIcon, ab.actionOnPressed),
-                ),
-              )
-              .toList(),
+          children: actionButtons.map((ab) => getPrimaryButton(icon: ab.actionIcon, onPressed: ab.actionOnPressed)).toList(),
         ),
       ],
     );
