@@ -312,10 +312,10 @@ class _WorkoutViewState extends State<WorkoutView> {
                   context,
                   'Categories',
                   ActionButton(
-                    workout.workoutCategories == null || workout.workoutCategories!.isEmpty
+                    icon: workout.workoutCategories == null || workout.workoutCategories!.isEmpty
                         ? Icons.add_rounded
                         : Icons.edit_rounded,
-                    () => onAddCategoryClick(existingCategoryIds),
+                    onTap: () => onAddCategoryClick(existingCategoryIds),
                   ),
                 ),
                 const Divider(),
@@ -325,8 +325,8 @@ class _WorkoutViewState extends State<WorkoutView> {
                   context,
                   'Exercises',
                   ActionButton(
-                    Icons.add,
-                    () => onAddExerciseClick(workout.id!, existingExerciseIds,
+                    icon: Icons.add,
+                    onTap: () => onAddExerciseClick(workout.id!, existingExerciseIds,
                         workout.workoutCategories?.map((wc) => wc.categoryId).toList()),
                   ),
                 ),

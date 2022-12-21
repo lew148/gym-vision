@@ -17,25 +17,36 @@ Widget getSectionTitle(BuildContext context, String title) => Padding(
       ),
     );
 
-Widget getPrimaryButton({required IconData icon, required Function() onPressed, double? padding}) => Padding(
+Widget getPrimaryButton({required ActionButton actionButton, double? padding}) => Padding(
       padding: const EdgeInsets.only(right: 10, left: 10),
       child: OutlinedButton(
-        onPressed: onPressed,
+        onPressed: actionButton.onTap,
         child: Padding(
           padding: EdgeInsets.all(padding ?? 10),
-          child: Icon(
-            icon,
-            size: 25,
-          ),
+          child: Row(children: [
+            if (actionButton.icon != null)
+              Icon(
+                actionButton.icon,
+                size: 25,
+              ),
+            if (actionButton.icon != null && actionButton.text != null)
+              const Padding(padding: EdgeInsets.only(left: 5)),
+            if (actionButton.text != null) Text(actionButton.text!),
+          ]),
         ),
       ),
     );
 
 class ActionButton {
-  IconData actionIcon;
-  Function() actionOnPressed;
+  Function() onTap;
+  IconData? icon;
+  String? text;
 
-  ActionButton(this.actionIcon, this.actionOnPressed);
+  ActionButton({
+    required this.onTap,
+    this.icon,
+    this.text,
+  });
 }
 
 Widget getSectionTitleWithAction(BuildContext context, String title, ActionButton actionButton) =>
@@ -46,7 +57,7 @@ Widget getSectionTitleWithActions(BuildContext context, String title, List<Actio
       children: [
         getSectionTitle(context, title),
         Row(
-          children: actionButtons.map((ab) => getPrimaryButton(icon: ab.actionIcon, onPressed: ab.actionOnPressed)).toList(),
+          children: actionButtons.map((ab) => getPrimaryButton(actionButton: ab)).toList(),
         ),
       ],
     );

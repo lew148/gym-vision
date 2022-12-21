@@ -339,18 +339,6 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
             children: [
               InkWell(
                 onLongPress: widget.displayOnly ? null : showDeleteGroupedWorkoutExercisesConfirm,
-                onTap: widget.displayOnly
-                    ? null
-                    : () => Navigator.of(context)
-                        .push(
-                          MaterialPageRoute(
-                            builder: (context) => ExerciseView(
-                              exerciseId: widget.workoutExercises[0].exerciseId,
-                              exerciseName: widget.workoutExercises[0].exercise!.name,
-                            ),
-                          ),
-                        )
-                        .then((value) => widget.reloadState()),
                 child: Padding(
                   padding: const EdgeInsets.only(top: 10, bottom: 10),
                   child: Row(
@@ -381,14 +369,39 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                               ],
                             ),
                       if (!widget.displayOnly)
-                        getPrimaryButton(
-                          icon: Icons.add_rounded,
-                          onPressed: () => onAddSetsButtonTap(
-                            widget.workoutExercises[0].exercise!,
-                            widget.workoutExercises[0].workoutId,
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              getPrimaryButton(
+                                actionButton: ActionButton(
+                                  icon: Icons.visibility_rounded,
+                                  onTap: () => Navigator.of(context)
+                                      .push(
+                                        MaterialPageRoute(
+                                          builder: (context) => ExerciseView(
+                                            exerciseId: widget.workoutExercises[0].exerciseId,
+                                            exerciseName: widget.workoutExercises[0].exercise!.name,
+                                          ),
+                                        ),
+                                      )
+                                      .then((value) => widget.reloadState()),
+                                ),
+                                padding: 0,
+                              ),
+                              getPrimaryButton(
+                                actionButton: ActionButton(
+                                  icon: Icons.add_rounded,
+                                  onTap: () => onAddSetsButtonTap(
+                                    widget.workoutExercises[0].exercise!,
+                                    widget.workoutExercises[0].workoutId,
+                                  ),
+                                ),
+                                padding: 0,
+                              ),
+                            ],
                           ),
-                          padding: 0,
-                        )
+                        ),
                     ],
                   ),
                 ),
