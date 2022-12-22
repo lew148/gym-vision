@@ -302,7 +302,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
         context,
         'Workouts',
         [
-          ActionButton(icon: Icons.today_rounded, onTap: reloadState, text: 'Today'),
+          ActionButton(icon: Icons.today_outlined, onTap: reloadState, text: 'Today'),
           ActionButton(icon: Icons.add_rounded, onTap: onAddWorkoutButtonTap),
         ],
       ),

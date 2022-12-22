@@ -14,8 +14,7 @@ import '../workouts/workout_exercise_widget.dart';
 class ExerciseView extends StatefulWidget {
   final int exerciseId;
   final String exerciseName;
-  const ExerciseView(
-      {super.key, required this.exerciseId, required this.exerciseName});
+  const ExerciseView({super.key, required this.exerciseId, required this.exerciseName});
 
   @override
   State<ExerciseView> createState() => _ExerciseViewState();
@@ -96,9 +95,9 @@ class _ExerciseViewState extends State<ExerciseView> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text('Single Weight'),
+                        const Text('Double Sided'),
                         Switch(
-                          value: exercise.isSingle,
+                          value: !exercise.isSingle,
                           onChanged: (newValue) async {
                             exercise.isSingle = !exercise.isSingle;
                             await ExercisesHelper.updateExercise(exercise);
@@ -127,8 +126,7 @@ class _ExerciseViewState extends State<ExerciseView> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
               child: EditExerciseFieldForm(
                 exercise: exercise,
                 editableField: editableField,
@@ -172,8 +170,7 @@ class _ExerciseViewState extends State<ExerciseView> {
       );
 
   List<Widget> getRecentUsesWidget(List<WorkoutExercise> workoutExercises) {
-    final Map<int, List<WorkoutExercise>> groupedWorkoutExercises =
-        groupBy<WorkoutExercise, int>(
+    final Map<int, List<WorkoutExercise>> groupedWorkoutExercises = groupBy<WorkoutExercise, int>(
       workoutExercises,
       (x) => x.workoutId,
     );
@@ -197,8 +194,7 @@ class _ExerciseViewState extends State<ExerciseView> {
 
   @override
   Widget build(BuildContext context) {
-    final Future<Exercise> exercise =
-        ExercisesHelper.getExercise(widget.exerciseId);
+    final Future<Exercise> exercise = ExercisesHelper.getExercise(widget.exerciseId);
     final Future<List<WorkoutExercise>?> workoutExercises =
         WorkoutsHelper.getWorkoutExercisesForExercise(widget.exerciseId);
 

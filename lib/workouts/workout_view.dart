@@ -48,7 +48,7 @@ class _WorkoutViewState extends State<WorkoutView> {
   getWorkoutCategoriesWidget(List<WorkoutCategory>? workoutCategories) {
     if (workoutCategories == null || workoutCategories.isEmpty) {
       return const Center(
-        child: Text('No Category set yet.'),
+        child: Text('No Categories'),
       );
     }
 
