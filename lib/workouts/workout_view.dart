@@ -45,13 +45,7 @@ class _WorkoutViewState extends State<WorkoutView> {
         ),
       );
 
-  getWorkoutCategoriesWidget(List<WorkoutCategory>? workoutCategories) {
-    if (workoutCategories == null || workoutCategories.isEmpty) {
-      return const Center(
-        child: Text('No Categories'),
-      );
-    }
-
+  getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories) {
     workoutCategories.sort((a, b) => a.category!.name.compareTo(b.category!.name));
 
     return Wrap(
@@ -127,7 +121,10 @@ class _WorkoutViewState extends State<WorkoutView> {
     if (workoutExercises == null || workoutExercises.isEmpty) {
       return const [
         Center(
-          child: Text('No Exercises added yet.'),
+          child: Padding(
+            padding: EdgeInsets.all(15),
+            child: Text('No Exercises added yet...'),
+          ),
         ),
       ];
     }
@@ -248,6 +245,35 @@ class _WorkoutViewState extends State<WorkoutView> {
     );
   }
 
+  List<Widget> getCategoriesParts(Workout workout, List<int> existingCategoryIds) =>
+      workout.workoutCategories == null || workout.workoutCategories!.isEmpty
+          ? [
+              Row(children: [
+                Expanded(
+                  child: getPrimaryButton(
+                    actionButton: ActionButton(
+                      onTap: () => onAddCategoryClick([]),
+                      text: 'Add Categories',
+                      icon: Icons.add_rounded,
+                    ),
+                  ),
+                ),
+              ]),
+              const Padding(padding: EdgeInsets.all(5)),
+            ]
+          : [
+              getSectionTitleWithAction(
+                context,
+                'Categories',
+                ActionButton(
+                  icon: Icons.edit_rounded,
+                  onTap: () => onAddCategoryClick(existingCategoryIds),
+                ),
+              ),
+              const Divider(),
+              getWorkoutCategoriesWidget(workout.workoutCategories!),
+            ];
+
   @override
   Widget build(BuildContext context) {
     Future<Workout> workout = WorkoutsHelper.getWorkout(
@@ -273,21 +299,13 @@ class _WorkoutViewState extends State<WorkoutView> {
         final workout = snapshot.data!;
 
         if (workout.workoutCategories != null && workout.workoutCategories!.isNotEmpty) {
-          existingCategoryIds = workout.workoutCategories!
-              .map(
-                (wc) => wc.categoryId,
-              )
-              .toList();
+          existingCategoryIds = workout.workoutCategories!.map((wc) => wc.categoryId).toList();
         } else {
           existingCategoryIds = [];
         }
 
         if (workout.workoutExercises != null && workout.workoutExercises!.isNotEmpty) {
-          existingExerciseIds = workout.workoutExercises!
-              .map(
-                (we) => we.exerciseId,
-              )
-              .toList();
+          existingExerciseIds = workout.workoutExercises!.map((we) => we.exerciseId).toList();
         } else {
           existingExerciseIds = [];
         }
@@ -308,18 +326,7 @@ class _WorkoutViewState extends State<WorkoutView> {
             padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
             child: Column(
               children: [
-                getSectionTitleWithAction(
-                  context,
-                  'Categories',
-                  ActionButton(
-                    icon: workout.workoutCategories == null || workout.workoutCategories!.isEmpty
-                        ? Icons.add_rounded
-                        : Icons.edit_rounded,
-                    onTap: () => onAddCategoryClick(existingCategoryIds),
-                  ),
-                ),
-                const Divider(),
-                getWorkoutCategoriesWidget(workout.workoutCategories),
+                ...getCategoriesParts(workout, existingExerciseIds),
                 const Padding(padding: EdgeInsets.all(5)),
                 getSectionTitleWithAction(
                   context,

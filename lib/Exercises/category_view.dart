@@ -4,13 +4,13 @@ import 'package:gymvision/exercises/exercise_more_menu_button.dart';
 
 import '../db/helpers/exercises_helper.dart';
 import '../shared/forms/add_exercise_form.dart';
+import '../shared/ui_helper.dart';
 import 'exercise_view.dart';
 
 class CategoryView extends StatefulWidget {
   final int categoryId;
   final String categoryName;
-  const CategoryView(
-      {super.key, required this.categoryId, required this.categoryName});
+  const CategoryView({super.key, required this.categoryId, required this.categoryName});
 
   @override
   State<CategoryView> createState() => _CategoryViewState();
@@ -63,13 +63,10 @@ class _CategoryViewState extends State<CategoryView> {
                                   ),
                                   const Padding(padding: EdgeInsets.all(5)),
                                   Text(
-                                    exercise.getNumberedWeightString(
-                                            showNone: false) ??
-                                        '',
+                                    exercise.getNumberedWeightString(showNone: false) ?? '',
                                     style: TextStyle(
                                       fontSize: 15,
-                                      color:
-                                          Theme.of(context).colorScheme.shadow,
+                                      color: Theme.of(context).colorScheme.shadow,
                                     ),
                                   ),
                                 ],
@@ -113,8 +110,7 @@ class _CategoryViewState extends State<CategoryView> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
               child: AddExerciseForm(
                 categoryId: widget.categoryId,
                 reloadState: reloadState,
@@ -123,27 +119,15 @@ class _CategoryViewState extends State<CategoryView> {
           ],
         ),
         isScrollControlled: true,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
       );
 
   @override
   Widget build(BuildContext context) {
-    final Future<List<Exercise>> exercises =
-        ExercisesHelper.getExercisesForCategory(widget.categoryId);
+    final Future<List<Exercise>> exercises = ExercisesHelper.getExercisesForCategory(widget.categoryId);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.categoryName),
-        actions: [
-          Padding(
-              padding: const EdgeInsets.only(right: 20.0),
-              child: GestureDetector(
-                onTap: () => openAddExerciseForm(),
-                child: const Icon(Icons.add),
-              )),
-        ],
-      ),
+      appBar: AppBar(title: Text(widget.categoryName)),
       body: FutureBuilder<List<Exercise>>(
         future: exercises,
         builder: (context, snapshot) {
@@ -165,10 +149,15 @@ class _CategoryViewState extends State<CategoryView> {
           return SingleChildScrollView(
             child: Container(
               margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
-              child: Column(
-                children:
-                    snapshot.data!.map((c) => getExerciseWidget(c)).toList(),
-              ),
+              child: Column(children: [
+                getSectionTitleWithActions(
+                  context,
+                  'Exercises',
+                  [ActionButton(icon: Icons.add_rounded, onTap: openAddExerciseForm)],
+                ),
+                const Divider(),
+                ...snapshot.data!.map((c) => getExerciseWidget(c)).toList(),
+              ]),
             ),
           );
         },

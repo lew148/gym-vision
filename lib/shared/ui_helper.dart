@@ -23,16 +23,19 @@ Widget getPrimaryButton({required ActionButton actionButton, double? padding}) =
         onPressed: actionButton.onTap,
         child: Padding(
           padding: EdgeInsets.all(padding ?? 10),
-          child: Row(children: [
-            if (actionButton.icon != null)
-              Icon(
-                actionButton.icon,
-                size: 25,
-              ),
-            if (actionButton.icon != null && actionButton.text != null)
-              const Padding(padding: EdgeInsets.only(left: 5)),
-            if (actionButton.text != null) Text(actionButton.text!),
-          ]),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (actionButton.icon != null)
+                Icon(
+                  actionButton.icon,
+                  size: 25,
+                ),
+              if (actionButton.icon != null && actionButton.text != null)
+                const Padding(padding: EdgeInsets.only(left: 5)),
+              if (actionButton.text != null) Text(actionButton.text!),
+            ],
+          ),
         ),
       ),
     );

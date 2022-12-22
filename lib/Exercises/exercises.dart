@@ -3,6 +3,9 @@ import 'package:gymvision/exercises/category_view.dart';
 import 'package:gymvision/db/helpers/categories_helper.dart';
 import 'package:gymvision/db/classes/category.dart';
 
+import '../shared/forms/add_category_form.dart';
+import '../shared/ui_helper.dart';
+
 class Exercises extends StatefulWidget {
   const Exercises({super.key});
 
@@ -12,9 +15,10 @@ class Exercises extends StatefulWidget {
 
 class _ExercisesState extends State<Exercises> {
   final Future<List<Category>> _categories = CategoriesHelper().getCategories();
+  reloadState() => setState(() {});
 
-  Widget getCategoryWidget(Category category) => Container(
-        margin: const EdgeInsets.only(bottom: 20),
+  Widget getCategoryWidget(Category category) => Padding(
+        padding: const EdgeInsets.only(bottom: 2.5, top: 2.5),
         child: InkWell(
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
@@ -52,14 +56,12 @@ class _ExercisesState extends State<Exercises> {
         ),
       );
 
-  List<Widget> getCategoriesRows(List<Category> categories) {
+  Widget getCategories(List<Category> categories) {
     List<Widget> rows = [];
-
     categories.sort(((a, b) => a.name.compareTo(b.name)));
 
     for (var i = 0; i < categories.length; i += 2) {
-      var categoriesForRow = categories.sublist(
-          i, i + 2 > categories.length ? categories.length : i + 2);
+      var categoriesForRow = categories.sublist(i, i + 2 > categories.length ? categories.length : i + 2);
 
       rows.add(Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -76,13 +78,28 @@ class _ExercisesState extends State<Exercises> {
       ));
     }
 
-    return rows;
+    return Expanded(child: SingleChildScrollView(child: Column(children: rows)));
   }
+
+  void openAddCategoryForm() => showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: AddCategoryForm(reloadState: reloadState),
+            ),
+          ],
+        ),
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+      );
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(10, 20, 10, 20),
+      padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
       child: FutureBuilder<List<Category>>(
         future: _categories,
         builder: (context, snapshot) {
@@ -92,9 +109,15 @@ class _ExercisesState extends State<Exercises> {
             );
           }
 
-          return Column(
-            children: getCategoriesRows(snapshot.data!),
-          );
+          return Column(children: [
+            getSectionTitleWithActions(
+              context,
+              'Categories',
+              [ActionButton(icon: Icons.add_rounded, onTap: openAddCategoryForm)],
+            ),
+            const Divider(),
+            getCategories(snapshot.data!),
+          ]);
         },
       ),
     );
