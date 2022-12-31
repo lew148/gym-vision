@@ -82,22 +82,8 @@ class _AddExerciseToWorkoutFormState extends State<AddExerciseToWorkoutForm> {
             reps: int.parse(getNumberStringOrDefault(repsController.text)),
             sets: int.parse(getNumberStringOrDefault(setsController.text)),
           );
-
-          if (mounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Successfully Added exercise to workout!'),
-              ),
-            );
-          }
         } catch (ex) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Failed to add exercise to workout: $ex',
-              ),
-            ),
-          );
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to add exercise to workout: $ex')));
         }
 
         widget.reloadState();

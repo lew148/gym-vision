@@ -37,9 +37,7 @@ class _AddExerciseFormState extends State<AddExerciseForm> {
           max: 0, // to set in edit
           reps: int.parse(getNumberStringOrDefault(repsController.text)),
           isSingle: !isDoubleValue,
-        )).then((value) => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Successfully added Exercise!')),
-            ));
+        ));
       } catch (ex) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Failed to add exercise: $ex')),
