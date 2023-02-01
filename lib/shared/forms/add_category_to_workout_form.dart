@@ -44,7 +44,7 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
         );
       } catch (ex) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to add categories to workout: $ex')),
+          const SnackBar(content: Text('Failed to add Categories to workout')),
         );
       }
 

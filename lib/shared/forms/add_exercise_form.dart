@@ -40,7 +40,7 @@ class _AddExerciseFormState extends State<AddExerciseForm> {
         ));
       } catch (ex) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to add exercise: $ex')),
+          const SnackBar(content: Text('Failed to add exercise')),
         );
       }
 

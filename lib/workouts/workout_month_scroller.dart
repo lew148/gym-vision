@@ -176,6 +176,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
       List<Widget> widgets = [];
 
       for (int day = 1; day <= daysInCurrentMonth; day++) {
+        var currentDate = DateTime(currentMonth.year, currentMonth.month, day);
         var isToday = rnAndCurrentAreSameMonth && rn.day == day;
         var isLastDayInMonth = day == daysInCurrentMonth;
 
@@ -190,7 +191,9 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
           return GlobalKey();
         }
 
-        widgets.insert(0, const Divider());
+        if (day != 1) {
+          widgets.insert(0, Divider(color: currentDate.weekday == 1 ? Theme.of(context).colorScheme.shadow : null));
+        }
 
         widgets.insert(
           0, // adds to start of list for most recent date at top
@@ -199,13 +202,14 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
             child: Row(
               children: [
                 Expanded(
-                  flex: 1,
-                  child: Center(
-                    child: Text(
-                      getDateNumString(DateTime(rn.year, rn.month, day)),
-                      style: const TextStyle(fontSize: 15),
+                  flex: 2,
+                  child: Row(children: [
+                    const Padding(padding: EdgeInsets.all(4)),
+                    Text(
+                      getSmallDateDisplay(currentDate),
+                      style: TextStyle(fontSize: 15, color: Theme.of(context).colorScheme.shadow),
                     ),
-                  ),
+                  ]),
                 ),
                 VerticalDivider(
                   thickness: isToday ? 6 : 1,
@@ -221,32 +225,31 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                               padding: const EdgeInsets.all(15),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
-                                children:
-                                    dateIsInFuture(DateTime(currentMonth.year, currentMonth.month, day)) || isToday
-                                        ? [
-                                            Text(
-                                              '-',
-                                              style: TextStyle(
-                                                fontSize: 15,
-                                                color: Theme.of(context).colorScheme.shadow,
-                                              ),
-                                            ),
-                                          ]
-                                        : [
-                                            Icon(
-                                              Icons.hotel_rounded,
-                                              color: Theme.of(context).colorScheme.shadow,
-                                              size: 20,
-                                            ),
-                                            const Padding(padding: EdgeInsets.all(5)),
-                                            Text(
-                                              'Rest Day',
-                                              style: TextStyle(
-                                                fontSize: 15,
-                                                color: Theme.of(context).colorScheme.shadow,
-                                              ),
-                                            ),
-                                          ],
+                                children: dateIsInFuture(currentDate) || isToday
+                                    ? [
+                                        Text(
+                                          '-',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            color: Theme.of(context).colorScheme.shadow,
+                                          ),
+                                        ),
+                                      ]
+                                    : [
+                                        Icon(
+                                          Icons.hotel_rounded,
+                                          color: Theme.of(context).colorScheme.shadow,
+                                          size: 20,
+                                        ),
+                                        const Padding(padding: EdgeInsets.all(5)),
+                                        Text(
+                                          'Rest Day',
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            color: Theme.of(context).colorScheme.shadow,
+                                          ),
+                                        ),
+                                      ],
                               ),
                             ),
                           ],
@@ -256,8 +259,6 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
             ),
           ),
         );
-
-        if (day == daysInCurrentMonth) widgets.insert(0, const Divider(thickness: 2));
       }
 
       return widgets;
@@ -279,7 +280,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
             .then((value) => widget.reloadState());
       } catch (ex) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to add workout: $ex')),
+          const SnackBar(content: Text('Failed to add workout')),
         );
       }
     }

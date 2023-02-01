@@ -270,13 +270,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         );
       }
     } catch (ex) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Could not set Workout Exercises ${done ? '' : 'not '}done: $ex',
-          ),
-        ),
-      );
+      // ignore
     }
 
     widget.reloadState();

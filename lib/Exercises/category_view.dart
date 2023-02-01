@@ -146,19 +146,24 @@ class _CategoryViewState extends State<CategoryView> {
             );
           }
 
-          return SingleChildScrollView(
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
-              child: Column(children: [
-                getSectionTitleWithActions(
-                  context,
-                  'Exercises',
-                  [ActionButton(icon: Icons.add_rounded, onTap: openAddExerciseForm)],
+          return Container(
+            padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
+            child: Column(children: [
+              getSectionTitleWithActions(
+                context,
+                'Exercises',
+                [ActionButton(icon: Icons.add_rounded, onTap: openAddExerciseForm)],
+              ),
+              const Divider(),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Container(
+                    margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
+                    child: Column(children: snapshot.data!.map((c) => getExerciseWidget(c)).toList()),
+                  ),
                 ),
-                const Divider(),
-                ...snapshot.data!.map((c) => getExerciseWidget(c)).toList(),
-              ]),
-            ),
+              ),
+            ]),
           );
         },
       ),

@@ -163,7 +163,7 @@ class _WorkoutViewState extends State<WorkoutView> {
     } catch (ex) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update date: $ex')),
+        const SnackBar(content: Text('Failed to update date')),
       );
     }
 
@@ -181,7 +181,7 @@ class _WorkoutViewState extends State<WorkoutView> {
     } catch (ex) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to update time: $ex')),
+        const SnackBar(content: Text('Failed to update time')),
       );
     }
 
@@ -326,7 +326,7 @@ class _WorkoutViewState extends State<WorkoutView> {
             padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
             child: Column(
               children: [
-                ...getCategoriesParts(workout, existingExerciseIds),
+                ...getCategoriesParts(workout, existingCategoryIds),
                 const Padding(padding: EdgeInsets.all(5)),
                 getSectionTitleWithAction(
                   context,

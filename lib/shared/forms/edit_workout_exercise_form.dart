@@ -16,8 +16,7 @@ class EditWorkoutExerciseForm extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<EditWorkoutExerciseForm> createState() =>
-      _EditWorkoutExerciseFormState();
+  State<EditWorkoutExerciseForm> createState() => _EditWorkoutExerciseFormState();
 }
 
 class _EditWorkoutExerciseFormState extends State<EditWorkoutExerciseForm> {
@@ -29,12 +28,9 @@ class _EditWorkoutExerciseFormState extends State<EditWorkoutExerciseForm> {
   @override
   void initState() {
     super.initState();
-    weightController =
-        TextEditingController(text: widget.workoutExercise.getWeightAsString());
-    repsController =
-        TextEditingController(text: widget.workoutExercise.getRepsAsString());
-    setsController =
-        TextEditingController(text: widget.workoutExercise.getSetsAsString());
+    weightController = TextEditingController(text: widget.workoutExercise.getWeightAsString());
+    repsController = TextEditingController(text: widget.workoutExercise.getRepsAsString());
+    setsController = TextEditingController(text: widget.workoutExercise.getSetsAsString());
   }
 
   void onSubmit() async {
@@ -42,8 +38,7 @@ class _EditWorkoutExerciseFormState extends State<EditWorkoutExerciseForm> {
       Navigator.pop(context);
       bool changeMade = false;
 
-      final newWeight =
-          double.parse(getNumberStringOrDefault(weightController.text));
+      final newWeight = double.parse(getNumberStringOrDefault(weightController.text));
       final newReps = int.parse(getNumberStringOrDefault(repsController.text));
       final newSets = int.parse(getNumberStringOrDefault(setsController.text));
 
@@ -67,11 +62,9 @@ class _EditWorkoutExerciseFormState extends State<EditWorkoutExerciseForm> {
       try {
         await WorkoutsHelper.updateWorkoutExercise(widget.workoutExercise);
       } catch (ex) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to edit Workout Exercise: $ex'),
-          ),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Failed to edit Workout Exercise'),
+        ));
       }
 
       widget.reloadState();
@@ -96,8 +89,7 @@ class _EditWorkoutExerciseFormState extends State<EditWorkoutExerciseForm> {
                   controller: weightController,
                   label: 'Weight',
                   isSingle: widget.workoutExercise.exercise!.isSingle,
-                  defaultWeight:
-                      widget.workoutExercise.exercise!.getWeightAsString(),
+                  defaultWeight: widget.workoutExercise.exercise!.getWeightAsString(),
                   max: widget.workoutExercise.exercise!.max == 0
                       ? widget.workoutExercise.exercise!.getWeightAsString()
                       : widget.workoutExercise.exercise!.getMaxAsString(),

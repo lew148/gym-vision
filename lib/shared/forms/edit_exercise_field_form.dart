@@ -79,8 +79,7 @@ class _EditExerciseFieldFormState extends State<EditExerciseFieldForm> {
               }
             case ExerciseEditableField.weight:
               {
-                final newValue = double.parse(
-                    getNumberStringOrDefault(fieldController.text));
+                final newValue = double.parse(getNumberStringOrDefault(fieldController.text));
 
                 if (widget.exercise.weight == newValue) {
                   doUpdate = false;
@@ -92,8 +91,7 @@ class _EditExerciseFieldFormState extends State<EditExerciseFieldForm> {
               }
             case ExerciseEditableField.max:
               {
-                final newValue = double.parse(
-                    getNumberStringOrDefault(fieldController.text));
+                final newValue = double.parse(getNumberStringOrDefault(fieldController.text));
 
                 if (widget.exercise.max == newValue) {
                   doUpdate = false;
@@ -105,8 +103,7 @@ class _EditExerciseFieldFormState extends State<EditExerciseFieldForm> {
               }
             case ExerciseEditableField.reps:
               {
-                final newValue = int.tryParse(
-                    getNumberStringOrDefault(fieldController.text));
+                final newValue = int.tryParse(getNumberStringOrDefault(fieldController.text));
 
                 if (newValue == null) {
                   throw Exception('Inputted reps is not a valid integer');
@@ -126,7 +123,7 @@ class _EditExerciseFieldFormState extends State<EditExerciseFieldForm> {
           await ExercisesHelper.updateExercise(widget.exercise);
         } catch (ex) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to edit exercise: $ex')),
+            const SnackBar(content: Text('Failed to edit exercise')),
           );
         }
 

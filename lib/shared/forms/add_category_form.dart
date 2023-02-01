@@ -34,7 +34,7 @@ class _AddCategoryFormState extends State<AddCategoryForm> {
         // ));
       } catch (ex) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to add Category: $ex')),
+          const SnackBar(content: Text('Failed to add Category')),
         );
       }
 
