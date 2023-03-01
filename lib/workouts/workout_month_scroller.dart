@@ -203,12 +203,14 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
               children: [
                 Expanded(
                   flex: 2,
-                  child: Row(children: [
-                    const Padding(padding: EdgeInsets.all(4)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
                     Text(
                       getSmallDateDisplay(currentDate),
                       style: TextStyle(fontSize: 15, color: Theme.of(context).colorScheme.shadow),
                     ),
+                    const Padding(padding: EdgeInsets.all(2)),
                   ]),
                 ),
                 VerticalDivider(

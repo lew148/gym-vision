@@ -25,6 +25,8 @@ class WorkoutExerciseWidget extends StatefulWidget {
 }
 
 class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
+  bool dropped = false;
+
   void onEditWorkoutExerciseTap(WorkoutExercise we) => showModalBottomSheet(
         context: context,
         builder: (BuildContext context) => Column(
@@ -181,11 +183,6 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         return '$reps rep${reps == 1 ? '' : 's'}';
       }
 
-      String getSetsString() {
-        int sets = we.sets!;
-        return '$sets set${sets == 1 ? '' : 's'}';
-      }
-
       return Column(children: [
         const Divider(height: 0),
         InkWell(
@@ -195,26 +192,34 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
             child: Row(
               children: [
                 Expanded(
-                  flex: 3,
-                  child: we.hasWeight()
-                      ? Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const Icon(
-                              Icons.fitness_center_rounded,
-                              size: 15,
-                            ),
-                            const Padding(padding: EdgeInsets.all(5)),
-                            Text(we.getNumberedWeightString(showNone: false) ?? ''),
-                          ],
-                        )
-                      : const Center(
-                          child: Text(
-                            '-',
-                            style: TextStyle(fontSize: 30),
-                          ),
-                        ),
+                  flex: 1,
+                  child: Center(child: Text('${we.sets!} x')),
                 ),
+                Expanded(
+                    flex: 3,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: we.hasWeight()
+                          ? [
+                              const Icon(
+                                Icons.fitness_center_rounded,
+                                size: 15,
+                              ),
+                              const Padding(padding: EdgeInsets.all(5)),
+                              Text((widget.displayOnly
+                                      ? we.getNumberedWeightString(showNone: false)
+                                      : we.getWeightString(showNone: false)) ??
+                                  ''),
+                            ]
+                          : [
+                              const Center(
+                                child: Text(
+                                  '-',
+                                  style: TextStyle(fontSize: 30),
+                                ),
+                              ),
+                            ],
+                    )),
                 Expanded(
                   flex: 3,
                   child: Row(
@@ -228,10 +233,6 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                       Text(getRepsString()),
                     ],
                   ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Center(child: Text(getSetsString())),
                 ),
                 if (!widget.displayOnly)
                   Expanded(
@@ -255,6 +256,21 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         ),
       ]);
     }).toList();
+
+    if (!widget.displayOnly) {
+      widgets.add(Column(children: [
+        getPrimaryButton(
+          actionButton: ActionButton(
+            icon: Icons.add_rounded,
+            onTap: () => onAddSetsButtonTap(
+              widget.workoutExercises[0].exercise!,
+              widget.workoutExercises[0].workoutId,
+            ),
+          ),
+          padding: 0,
+        )
+      ]));
+    }
 
     return widgets;
   }
@@ -332,6 +348,9 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           child: Column(
             children: [
               InkWell(
+                onTap: () => setState(() {
+                  dropped = !dropped;
+                }),
                 onLongPress: widget.displayOnly ? null : showDeleteGroupedWorkoutExercisesConfirm,
                 child: Padding(
                   padding: const EdgeInsets.only(top: 10, bottom: 10),
@@ -360,6 +379,9 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                                   widget.workoutExercises[0].exercise!.name,
                                   style: const TextStyle(fontWeight: FontWeight.w600),
                                 ),
+                                dropped
+                                    ? const Icon(Icons.arrow_drop_up_rounded)
+                                    : const Icon(Icons.arrow_drop_down_rounded)
                               ],
                             ),
                       if (!widget.displayOnly)
@@ -383,16 +405,6 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                                 ),
                                 padding: 0,
                               ),
-                              getPrimaryButton(
-                                actionButton: ActionButton(
-                                  icon: Icons.add_rounded,
-                                  onTap: () => onAddSetsButtonTap(
-                                    widget.workoutExercises[0].exercise!,
-                                    widget.workoutExercises[0].workoutId,
-                                  ),
-                                ),
-                                padding: 0,
-                              ),
                             ],
                           ),
                         ),
@@ -400,7 +412,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                   ),
                 ),
               ),
-              ...getWorkoutExerciseWidget(widget.workoutExercises),
+              if (widget.displayOnly || dropped) ...getWorkoutExerciseWidget(widget.workoutExercises),
             ],
           ),
         ),
