@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 
-String appVersion = 'V 1.0.0.17';
+String appVersion = 'V 1.0.0.18';
 
 getNumberStringOrDefault(String value) => value == '' ? '0' : value;
 
