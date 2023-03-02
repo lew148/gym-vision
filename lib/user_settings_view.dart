@@ -88,13 +88,20 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                           }
                         });
                       },
-                      items: ThemeSetting.values
-                          .map<DropdownMenuItem<String>>((ts) {
-                        return DropdownMenuItem<String>(
-                          value: ts.name,
-                          child: Text(ts.name),
-                        );
-                      }).toList(),
+                      items: const [
+                        DropdownMenuItem<String>(
+                          value: 'light',
+                          child: Text('Light')
+                        ),
+                        DropdownMenuItem<String>(
+                          value: 'dark',
+                          child: Text('Dark')
+                        ),
+                        DropdownMenuItem<String>(
+                          value: 'system',
+                          child: Text('System')
+                        )
+                      ],
                     ),
                   ],
                 ),

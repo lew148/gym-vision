@@ -31,6 +31,7 @@ class ExercisePicker extends StatefulWidget {
 class _ExercisePickerState extends State<ExercisePicker> {
   Future<Exercise>? selectedExercise;
   late Future<List<Exercise>> allExercises;
+  bool xPressed = false;
 
   @override
   void initState() {
@@ -223,7 +224,10 @@ class _ExercisePickerState extends State<ExercisePicker> {
         ),
         IconButton(
           padding: const EdgeInsets.fromLTRB(5, 5, 0, 5),
-          onPressed: () => widget.setExercise(null),
+          onPressed: () {
+            xPressed = true;
+            widget.setExercise(null);
+          },
           icon: const Icon(Icons.clear_rounded),
         ),
       ];
@@ -248,7 +252,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   widget.setExercise(exercise);
                 });
-              } else if (widget.autoOpen && exercise == null) {
+              } else if (widget.autoOpen && exercise == null && !xPressed) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   showExercisePicker(allExercisesSnapshot.data!, exercise);
                 });
