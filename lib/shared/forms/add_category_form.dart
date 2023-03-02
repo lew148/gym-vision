@@ -1,11 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gymvision/db/helpers/categories_helper.dart';
-import 'package:gymvision/db/helpers/exercises_helper.dart';
 import 'package:gymvision/shared/forms/fields/custom_form_fields.dart';
-import '../../db/classes/category.dart';
-import '../../db/classes/exercise.dart';
-import '../../globals.dart';
-
 class AddCategoryForm extends StatefulWidget {
   final void Function() reloadState;
 

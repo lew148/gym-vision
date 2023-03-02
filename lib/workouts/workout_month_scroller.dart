@@ -125,6 +125,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                 MaterialPageRoute(
                   builder: (context) => WorkoutView(
                     workoutId: workout.id!,
+                    showDeleteWorkoutConfirm: () => showDeleteWorkoutConfirm(workout.id!),
                   ),
                 ),
               )
@@ -276,6 +277,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
               MaterialPageRoute(
                 builder: (context) => WorkoutView(
                   workoutId: newWorkoutId,
+                  showDeleteWorkoutConfirm: () => showDeleteWorkoutConfirm(newWorkoutId),
                 ),
               ),
             )

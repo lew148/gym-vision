@@ -13,7 +13,13 @@ import '../shared/forms/add_category_to_workout_form.dart';
 
 class WorkoutView extends StatefulWidget {
   final int workoutId;
-  const WorkoutView({super.key, required this.workoutId});
+  final Function showDeleteWorkoutConfirm;
+
+  const WorkoutView({
+    super.key,
+    required this.workoutId,
+    required this.showDeleteWorkoutConfirm,
+  });
 
   @override
   State<WorkoutView> createState() => _WorkoutViewState();
@@ -229,6 +235,27 @@ class _WorkoutViewState extends State<WorkoutView> {
                     Padding(padding: EdgeInsets.all(5)),
                     Text(
                       'Edit Time',
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
+              child: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  widget.showDeleteWorkoutConfirm();
+                },
+                child: Row(
+                  children: const [
+                    Icon(Icons.delete_rounded),
+                    Padding(padding: EdgeInsets.all(5)),
+                    Text(
+                      'Delete Workout',
                       style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                     ),
                   ],
