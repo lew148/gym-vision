@@ -71,10 +71,11 @@ class _ExercisePickerState extends State<ExercisePicker> {
                     ),
                     const Divider(),
                     SizedBox(
-                      height: 800,
+                      height: 700,
                       child: SingleChildScrollView(
                         child: Column(
-                          children: getPickerContent(allExercises, selectedExercise),
+                          children:
+                              getPickerContent(allExercises, selectedExercise),
                         ),
                       ),
                     ),
@@ -85,7 +86,8 @@ class _ExercisePickerState extends State<ExercisePicker> {
           ],
         ),
         isScrollControlled: true,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
       );
 
   List<Widget> getPickerContent(
@@ -94,7 +96,8 @@ class _ExercisePickerState extends State<ExercisePicker> {
   ) {
     allExercises.sort(((a, b) => a.category!.name.compareTo(b.category!.name)));
 
-    final Map<int, List<Exercise>> groupedExercises = groupBy(allExercises, (e) => e.categoryId);
+    final Map<int, List<Exercise>> groupedExercises =
+        groupBy(allExercises, (e) => e.categoryId);
 
     List<Widget> sections = [];
 
@@ -128,7 +131,8 @@ class _ExercisePickerState extends State<ExercisePicker> {
                           ),
                           border: Border.all(
                             width: 2,
-                            color: selectedExercise != null && e.id == selectedExercise.id
+                            color: selectedExercise != null &&
+                                    e.id == selectedExercise.id
                                 ? Theme.of(context).colorScheme.primary
                                 : Colors.transparent,
                           ),
@@ -144,46 +148,59 @@ class _ExercisePickerState extends State<ExercisePicker> {
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
-                            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                              if (e.hasWeight())
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 5),
-                                  child: Row(
+                            Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (e.hasWeight())
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 5),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.fitness_center_rounded,
+                                            size: 15,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .shadow,
+                                          ),
+                                          const Padding(
+                                              padding: EdgeInsets.all(5)),
+                                          Text(
+                                            e.getNumberedWeightString(
+                                                    showNone: false) ??
+                                                '',
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .shadow,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  Row(
                                     children: [
                                       Icon(
-                                        Icons.fitness_center_rounded,
+                                        Icons.repeat_rounded,
                                         size: 15,
-                                        color: Theme.of(context).colorScheme.shadow,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .shadow,
                                       ),
                                       const Padding(padding: EdgeInsets.all(5)),
                                       Text(
-                                        e.getNumberedWeightString(showNone: false) ?? '',
+                                        '${e.reps} rep${e.singleRep() ? '' : 's'}',
                                         style: TextStyle(
                                           fontSize: 15,
-                                          color: Theme.of(context).colorScheme.shadow,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .shadow,
                                         ),
                                       ),
                                     ],
                                   ),
-                                ),
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.repeat_rounded,
-                                    size: 15,
-                                    color: Theme.of(context).colorScheme.shadow,
-                                  ),
-                                  const Padding(padding: EdgeInsets.all(5)),
-                                  Text(
-                                    '${e.reps} rep${e.singleRep() ? '' : 's'}',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      color: Theme.of(context).colorScheme.shadow,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ]),
+                                ]),
                           ],
                         ),
                       ),
@@ -216,7 +233,8 @@ class _ExercisePickerState extends State<ExercisePicker> {
     return FutureBuilder<List<Exercise>>(
         future: allExercises,
         builder: (context, allExercisesSnapshot) {
-          if (!allExercisesSnapshot.hasData || allExercisesSnapshot.data!.isEmpty) {
+          if (!allExercisesSnapshot.hasData ||
+              allExercisesSnapshot.data!.isEmpty) {
             return const SizedBox.shrink();
           }
 
@@ -254,7 +272,8 @@ class _ExercisePickerState extends State<ExercisePicker> {
                                   ),
                                 ),
                               ),
-                              padding: const EdgeInsets.only(top: 10, bottom: 5),
+                              padding:
+                                  const EdgeInsets.only(top: 10, bottom: 5),
                               height: 60,
                               child: Row(
                                 children: [
@@ -265,7 +284,9 @@ class _ExercisePickerState extends State<ExercisePicker> {
                                           Text(
                                             exercise == null ? '' : 'Exercise',
                                             style: TextStyle(
-                                              color: Theme.of(context).colorScheme.shadow,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .shadow,
                                             ),
                                           ),
                                         ]),
@@ -275,11 +296,17 @@ class _ExercisePickerState extends State<ExercisePicker> {
                                         Row(
                                           children: [
                                             Text(
-                                              exercise == null ? 'Select Exercise' : exercise.name,
+                                              exercise == null
+                                                  ? 'Select Exercise'
+                                                  : exercise.name,
                                               style: TextStyle(
                                                 fontSize: 17,
                                                 fontWeight: FontWeight.w400,
-                                                color: exercise == null ? Theme.of(context).colorScheme.shadow : null,
+                                                color: exercise == null
+                                                    ? Theme.of(context)
+                                                        .colorScheme
+                                                        .shadow
+                                                    : null,
                                               ),
                                             ),
                                           ],

@@ -28,7 +28,8 @@ class WorkoutView extends StatefulWidget {
 class _WorkoutViewState extends State<WorkoutView> {
   reloadState() => setState(() {});
 
-  void onAddCategoryClick(List<int> existingCategoryIds) => showModalBottomSheet(
+  void onAddCategoryClick(List<int> existingCategoryIds) =>
+      showModalBottomSheet(
         context: context,
         builder: (BuildContext context) => Column(
           mainAxisSize: MainAxisSize.min,
@@ -52,7 +53,8 @@ class _WorkoutViewState extends State<WorkoutView> {
       );
 
   getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories) {
-    workoutCategories.sort((a, b) => a.category!.name.compareTo(b.category!.name));
+    workoutCategories
+        .sort((a, b) => a.category!.name.compareTo(b.category!.name));
 
     return Wrap(
       alignment: WrapAlignment.spaceEvenly,
@@ -100,7 +102,9 @@ class _WorkoutViewState extends State<WorkoutView> {
     );
   }
 
-  void onAddExerciseClick(int workoutId, List<int> existingExerciseIds, List<int>? categoryIds) => showModalBottomSheet(
+  void onAddExerciseClick(int workoutId, List<int> existingExerciseIds,
+          List<int>? categoryIds) =>
+      showModalBottomSheet(
         context: context,
         builder: (BuildContext context) => Column(
           mainAxisSize: MainAxisSize.min,
@@ -120,10 +124,12 @@ class _WorkoutViewState extends State<WorkoutView> {
           ],
         ),
         isScrollControlled: true,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
       );
 
-  List<Widget> getWorkoutExercisesWidget(List<WorkoutExercise>? workoutExercises) {
+  List<Widget> getWorkoutExercisesWidget(
+      List<WorkoutExercise>? workoutExercises) {
     if (workoutExercises == null || workoutExercises.isEmpty) {
       return const [
         Center(
@@ -135,7 +141,8 @@ class _WorkoutViewState extends State<WorkoutView> {
       ];
     }
 
-    final Map<int, List<WorkoutExercise>> groupedWorkoutExercises = groupBy<WorkoutExercise, int>(
+    final Map<int, List<WorkoutExercise>> groupedWorkoutExercises =
+        groupBy<WorkoutExercise, int>(
       workoutExercises,
       (x) => x.exerciseId,
     );
@@ -215,7 +222,8 @@ class _WorkoutViewState extends State<WorkoutView> {
                     Padding(padding: EdgeInsets.all(5)),
                     Text(
                       'Edit Date',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                     ),
                   ],
                 ),
@@ -235,7 +243,8 @@ class _WorkoutViewState extends State<WorkoutView> {
                     Padding(padding: EdgeInsets.all(5)),
                     Text(
                       'Edit Time',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                     ),
                   ],
                 ),
@@ -272,7 +281,8 @@ class _WorkoutViewState extends State<WorkoutView> {
     );
   }
 
-  List<Widget> getCategoriesParts(Workout workout, List<int> existingCategoryIds) =>
+  List<Widget> getCategoriesParts(
+          Workout workout, List<int> existingCategoryIds) =>
       workout.workoutCategories == null || workout.workoutCategories!.isEmpty
           ? [
               Row(children: [
@@ -325,14 +335,18 @@ class _WorkoutViewState extends State<WorkoutView> {
 
         final workout = snapshot.data!;
 
-        if (workout.workoutCategories != null && workout.workoutCategories!.isNotEmpty) {
-          existingCategoryIds = workout.workoutCategories!.map((wc) => wc.categoryId).toList();
+        if (workout.workoutCategories != null &&
+            workout.workoutCategories!.isNotEmpty) {
+          existingCategoryIds =
+              workout.workoutCategories!.map((wc) => wc.categoryId).toList();
         } else {
           existingCategoryIds = [];
         }
 
-        if (workout.workoutExercises != null && workout.workoutExercises!.isNotEmpty) {
-          existingExerciseIds = workout.workoutExercises!.map((we) => we.exerciseId).toList();
+        if (workout.workoutExercises != null &&
+            workout.workoutExercises!.isNotEmpty) {
+          existingExerciseIds =
+              workout.workoutExercises!.map((we) => we.exerciseId).toList();
         } else {
           existingExerciseIds = [];
         }
@@ -351,30 +365,36 @@ class _WorkoutViewState extends State<WorkoutView> {
           ),
           body: Container(
             padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
-            child: Column(
-              children: [
-                ...getCategoriesParts(workout, existingCategoryIds),
-                const Padding(padding: EdgeInsets.all(5)),
-                getSectionTitleWithAction(
-                  context,
-                  'Exercises',
-                  ActionButton(
-                    icon: Icons.add,
-                    onTap: () => onAddExerciseClick(workout.id!, existingExerciseIds,
-                        workout.workoutCategories?.map((wc) => wc.categoryId).toList()),
+            child: IntrinsicHeight(
+              child: Column(
+                children: [
+                  ...getCategoriesParts(workout, existingCategoryIds),
+                  const Padding(padding: EdgeInsets.all(5)),
+                  getSectionTitleWithAction(
+                    context,
+                    'Exercises',
+                    ActionButton(
+                      icon: Icons.add,
+                      onTap: () => onAddExerciseClick(
+                          workout.id!,
+                          existingExerciseIds,
+                          workout.workoutCategories
+                              ?.map((wc) => wc.categoryId)
+                              .toList()),
+                    ),
                   ),
-                ),
-                const Divider(),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: getWorkoutExercisesWidget(
-                        workout.workoutExercises,
+                  const Divider(),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: getWorkoutExercisesWidget(
+                          workout.workoutExercises,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );

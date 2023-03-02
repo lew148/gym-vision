@@ -209,7 +209,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                     children: [
                     Text(
                       getSmallDateDisplay(currentDate),
-                      style: TextStyle(fontSize: 15, color: Theme.of(context).colorScheme.shadow),
+                      style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
                     ),
                     const Padding(padding: EdgeInsets.all(2)),
                   ]),
