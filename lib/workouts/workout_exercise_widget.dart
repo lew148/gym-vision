@@ -340,6 +340,43 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     );
   }
 
+  void showHeaderMoreMenu() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) => Padding(
+        padding: const EdgeInsets.all(25),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
+              child: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                  showDeleteGroupedWorkoutExercisesConfirm();
+                },
+                child: Row(
+                  children: const [
+                    Icon(Icons.delete_rounded),
+                    Padding(padding: EdgeInsets.all(5)),
+                    Text(
+                      'Remove from Workout',
+                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -351,7 +388,6 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                 onTap: () => setState(() {
                   dropped = !dropped;
                 }),
-                onLongPress: widget.displayOnly ? null : showDeleteGroupedWorkoutExercisesConfirm,
                 child: Padding(
                   padding: const EdgeInsets.only(top: 10, bottom: 10),
                   child: Row(
@@ -405,6 +441,12 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                                 ),
                                 padding: 0,
                               ),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.more_vert_rounded,
+                                ),
+                                onPressed: showHeaderMoreMenu,
+                              )
                             ],
                           ),
                         ),

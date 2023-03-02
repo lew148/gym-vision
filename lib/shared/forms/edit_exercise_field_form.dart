@@ -55,6 +55,7 @@ class _EditExerciseFieldFormState extends State<EditExerciseFieldForm> {
             controller: fieldController,
             label: widget.label,
             autofocus: true,
+            selectableValues: [1, 8, 12],
           );
       }
     }

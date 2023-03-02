@@ -75,6 +75,7 @@ class _AddExerciseFormState extends State<AddExerciseForm> {
                 CustomFormFields.intField(
                   controller: repsController,
                   label: 'Reps',
+                  selectableValues: [1, 8, 12],
                 ),
                 CustomFormFields.checkbox(
                   context,

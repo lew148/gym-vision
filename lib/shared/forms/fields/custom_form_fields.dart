@@ -82,6 +82,7 @@ class CustomFormFields {
     required TextEditingController controller,
     required String label,
     bool autofocus = false,
+    List<int>? selectableValues
   }) {
     onOperationButtonClick(int num) {
       int? currentValue = int.tryParse(controller.text) ?? 0;
@@ -95,18 +96,20 @@ class CustomFormFields {
       );
     }
 
-    return Row(children: [
-      Expanded(
-        child: TextFormField(
-          controller: controller,
-          autofocus: autofocus,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(labelText: label),
-          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+    onSelectableValueButtonClick(int num) {
+      String newValue = num.toString();
+
+      controller.value = TextEditingValue(
+        text: newValue,
+        selection: TextSelection.fromPosition(
+          TextPosition(offset: newValue.length),
         ),
-      ),
+      );
+    }
+
+    getArrowButtons() => [
       Padding(
-        padding: const EdgeInsets.fromLTRB(20, 10, 5, 0),
+        padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
         child: OutlinedButton(
           onPressed: () => onOperationButtonClick(-1),
           child: const Icon(Icons.remove_rounded),
@@ -119,6 +122,28 @@ class CustomFormFields {
           child: const Icon(Icons.add_rounded),
         ),
       ),
+    ];
+
+    getSelectableValueButtons() => selectableValues!.map((sv) => Padding(
+        padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
+        child: OutlinedButton(
+          onPressed: () => onSelectableValueButtonClick(sv),
+          child: Text(sv.toString()),
+        ),
+      )).toList();
+
+    return Row(children: [
+      Expanded(
+        child: TextFormField(
+          controller: controller,
+          autofocus: autofocus,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(labelText: label),
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        ),
+      ),
+      const Padding(padding: EdgeInsets.all(5)),
+      ...(selectableValues == null ? getArrowButtons() : getSelectableValueButtons())
     ]);
   }
 
