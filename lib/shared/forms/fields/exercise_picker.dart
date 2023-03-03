@@ -72,7 +72,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                     ),
                     const Divider(),
                     SizedBox(
-                      height: 700,
+                      height: MediaQuery.of(context).size.height * 0.75,
                       child: SingleChildScrollView(
                         child: Column(
                           children:

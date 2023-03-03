@@ -163,6 +163,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
               reloadState: widget.reloadState,
               disableWorkoutPicker: true,
               disableExercisePicker: true,
+              initialSets: 1,
             ),
           ),
         ],
