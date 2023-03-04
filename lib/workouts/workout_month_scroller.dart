@@ -79,7 +79,8 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
 
       AlertDialog alert = AlertDialog(
         title: const Text("Delete Workout?"),
-        content: const Text("Are you sure you would like to delete this Workout?"),
+        content:
+            const Text("Are you sure you would like to delete this Workout?"),
         actions: [
           cancelButton,
           continueButton,
@@ -92,8 +93,10 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
       );
     }
 
-    Widget getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories, WrapAlignment alignment) {
-      workoutCategories.sort((a, b) => a.category!.name.compareTo(b.category!.name));
+    Widget getWorkoutCategoriesWidget(
+        List<WorkoutCategory> workoutCategories, WrapAlignment alignment) {
+      workoutCategories
+          .sort((a, b) => a.category!.name.compareTo(b.category!.name));
 
       return Expanded(
         child: Wrap(
@@ -104,7 +107,8 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                   margin: const EdgeInsets.only(bottom: 5, right: 5),
                   padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
-                    border: Border.all(color: Theme.of(context).colorScheme.onBackground),
+                    border: Border.all(
+                        color: Theme.of(context).colorScheme.onBackground),
                     borderRadius: BorderRadius.circular(5),
                   ),
                   child: Text(
@@ -125,7 +129,8 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                 MaterialPageRoute(
                   builder: (context) => WorkoutView(
                     workoutId: workout.id!,
-                    showDeleteWorkoutConfirm: () => showDeleteWorkoutConfirm(workout.id!),
+                    showDeleteWorkoutConfirm: () =>
+                        showDeleteWorkoutConfirm(workout.id!),
                   ),
                 ),
               )
@@ -142,11 +147,13 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                       children: [
                         Text(
                           '${workout.isInFuture() ? 'Planned ' : ''}Workout',
-                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                              fontSize: 15, fontWeight: FontWeight.bold),
                         ),
                         Text(
                           '@ ${workout.getTimeString()}',
-                          style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.shadow),
                         ),
                       ],
                     ),
@@ -160,7 +167,8 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                     //       color: Colors.green[400],
                     //     ),
                     //   ),
-                    if (workout.workoutCategories != null && workout.workoutCategories!.isNotEmpty)
+                    if (workout.workoutCategories != null &&
+                        workout.workoutCategories!.isNotEmpty)
                       getWorkoutCategoriesWidget(
                         workout.workoutCategories!,
                         WrapAlignment.end,
@@ -170,9 +178,41 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
           ),
         );
 
+    void onAddWorkoutButtonTap({ DateTime? date }) async {
+      try {
+        var now = DateTime.now();
+
+        if (date != null) {
+          date = DateTime(date.year, date.month, date.day, now.hour, now.minute);
+        }
+
+        final newWorkoutId =
+            await WorkoutsHelper.insertWorkout(Workout(date: date ?? now));
+        if (!mounted) return;
+
+        Navigator.of(context)
+            .push(
+              MaterialPageRoute(
+                builder: (context) => WorkoutView(
+                  workoutId: newWorkoutId,
+                  showDeleteWorkoutConfirm: () =>
+                      showDeleteWorkoutConfirm(newWorkoutId),
+                ),
+              ),
+            )
+            .then((value) => widget.reloadState());
+      } catch (ex) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to add workout')),
+        );
+      }
+    }
+
     List<Widget> getWorkoutsWidget(List<Workout> workouts) {
-      var rnAndCurrentAreSameMonth = currentMonth.year == rn.year && currentMonth.month == rn.month;
-      var daysInCurrentMonth = getDaysInMonth(currentMonth.year, currentMonth.month);
+      var rnAndCurrentAreSameMonth =
+          currentMonth.year == rn.year && currentMonth.month == rn.month;
+      var daysInCurrentMonth =
+          getDaysInMonth(currentMonth.year, currentMonth.month);
 
       List<Widget> widgets = [];
 
@@ -182,7 +222,10 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
         var isLastDayInMonth = day == daysInCurrentMonth;
 
         var workoutsForDay = workouts
-            .where((w) => w.date.year == currentMonth.year && w.date.month == currentMonth.month && w.date.day == day)
+            .where((w) =>
+                w.date.year == currentMonth.year &&
+                w.date.month == currentMonth.month &&
+                w.date.day == day)
             .toList();
         workoutsForDay.sort((w1, w2) => w1.date.compareTo(w2.date));
 
@@ -193,7 +236,12 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
         }
 
         if (day != 1) {
-          widgets.insert(0, Divider(color: currentDate.weekday == 1 ? Theme.of(context).colorScheme.shadow : null));
+          widgets.insert(
+              0,
+              Divider(
+                  color: currentDate.weekday == 1
+                      ? Theme.of(context).colorScheme.shadow
+                      : null));
         }
 
         widgets.insert(
@@ -204,55 +252,73 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
               children: [
                 Expanded(
                   flex: 2,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
+                  child:
+                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                     Text(
                       getSmallDateDisplay(currentDate),
-                      style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: Theme.of(context).colorScheme.shadow),
                     ),
                     const Padding(padding: EdgeInsets.all(2)),
                   ]),
                 ),
                 VerticalDivider(
                   thickness: isToday ? 6 : 1,
-                  color: isToday ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.shadow,
+                  color: isToday
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.shadow,
                 ),
                 Expanded(
                   flex: 11,
                   child: Column(
                     children: workoutsForDay.isNotEmpty
-                        ? workoutsForDay.map<Widget>((workout) => getWorkoutDisplay(workout)).toList()
+                        ? workoutsForDay
+                            .map<Widget>(
+                                (workout) => getWorkoutDisplay(workout))
+                            .toList()
                         : [
-                            Padding(
-                              padding: const EdgeInsets.all(15),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: dateIsInFuture(currentDate) || isToday
-                                    ? [
-                                        Text(
-                                          '-',
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            color: Theme.of(context).colorScheme.shadow,
-                                          ),
-                                        ),
-                                      ]
-                                    : [
-                                        Icon(
-                                          Icons.hotel_rounded,
-                                          color: Theme.of(context).colorScheme.shadow,
-                                          size: 20,
-                                        ),
-                                        const Padding(padding: EdgeInsets.all(5)),
-                                        Text(
-                                          'Rest Day',
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            color: Theme.of(context).colorScheme.shadow,
-                                          ),
-                                        ),
-                                      ],
+                            GestureDetector(
+                              behavior: HitTestBehavior.translucent,
+                              onTap: () => onAddWorkoutButtonTap(date: currentDate),
+                              child: Padding(
+                                padding: const EdgeInsets.all(15),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children:
+                                      dateIsInFuture(currentDate) || isToday
+                                          ? [
+                                              Text(
+                                                '-',
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .shadow,
+                                                ),
+                                              ),
+                                            ]
+                                          : [
+                                              Icon(
+                                                Icons.hotel_rounded,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .shadow,
+                                                size: 20,
+                                              ),
+                                              const Padding(
+                                                  padding: EdgeInsets.all(5)),
+                                              Text(
+                                                'Rest Day',
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .shadow,
+                                                ),
+                                              ),
+                                            ],
+                                ),
                               ),
                             ),
                           ],
@@ -265,28 +331,6 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
       }
 
       return widgets;
-    }
-
-    void onAddWorkoutButtonTap() async {
-      try {
-        final newWorkoutId = await WorkoutsHelper.insertWorkout(Workout(date: DateTime.now()));
-        if (!mounted) return;
-
-        Navigator.of(context)
-            .push(
-              MaterialPageRoute(
-                builder: (context) => WorkoutView(
-                  workoutId: newWorkoutId,
-                  showDeleteWorkoutConfirm: () => showDeleteWorkoutConfirm(newWorkoutId),
-                ),
-              ),
-            )
-            .then((value) => widget.reloadState());
-      } catch (ex) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to add workout')),
-        );
-      }
     }
 
     void onArrowTap(int i) {
@@ -307,7 +351,8 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
         context,
         'Workouts',
         [
-          ActionButton(icon: Icons.today_outlined, onTap: reloadState, text: 'Today'),
+          ActionButton(
+              icon: Icons.today_outlined, onTap: reloadState, text: 'Today'),
           ActionButton(icon: Icons.add_rounded, onTap: onAddWorkoutButtonTap),
         ],
       ),
@@ -331,7 +376,8 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
             child: Center(
               child: Text(
                 getMonthAndYear(currentMonth),
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
           ),
