@@ -47,7 +47,7 @@ class _CategoryMoreMenuButtonState extends State<CategoryMoreMenuButton> {
         );
       }
 
-      Navigator.pop(context);
+       if (mounted) Navigator.pop(context);
     }
 
     void onEditNameTap() {
