@@ -5,18 +5,32 @@ import 'package:gymvision/exercises/exercise_more_menu_button.dart';
 import '../db/helpers/exercises_helper.dart';
 import '../shared/forms/add_exercise_form.dart';
 import '../shared/ui_helper.dart';
+import 'category_more_menu_button.dart';
 import 'exercise_view.dart';
 
 class CategoryView extends StatefulWidget {
   final int categoryId;
   final String categoryName;
-  const CategoryView({super.key, required this.categoryId, required this.categoryName});
+
+  const CategoryView({
+    super.key,
+    required this.categoryId,
+    required this.categoryName,
+  });
 
   @override
   State<CategoryView> createState() => _CategoryViewState();
 }
 
 class _CategoryViewState extends State<CategoryView> {
+  late final Future<List<Exercise>> exercises;
+
+  @override
+  void initState() {
+    super.initState();
+    exercises = ExercisesHelper.getExercisesForCategory(widget.categoryId);
+  }
+
   reloadState() => setState(() {});
 
   Widget getExerciseWidget(Exercise exercise) => Row(
@@ -33,7 +47,7 @@ class _CategoryViewState extends State<CategoryView> {
                         ),
                       ),
                     )
-                    .then((value) => setState(() {})),
+                    .then((value) => reloadState()),
                 child: Container(
                   padding: const EdgeInsets.all(10),
                   margin: const EdgeInsets.fromLTRB(10, 10, 10, 5),
@@ -124,29 +138,27 @@ class _CategoryViewState extends State<CategoryView> {
 
   @override
   Widget build(BuildContext context) {
-    final Future<List<Exercise>> exercises = ExercisesHelper.getExercisesForCategory(widget.categoryId);
+    return FutureBuilder<List<Exercise>>(
+      future: exercises,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(
+            child: Text('Loading...'),
+          );
+        }
 
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.categoryName)),
-      body: FutureBuilder<List<Exercise>>(
-        future: exercises,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(
-              child: Text('Loading...'),
-            );
-          }
-
-          if (snapshot.data!.isEmpty) {
-            return const Center(
-              child: Text(
-                'No Exercises here :(',
-                style: TextStyle(fontSize: 20),
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(widget.categoryName),
+            actions: [
+              CategoryMoreMenuButton(
+                categoryId: widget.categoryId,
+                reloadState: reloadState,
+                onDelete: () => Navigator.pop(context),
               ),
-            );
-          }
-
-          return Container(
+            ],
+          ),
+          body: Container(
             padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
             child: Column(children: [
               getSectionTitleWithActions(
@@ -155,18 +167,22 @@ class _CategoryViewState extends State<CategoryView> {
                 [ActionButton(icon: Icons.add_rounded, onTap: openAddExerciseForm)],
               ),
               const Divider(),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Container(
-                    margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
-                    child: Column(children: snapshot.data!.map((c) => getExerciseWidget(c)).toList()),
-                  ),
-                ),
-              ),
+              snapshot.data!.isEmpty
+                  ? const Center(
+                      child: Padding(padding: EdgeInsets.all(5), child: Text('No Exercises here :(')),
+                    )
+                  : Expanded(
+                      child: SingleChildScrollView(
+                        child: Container(
+                          margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
+                          child: Column(children: snapshot.data!.map((c) => getExerciseWidget(c)).toList()),
+                        ),
+                      ),
+                    ),
             ]),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

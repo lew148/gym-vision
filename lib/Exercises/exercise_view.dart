@@ -171,7 +171,7 @@ class _ExerciseViewState extends State<ExerciseView> {
 
   List<Widget> getRecentUsesWidget(List<WorkoutExercise> workoutExercises) {
     workoutExercises.sort(((a, b) => b.workout!.date.compareTo(a.workout!.date)));
-    
+
     final Map<int, List<WorkoutExercise>> groupedWorkoutExercises = groupBy<WorkoutExercise, int>(
       workoutExercises,
       (x) => x.workoutId,
@@ -220,7 +220,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                 exercise: snapshot.data!,
                 reloadState: reloadState,
                 onDelete: () => Navigator.pop(context),
-              )
+              ),
             ],
           ),
           body: Column(

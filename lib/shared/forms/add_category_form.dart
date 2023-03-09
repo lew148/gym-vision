@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/shared/forms/fields/custom_form_fields.dart';
+
+import '../../db/classes/category.dart';
+import '../../db/helpers/categories_helper.dart';
 class AddCategoryForm extends StatefulWidget {
   final void Function() reloadState;
 
@@ -22,10 +25,10 @@ class _AddCategoryFormState extends State<AddCategoryForm> {
       Navigator.pop(context);
 
       try {
-        // await CategoriesHelper.addCategory(Category(
-        //   name: nameController.text,
-        //   emoji: emojiController.text,
-        // ));
+        await CategoriesHelper.insertCategory(Category(
+          name: nameController.text,
+          emoji: emojiController.text,
+        ));
       } catch (ex) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Failed to add Category')),

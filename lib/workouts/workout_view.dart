@@ -72,7 +72,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                         ),
                       ),
                     )
-                    .then((value) => setState(() {})),
+                    .then((value) => reloadState()),
                 child: Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(

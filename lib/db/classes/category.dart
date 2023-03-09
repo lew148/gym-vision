@@ -1,6 +1,6 @@
 class Category {
   int? id;
-  final String name;
+  late String name;
   String? emoji;
 
   Category({this.id, required this.name, this.emoji});
