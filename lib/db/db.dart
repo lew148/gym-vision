@@ -112,7 +112,8 @@ class DatabaseHelper {
             weight REAL,
             max REAL DEFAULT 0.00,
             reps INTEGER,
-            isSingle INTEGER 
+            isSingle INTEGER,
+            notes TEXT
           );
         ''');
 

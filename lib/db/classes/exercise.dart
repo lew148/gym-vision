@@ -8,6 +8,7 @@ class Exercise {
   double? max;
   int reps;
   bool isSingle;
+  String notes;
 
   Category? category;
 
@@ -19,6 +20,7 @@ class Exercise {
     required this.max,
     required this.reps,
     required this.isSingle,
+    required this.notes,
     this.category,
   });
 
@@ -61,5 +63,6 @@ class Exercise {
         'max': max,
         'reps': reps,
         'isSingle': isSingle,
+        'notes': notes,
       };
 }

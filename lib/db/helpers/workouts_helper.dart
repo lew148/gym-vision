@@ -151,7 +151,8 @@ class WorkoutsHelper {
         exercises.weight AS exerciseWeight,
         exercises.max,
         exercises.reps AS exerciseReps,
-        exercises.isSingle
+        exercises.isSingle,
+        exercises.notes
       FROM workout_exercises
       LEFT JOIN exercises ON workout_exercises.exerciseId = exercises.id
       LEFT JOIN workouts ON workout_exercises.workoutId = workouts.id
@@ -176,6 +177,7 @@ class WorkoutsHelper {
               max: map['max'],
               reps: map['exerciseReps'],
               isSingle: map['isSingle'] == 1,
+              notes: map['notes'] ?? '',
             ),
             workout: Workout(
               id: map['workoutId'],

@@ -43,6 +43,7 @@ class ExercisesHelper {
         exercises.max,
         exercises.reps,
         exercises.isSingle,
+        exercises.notes,
         categories.name AS categoryName,
         categories.emoji
       FROM exercises
@@ -61,6 +62,7 @@ class ExercisesHelper {
         max: maps[i]['max'],
         reps: maps[i]['reps'],
         isSingle: maps[i]['isSingle'] == 1, // saved in db as integer (0 or 1)
+        notes: maps[i]['notes'] ?? '',
         category: Category(
           id: maps[i]['categoryId'],
           name: maps[i]['categoryName'],
@@ -87,6 +89,7 @@ class ExercisesHelper {
       max: map['max'],
       reps: map['reps'],
       isSingle: map['isSingle'] == 1,
+      notes: map['notes'] ?? '',
     );
   }
 

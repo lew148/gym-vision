@@ -178,12 +178,13 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
           ),
         );
 
-    void onAddWorkoutButtonTap({ DateTime? date }) async {
+    void onAddWorkoutButtonTap({DateTime? date}) async {
       try {
         var now = DateTime.now();
 
         if (date != null) {
-          date = DateTime(date.year, date.month, date.day, now.hour, now.minute);
+          date =
+              DateTime(date.year, date.month, date.day, now.hour, now.minute);
         }
 
         final newWorkoutId =
@@ -280,7 +281,8 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                         : [
                             GestureDetector(
                               behavior: HitTestBehavior.translucent,
-                              onTap: () => onAddWorkoutButtonTap(date: currentDate),
+                              onTap: () =>
+                                  onAddWorkoutButtonTap(date: currentDate),
                               child: Padding(
                                 padding: const EdgeInsets.all(15),
                                 child: Row(

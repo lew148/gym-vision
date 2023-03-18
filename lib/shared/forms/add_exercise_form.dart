@@ -37,6 +37,7 @@ class _AddExerciseFormState extends State<AddExerciseForm> {
           max: 0, // to set in edit
           reps: int.parse(getNumberStringOrDefault(repsController.text)),
           isSingle: !isDoubleValue,
+          notes: ''
         ));
       } catch (ex) {
         ScaffoldMessenger.of(context).showSnackBar(
