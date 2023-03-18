@@ -299,17 +299,9 @@ class _ExerciseViewState extends State<ExerciseView> {
       );
 
   List<Widget> getRecentUsesWidget(List<WorkoutExercise> workoutExercises) {
-<<<<<<< HEAD
-    workoutExercises
-        .sort(((a, b) => b.workout!.date.compareTo(a.workout!.date)));
-
-    final Map<int, List<WorkoutExercise>> groupedWorkoutExercises =
-        groupBy<WorkoutExercise, int>(
-=======
     workoutExercises.sort(((a, b) => b.workout!.date.compareTo(a.workout!.date)));
 
     final Map<int, List<WorkoutExercise>> groupedWorkoutExercises = groupBy<WorkoutExercise, int>(
->>>>>>> 4baefee86d75ca8839858ebb4ee9a5f3ddeaa6a5
       workoutExercises,
       (x) => x.workoutId,
     );
