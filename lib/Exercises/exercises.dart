@@ -14,11 +14,13 @@ class Exercises extends StatefulWidget {
 }
 
 class _ExercisesState extends State<Exercises> {
-  final Future<List<Category>> _categories = CategoriesHelper().getCategories();
-  reloadState() => setState(() {});
+  Future<List<Category>> _categories = CategoriesHelper().getCategories();
+  reloadState() => setState(() {
+        _categories = CategoriesHelper().getCategories();
+      });
 
   Widget getCategoryWidget(Category category) => Padding(
-        padding: const EdgeInsets.only(bottom: 2.5, top: 2.5),
+        padding: const EdgeInsets.all(5),
         child: InkWell(
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
@@ -27,10 +29,11 @@ class _ExercisesState extends State<Exercises> {
                 categoryName: category.name,
               ),
             ),
-          ),
+          ).then((value) => reloadState()),
           child: Card(
             child: Container(
               padding: const EdgeInsets.all(20),
+              width: MediaQuery.of(context).size.width * 0.4,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -57,28 +60,12 @@ class _ExercisesState extends State<Exercises> {
       );
 
   Widget getCategories(List<Category> categories) {
-    List<Widget> rows = [];
     categories.sort(((a, b) => a.name.compareTo(b.name)));
-
-    for (var i = 0; i < categories.length; i += 2) {
-      var categoriesForRow = categories.sublist(i, i + 2 > categories.length ? categories.length : i + 2);
-
-      rows.add(Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Expanded(
-            flex: 5,
-            child: getCategoryWidget(categoriesForRow[0]),
-          ),
-          Expanded(
-            flex: 5,
-            child: getCategoryWidget(categoriesForRow[1]),
-          ),
-        ],
-      ));
-    }
-
-    return Expanded(child: SingleChildScrollView(child: Column(children: rows)));
+    return Expanded(
+      child: SingleChildScrollView(
+        child: Wrap(children: categories.map((c) => getCategoryWidget(c)).toList()),
+      ),
+    );
   }
 
   void openAddCategoryForm() => showModalBottomSheet(

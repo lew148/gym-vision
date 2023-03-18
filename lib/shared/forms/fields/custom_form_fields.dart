@@ -78,12 +78,11 @@ class CustomFormFields {
           ),
       ]);
 
-  static intField({
-    required TextEditingController controller,
-    required String label,
-    bool autofocus = false,
-    List<int>? selectableValues
-  }) {
+  static intField(
+      {required TextEditingController controller,
+      required String label,
+      bool autofocus = false,
+      List<int>? selectableValues}) {
     onOperationButtonClick(int num) {
       int? currentValue = int.tryParse(controller.text) ?? 0;
       String newValue = (currentValue + num).toString();
@@ -108,29 +107,31 @@ class CustomFormFields {
     }
 
     getArrowButtons() => [
-      Padding(
-        padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
-        child: OutlinedButton(
-          onPressed: () => onOperationButtonClick(-1),
-          child: const Icon(Icons.remove_rounded),
-        ),
-      ),
-      Padding(
-        padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
-        child: OutlinedButton(
-          onPressed: () => onOperationButtonClick(1),
-          child: const Icon(Icons.add_rounded),
-        ),
-      ),
-    ];
+          Padding(
+            padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
+            child: OutlinedButton(
+              onPressed: () => onOperationButtonClick(-1),
+              child: const Icon(Icons.remove_rounded),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
+            child: OutlinedButton(
+              onPressed: () => onOperationButtonClick(1),
+              child: const Icon(Icons.add_rounded),
+            ),
+          ),
+        ];
 
-    getSelectableValueButtons() => selectableValues!.map((sv) => Padding(
-        padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
-        child: OutlinedButton(
-          onPressed: () => onSelectableValueButtonClick(sv),
-          child: Text(sv.toString()),
-        ),
-      )).toList();
+    getSelectableValueButtons() => selectableValues!
+        .map((sv) => Padding(
+              padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
+              child: OutlinedButton(
+                onPressed: () => onSelectableValueButtonClick(sv),
+                child: Text(sv.toString()),
+              ),
+            ))
+        .toList();
 
     return Row(children: [
       Expanded(
