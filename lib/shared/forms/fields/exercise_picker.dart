@@ -95,7 +95,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
     List<Exercise> allExercises,
     Exercise? selectedExercise,
   ) {
-    allExercises.sort(((a, b) => a.category!.name.compareTo(b.category!.name)));
+    allExercises.sort(((a, b) => a.category?.name.compareTo(b.category?.name ?? '~') ?? 1)); // ~ to categorize last in list
 
     final Map<int, List<Exercise>> groupedExercises =
         groupBy(allExercises, (e) => e.categoryId);
@@ -110,7 +110,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
           ),
           Row(children: [
             Text(
-              value.first.category!.getDisplayName(),
+              value.first.category?.getDisplayName() ?? '❔ Uncategorised',
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
             ),
           ]),

@@ -63,11 +63,13 @@ class ExercisesHelper {
         reps: maps[i]['reps'],
         isSingle: maps[i]['isSingle'] == 1, // saved in db as integer (0 or 1)
         notes: maps[i]['notes'] ?? '',
-        category: Category(
-          id: maps[i]['categoryId'],
-          name: maps[i]['categoryName'],
-          emoji: maps[i]['emoji'],
-        ),
+        category: maps[i]['categoryName'] == null
+            ? null
+            : Category(
+                id: maps[i]['categoryId'],
+                name: maps[i]['categoryName'],
+                emoji: maps[i]['emoji'],
+              ),
       ),
     );
   }

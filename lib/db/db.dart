@@ -1,6 +1,8 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
+import 'migrations.dart';
+
 class DatabaseHelper {
   Future<Database>? database;
 
@@ -8,19 +10,38 @@ class DatabaseHelper {
     // await deleteDatabase('gymvision.db');
     database = openDatabase(
       join(await getDatabasesPath(), 'gymvision.db'),
-      version: 1,
-      onUpgrade: (db, oldVersion, newVersion) async { },
+      version: 2,
+      onUpgrade: (db, oldVersion, newVersion) async {
+        Batch batch = db.batch();
+        Migrations.addNotesColumnToExercises(batch);
+        await batch.commit();
+      },
       onCreate: (db, version) async {
         Batch batch = db.batch();
+        initialDbCreate(batch);
 
-        batch.execute('''
+        // migrations
+        Migrations.addNotesColumnToExercises(batch);
+
+        await batch.commit();
+      },
+    );
+  }
+
+  Future<Database> getDb() async {
+    if (database == null) await openDb();
+    return database!;
+  }
+
+  void initialDbCreate(Batch batch) {
+    batch.execute('''
           CREATE TABLE workouts(
             id INTEGER PRIMARY KEY,
             date TEXT NOT NULL
           );
         ''');
 
-        batch.execute('''
+    batch.execute('''
           CREATE TABLE workout_categories(
             id INTEGER PRIMARY KEY,
             workoutId INTEGER,
@@ -28,7 +49,7 @@ class DatabaseHelper {
           );
         ''');
 
-        batch.execute('''
+    batch.execute('''
           CREATE TABLE workout_exercises(
             id INTEGER PRIMARY KEY,
             workoutId INTEGER,
@@ -40,7 +61,7 @@ class DatabaseHelper {
           );
         ''');
 
-        batch.execute('''
+    batch.execute('''
           CREATE TABLE categories(
             id INTEGER PRIMARY KEY,
             name TEXT,
@@ -48,7 +69,7 @@ class DatabaseHelper {
           );
         ''');
 
-        batch.execute('''
+    batch.execute('''
           INSERT INTO categories(id, name, emoji)
           VALUES
             (1, "Shoulders", "🪨"),
@@ -61,14 +82,14 @@ class DatabaseHelper {
             (8, "Quadriceps & Calves", "🦿");
         ''');
 
-        batch.execute('''
+    batch.execute('''
           CREATE TABLE flavour_texts(
             id INTEGER PRIMARY KEY,
             message TEXT
           );
         ''');
 
-        batch.execute('''
+    batch.execute('''
            INSERT INTO flavour_texts(id, message)
             VALUES
               (1, "Make sure you are drinking enough water!"),
@@ -84,18 +105,18 @@ class DatabaseHelper {
               (11, "If you keep showing up, you'll be unbeatable!");
         ''');
 
-        batch.execute('''
+    batch.execute('''
           CREATE TABLE user_settings(
             id INTEGER PRIMARY KEY,
             theme TEXT
           );
         ''');
 
-        batch.execute('''
+    batch.execute('''
           INSERT INTO user_settings(id, theme) VALUES (1, "system");
         ''');
 
-        batch.execute('''
+    batch.execute('''
           CREATE TABLE flavour_text_schedules(
             id INTEGER PRIMARY KEY,
             flavourTextId INTEGER NOT NULL,
@@ -104,7 +125,7 @@ class DatabaseHelper {
           );
         ''');
 
-        batch.execute('''
+    batch.execute('''
           CREATE TABLE exercises(
             id INTEGER PRIMARY KEY,
             categoryId INTEGER,
@@ -112,13 +133,12 @@ class DatabaseHelper {
             weight REAL,
             max REAL DEFAULT 0.00,
             reps INTEGER,
-            isSingle INTEGER,
-            notes TEXT
+            isSingle INTEGER
           );
         ''');
 
-        // Shoulders
-        batch.execute('''
+    // Shoulders
+    batch.execute('''
           INSERT INTO exercises(id, categoryId, name, weight, max, reps, isSingle)
           VALUES
             (1, 1, "Shoulder Press", 0, 0, 0, 1),
@@ -137,8 +157,8 @@ class DatabaseHelper {
             (14, 1, "Dumbbell Rear Delt Skis", 0, 0, 0, 0);
         ''');
 
-        // Chest
-        batch.execute('''
+    // Chest
+    batch.execute('''
           INSERT INTO exercises(id, categoryId, name, weight, max, reps, isSingle)
           VALUES
             (15, 2, "Plated Chest Press", 0, 0, 0, 0),
@@ -152,8 +172,8 @@ class DatabaseHelper {
             (23, 2, "Pectoral Machine", 0, 0, 0, 1);
         ''');
 
-        // Back
-        batch.execute('''
+    // Back
+    batch.execute('''
           INSERT INTO exercises(id, categoryId, name, weight, max, reps, isSingle)
           VALUES
             (24, 3, "Cable Diverging Row", 0, 0, 0, 0),
@@ -173,8 +193,8 @@ class DatabaseHelper {
             (38, 3, "Starfish", 0, 0, 0, 0);
         ''');
 
-        // Biceps
-        batch.execute('''
+    // Biceps
+    batch.execute('''
           INSERT INTO exercises(id, categoryId, name, weight, max, reps, isSingle)
           VALUES
             (39, 4, "Seated Dubbell Bicep Curl", 0, 0, 0, 0),
@@ -188,8 +208,8 @@ class DatabaseHelper {
             (47, 4, "Bench Hammer Curl", 0, 0, 0, 0);
         ''');
 
-        // Triceps
-        batch.execute('''
+    // Triceps
+    batch.execute('''
           INSERT INTO exercises(id, categoryId, name, weight, max, reps, isSingle)
           VALUES
             (48, 5, "Cable Tricep Curl", 0, 0, 0, 1),
@@ -200,8 +220,8 @@ class DatabaseHelper {
             (53, 5, "Triceps Dip", 0, 0, 0, 1);
         ''');
 
-        // Core
-        batch.execute('''
+    // Core
+    batch.execute('''
           INSERT INTO exercises(id, categoryId, name, weight, max, reps, isSingle)
           VALUES
             (54, 6, "Ab Crunch Machine", 0, 0, 0, 1),
@@ -213,8 +233,8 @@ class DatabaseHelper {
             (60, 6, "Vaccums", 0, 0, 0, 1);
         ''');
 
-        // Hamstrings & Glutes
-        batch.execute('''
+    // Hamstrings & Glutes
+    batch.execute('''
           INSERT INTO exercises(id, categoryId, name, weight, max, reps, isSingle)
           VALUES
             (61, 7, "Cable Abductor Lift", 0, 0, 0, 0),
@@ -227,8 +247,8 @@ class DatabaseHelper {
             (68, 7, "Prone Leg Curl", 0, 0, 0, 1);
         ''');
 
-        // Quadriceps & Calves
-        batch.execute('''
+    // Quadriceps & Calves
+    batch.execute('''
           INSERT INTO exercises(id, categoryId, name, weight, max, reps, isSingle)
           VALUES
             (69, 8, "Hack Squat", 0, 0, 0, 1),
@@ -241,14 +261,5 @@ class DatabaseHelper {
             (76, 8, "Elevated Heel Squat", 0, 0, 0, 1),
             (77, 8, "Raised Calf Bar Press", 0, 0, 0, 0);
         ''');
-
-        await batch.commit();
-      },
-    );
-  }
-
-  Future<Database> getDb() async {
-    if (database == null) await openDb();
-    return database!;
   }
 }
