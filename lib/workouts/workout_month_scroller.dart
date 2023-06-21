@@ -47,128 +47,67 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
 
   @override
   Widget build(BuildContext context) {
-    void showDeleteWorkoutConfirm(int workoutId) {
-      Widget cancelButton = TextButton(
-        child: const Text("No"),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-      );
-
-      Widget continueButton = TextButton(
-        child: const Text(
-          "Yes",
-          style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-        ),
-        onPressed: () async {
-          Navigator.pop(context);
-
-          try {
-            await WorkoutsHelper.deleteWorkout(workoutId);
-          } catch (ex) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Failed to delete Workout: ${ex.toString()}'),
-              ),
-            );
-          }
-
-          widget.reloadState();
-        },
-      );
-
-      AlertDialog alert = AlertDialog(
-        title: const Text("Delete Workout?"),
-        content:
-            const Text("Are you sure you would like to delete this Workout?"),
-        actions: [
-          cancelButton,
-          continueButton,
-        ],
-      );
-
-      showDialog(
-        context: context,
-        builder: (context) => alert,
-      );
-    }
-
-    Widget getWorkoutCategoriesWidget(
-        List<WorkoutCategory> workoutCategories, WrapAlignment alignment) {
-      workoutCategories
-          .sort((a, b) => a.category!.name.compareTo(b.category!.name));
-
-      return Expanded(
-        child: Wrap(
-          alignment: alignment,
-          children: workoutCategories
-              .map(
-                (wc) => Container(
-                  margin: const EdgeInsets.only(bottom: 5, right: 5),
-                  padding: const EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                        color: Theme.of(context).colorScheme.onBackground),
-                    borderRadius: BorderRadius.circular(5),
+    Widget getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories, WrapAlignment alignment) => Expanded(
+          child: Wrap(
+            alignment: alignment,
+            children: workoutCategories
+                .map(
+                  (wc) => Container(
+                    margin: const EdgeInsets.only(bottom: 5, right: 5),
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Theme.of(context).colorScheme.onBackground),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Text(
+                      wc.getDisplayName(),
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontWeight: FontWeight.w500),
+                    ),
                   ),
-                  child: Text(
-                    wc.category!.getDisplayName(),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontWeight: FontWeight.w500),
-                  ),
-                ),
-              )
-              .toList(),
-        ),
-      );
-    }
+                )
+                .toList(),
+          ),
+        );
 
     Widget getWorkoutDisplay(Workout workout) => InkWell(
           onTap: () => Navigator.of(context)
               .push(
                 MaterialPageRoute(
-                  builder: (context) => WorkoutView(
-                    workoutId: workout.id!,
-                    showDeleteWorkoutConfirm: () =>
-                        showDeleteWorkoutConfirm(workout.id!),
-                  ),
+                  builder: (context) => WorkoutView(workoutId: workout.id!),
                 ),
               )
               .then((value) => widget.reloadState()),
-          onLongPress: () => showDeleteWorkoutConfirm(workout.id!),
           child: Card(
             child: Container(
                 padding: const EdgeInsets.all(15),
                 child: Row(
                   children: [
+                    if (workout.done)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: Icon(
+                          Icons.check_circle_outline_rounded,
+                          size: 25,
+                          color: Colors.green[400],
+                        ),
+                      ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '${workout.isInFuture() ? 'Planned ' : ''}Workout',
-                          style: const TextStyle(
-                              fontSize: 15, fontWeight: FontWeight.bold),
+                          '${workout.isInFuture() ? 'Planned ' : ''}Session',
+                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                         ),
                         Text(
                           '@ ${workout.getTimeString()}',
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.shadow),
+                          style: TextStyle(color: Theme.of(context).colorScheme.shadow),
                         ),
                       ],
                     ),
                     const Padding(padding: EdgeInsets.only(right: 10)),
-                    // if (workout.workoutExercises != null && workout.workoutExercises!.isNotEmpty)
-                    //   Padding(
-                    //     padding: const EdgeInsets.only(right: 10),
-                    //     child: Icon(
-                    //       Icons.check_circle_outline_rounded,
-                    //       size: 25,
-                    //       color: Colors.green[400],
-                    //     ),
-                    //   ),
-                    if (workout.workoutCategories != null &&
-                        workout.workoutCategories!.isNotEmpty)
+                    if (workout.workoutCategories != null && workout.workoutCategories!.isNotEmpty)
                       getWorkoutCategoriesWidget(
                         workout.workoutCategories!,
                         WrapAlignment.end,
@@ -183,22 +122,16 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
         var now = DateTime.now();
 
         if (date != null) {
-          date =
-              DateTime(date.year, date.month, date.day, now.hour, now.minute);
+          date = DateTime(date.year, date.month, date.day, now.hour, now.minute);
         }
 
-        final newWorkoutId =
-            await WorkoutsHelper.insertWorkout(Workout(date: date ?? now));
+        final newWorkoutId = await WorkoutsHelper.insertWorkout(Workout(date: date ?? now));
         if (!mounted) return;
 
         Navigator.of(context)
             .push(
               MaterialPageRoute(
-                builder: (context) => WorkoutView(
-                  workoutId: newWorkoutId,
-                  showDeleteWorkoutConfirm: () =>
-                      showDeleteWorkoutConfirm(newWorkoutId),
-                ),
+                builder: (context) => WorkoutView(workoutId: newWorkoutId),
               ),
             )
             .then((value) => widget.reloadState());
@@ -210,10 +143,8 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
     }
 
     List<Widget> getWorkoutsWidget(List<Workout> workouts) {
-      var rnAndCurrentAreSameMonth =
-          currentMonth.year == rn.year && currentMonth.month == rn.month;
-      var daysInCurrentMonth =
-          getDaysInMonth(currentMonth.year, currentMonth.month);
+      var rnAndCurrentAreSameMonth = currentMonth.year == rn.year && currentMonth.month == rn.month;
+      var daysInCurrentMonth = getDaysInMonth(currentMonth.year, currentMonth.month);
 
       List<Widget> widgets = [];
 
@@ -223,10 +154,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
         var isLastDayInMonth = day == daysInCurrentMonth;
 
         var workoutsForDay = workouts
-            .where((w) =>
-                w.date.year == currentMonth.year &&
-                w.date.month == currentMonth.month &&
-                w.date.day == day)
+            .where((w) => w.date.year == currentMonth.year && w.date.month == currentMonth.month && w.date.day == day)
             .toList();
         workoutsForDay.sort((w1, w2) => w1.date.compareTo(w2.date));
 
@@ -237,12 +165,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
         }
 
         if (day != 1) {
-          widgets.insert(
-              0,
-              Divider(
-                  color: currentDate.weekday == 1
-                      ? Theme.of(context).colorScheme.shadow
-                      : null));
+          widgets.insert(0, Divider(color: currentDate.weekday == 1 ? Theme.of(context).colorScheme.shadow : null));
         }
 
         widgets.insert(
@@ -253,73 +176,59 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
               children: [
                 Expanded(
                   flex: 2,
-                  child:
-                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                    Text(
-                      getSmallDateDisplay(currentDate),
-                      style: TextStyle(
-                          fontSize: 14,
-                          color: Theme.of(context).colorScheme.shadow),
-                    ),
-                    const Padding(padding: EdgeInsets.all(2)),
-                  ]),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        getSmallDateDisplay(currentDate),
+                        style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
+                      ),
+                      const Padding(padding: EdgeInsets.all(2)),
+                    ],
+                  ),
                 ),
                 VerticalDivider(
                   thickness: isToday ? 6 : 1,
-                  color: isToday
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).colorScheme.shadow,
+                  color: isToday ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.shadow,
                 ),
                 Expanded(
                   flex: 11,
                   child: Column(
                     children: workoutsForDay.isNotEmpty
-                        ? workoutsForDay
-                            .map<Widget>(
-                                (workout) => getWorkoutDisplay(workout))
-                            .toList()
+                        ? workoutsForDay.map<Widget>((workout) => getWorkoutDisplay(workout)).toList()
                         : [
                             GestureDetector(
                               behavior: HitTestBehavior.translucent,
-                              onTap: () =>
-                                  onAddWorkoutButtonTap(date: currentDate),
+                              onTap: () => onAddWorkoutButtonTap(date: currentDate),
                               child: Padding(
                                 padding: const EdgeInsets.all(15),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
-                                  children:
-                                      dateIsInFuture(currentDate) || isToday
-                                          ? [
-                                              Text(
-                                                '-',
-                                                style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .shadow,
-                                                ),
-                                              ),
-                                            ]
-                                          : [
-                                              Icon(
-                                                Icons.hotel_rounded,
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .shadow,
-                                                size: 20,
-                                              ),
-                                              const Padding(
-                                                  padding: EdgeInsets.all(5)),
-                                              Text(
-                                                'Rest Day',
-                                                style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .shadow,
-                                                ),
-                                              ),
-                                            ],
+                                  children: dateIsInFuture(currentDate) || isToday
+                                      ? [
+                                          Text(
+                                            '-',
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              color: Theme.of(context).colorScheme.shadow,
+                                            ),
+                                          ),
+                                        ]
+                                      : [
+                                          Icon(
+                                            Icons.hotel_rounded,
+                                            color: Theme.of(context).colorScheme.shadow,
+                                            size: 20,
+                                          ),
+                                          const Padding(padding: EdgeInsets.all(5)),
+                                          Text(
+                                            'Rest Day',
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              color: Theme.of(context).colorScheme.shadow,
+                                            ),
+                                          ),
+                                        ],
                                 ),
                               ),
                             ),
@@ -351,10 +260,9 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
     return Column(children: [
       getSectionTitleWithActions(
         context,
-        'Workouts',
+        '',
         [
-          ActionButton(
-              icon: Icons.today_outlined, onTap: reloadState, text: 'Today'),
+          ActionButton(icon: Icons.today_outlined, onTap: reloadState, text: 'Today'),
           ActionButton(icon: Icons.add_rounded, onTap: onAddWorkoutButtonTap),
         ],
       ),
@@ -378,8 +286,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
             child: Center(
               child: Text(
                 getMonthAndYear(currentMonth),
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
           ),
