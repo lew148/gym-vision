@@ -9,6 +9,7 @@ import '../db/helpers/workouts_helper.dart';
 import '../shared/forms/add_exercise_to_workout_form.dart';
 import '../shared/ui_helper.dart';
 import '../shared/forms/add_category_to_workout_form.dart';
+import '../shared/workout_category_helper.dart';
 
 class WorkoutView extends StatefulWidget {
   final int workoutId;
@@ -68,7 +69,7 @@ class _WorkoutViewState extends State<WorkoutView> {
     );
   }
 
-  void onAddCategoryClick(List<int> existingCategoryIds) => showModalBottomSheet(
+  void onAddCategoryClick(List<int> existingWorkoutCategoryIds) => showModalBottomSheet(
         context: context,
         builder: (BuildContext context) => Column(
           mainAxisSize: MainAxisSize.min,
@@ -79,7 +80,7 @@ class _WorkoutViewState extends State<WorkoutView> {
               ),
               child: AddCategoryToWorkoutForm(
                 workoutId: widget.workoutId,
-                selectedCategoryShellIds: existingCategoryIds,
+                selectedWorkoutCategoryIds: existingWorkoutCategoryIds,
                 reloadState: reloadState,
               ),
             ),
@@ -327,7 +328,10 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   @override
   Widget build(BuildContext context) {
-    Future<Workout?> workout = WorkoutsHelper.getWorkout(widget.workoutId);
+    Future<Workout?> workout = WorkoutsHelper.getWorkout(
+      workoutId: widget.workoutId,
+      includeCategories: true,
+    );
 
     List<int> existingCategoryShellIds = [];
     List<int> existingExerciseIds = [];
@@ -346,13 +350,13 @@ class _WorkoutViewState extends State<WorkoutView> {
         final workout = snapshot.data!;
 
         if (workout.workoutCategories != null && workout.workoutCategories!.isNotEmpty) {
-          existingCategoryShellIds = workout.workoutCategories!.map((wc) => CategoryShellsHelper.getCategoryShellIdFromWorkoutCategory(wc)).toList();
+          existingCategoryShellIds = workout.workoutCategories!.map((wc) => wc.categoryShellId).toList();
         } else {
           existingCategoryShellIds = [];
         }
 
         // if (workout.workoutSets != null && workout.workoutSets!.isNotEmpty) {
-        //   existingExerciseIds = workout.workoutSets!.map((ws) => ws.exerciseId).toList();
+        // existingExerciseIds = workout.workoutSets!.map((ws) => ws.exerciseId).toList();
         // } else {
         //   existingExerciseIds = [];
         // }

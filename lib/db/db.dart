@@ -5,7 +5,7 @@ class DatabaseHelper {
   Future<Database>? database;
 
   openDb() async {
-    await deleteDatabase('gymvision.db');
+    // await deleteDatabase('gymvision.db');
     database = openDatabase(
       join(await getDatabasesPath(), 'gymvision.db'),
       version: 2,
@@ -39,23 +39,20 @@ class DatabaseHelper {
           CREATE TABLE workout_categories(
             id INTEGER PRIMARY KEY,
             workoutId INTEGER NOT NULL,
-            type INTEGER NOT NULL,
-            muscleGroup INTEGER,
-            split INTEGER,
-            value TEXT
+            categoryShellId INTEGER NOT NULL
           );
         ''');
 
     batch.execute('''
-      CREATE TABLE workout_sets(
-        id INTEGER PRIMARY KEY,
-        workoutId INTEGER NOT NULL,
-        exerciseId INTEGER,
-        done INTEGER DEFAULT 0,
-        weight REAL,
-        reps INTEGER
-      );
-    ''');
+        CREATE TABLE workout_sets(
+          id INTEGER PRIMARY KEY,
+          workoutId INTEGER NOT NULL,
+          exerciseId INTEGER,
+          done INTEGER DEFAULT 0,
+          weight REAL,
+          reps INTEGER
+        );
+      ''');
 
     batch.execute('''
           CREATE TABLE flavour_texts(
@@ -118,7 +115,7 @@ class DatabaseHelper {
             id INTEGER PRIMARY KEY,
             exerciseId INTEGER NOT NULL,
             notes TEXT,
-            pr REAL,
+            pr REAL
           );
         ''');
 

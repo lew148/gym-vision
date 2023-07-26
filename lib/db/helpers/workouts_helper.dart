@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:gymvision/db/classes/category.dart';
 import 'package:gymvision/db/classes/workout_category.dart';
 import 'package:gymvision/db/classes/workout_exercise.dart';
 import 'package:sqflite/sqflite.dart';
@@ -16,12 +15,10 @@ class WorkoutsHelper {
       SELECT
         workouts.id,
         workouts.date,
-        categories.id AS categoryId,
-        categories.name,
-        categories.emoji
+        workout_categories.id AS workoutCategoryId,
+        workout_categories.categoryShellId
       FROM workouts
       LEFT JOIN workout_categories ON workouts.id = workout_categories.workoutId
-      LEFT JOIN categories ON workout_categories.categoryId = categories.id
       ORDER BY workouts.date DESC;
     ''');
 
@@ -47,22 +44,11 @@ class WorkoutsHelper {
 
     List<WorkoutCategory> workoutCategories = [];
     for (var m in list) {
-      final categoryId = m['categoryId'];
-      final name = m['name'];
-      final emoji = m['emoji'];
-
-      if (categoryId == null) continue;
+      final workoutCategoryId = m['workoutCategoryId'];
+      if (workoutCategoryId == null) continue;
 
       workoutCategories.add(
-        WorkoutCategory(
-          workoutId: m['id'],
-          categoryId: categoryId,
-          category: Category(
-            id: categoryId,
-            name: name,
-            emoji: emoji,
-          ),
-        ),
+        WorkoutCategory(id: workoutCategoryId, workoutId: m['id'], categoryShellId: m['categoryShellId']),
       );
     }
     return workoutCategories;
@@ -95,12 +81,8 @@ class WorkoutsHelper {
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
       SELECT
         workout_categories.id,
-        workout_categories.categoryId,
-        categories.name,
-        categories.emoji
-      FROM workout_categories
-      LEFT JOIN categories ON workout_categories.categoryId = categories.id
-      WHERE workout_categories.workoutId = $workoutId;
+        workout_categories.categoryShellId
+      FROM workout_categories;
     ''');
 
     if (maps.isEmpty) return null;
@@ -110,12 +92,7 @@ class WorkoutsHelper {
           (map) => WorkoutCategory(
             id: map['id'],
             workoutId: workoutId,
-            categoryId: map['categoryId'],
-            category: Category(
-              id: map['categoryId'],
-              name: map['name'],
-              emoji: map['emoji'],
-            ),
+            categoryShellId: map['categoryShellId'],
           ),
         )
         .toList();
@@ -198,28 +175,29 @@ class WorkoutsHelper {
     return workoutId;
   }
 
-  static setWorkoutCategories(int workoutId, List<int> categoryIds) async {
+  static setWorkoutCategories(int workoutId, List<int> shellIds) async {
     final db = await DatabaseHelper().getDb();
 
+    // caregoryIds == category shell ids (in workout_category_helper.dart)
     final existingWCs = await getWorkoutCategoriesForWorkout(workoutId);
-    final newCategoryIds = categoryIds;
+    final newIds = shellIds;
 
     if (existingWCs != null && existingWCs.isNotEmpty) {
       for (var ewc in existingWCs) {
-        if (categoryIds.contains(ewc.categoryId)) {
-          newCategoryIds.remove(ewc.categoryId);
+        if (shellIds.contains(ewc.categoryShellId)) {
+          newIds.remove(ewc.categoryShellId);
         } else {
-          await removeCategoryFromWorkout(ewc.id!);
+          await removeWorkoutCategory(ewc.id!);
         }
       }
     }
 
-    for (var exId in newCategoryIds) {
+    for (var exId in newIds) {
       await db.insert(
         'workout_categories',
         WorkoutCategory(
           workoutId: workoutId,
-          categoryId: exId,
+          categoryShellId: exId,
         ).toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
@@ -280,7 +258,7 @@ class WorkoutsHelper {
     );
   }
 
-  static removeCategoryFromWorkout(int workoutCategoryId) async {
+  static removeWorkoutCategory(int workoutCategoryId) async {
     final db = await DatabaseHelper().getDb();
     await db.delete(
       'workout_categories',
@@ -289,7 +267,7 @@ class WorkoutsHelper {
     );
   }
 
-   static removegroupedExercisesFromWorkout(int workoutId, int exerciseId) async {
+  static removegroupedExercisesFromWorkout(int workoutId, int exerciseId) async {
     final db = await DatabaseHelper().getDb();
     await db.delete(
       'workout_exercises',

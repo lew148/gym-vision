@@ -1,35 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/category.dart';
 import 'package:gymvision/db/helpers/workouts_helper.dart';
-
-import '../../db/helpers/categories_helper.dart';
+import 'package:gymvision/shared/workout_category_helper.dart';
 
 class AddCategoryToWorkoutForm extends StatefulWidget {
   final int workoutId;
-  final List<int> selectedCategoryIds;
+  final List<int> selectedWorkoutCategoryIds;
   final void Function() reloadState;
 
   const AddCategoryToWorkoutForm({
     Key? key,
     required this.workoutId,
-    required this.selectedCategoryIds,
+    required this.selectedWorkoutCategoryIds,
     required this.reloadState,
   }) : super(key: key);
 
   @override
-  State<AddCategoryToWorkoutForm> createState() =>
-      _AddCategoryToWorkoutFormState();
+  State<AddCategoryToWorkoutForm> createState() => _AddCategoryToWorkoutFormState();
 }
 
 class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
-  late Future<List<Category>> categories;
+  List<WorkoutCategoryShell> workoutCategories = WorkoutCategoryHelper.getCategoryShells();
   late List<int> selectedIds;
 
   @override
   void initState() {
     super.initState();
-    categories = CategoriesHelper().getCategories();
-    selectedIds = widget.selectedCategoryIds;
+    selectedIds = widget.selectedWorkoutCategoryIds;
   }
 
   @override
@@ -44,7 +41,7 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
         );
       } catch (ex) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to add Categories to workout')),
+          const SnackBar(content: Text('Failed to add Category to workout')),
         );
       }
 
@@ -53,46 +50,10 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
 
     void onCategoryTap(int categoryId) async {
       setState(() {
-        selectedIds.contains(categoryId)
-            ? selectedIds.remove(categoryId)
-            : selectedIds.add(categoryId);
+        selectedIds.contains(categoryId) ? selectedIds.remove(categoryId) : selectedIds.add(categoryId);
       });
 
       await onSubmit();
-    }
-
-    Widget getCategorySelect(List<Category> categories) {
-      categories.sort(((a, b) => a.name.compareTo(b.name)));
-      return Wrap(
-        alignment: WrapAlignment.center,
-        children: categories
-            .map(
-              (c) => Padding(
-                padding: const EdgeInsets.all(2),
-                child: GestureDetector(
-                  onTap: () => onCategoryTap(c.id!),
-                  child: Card(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(
-                          Radius.circular(5),
-                        ),
-                        border: Border.all(
-                          width: 2,
-                          color: selectedIds.contains(c.id)
-                              ? Theme.of(context).colorScheme.primary
-                              : Colors.transparent,
-                        ),
-                      ),
-                      padding: const EdgeInsets.fromLTRB(25, 20, 25, 20),
-                      child: Text(c.getDisplayName()),
-                    ),
-                  ),
-                ),
-              ),
-            )
-            .toList(),
-      );
     }
 
     return Container(
@@ -103,26 +64,38 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
             'Add Categories',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
-          FutureBuilder<List<Category>>(
-            future: categories,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(
-                  child: Text('Loading...'),
-                );
-              }
-
-              if (snapshot.data!.isEmpty) {
-                return const Center(
-                  child: Text('No Categories here :('),
-                );
-              }
-
-              return Padding(
-                padding: const EdgeInsets.only(top: 15, bottom: 15),
-                child: getCategorySelect(snapshot.data!),
-              );
-            },
+          Padding(
+            padding: const EdgeInsets.only(top: 15, bottom: 15),
+            child: Wrap(
+              alignment: WrapAlignment.center,
+              children: workoutCategories
+                  .map(
+                    (wc) => Padding(
+                      padding: const EdgeInsets.all(2),
+                      child: GestureDetector(
+                        onTap: () => onCategoryTap(wc.id),
+                        child: Card(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(5),
+                              ),
+                              border: Border.all(
+                                width: 2,
+                                color: selectedIds.contains(wc.id)
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Colors.transparent,
+                              ),
+                            ),
+                            padding: const EdgeInsets.fromLTRB(25, 20, 25, 20),
+                            child: Text(wc.displayName),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
           ),
         ],
       ),
