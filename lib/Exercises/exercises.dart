@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:gymvision/exercises/category_view.dart';
-import 'package:gymvision/db/helpers/categories_helper.dart';
-import 'package:gymvision/db/classes/category.dart';
+import 'package:gymvision/db/helpers/exercises_helper.dart';
 
-import '../shared/forms/add_category_form.dart';
+import '../db/classes/exercise.dart';
+import '../enums.dart';
 import '../shared/ui_helper.dart';
+import 'exercise_view.dart';
 
 class Exercises extends StatefulWidget {
   const Exercises({super.key});
@@ -14,81 +14,68 @@ class Exercises extends StatefulWidget {
 }
 
 class _ExercisesState extends State<Exercises> {
-  Future<List<Category>> _categories = CategoriesHelper().getCategories();
+  Future<List<Exercise>> _exercises = ExercisesHelper.getExercises();
+
   reloadState() => setState(() {
-        _categories = CategoriesHelper().getCategories();
+        _exercises = ExercisesHelper.getExercises();
       });
 
-  Widget getCategoryWidget(Category category) => Padding(
-        padding: const EdgeInsets.all(5),
-        child: InkWell(
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => CategoryView(
-                categoryId: category.id!,
-                categoryName: category.name,
-              ),
-            ),
-          ).then((value) => reloadState()),
-          child: Card(
-            child: Container(
-              padding: const EdgeInsets.all(20),
-              width: MediaQuery.of(context).size.width * 0.4,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    category.emoji ?? '❔',
-                    style: const TextStyle(
-                      fontSize: 35,
-                    ),
+  Widget getExerciseWidget(Exercise exercise) => Row(
+        children: [
+          Expanded(
+            child: Card(
+              child: InkWell(
+                onTap: () => Navigator.of(context)
+                    .push(
+                      MaterialPageRoute(
+                        builder: (context) => ExerciseView(
+                          exerciseId: exercise.id!,
+                        ),
+                      ),
+                    )
+                    .then((value) => reloadState()),
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.fromLTRB(10, 10, 10, 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            exercise.name,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const Padding(padding: EdgeInsets.all(3)),
+                          Row(children: [
+                            if (exercise.muscleGroup != MuscleGroup.other)
+                              getPropDisplay(context, exercise.muscleGroup.displayName),
+                            if (exercise.split != ExerciseSplit.other)
+                              getPropDisplay(context, exercise.split.displayName),
+                            if (exercise.equipment != ExerciseEquipment.other)
+                              getPropDisplay(context, exercise.equipment.displayName),
+                          ]),
+                        ],
+                      ),
+                    ],
                   ),
-                  const Divider(),
-                  Text(
-                    category.name,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
-      );
-
-  Widget getCategories(List<Category> categories) {
-    categories.sort(((a, b) => a.name.compareTo(b.name)));
-    return Expanded(
-      child: SingleChildScrollView(
-        child: Wrap(children: categories.map((c) => getCategoryWidget(c)).toList()),
-      ),
-    );
-  }
-
-  void openAddCategoryForm() => showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) => Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: AddCategoryForm(reloadState: reloadState),
-            ),
-          ],
-        ),
-        isScrollControlled: true,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+        ],
       );
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
-      child: FutureBuilder<List<Category>>(
-        future: _categories,
+      child: FutureBuilder<List<Exercise>>(
+        future: _exercises,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(
@@ -96,15 +83,34 @@ class _ExercisesState extends State<Exercises> {
             );
           }
 
-          return Column(children: [
-            getSectionTitleWithActions(
-              context,
-              'Categories',
-              [ActionButton(icon: Icons.add_rounded, onTap: openAddCategoryForm)],
-            ),
-            const Divider(),
-            getCategories(snapshot.data!),
-          ]);
+          var exercises = snapshot.data!;
+          exercises.sort(((a, b) => a.muscleGroup.index.compareTo(b.muscleGroup.index)));
+
+          return Container(
+            padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
+            child: Column(children: [
+              getSectionTitleWithActions(
+                context,
+                'Exercises',
+                [], //[ActionButton(icon: Icons.add_rounded, onTap: () => null)],
+              ),
+              const Divider(),
+              exercises.isEmpty
+                  ? const Center(
+                      child: Padding(padding: EdgeInsets.all(20), child: Text('No Exercises here :(')),
+                    )
+                  : Expanded(
+                      child: SingleChildScrollView(
+                        child: Container(
+                          margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
+                          child: Column(
+                            children: exercises.map((e) => getExerciseWidget(e)).toList(),
+                          ),
+                        ),
+                      ),
+                    ),
+            ]),
+          );
         },
       ),
     );

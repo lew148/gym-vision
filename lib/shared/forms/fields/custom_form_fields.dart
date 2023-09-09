@@ -21,7 +21,7 @@ class CustomFormFields {
     required String label,
     bool isSingle = true,
     bool autofocus = false,
-    String? defaultWeight,
+    String? last,
     String? max,
   }) =>
       Row(children: [
@@ -46,19 +46,19 @@ class CustomFormFields {
             child: const Text('None'),
           ),
         ),
-        if (defaultWeight != null)
+        if (last != null)
           Padding(
             padding: const EdgeInsets.fromLTRB(10, 10, 5, 0),
             child: OutlinedButton(
               onPressed: () {
                 controller.value = TextEditingValue(
-                  text: defaultWeight,
+                  text: last,
                   selection: TextSelection.fromPosition(
-                    TextPosition(offset: defaultWeight.length),
+                    TextPosition(offset: last.length),
                   ),
                 );
               },
-              child: const Text('Default'),
+              child: const Text('Last'),
             ),
           ),
         if (max != null)

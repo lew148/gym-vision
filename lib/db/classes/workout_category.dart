@@ -1,19 +1,27 @@
-import 'package:gymvision/db/classes/category.dart';
+import 'package:gymvision/db/classes/workout.dart';
+import 'package:gymvision/shared/workout_category_helper.dart';
 
 class WorkoutCategory {
   int? id;
+  int? userId;
   final int workoutId;
-  final int categoryId;
-
-  Category? category;
+  Workout? workout;
+  final int categoryShellId;
 
   WorkoutCategory({
     this.id,
+    this.userId,
     required this.workoutId,
-    required this.categoryId,
-    this.category,
+    this.workout,
+    required this.categoryShellId,
   });
 
-  Map<String, dynamic> toMap() =>
-      {'id': id, 'workoutId': workoutId, 'categoryId': categoryId};
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'workoutId': workoutId,
+        'categoryShellId': categoryShellId,
+      };
+
+  String getDisplayName() =>
+      WorkoutCategoryHelper.getCategoryShells().firstWhere((s) => s.id == categoryShellId).displayName;
 }

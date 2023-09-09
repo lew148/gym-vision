@@ -1,26 +1,29 @@
 import 'package:gymvision/db/classes/workout_category.dart';
-import 'package:gymvision/db/classes/workout_exercise.dart';
+import 'package:gymvision/db/classes/workout_set.dart';
 import 'package:gymvision/globals.dart';
 import 'package:intl/intl.dart';
 
 class Workout {
   int? id;
   DateTime date;
-
-  bool? done;
+  bool done;
 
   List<WorkoutCategory>? workoutCategories;
-  List<WorkoutExercise>? workoutExercises;
+  List<WorkoutSet>? workoutSets;
 
   Workout({
     this.id,
     required this.date,
-    this.done,
-    this.workoutExercises,
+    this.done = false,
     this.workoutCategories,
+    this.workoutSets,
   });
 
-  Map<String, dynamic> toMap() => {'id': id, 'date': date.toString()};
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'date': date.toString(),
+        'done': done,
+      };
 
   String getTimeString() => DateFormat('Hm').format(date);
 
