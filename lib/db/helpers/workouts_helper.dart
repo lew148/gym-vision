@@ -1,10 +1,9 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/workout_category.dart';
-import 'package:gymvision/db/classes/workout_exercise.dart';
+import 'package:gymvision/db/helpers/workout_sets_helper.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../classes/exercise.dart';
 import '../classes/workout.dart';
 import '../db.dart';
 
@@ -57,7 +56,7 @@ class WorkoutsHelper {
   static Future<Workout> getWorkout({
     required int workoutId,
     bool includeCategories = false,
-    bool includeExercises = false,
+    bool includeSets = false,
   }) async {
     final db = await DatabaseHelper().getDb();
     final List<Map<String, dynamic>> maps = await db.query(
@@ -70,7 +69,7 @@ class WorkoutsHelper {
       id: workoutId,
       date: DateTime.parse(maps[0]['date']),
       workoutCategories: includeCategories ? await getWorkoutCategoriesForWorkout(workoutId) : null,
-      workoutExercises: includeExercises ? await getWorkoutExercisesForWorkout(workoutId) : null,
+      workoutSets: includeSets ? await WorkoutSetsHelper.getWorkoutSetsForWorkout(workoutId) : null,
     );
   }
 
@@ -78,12 +77,11 @@ class WorkoutsHelper {
     int workoutId,
   ) async {
     final db = await DatabaseHelper().getDb();
-    final List<Map<String, dynamic>> maps = await db.rawQuery('''
-      SELECT
-        workout_categories.id,
-        workout_categories.categoryShellId
-      FROM workout_categories;
-    ''');
+    final List<Map<String, dynamic>> maps = await db.query(
+      'workout_categories',
+      where: 'workoutId = ?',
+      whereArgs: [workoutId],
+    );
 
     if (maps.isEmpty) return null;
 
@@ -93,73 +91,6 @@ class WorkoutsHelper {
             id: map['id'],
             workoutId: workoutId,
             categoryShellId: map['categoryShellId'],
-          ),
-        )
-        .toList();
-  }
-
-  static Future<List<WorkoutExercise>?> getWorkoutExercisesForWorkout(
-    int workoutId,
-  ) async =>
-      await getWorkoutExercises('workoutId', workoutId);
-
-  static Future<List<WorkoutExercise>?> getWorkoutExercisesForExercise(
-    int exerciseId,
-  ) async =>
-      await getWorkoutExercises('exerciseId', exerciseId);
-
-  static Future<List<WorkoutExercise>> getWorkoutExercises(
-    String whereProp,
-    int value,
-  ) async {
-    final db = await DatabaseHelper().getDb();
-    final List<Map<String, dynamic>> maps = await db.rawQuery('''
-      SELECT
-        workout_exercises.id,
-        workout_exercises.weight,
-        workout_exercises.reps,
-        workout_exercises.sets,
-        workout_exercises.done,
-        workout_exercises.workoutId,
-        workout_exercises.exerciseId,
-        workouts.date,
-        exercises.categoryId,
-        exercises.name,
-        exercises.weight AS exerciseWeight,
-        exercises.max,
-        exercises.reps AS exerciseReps,
-        exercises.isSingle,
-        exercises.notes
-      FROM workout_exercises
-      LEFT JOIN exercises ON workout_exercises.exerciseId = exercises.id
-      LEFT JOIN workouts ON workout_exercises.workoutId = workouts.id
-      WHERE workout_exercises.$whereProp = $value;
-    ''');
-
-    return maps
-        .map(
-          (map) => WorkoutExercise(
-            id: map['id'],
-            workoutId: map['workoutId'],
-            exerciseId: map['exerciseId'],
-            weight: map['weight'],
-            reps: map['reps'],
-            sets: map['sets'],
-            done: map['done'] == 1,
-            exercise: Exercise(
-              id: map['exerciseId'],
-              categoryId: map['categoryId'],
-              name: map['name'],
-              weight: map['exerciseWeight'],
-              max: map['max'],
-              reps: map['exerciseReps'],
-              isSingle: map['isSingle'] == 1,
-              notes: map['notes'] ?? '',
-            ),
-            workout: Workout(
-              id: map['workoutId'],
-              date: DateTime.parse(map['date']),
-            ),
           ),
         )
         .toList();
@@ -204,91 +135,19 @@ class WorkoutsHelper {
     }
   }
 
-  static addExerciseToWorkout({
-    required int exerciseId,
-    required int workoutId,
-    double? weight,
-    int? reps,
-    int? sets,
-    bool? done,
-  }) async {
-    final db = await DatabaseHelper().getDb();
-    await db.insert(
-      'workout_exercises',
-      WorkoutExercise(
-        workoutId: workoutId,
-        exerciseId: exerciseId,
-        sets: sets ?? 3,
-        weight: weight ?? 0,
-        reps: reps ?? 0,
-        done: done ?? false,
-      ).toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
-
-  static updateWorkoutExercise(WorkoutExercise we) async {
-    final db = await DatabaseHelper().getDb();
-    await db.update(
-      'workout_exercises',
-      we.toMap(),
-      where: 'id = ?',
-      whereArgs: [we.id],
-    );
-  }
-
-  static splitAWorkoutExerciseSet(WorkoutExercise we) async {
-    final db = await DatabaseHelper().getDb();
-
-    we.sets = we.sets! - 1;
-    await db.update(
-      'workout_exercises',
-      we.toMap(),
-      where: 'id = ?',
-      whereArgs: [we.id],
-    );
-
-    await addExerciseToWorkout(
-      exerciseId: we.exerciseId,
-      workoutId: we.workoutId,
-      weight: we.weight,
-      reps: we.reps!,
-      sets: 1,
-      done: we.done,
-    );
-  }
-
-  static removeWorkoutCategory(int workoutCategoryId) async {
+  static removeWorkoutCategory(int shellId) async {
     final db = await DatabaseHelper().getDb();
     await db.delete(
       'workout_categories',
       where: 'id = ?',
-      whereArgs: [workoutCategoryId],
-    );
-  }
-
-  static removegroupedExercisesFromWorkout(int workoutId, int exerciseId) async {
-    final db = await DatabaseHelper().getDb();
-    await db.delete(
-      'workout_exercises',
-      where: 'workoutId = ? AND exerciseId = ?',
-      whereArgs: [workoutId, exerciseId],
-    );
-  }
-
-  static removeExerciseFromWorkout(int workoutExerciseId) async {
-    final db = await DatabaseHelper().getDb();
-    await db.delete(
-      'workout_exercises',
-      where: 'id = ?',
-      whereArgs: [workoutExerciseId],
+      whereArgs: [shellId],
     );
   }
 
   static deleteWorkout(int workoutId) async {
     final db = await DatabaseHelper().getDb();
     await db.delete(
-      'workout_exercises',
+      'workout_sets',
       where: 'workoutId = ?',
       whereArgs: [workoutId],
     );

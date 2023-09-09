@@ -1,22 +1,23 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:gymvision/db/classes/workout_exercise.dart';
+import 'package:gymvision/db/classes/workout_set.dart';
 import 'package:gymvision/workouts/workout_exercise_widget.dart';
 
 import '../db/classes/workout.dart';
 import '../db/classes/workout_category.dart';
 import '../db/helpers/workouts_helper.dart';
-import '../shared/forms/add_exercise_to_workout_form.dart';
+import '../shared/forms/add_set_to_workout_form.dart';
 import '../shared/ui_helper.dart';
 import '../shared/forms/add_category_to_workout_form.dart';
-import '../shared/workout_category_helper.dart';
 
 class WorkoutView extends StatefulWidget {
   final int workoutId;
+  final Function reloadParent;
 
   const WorkoutView({
     super.key,
     required this.workoutId,
+    required this.reloadParent,
   });
 
   @override
@@ -41,6 +42,7 @@ class _WorkoutViewState extends State<WorkoutView> {
       ),
       onPressed: () async {
         Navigator.pop(context);
+        Navigator.pop(context);
 
         try {
           await WorkoutsHelper.deleteWorkout(workoutId);
@@ -51,6 +53,8 @@ class _WorkoutViewState extends State<WorkoutView> {
             ),
           );
         }
+
+        widget.reloadParent();
       },
     );
 
@@ -125,31 +129,8 @@ class _WorkoutViewState extends State<WorkoutView> {
             .toList(),
       );
 
-  void onAddExerciseClick(int workoutId, List<int> existingExerciseIds, List<int>? categoryIds) => showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) => Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
-              ),
-              child: AddExerciseToWorkoutForm(
-                workoutId: workoutId,
-                excludeExerciseIds: existingExerciseIds,
-                categoryIds: categoryIds,
-                disableWorkoutPicker: true,
-                reloadState: reloadState,
-              ),
-            ),
-          ],
-        ),
-        isScrollControlled: true,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
-      );
-
-  List<Widget> getWorkoutExercisesWidget(List<WorkoutExercise>? workoutExercises) {
-    if (workoutExercises == null || workoutExercises.isEmpty) {
+  List<Widget> getWorkoutExercisesWidget(List<WorkoutSet>? workoutSets) {
+    if (workoutSets == null || workoutSets.isEmpty) {
       return const [
         Center(
           child: Padding(
@@ -160,8 +141,8 @@ class _WorkoutViewState extends State<WorkoutView> {
       ];
     }
 
-    final Map<int, List<WorkoutExercise>> groupedWorkoutExercises = groupBy<WorkoutExercise, int>(
-      workoutExercises,
+    final Map<int, List<WorkoutSet>> groupedWorkoutExercises = groupBy<WorkoutSet, int>(
+      workoutSets,
       (x) => x.exerciseId,
     );
 
@@ -171,7 +152,7 @@ class _WorkoutViewState extends State<WorkoutView> {
         Padding(
           padding: const EdgeInsets.only(top: 5, bottom: 5),
           child: WorkoutExerciseWidget(
-            workoutExercises: value,
+            workoutSets: value,
             reloadState: reloadState,
           ),
         ),
@@ -272,7 +253,6 @@ class _WorkoutViewState extends State<WorkoutView> {
               child: InkWell(
                 onTap: () {
                   Navigator.pop(context);
-                  Navigator.pop(context);
                   showDeleteWorkoutConfirm(workout.id!);
                 },
                 child: Row(
@@ -331,6 +311,7 @@ class _WorkoutViewState extends State<WorkoutView> {
     Future<Workout?> workout = WorkoutsHelper.getWorkout(
       workoutId: widget.workoutId,
       includeCategories: true,
+      includeSets: true,
     );
 
     List<int> existingCategoryShellIds = [];
@@ -355,11 +336,33 @@ class _WorkoutViewState extends State<WorkoutView> {
           existingCategoryShellIds = [];
         }
 
-        // if (workout.workoutSets != null && workout.workoutSets!.isNotEmpty) {
-        // existingExerciseIds = workout.workoutSets!.map((ws) => ws.exerciseId).toList();
-        // } else {
-        //   existingExerciseIds = [];
-        // }
+        if (workout.workoutSets != null && workout.workoutSets!.isNotEmpty) {
+          existingExerciseIds = workout.workoutSets!.map((ws) => ws.exerciseId).toSet().toList();
+        } else {
+          existingExerciseIds = [];
+        }
+
+        void onAddExerciseClick() => showModalBottomSheet(
+              context: context,
+              builder: (BuildContext context) => Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom,
+                    ),
+                    child: AddSetToWorkoutForm(
+                      workoutId: workout.id,
+                      excludeExerciseIds: existingExerciseIds,
+                      categoryShellIds: existingCategoryShellIds,
+                      reloadState: reloadState,
+                    ),
+                  ),
+                ],
+              ),
+              isScrollControlled: true,
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+            );
 
         return Scaffold(
           appBar: AppBar(
@@ -385,17 +388,14 @@ class _WorkoutViewState extends State<WorkoutView> {
                     'Exercises',
                     ActionButton(
                       icon: Icons.add,
-                      onTap: () => onAddExerciseClick(workout.id!, existingExerciseIds,
-                          workout.workoutCategories?.map((wc) => wc.categoryId!).toList()),
+                      onTap: onAddExerciseClick,
                     ),
                   ),
                   const Divider(),
                   Expanded(
                     child: SingleChildScrollView(
                       child: Column(
-                        children: getWorkoutExercisesWidget(
-                          workout.workoutExercises,
-                        ),
+                        children: getWorkoutExercisesWidget(workout.workoutSets),
                       ),
                     ),
                   ),

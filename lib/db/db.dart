@@ -8,11 +8,7 @@ class DatabaseHelper {
     // await deleteDatabase('gymvision.db');
     database = openDatabase(
       join(await getDatabasesPath(), 'gymvision.db'),
-      version: 2,
-      onUpgrade: (db, oldVersion, newVersion) async {
-        Batch batch = db.batch();
-        await batch.commit();
-      },
+      version: 1,
       onCreate: (db, version) async {
         Batch batch = db.batch();
         initialDbCreate(batch);
@@ -115,7 +111,8 @@ class DatabaseHelper {
             id INTEGER PRIMARY KEY,
             exerciseId INTEGER NOT NULL,
             notes TEXT,
-            pr REAL
+            prId INT,
+            lastId INT
           );
         ''');
 

@@ -29,10 +29,11 @@ class WorkoutSet {
 
   Map<String, dynamic> toMap() => {
         'id': id,
-        'userId': userId,
         'weight': weight,
         'reps': reps,
-        'done': done
+        'done': done,
+        'workoutId': workoutId,
+        'exerciseId': exerciseId,
       };
 
   bool hasWeight() => weight != null && weight != 0;
@@ -41,4 +42,23 @@ class WorkoutSet {
 
   String getWeightDisplay() =>
       hasWeight() ? '${weight! % 1 == 0 ? weight!.toStringAsFixed(0) : weight!.toStringAsFixed(2)}kg' : '-';
+
+  String? getWeightAsString() {
+    if (!hasWeight()) return null;
+    return weight! % 1 == 0 ? weight!.toStringAsFixed(0) : weight!.toStringAsFixed(2);
+  }
+
+  String? getWeightString({bool showNone = true}) {
+    if (!hasWeight()) return showNone ? 'None' : null;
+    return '${getWeightAsString()}kg';
+  }
+
+  String? getNumberedWeightString({bool showNone = true}) {
+    if (!hasWeight()) return showNone ? 'None' : null;
+    return '${exercise!.isDouble ? '2 x ' : ''}${getWeightString(showNone: showNone)}';
+  }
+
+  String getRepsAsString() => reps == null ? '0' : reps.toString();
+
+  String getRepsDisplayString() => '$reps rep${reps == 1 ? '' : 's'}';
 }

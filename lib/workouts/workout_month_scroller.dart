@@ -50,23 +50,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
     Widget getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories, WrapAlignment alignment) => Expanded(
           child: Wrap(
             alignment: alignment,
-            children: workoutCategories
-                .map(
-                  (wc) => Container(
-                    margin: const EdgeInsets.only(bottom: 5, right: 5),
-                    padding: const EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Theme.of(context).colorScheme.onBackground),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: Text(
-                      wc.getDisplayName(),
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                )
-                .toList(),
+            children: workoutCategories.map((wc) => getPropDisplay(context, wc.getDisplayName())).toList(),
           ),
         );
 
@@ -74,7 +58,10 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
           onTap: () => Navigator.of(context)
               .push(
                 MaterialPageRoute(
-                  builder: (context) => WorkoutView(workoutId: workout.id!),
+                  builder: (context) => WorkoutView(
+                    workoutId: workout.id!,
+                    reloadParent: widget.reloadState,
+                  ),
                 ),
               )
               .then((value) => widget.reloadState()),
@@ -131,7 +118,10 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
         Navigator.of(context)
             .push(
               MaterialPageRoute(
-                builder: (context) => WorkoutView(workoutId: newWorkoutId),
+                builder: (context) => WorkoutView(
+                  workoutId: newWorkoutId,
+                  reloadParent: widget.reloadState,
+                ),
               ),
             )
             .then((value) => widget.reloadState());
@@ -156,7 +146,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
         var workoutsForDay = workouts
             .where((w) => w.date.year == currentMonth.year && w.date.month == currentMonth.month && w.date.day == day)
             .toList();
-        workoutsForDay.sort((w1, w2) => w1.date.compareTo(w2.date));
+        workoutsForDay.sort((w1, w2) => w2.date.compareTo(w1.date));
 
         GlobalKey getKey() {
           if (isToday) return todayKey;

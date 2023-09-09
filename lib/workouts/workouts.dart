@@ -24,7 +24,7 @@ class _WorkoutsState extends State<Workouts> {
       child: Column(
         children: [
           // flavour text
-          const FlavourTextCard(),
+          // const FlavourTextCard(),
 
           // workouts
           Expanded(

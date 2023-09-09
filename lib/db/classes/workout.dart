@@ -1,5 +1,4 @@
 import 'package:gymvision/db/classes/workout_category.dart';
-import 'package:gymvision/db/classes/workout_exercise.dart';
 import 'package:gymvision/db/classes/workout_set.dart';
 import 'package:gymvision/globals.dart';
 import 'package:intl/intl.dart';
@@ -12,18 +11,12 @@ class Workout {
   List<WorkoutCategory>? workoutCategories;
   List<WorkoutSet>? workoutSets;
 
-  // old
-  List<WorkoutExercise>? workoutExercises;
-
   Workout({
     this.id,
     required this.date,
     this.done = false,
     this.workoutCategories,
     this.workoutSets,
-
-    // old
-    this.workoutExercises,
   });
 
   Map<String, dynamic> toMap() => {

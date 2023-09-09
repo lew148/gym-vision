@@ -38,22 +38,24 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-      ]);
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MaterialApp(
       title: 'Gym Vision',
       theme: ThemeData(
         colorScheme: ColorScheme.light(
           primary: Colors.green[400]!,
-          secondary: const Color.fromARGB(255, 255, 216, 250),
+          secondary: const Color.fromARGB(255, 216, 160, 233),
+          tertiary: const Color.fromARGB(255, 235, 156, 140),
           shadow: Colors.grey[600],
         ),
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.dark(
           primary: Colors.green[400]!,
-          secondary: const Color.fromARGB(255, 255, 216, 250),
+          secondary: const Color.fromARGB(255, 216, 160, 233),
+          tertiary: const Color.fromARGB(255, 235, 156, 140),
           shadow: Colors.grey[400],
         ),
       ),

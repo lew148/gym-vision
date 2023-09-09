@@ -3,116 +3,46 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/exercise.dart';
-import 'package:gymvision/db/classes/workout_exercise.dart';
-import 'package:gymvision/db/helpers/workouts_helper.dart';
-import 'package:gymvision/exercises/exercise_more_menu_button.dart';
+import 'package:gymvision/db/classes/user_exercise_details.dart';
+import 'package:gymvision/db/classes/workout_set.dart';
+import 'package:gymvision/db/helpers/user_exercise_details_helper.dart';
+import 'package:gymvision/exercises/exercise_recent_uses_view.dart';
+import 'package:gymvision/globals.dart';
 
 import '../db/helpers/exercises_helper.dart';
 import '../enums.dart';
 import '../shared/ui_helper.dart';
-import '../shared/forms/edit_exercise_field_form.dart';
-import '../workouts/workout_exercise_widget.dart';
 
 class ExerciseView extends StatefulWidget {
   final int exerciseId;
-  final String exerciseName;
-  const ExerciseView(
-      {super.key, required this.exerciseId, required this.exerciseName});
+
+  const ExerciseView({
+    super.key,
+    required this.exerciseId,
+  });
 
   @override
   State<ExerciseView> createState() => _ExerciseViewState();
 }
 
 class _ExerciseViewState extends State<ExerciseView> {
+  late Future<Exercise?> _exercise;
+
+  @override
+  void initState() {
+    super.initState();
+    _exercise = ExercisesHelper.getExercise(
+      id: widget.exerciseId,
+      includeUserDetails: true,
+      includeRecentUses: true,
+    );
+  }
+
   reloadState() => setState(() {});
 
-  Widget getExerciseViewWidget(Exercise exercise) =>
-      Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: getValueDisplay(
-                'Weight',
-                Text(
-                  exercise.getWeightString() ?? '',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 17,
-                  ),
-                ),
-                () => openEditExerciseFieldForm(
-                  exercise,
-                  ExerciseEditableField.weight,
-                  'Weight',
-                  exercise.getWeightAsString() ?? '',
-                ),
-              ),
-            ),
-            Expanded(
-              child: getValueDisplay(
-                'Max',
-                Text(
-                  exercise.getMaxString(),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 17,
-                  ),
-                ),
-                () => openEditExerciseFieldForm(
-                  exercise,
-                  ExerciseEditableField.max,
-                  'Max',
-                  exercise.getMaxAsString() ?? '',
-                ),
-              ),
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            Expanded(
-              child: getValueDisplay(
-                'Reps',
-                Text(
-                  exercise.getRepsString(),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 17,
-                  ),
-                ),
-                () => openEditExerciseFieldForm(
-                  exercise,
-                  ExerciseEditableField.reps,
-                  'Reps',
-                  exercise.reps.toString(),
-                ),
-              ),
-            ),
-            Expanded(
-              child: Card(
-                child: Container(
-                  height: 60.00,
-                  padding: const EdgeInsets.only(right: 10, left: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text('Double Sided'),
-                      Switch(
-                        value: !exercise.isSingle,
-                        onChanged: (newValue) async {
-                          exercise.isSingle = !exercise.isSingle;
-                          await ExercisesHelper.updateExercise(exercise);
-                          reloadState();
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
+  Widget getNotesDisplay(Exercise exercise) => Column(children: [
+        getSectionTitle(context, 'Notes'),
+        const Divider(),
         Row(
           children: [
             Expanded(
@@ -124,37 +54,19 @@ class _ExerciseViewState extends State<ExerciseView> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 10),
-                          child: Row(
-                            children: const [
-                              Text(
-                                'Notes',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        const Padding(padding: EdgeInsets.all(5)),
-                        Expanded(
-                          child: SingleChildScrollView(
-                            child: Row(
-                              children: [
-                                Flexible(
-                                  child: Text(exercise.notes == ''
-                                      ? '-'
-                                      : exercise.notes),
-                                ),
-                              ],
+                    padding: const EdgeInsets.all(10),
+                    child: Expanded(
+                      child: SingleChildScrollView(
+                        child: Row(
+                          children: [
+                            Flexible(
+                              child: Text(exercise.userExerciseDetails?.notes == null
+                                  ? '-'
+                                  : exercise.userExerciseDetails!.notes!),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
@@ -164,38 +76,17 @@ class _ExerciseViewState extends State<ExerciseView> {
         ),
       ]);
 
-  void openEditExerciseFieldForm(
-    Exercise exercise,
-    ExerciseEditableField editableField,
-    String label,
-    String currentValue,
-  ) =>
-      showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) => Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: EditExerciseFieldForm(
-                exercise: exercise,
-                editableField: editableField,
-                label: label,
-                currentValue: currentValue,
-                reloadState: reloadState,
-              ),
-            ),
-          ],
-        ),
-        isScrollControlled: true,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
-        ),
-      );
+  Widget getExerciseViewWidget(Exercise exercise) =>
+      Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+        getExercisePropDisplay("Type", exercise.exerciseType.displayName),
+        getExercisePropDisplay("Muscle Group", exercise.muscleGroup.displayName),
+        getExercisePropDisplay("Split", exercise.split.displayName),
+        getExercisePropDisplay("Equipment", exercise.equipment.displayName),
+        getNotesDisplay(exercise),
+      ]);
 
   void openNotesForm(Exercise exercise) {
-    var controller = TextEditingController(text: exercise.notes);
+    var controller = TextEditingController(text: exercise.userExerciseDetails?.notes);
 
     showModalBottomSheet(
       context: context,
@@ -203,16 +94,14 @@ class _ExerciseViewState extends State<ExerciseView> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
               child: Container(
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
                     const Text(
                       'Edit Notes',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     ),
                     Column(
                       children: [
@@ -238,17 +127,13 @@ class _ExerciseViewState extends State<ExerciseView> {
 
                                   try {
                                     var newValue = controller.text;
-                                    if (exercise.notes == newValue) return;
-
-                                    exercise.notes = newValue;
-
-                                    await ExercisesHelper.updateExercise(
-                                        exercise);
+                                    if (exercise.userExerciseDetails?.notes == newValue) return;
+                                    exercise.userExerciseDetails!.notes = newValue;
+                                    await UserExerciseDetailsHelper.updateUserExerciseDetails(
+                                        exercise.userExerciseDetails!);
                                   } catch (ex) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                            content:
-                                                Text('Failed to edit Notes')));
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(const SnackBar(content: Text('Failed to edit Notes')));
                                   }
 
                                   reloadState();
@@ -298,11 +183,28 @@ class _ExerciseViewState extends State<ExerciseView> {
         ),
       );
 
-  List<Widget> getRecentUsesWidget(List<WorkoutExercise> workoutExercises) {
-    workoutExercises.sort(((a, b) => b.workout!.date.compareTo(a.workout!.date)));
+  Widget getExerciseProps(Exercise exercise) => Row();
 
-    final Map<int, List<WorkoutExercise>> groupedWorkoutExercises = groupBy<WorkoutExercise, int>(
-      workoutExercises,
+  Widget getExercisePropDisplay(String label, String value) => Column(children: [
+        Padding(
+          padding: const EdgeInsets.only(right: 15, left: 15),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(label),
+              getPropDisplay(context, value),
+            ],
+          ),
+        ),
+        const Divider(),
+      ]);
+
+  List<Widget> getRecentUsesWidget(List<WorkoutSet> workoutSets) {
+    workoutSets.removeWhere((ws) => dateIsInFuture(ws.workout!.date));
+    workoutSets.sort(((a, b) => b.workout!.date.compareTo(a.workout!.date)));
+
+    final Map<int, List<WorkoutSet>> groupedWorkoutExercises = groupBy<WorkoutSet, int>(
+      workoutSets,
       (x) => x.workoutId,
     );
 
@@ -311,10 +213,8 @@ class _ExerciseViewState extends State<ExerciseView> {
       weWidgets.add(
         Padding(
           padding: const EdgeInsets.only(top: 5, bottom: 5),
-          child: WorkoutExerciseWidget(
-            workoutExercises: value,
-            reloadState: reloadState,
-            displayOnly: true,
+          child: ExerciseRecentUsesView(
+            workoutSets: value,
           ),
         ),
       );
@@ -323,15 +223,114 @@ class _ExerciseViewState extends State<ExerciseView> {
     return weWidgets;
   }
 
+  Widget getPrWidget(WorkoutSet pr) => Padding(
+        padding: const EdgeInsets.only(top: 5, bottom: 5),
+        child: Card(
+          child: Column(children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Text(
+                      pr.workout!.getDateAndTimeString(),
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(height: 0),
+            Padding(
+              padding: const EdgeInsets.all(15),
+              child: Row(
+                children: [
+                  Expanded(
+                      flex: 3,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: pr.hasWeight()
+                            ? [
+                                const Icon(
+                                  Icons.fitness_center_rounded,
+                                  size: 15,
+                                ),
+                                const Padding(padding: EdgeInsets.all(5)),
+                                Text(pr.getWeightDisplay()),
+                              ]
+                            : [
+                                const Center(
+                                  child: Text(
+                                    '-',
+                                    style: TextStyle(fontSize: 30),
+                                  ),
+                                ),
+                              ],
+                      )),
+                  Expanded(
+                    flex: 3,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.repeat_rounded,
+                          size: 15,
+                        ),
+                        const Padding(padding: EdgeInsets.all(5)),
+                        Text(pr.getRepsDisplayString()),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ]),
+        ),
+      );
+
+  List<Widget> getDetailsSections(UserExerciseDetails details) => [
+        getSectionTitle(context, 'PR'),
+        const Divider(),
+        details.pr == null
+            ? const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Text('No PR set.'),
+                ),
+              )
+            : Container(
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: getPrWidget(details.pr!),
+              ),
+        getSectionTitle(context, 'Recent Uses'),
+        const Divider(),
+        details.recentUses == null
+            ? const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Text('No recent uses of this exercise.'),
+                ),
+              )
+            : Expanded(
+                child: SingleChildScrollView(
+                  child: Container(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: Column(
+                      children: getRecentUsesWidget(
+                        details.recentUses!,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+      ];
+
   @override
   Widget build(BuildContext context) {
-    final Future<Exercise> exercise =
-        ExercisesHelper.getExercise(widget.exerciseId);
-    final Future<List<WorkoutExercise>?> workoutExercises =
-        WorkoutsHelper.getWorkoutExercisesForExercise(widget.exerciseId);
-
-    return FutureBuilder<Exercise>(
-      future: exercise,
+    return FutureBuilder<Exercise?>(
+      future: _exercise,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Scaffold(
@@ -342,58 +341,20 @@ class _ExerciseViewState extends State<ExerciseView> {
           );
         }
 
+        var exercise = snapshot.data!;
+        var details = exercise.userExerciseDetails;
+
         return Scaffold(
           appBar: AppBar(
-            title: Text(snapshot.data!.name),
-            actions: [
-              ExerciseMoreMenuButton(
-                exercise: snapshot.data!,
-                reloadState: reloadState,
-                onDelete: () => Navigator.pop(context),
-              ),
-            ],
+            title: Text(exercise.name),
           ),
           body: Column(
             children: [
               Container(
-                margin: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+                margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
                 child: getExerciseViewWidget(snapshot.data!),
               ),
-              getSectionTitle(context, 'Recent Uses'),
-              const Divider(),
-              const Padding(padding: EdgeInsets.all(5)),
-              FutureBuilder<List<WorkoutExercise>?>(
-                future: workoutExercises,
-                builder: (context, weSnapshot) {
-                  if (!weSnapshot.hasData) {
-                    return const Center(
-                      child: Text('Loading...'),
-                    );
-                  }
-
-                  if (weSnapshot.data == null || weSnapshot.data!.isEmpty) {
-                    return const Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(20),
-                        child: Text('No recent uses of this exercise.'),
-                      ),
-                    );
-                  }
-
-                  return Expanded(
-                    child: SingleChildScrollView(
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          children: getRecentUsesWidget(
-                            weSnapshot.data!,
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              )
+              if (details != null) ...getDetailsSections(details),
             ],
           ),
         );

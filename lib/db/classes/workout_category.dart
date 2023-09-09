@@ -1,4 +1,3 @@
-import 'package:gymvision/db/classes/category.dart';
 import 'package:gymvision/db/classes/workout.dart';
 import 'package:gymvision/shared/workout_category_helper.dart';
 
@@ -9,20 +8,12 @@ class WorkoutCategory {
   Workout? workout;
   final int categoryShellId;
 
-  // old
-  int? categoryId;
-  Category? category;
-
   WorkoutCategory({
     this.id,
     this.userId,
     required this.workoutId,
     this.workout,
     required this.categoryShellId,
-
-    // old
-    this.categoryId,
-    this.category,
   });
 
   Map<String, dynamic> toMap() => {
