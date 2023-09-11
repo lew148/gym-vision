@@ -1,3 +1,4 @@
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/shared/ui_helper.dart';
 import 'package:gymvision/workouts/workout_view.dart';
@@ -54,6 +55,52 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
           ),
         );
 
+    Widget getInnerWorkoutDisplay(Workout workout) => Container(
+          padding: const EdgeInsets.all(15),
+          child: Row(
+            children: [
+              if (workout.done)
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: Icon(
+                    Icons.check_circle_outline_rounded,
+                    size: 25,
+                    color: Colors.green[400],
+                  ),
+                ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${workout.isInFuture() ? 'Planned ' : ''}Session',
+                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    '@ ${workout.getTimeString()}',
+                    style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                  ),
+                ],
+              ),
+              const Padding(padding: EdgeInsets.only(right: 10)),
+              if (workout.workoutCategories != null && workout.workoutCategories!.isNotEmpty)
+                getWorkoutCategoriesWidget(
+                  workout.workoutCategories!,
+                  WrapAlignment.end,
+                ),
+            ],
+          ),
+        );
+
+    Widget getBorderedWorkoutDisplay(Workout workout) => DottedBorder(
+          color: Theme.of(context).colorScheme.shadow,
+          strokeWidth: workout.isInFuture() ? 0.5 : 0,
+          dashPattern: const [6, 6],
+          radius: const Radius.circular(5),
+          borderType: BorderType.RRect,
+          child: getInnerWorkoutDisplay(workout),
+        );
+
     Widget getWorkoutDisplay(Workout workout) => InkWell(
           onTap: () => Navigator.of(context)
               .push(
@@ -65,43 +112,8 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                 ),
               )
               .then((value) => widget.reloadState()),
-          child: Card(
-            child: Container(
-                padding: const EdgeInsets.all(15),
-                child: Row(
-                  children: [
-                    if (workout.done)
-                      Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: Icon(
-                          Icons.check_circle_outline_rounded,
-                          size: 25,
-                          color: Colors.green[400],
-                        ),
-                      ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '${workout.isInFuture() ? 'Planned ' : ''}Session',
-                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          '@ ${workout.getTimeString()}',
-                          style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-                        ),
-                      ],
-                    ),
-                    const Padding(padding: EdgeInsets.only(right: 10)),
-                    if (workout.workoutCategories != null && workout.workoutCategories!.isNotEmpty)
-                      getWorkoutCategoriesWidget(
-                        workout.workoutCategories!,
-                        WrapAlignment.end,
-                      ),
-                  ],
-                )),
-          ),
+          child:
+              Card(child: workout.isInFuture() ? getBorderedWorkoutDisplay(workout) : getInnerWorkoutDisplay(workout)),
         );
 
     void onAddWorkoutButtonTap({DateTime? date}) async {

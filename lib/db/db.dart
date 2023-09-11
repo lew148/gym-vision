@@ -232,5 +232,15 @@ class DatabaseHelper {
             (68, "Calf Raise", 2, 6, 7, 2, 0, 0),
             (69, "Single Calf Raise", 2, 6, 7, 2, 1, 0);
         ''');
+
+    // Forearms
+    batch.execute('''
+          INSERT INTO exercises(id, name, exerciseType, muscleGroup, equipment, split, isDouble, isCustom)
+          VALUES
+            (70, "Wrist Curl", 2, 4, 4, 1, 1, 0),
+            (71, "Reverse Wrist Curl", 2, 4, 4, 1, 1, 0),
+            (72, "Wrist Rotations", 2, 4, 4, 0, 1, 0),
+            (73, "Cable Wrist Curl", 2, 4, 3, 0, 0, 0);
+        ''');
   }
 }

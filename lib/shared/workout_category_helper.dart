@@ -13,6 +13,13 @@ class WorkoutCategoryShell {
 }
 
 class WorkoutCategoryHelper {
+  static Map<int, List<WorkoutCategoryShell>> getCategoryShellsMap() => {
+        // 0: getMiscCategoryShells(),
+        1: getSplitCategoryShells(),
+        2: getMuscleGroupCategoryShells(),
+        // 3: [otherCategoryShell],
+      };
+
   static List<WorkoutCategoryShell> getCategoryShells() {
     List<WorkoutCategoryShell> list = [];
     list.addAll(getMiscCategoryShells());

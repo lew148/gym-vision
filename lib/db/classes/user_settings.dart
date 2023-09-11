@@ -6,6 +6,8 @@ class UserSettings {
 
   UserSettings({this.id, required this.theme});
 
-  Map<String, dynamic> toMap() =>
-      {'id': id, 'theme': theme.name};
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'theme': theme.name,
+      };
 }

@@ -306,7 +306,7 @@ class _ExerciseViewState extends State<ExerciseView> {
               ),
         getSectionTitle(context, 'Recent Uses'),
         const Divider(),
-        details.recentUses == null
+        details.recentUses == null || details.recentUses!.isEmpty
             ? const Center(
                 child: Padding(
                   padding: EdgeInsets.all(20),

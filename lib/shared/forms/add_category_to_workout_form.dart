@@ -19,8 +19,9 @@ class AddCategoryToWorkoutForm extends StatefulWidget {
 }
 
 class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
-  List<WorkoutCategoryShell> workoutCategories = WorkoutCategoryHelper.getCategoryShells();
+  Map<int, List<WorkoutCategoryShell>> workoutCategories = WorkoutCategoryHelper.getCategoryShellsMap();
   late List<int> selectedIds;
+  // int? selectedSection;
 
   @override
   void initState() {
@@ -28,32 +29,82 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
     selectedIds = widget.selectedWorkoutCategoryIds;
   }
 
+  onSubmit() async {
+    Navigator.pop(context);
+
+    try {
+      await WorkoutsHelper.setWorkoutCategories(
+        widget.workoutId,
+        selectedIds,
+      );
+    } catch (ex) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to add Category to workout')),
+      );
+    }
+
+    widget.reloadState();
+  }
+
+  void onCategoryTap(int categoryId, int section) async {
+    setState(() {
+      selectedIds.contains(categoryId) ? selectedIds.remove(categoryId) : selectedIds.add(categoryId);
+
+      // if (selectedIds.isEmpty) {
+      //   selectedSection = null;
+      // } else {
+      //   selectedSection = section;
+      // }
+    });
+
+    await onSubmit();
+  }
+
+  Widget getCategoryDisplay(int section, WorkoutCategoryShell wc) => Padding(
+        padding: const EdgeInsets.all(2),
+        child: GestureDetector(
+          onTap: () => onCategoryTap(wc.id, section),
+          child: Card(
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(5),
+                ),
+                border: Border.all(
+                  width: 2,
+                  color: selectedIds.contains(wc.id) ? Theme.of(context).colorScheme.primary : Colors.transparent,
+                ),
+              ),
+              padding: const EdgeInsets.fromLTRB(25, 20, 25, 20),
+              child: Text(wc.displayName),
+            ),
+          ),
+        ),
+      );
+
+  List<Widget> getCategorySections(Map<int, List<WorkoutCategoryShell>> workoutCategories) {
+    List<Widget> sections = [];
+
+    workoutCategories.forEach((k, v) {
+      sections.add(Column(children: [
+        const Divider(),
+        Wrap(
+          alignment: WrapAlignment.center,
+          children: v.map((c) => getCategoryDisplay(k, c)).toList(),
+        ),
+      ]));
+    });
+
+    return sections;
+  }
+
   @override
   Widget build(BuildContext context) {
-    onSubmit() async {
-      Navigator.pop(context);
+    // var relevantWorkoutCategories = workoutCategories;
 
-      try {
-        await WorkoutsHelper.setWorkoutCategories(
-          widget.workoutId,
-          selectedIds,
-        );
-      } catch (ex) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to add Category to workout')),
-        );
-      }
-
-      widget.reloadState();
-    }
-
-    void onCategoryTap(int categoryId) async {
-      setState(() {
-        selectedIds.contains(categoryId) ? selectedIds.remove(categoryId) : selectedIds.add(categoryId);
-      });
-
-      await onSubmit();
-    }
+    // if (selectedSection != null) {
+    //   relevantWorkoutCategories.removeWhere((key, value) => key != selectedSection);
+    // }
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -67,33 +118,7 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
             padding: const EdgeInsets.only(top: 15, bottom: 15),
             child: Wrap(
               alignment: WrapAlignment.center,
-              children: workoutCategories
-                  .map(
-                    (wc) => Padding(
-                      padding: const EdgeInsets.all(2),
-                      child: GestureDetector(
-                        onTap: () => onCategoryTap(wc.id),
-                        child: Card(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(5),
-                              ),
-                              border: Border.all(
-                                width: 2,
-                                color: selectedIds.contains(wc.id)
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Colors.transparent,
-                              ),
-                            ),
-                            padding: const EdgeInsets.fromLTRB(25, 20, 25, 20),
-                            child: Text(wc.displayName),
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
-                  .toList(),
+              children: getCategorySections(workoutCategories),
             ),
           ),
         ],
