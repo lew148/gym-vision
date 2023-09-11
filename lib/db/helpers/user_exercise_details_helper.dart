@@ -20,7 +20,9 @@ class UserExerciseDetailsHelper {
       id: map['id'],
       exerciseId: map['exerciseId'],
       notes: map['notes'],
+      prId: map['prId'],
       pr: map['prId'] != null ? await WorkoutSetsHelper.getWorkoutSet(id: map['prId'], shallow: true) : null,
+      lastId: map['lastId'],
       last: map['lastId'] != null ? await WorkoutSetsHelper.getWorkoutSet(id: map['lastId'], shallow: true) : null,
       recentUses: includeRecentUses ? await WorkoutSetsHelper.getWorkoutSetsForExercise(map['exerciseId']) : null,
     );

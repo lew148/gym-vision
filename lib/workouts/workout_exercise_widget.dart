@@ -64,6 +64,48 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                   Navigator.pop(context);
 
                   try {
+                    await WorkoutSetsHelper.addSetToWorkout(
+                      exerciseId: ws.exerciseId,
+                      workoutId: ws.workoutId,
+                      weight: ws.weight,
+                      reps: ws.reps,
+                      done: false,
+                    );
+                  } catch (ex) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Failed add set to workout: ${ex.toString()}',
+                        ),
+                      ),
+                    );
+                  }
+
+                  widget.reloadState();
+                },
+                child: Row(
+                  children: const [
+                    Icon(Icons.repeat_rounded),
+                    Padding(padding: EdgeInsets.all(5)),
+                    Text(
+                      'Duplicate Set',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
+              child: InkWell(
+                onTap: () async {
+                  Navigator.pop(context);
+
+                  try {
                     await WorkoutSetsHelper.removeSet(ws.id!);
                   } catch (ex) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -82,7 +124,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                     Icon(Icons.delete_rounded),
                     Padding(padding: EdgeInsets.all(5)),
                     Text(
-                      'Remove from Workout',
+                      'Remove set from Workout',
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w400,
@@ -132,11 +174,6 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
 
     for (int i = 0; i < sets.length; i++) {
       final ws = sets[i];
-
-      String getRepsString() {
-        int reps = ws.reps ?? 0;
-        return '$reps rep${reps == 1 ? '' : 's'}';
-      }
 
       widgets.add(Column(children: [
         const Divider(height: 0),
@@ -199,7 +236,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                         size: 15,
                       ),
                       const Padding(padding: EdgeInsets.all(5)),
-                      Text(getRepsString()),
+                      Text(ws.getRepsDisplayString()),
                     ],
                   ),
                 ),
@@ -374,7 +411,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                                   materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                   checkColor: Colors.white,
                                   fillColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
-                                  value: widget.workoutSets[0].done,
+                                  value: widget.workoutSets.every((ws) => ws.done),
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                                   onChanged: (bool? value) => onGroupedWorkoutExercisesDoneTap(value),
                                 ),

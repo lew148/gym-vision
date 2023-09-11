@@ -82,7 +82,7 @@ class _ExerciseViewState extends State<ExerciseView> {
         getExercisePropDisplay("Muscle Group", exercise.muscleGroup.displayName),
         getExercisePropDisplay("Split", exercise.split.displayName),
         getExercisePropDisplay("Equipment", exercise.equipment.displayName),
-        getNotesDisplay(exercise),
+        // getNotesDisplay(exercise),
       ]);
 
   void openNotesForm(Exercise exercise) {
@@ -351,7 +351,7 @@ class _ExerciseViewState extends State<ExerciseView> {
           body: Column(
             children: [
               Container(
-                margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
+                margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                 child: getExerciseViewWidget(snapshot.data!),
               ),
               if (details != null) ...getDetailsSections(details),

@@ -21,7 +21,6 @@ class AddCategoryToWorkoutForm extends StatefulWidget {
 class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
   Map<int, List<WorkoutCategoryShell>> workoutCategories = WorkoutCategoryHelper.getCategoryShellsMap();
   late List<int> selectedIds;
-  // int? selectedSection;
 
   @override
   void initState() {
@@ -49,12 +48,6 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
   void onCategoryTap(int categoryId, int section) async {
     setState(() {
       selectedIds.contains(categoryId) ? selectedIds.remove(categoryId) : selectedIds.add(categoryId);
-
-      // if (selectedIds.isEmpty) {
-      //   selectedSection = null;
-      // } else {
-      //   selectedSection = section;
-      // }
     });
 
     await onSubmit();
@@ -100,11 +93,11 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
 
   @override
   Widget build(BuildContext context) {
-    // var relevantWorkoutCategories = workoutCategories;
+    var relevantWorkoutCategories = workoutCategories;
 
-    // if (selectedSection != null) {
-    //   relevantWorkoutCategories.removeWhere((key, value) => key != selectedSection);
-    // }
+    if (selectedIds.isNotEmpty) {
+      relevantWorkoutCategories.removeWhere((key, value) => key != WorkoutCategoryHelper.getMapIndexOfShell(selectedIds[0]));
+    }
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -118,7 +111,7 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
             padding: const EdgeInsets.only(top: 15, bottom: 15),
             child: Wrap(
               alignment: WrapAlignment.center,
-              children: getCategorySections(workoutCategories),
+              children: getCategorySections(relevantWorkoutCategories),
             ),
           ),
         ],

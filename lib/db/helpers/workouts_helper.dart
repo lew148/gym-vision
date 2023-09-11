@@ -35,6 +35,10 @@ class WorkoutsHelper {
       );
     });
 
+    for (var w in workouts) {
+      w.done = await workoutIsDone(workoutId: w.id!, db: db);
+    }
+
     return workouts;
   }
 
@@ -51,6 +55,18 @@ class WorkoutsHelper {
       );
     }
     return workoutCategories;
+  }
+
+  static Future<bool> workoutIsDone({required int workoutId, Database? db}) async {
+    db ??= await DatabaseHelper().getDb();
+    int? noIncompleteSets = Sqflite.firstIntValue(await db.rawQuery('''
+      SELECT COUNT(*)
+      FROM workout_sets
+      WHERE workoutId = $workoutId AND done = 0;
+    '''));
+
+    if (noIncompleteSets == null) return false;
+    return noIncompleteSets == 0;
   }
 
   static Future<Workout> getWorkout({

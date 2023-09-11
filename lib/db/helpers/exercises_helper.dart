@@ -2,7 +2,6 @@ import 'package:gymvision/db/classes/exercise.dart';
 import 'package:gymvision/db/db.dart';
 import 'package:gymvision/db/helpers/user_exercise_details_helper.dart';
 import 'package:gymvision/enums.dart';
-import 'package:sqflite/sqflite.dart';
 
 import '../../shared/workout_category_helper.dart';
 

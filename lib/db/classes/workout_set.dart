@@ -58,7 +58,9 @@ class WorkoutSet {
     return '${exercise!.isDouble ? '2 x ' : ''}${getWeightString(showNone: showNone)}';
   }
 
-  String getRepsAsString() => reps == null ? '0' : reps.toString();
+  bool hasReps() => reps != null && reps! > 0;
 
-  String getRepsDisplayString() => '$reps rep${reps == 1 ? '' : 's'}';
+  String getRepsAsString() => !hasReps() ? '0' : reps.toString();
+
+  String getRepsDisplayString() => hasReps() ? '$reps rep${reps == 1 ? '' : 's'}' : 'No Reps';
 }

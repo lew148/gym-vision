@@ -54,22 +54,24 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
 
   @override
   Widget build(BuildContext context) {
-    void onSubmit() async {
+    void onSubmit({bool addThree = false}) async {
       if (selectedExercise == null && widget.exerciseId == null) return; // todo: show error
 
       if (formKey.currentState!.validate()) {
         Navigator.pop(context);
 
         try {
-          await WorkoutSetsHelper.addSetToWorkout(
-            exerciseId: selectedExercise?.id ?? widget.exerciseId!,
-            workoutId: widget.workoutId!,
-            weight: double.parse(getNumberStringOrDefault(weightController.text)),
-            reps: int.parse(getNumberStringOrDefault(repsController.text)),
-          );
+          for (int i = 0; i < (addThree ? 3 : 1); i++) {
+            await WorkoutSetsHelper.addSetToWorkout(
+              exerciseId: selectedExercise?.id ?? widget.exerciseId!,
+              workoutId: widget.workoutId!,
+              weight: double.parse(getNumberStringOrDefault(weightController.text)),
+              reps: int.parse(getNumberStringOrDefault(repsController.text)),
+            );
+          }
         } catch (ex) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to add Set to workout')),
+            const SnackBar(content: Text('Failed to add set(s) to workout')),
           );
         }
 
@@ -108,11 +110,15 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
               Padding(
                 padding: const EdgeInsets.only(top: 20.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
+                      onPressed: () => onSubmit(addThree: true),
+                      child: const Text('Add 3 Sets'),
+                    ),
+                    ElevatedButton(
                       onPressed: onSubmit,
-                      child: const Text('Save'),
+                      child: const Text('Add'),
                     ),
                   ],
                 ),

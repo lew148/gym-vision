@@ -3,7 +3,7 @@ import 'package:gymvision/workouts/workout_month_scroller.dart';
 
 import '../db/classes/workout.dart';
 import '../db/helpers/workouts_helper.dart';
-import 'flavour_text_card.dart';
+// import 'flavour_text_card.dart';
 
 class Workouts extends StatefulWidget {
   const Workouts({super.key});

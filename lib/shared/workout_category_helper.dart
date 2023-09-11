@@ -29,6 +29,12 @@ class WorkoutCategoryHelper {
     return list;
   }
 
+  static int getMapIndexOfShell(int shellId) {
+    var map = getCategoryShellsMap();
+    map.removeWhere((k, v) => !v.any((wcs) => wcs.id == shellId));
+    return map.keys.first;
+  }
+
   static List<WorkoutCategoryShell> getCategoryShellsWithIds(List<int> shellIds) =>
       getCategoryShells().where((s) => shellIds.contains(s.id)).toList();
 
