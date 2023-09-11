@@ -4,8 +4,9 @@ import 'package:path/path.dart';
 class DatabaseHelper {
   Future<Database>? database;
 
+  static deleteDb() async => await deleteDatabase('gymvision.db');
+
   openDb() async {
-    // await deleteDatabase('gymvision.db');
     database = openDatabase(
       join(await getDatabasesPath(), 'gymvision.db'),
       version: 1,

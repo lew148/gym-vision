@@ -2,6 +2,7 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/user_settings.dart';
+import 'package:gymvision/db/db.dart';
 import 'package:gymvision/db/helpers/flavour_text_helper.dart';
 import 'package:gymvision/enums.dart';
 import 'db/helpers/user_settings_helper.dart';
@@ -37,17 +38,19 @@ class _UserSettingsViewState extends State<UserSettingsView> {
 
             return Column(
               children: [
-
                 // dev buttons
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
                       onPressed: () async {
-                        await FlavourTextHelper
-                            .setRecentFlavourTextScheduleNotDismissed();
+                        await FlavourTextHelper.setRecentFlavourTextScheduleNotDismissed();
                       },
                       child: const Text('Un-Dismiss Flavour Text'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async => await DatabaseHelper.deleteDb(),
+                      child: const Text('Delete DB'),
                     ),
                   ],
                 ),
@@ -66,41 +69,28 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                     DropdownButton<String>(
                       value: themeSetting.name,
                       onChanged: (String? value) async {
-                        final newTheme = EnumToString.fromString(
-                            ThemeSetting.values, value!)!;
+                        final newTheme = EnumToString.fromString(ThemeSetting.values, value!)!;
                         await UserSettingsHelper.setTheme(newTheme);
                         setState(() {
                           themeSetting = newTheme;
 
                           switch (newTheme) {
                             case ThemeSetting.light:
-                              EasyDynamicTheme.of(context)
-                                  .changeTheme(dark: false, dynamic: false);
+                              EasyDynamicTheme.of(context).changeTheme(dark: false, dynamic: false);
                               break;
                             case ThemeSetting.dark:
-                              EasyDynamicTheme.of(context)
-                                  .changeTheme(dark: true, dynamic: false);
+                              EasyDynamicTheme.of(context).changeTheme(dark: true, dynamic: false);
                               break;
                             case ThemeSetting.system:
-                              EasyDynamicTheme.of(context)
-                                  .changeTheme(dynamic: true);
+                              EasyDynamicTheme.of(context).changeTheme(dynamic: true);
                               break;
                           }
                         });
                       },
                       items: const [
-                        DropdownMenuItem<String>(
-                          value: 'light',
-                          child: Text('Light')
-                        ),
-                        DropdownMenuItem<String>(
-                          value: 'dark',
-                          child: Text('Dark')
-                        ),
-                        DropdownMenuItem<String>(
-                          value: 'system',
-                          child: Text('System')
-                        )
+                        DropdownMenuItem<String>(value: 'light', child: Text('Light')),
+                        DropdownMenuItem<String>(value: 'dark', child: Text('Dark')),
+                        DropdownMenuItem<String>(value: 'system', child: Text('System'))
                       ],
                     ),
                   ],
