@@ -73,6 +73,7 @@ class _EditWorkoutExerciseFormState extends State<EditWorkoutExerciseForm> {
             'Edit Workout Set',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
+          const Divider(),
           Form(
             key: formKey,
             child: Column(
@@ -87,7 +88,7 @@ class _EditWorkoutExerciseFormState extends State<EditWorkoutExerciseForm> {
                 CustomFormFields.intField(
                   controller: repsController,
                   label: 'Reps',
-                  selectableValues: [1, 8, 10, 12],
+                  selectableValues: [1, 8, 12],
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0),

@@ -20,27 +20,27 @@ class _ExercisesState extends State<Exercises> {
         _exercises = ExercisesHelper.getExercises();
       });
 
-  Widget getExerciseWidget(Exercise exercise) => Row(
-        children: [
-          Expanded(
-            child: Card(
-              child: InkWell(
-                onTap: () => Navigator.of(context)
-                    .push(
-                      MaterialPageRoute(
-                        builder: (context) => ExerciseView(
-                          exerciseId: exercise.id!,
-                        ),
+  Widget getExerciseWidget(Exercise exercise) => Row(children: [
+        Expanded(
+          child: Card(
+            child: InkWell(
+              onTap: () => Navigator.of(context)
+                  .push(
+                    MaterialPageRoute(
+                      builder: (context) => ExerciseView(
+                        exerciseId: exercise.id!,
                       ),
-                    )
-                    .then((value) => reloadState()),
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  margin: const EdgeInsets.fromLTRB(10, 10, 10, 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
+                    ),
+                  )
+                  .then((value) => reloadState()),
+              child: Container(
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.fromLTRB(10, 10, 10, 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
@@ -51,24 +51,22 @@ class _ExercisesState extends State<Exercises> {
                             ),
                           ),
                           const Padding(padding: EdgeInsets.all(3)),
-                          Row(children: [
+                          Wrap(children: [
                             if (exercise.muscleGroup != MuscleGroup.other)
                               getPropDisplay(context, exercise.muscleGroup.displayName),
-                            if (exercise.split != ExerciseSplit.other)
-                              getPropDisplay(context, exercise.split.displayName),
                             if (exercise.equipment != ExerciseEquipment.other)
                               getPropDisplay(context, exercise.equipment.displayName),
                           ]),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
-        ],
-      );
+        ),
+      ]);
 
   @override
   Widget build(BuildContext context) {

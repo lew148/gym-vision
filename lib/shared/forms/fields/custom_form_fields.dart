@@ -24,7 +24,7 @@ class CustomFormFields {
     String? last,
     String? max,
   }) =>
-      Row(children: [
+      Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Expanded(
           child: TextFormField(
             controller: controller,
@@ -39,43 +39,55 @@ class CustomFormFields {
                 value != null && value != '' && double.tryParse(value) == null ? 'Please enter a valid weight' : null,
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(20, 10, 5, 0),
-          child: OutlinedButton(
-            onPressed: () => controller.clear(),
-            child: const Text('None'),
-          ),
-        ),
-        if (last != null)
+        Row(children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(10, 10, 5, 0),
+            padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
             child: OutlinedButton(
-              onPressed: () {
-                controller.value = TextEditingValue(
-                  text: last,
-                  selection: TextSelection.fromPosition(
-                    TextPosition(offset: last.length),
-                  ),
-                );
-              },
-              child: const Text('Last'),
+              onPressed: () => controller.clear(),
+              child: const Text('None'),
             ),
           ),
-        if (max != null)
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10, 10, 5, 0),
-            child: OutlinedButton(
-              onPressed: () {
-                controller.value = TextEditingValue(
-                  text: max,
-                  selection: TextSelection.fromPosition(
-                    TextPosition(offset: max.length),
-                  ),
-                );
-              },
-              child: const Text('Max'),
+          if (last != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
+              child: OutlinedButton(
+                onPressed: () {
+                  if (last == '0') {
+                    controller.clear();
+                    return;
+                  }
+
+                  controller.value = TextEditingValue(
+                    text: last,
+                    selection: TextSelection.fromPosition(
+                      TextPosition(offset: last.length),
+                    ),
+                  );
+                },
+                child: const Text('Last'),
+              ),
             ),
-          ),
+          if (max != null)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
+              child: OutlinedButton(
+                onPressed: () {
+                  if (max == '0') {
+                    controller.clear();
+                    return;
+                  }
+
+                  controller.value = TextEditingValue(
+                    text: max,
+                    selection: TextSelection.fromPosition(
+                      TextPosition(offset: max.length),
+                    ),
+                  );
+                },
+                child: const Text('Max'),
+              ),
+            ),
+        ]),
       ]);
 
   static intField(
@@ -108,14 +120,14 @@ class CustomFormFields {
 
     getArrowButtons() => [
           Padding(
-            padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
+            padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
             child: OutlinedButton(
               onPressed: () => onOperationButtonClick(-1),
               child: const Icon(Icons.remove_rounded),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
+            padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
             child: OutlinedButton(
               onPressed: () => onOperationButtonClick(1),
               child: const Icon(Icons.add_rounded),
@@ -125,7 +137,7 @@ class CustomFormFields {
 
     getSelectableValueButtons() => selectableValues!
         .map((sv) => Padding(
-              padding: const EdgeInsets.fromLTRB(5, 10, 5, 0),
+              padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
               child: OutlinedButton(
                 onPressed: () => onSelectableValueButtonClick(sv),
                 child: Text(sv.toString()),
@@ -143,7 +155,6 @@ class CustomFormFields {
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         ),
       ),
-      const Padding(padding: EdgeInsets.all(5)),
       ...(selectableValues == null ? getArrowButtons() : getSelectableValueButtons())
     ]);
   }

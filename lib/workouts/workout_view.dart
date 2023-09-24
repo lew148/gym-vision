@@ -173,10 +173,7 @@ class _WorkoutViewState extends State<WorkoutView> {
     try {
       await WorkoutsHelper.updateDate(workout.id!, newDate!);
     } catch (ex) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to update date')),
-      );
+      // do nothing
     }
 
     reloadState();
@@ -191,10 +188,7 @@ class _WorkoutViewState extends State<WorkoutView> {
     try {
       await WorkoutsHelper.updateTime(workout.id!, newTime!);
     } catch (ex) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to update time')),
-      );
+      // do nothing
     }
 
     reloadState();

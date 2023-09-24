@@ -91,7 +91,8 @@ class ExercisesHelper {
           isDouble: map['isDouble'] == 1,
           isCustom: map['isCustom'] == 1,
           userExerciseDetails: includeUserDetails
-              ? await UserExerciseDetailsHelper.getUserDetailsForExercise(map['id'], includeRecentUses)
+              ? await UserExerciseDetailsHelper.getUserDetailsForExercise(
+                  exerciseId: map['id'], includeRecentUses: includeRecentUses)
               : null,
         ),
       );
@@ -123,7 +124,8 @@ class ExercisesHelper {
       isDouble: map['isDouble'] == 1,
       isCustom: map['isCustom'] == 1,
       userExerciseDetails: includeUserDetails
-          ? await UserExerciseDetailsHelper.getUserDetailsForExercise(map['id'], includeRecentUses)
+          ? await UserExerciseDetailsHelper.getUserDetailsForExercise(
+              exerciseId: map['id'], includeRecentUses: includeRecentUses)
           : null,
     );
   }

@@ -53,24 +53,21 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
     await onSubmit();
   }
 
-  Widget getCategoryDisplay(int section, WorkoutCategoryShell wc) => Padding(
-        padding: const EdgeInsets.all(2),
-        child: GestureDetector(
-          onTap: () => onCategoryTap(wc.id, section),
-          child: Card(
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(5),
-                ),
-                border: Border.all(
-                  width: 2,
-                  color: selectedIds.contains(wc.id) ? Theme.of(context).colorScheme.primary : Colors.transparent,
-                ),
+  Widget getCategoryDisplay(int section, WorkoutCategoryShell wc) => GestureDetector(
+        onTap: () => onCategoryTap(wc.id, section),
+        child: Card(
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(
+                Radius.circular(5),
               ),
-              padding: const EdgeInsets.fromLTRB(25, 20, 25, 20),
-              child: Text(wc.displayName),
+              border: Border.all(
+                width: 2,
+                color: selectedIds.contains(wc.id) ? Theme.of(context).colorScheme.primary : Colors.transparent,
+              ),
             ),
+            padding: const EdgeInsets.all(10),
+            child: Text(wc.displayName),
           ),
         ),
       );
@@ -96,7 +93,8 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
     var relevantWorkoutCategories = workoutCategories;
 
     if (selectedIds.isNotEmpty) {
-      relevantWorkoutCategories.removeWhere((key, value) => key != WorkoutCategoryHelper.getMapIndexOfShell(selectedIds[0]));
+      relevantWorkoutCategories
+          .removeWhere((key, value) => key != WorkoutCategoryHelper.getMapIndexOfShell(selectedIds[0]));
     }
 
     return Container(
@@ -108,9 +106,8 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 15, bottom: 15),
-            child: Wrap(
-              alignment: WrapAlignment.center,
+            padding: const EdgeInsets.all(10),
+            child: Column(
               children: getCategorySections(relevantWorkoutCategories),
             ),
           ),

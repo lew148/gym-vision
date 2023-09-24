@@ -18,7 +18,8 @@ class DatabaseHelper {
     );
   }
 
-  Future<Database> getDb() async {
+  Future<Database> getDb({Database? existingDb}) async {
+    if (existingDb != null) return existingDb;
     if (database == null) await openDb();
     return database!;
   }

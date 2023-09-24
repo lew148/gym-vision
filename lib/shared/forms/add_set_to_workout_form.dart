@@ -48,7 +48,7 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
         CustomFormFields.intField(
           controller: repsController,
           label: 'Reps',
-          selectableValues: [1, 8, 10, 12],
+          selectableValues: [1, 8, 12],
         ),
       ];
 

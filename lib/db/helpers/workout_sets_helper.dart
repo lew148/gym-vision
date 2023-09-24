@@ -116,7 +116,12 @@ class WorkoutSetsHelper {
 
     if (weight == null) return;
 
-    final details = await UserExerciseDetailsHelper.getUserDetailsForExercise(exerciseId, false);
+    final details = await UserExerciseDetailsHelper.getUserDetailsForExercise(
+      exerciseId: exerciseId,
+      includeRecentUses: false,
+      existingDb: db,
+    );
+    
     if (details == null) {
       await UserExerciseDetailsHelper.insertUserExerciseDetails(UserExerciseDetails(
         exerciseId: exerciseId,

@@ -13,7 +13,7 @@ class WorkoutMonthScoller extends StatefulWidget {
   final Function reloadState;
 
   const WorkoutMonthScoller({
-    super.key,
+    super.key, 
     required this.workouts,
     required this.reloadState,
   });
@@ -56,16 +56,15 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
         );
 
     Widget getInnerWorkoutDisplay(Workout workout) => Container(
-          padding: const EdgeInsets.all(15),
+          padding: const EdgeInsets.all(10),
           child: Row(
             children: [
-              if (workout.done)
+              if (workout.done && !workout.isInFuture() && (workout.workoutSets?.isNotEmpty ?? true))
                 Padding(
                   padding: const EdgeInsets.only(right: 10),
                   child: Icon(
                     Icons.check_circle_outline_rounded,
-                    size: 25,
-                    color: Colors.green[400],
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
               Column(
@@ -96,6 +95,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
           color: Theme.of(context).colorScheme.shadow,
           strokeWidth: workout.isInFuture() ? 0.5 : 0,
           dashPattern: const [6, 6],
+          padding: EdgeInsets.zero,
           radius: const Radius.circular(5),
           borderType: BorderType.RRect,
           child: getInnerWorkoutDisplay(workout),
@@ -112,8 +112,9 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                 ),
               )
               .then((value) => widget.reloadState()),
-          child:
-              Card(child: workout.isInFuture() ? getBorderedWorkoutDisplay(workout) : getInnerWorkoutDisplay(workout)),
+          child: Card(
+            child: workout.isInFuture() ? getBorderedWorkoutDisplay(workout) : getInnerWorkoutDisplay(workout),
+          ),
         );
 
     void onAddWorkoutButtonTap({DateTime? date}) async {
@@ -177,7 +178,6 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
             child: Row(
               children: [
                 Expanded(
-                  flex: 2,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -194,7 +194,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                   color: isToday ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.shadow,
                 ),
                 Expanded(
-                  flex: 11,
+                  flex: 5,
                   child: Column(
                     children: workoutsForDay.isNotEmpty
                         ? workoutsForDay.map<Widget>((workout) => getWorkoutDisplay(workout)).toList()
@@ -211,7 +211,6 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                                           Text(
                                             '-',
                                             style: TextStyle(
-                                              fontSize: 15,
                                               color: Theme.of(context).colorScheme.shadow,
                                             ),
                                           ),
@@ -226,7 +225,6 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                                           Text(
                                             'Rest Day',
                                             style: TextStyle(
-                                              fontSize: 15,
                                               color: Theme.of(context).colorScheme.shadow,
                                             ),
                                           ),

@@ -5,8 +5,12 @@ import '../classes/user_exercise_details.dart';
 import '../db.dart';
 
 class UserExerciseDetailsHelper {
-  static Future<UserExerciseDetails?> getUserDetailsForExercise(int exerciseId, bool includeRecentUses) async {
-    final db = await DatabaseHelper().getDb();
+  static Future<UserExerciseDetails?> getUserDetailsForExercise({
+    required int exerciseId,
+    required bool includeRecentUses,
+    Database? existingDb,
+  }) async {
+    final db = await DatabaseHelper().getDb(existingDb: existingDb);
     final List<Map<String, dynamic>> maps = await db.query(
       'user_exercise_details',
       where: 'exerciseId = ?',

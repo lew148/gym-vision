@@ -148,7 +148,9 @@ class _ExercisePickerState extends State<ExercisePicker> {
     List<Exercise> allExercises,
     Exercise? selectedExercise,
   ) {
-    allExercises.sort((a, b) => a.muscleGroup.index.compareTo(b.muscleGroup.index),);
+    allExercises.sort(
+      (a, b) => a.muscleGroup.index.compareTo(b.muscleGroup.index),
+    );
 
     showModalBottomSheet(
       context: context,
@@ -160,7 +162,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
               bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
             child: Padding(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(10),
               child: Column(
                 children: [
                   const Text(
@@ -172,10 +174,8 @@ class _ExercisePickerState extends State<ExercisePicker> {
                   ),
                   const Divider(),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.75,
-                    child: SingleChildScrollView(
-                      child: getPickerContent(allExercises, selectedExercise),
-                    ),
+                    height: MediaQuery.of(context).size.height * .8,
+                    child: getPickerContent(allExercises, selectedExercise),
                   ),
                 ],
               ),
@@ -196,54 +196,54 @@ class _ExercisePickerState extends State<ExercisePicker> {
         children: [
           getFilterButton(),
           const Divider(),
-          ...allExercises
-              .map(
-                (e) => Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                      widget.setExercise(e);
-                    },
-                    child: Card(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(5),
-                          ),
-                          border: Border.all(
-                            width: 2,
-                            color: selectedExercise != null && e.id == selectedExercise.id
-                                ? Theme.of(context).colorScheme.primary
-                                : Colors.transparent,
-                          ),
-                        ),
-                        padding: const EdgeInsets.all(10),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Flexible(
-                              child: Text(
-                                e.name,
-                                textAlign: TextAlign.start,
-                                style: const TextStyle(
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.w400,
-                                ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: allExercises
+                    .map(
+                      (e) => GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                          widget.setExercise(e);
+                        },
+                        child: Card(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(5),
+                              ),
+                              border: Border.all(
+                                width: 2,
+                                color: selectedExercise != null && e.id == selectedExercise.id
+                                    ? Theme.of(context).colorScheme.primary
+                                    : Colors.transparent,
                               ),
                             ),
-                            Row(children: [
-                              getPropDisplay(context, e.muscleGroup.displayName),
-                              getPropDisplay(context, e.equipment.displayName),
-                            ]),
-                          ],
+                            padding: const EdgeInsets.all(10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    e.name,
+                                    textAlign: TextAlign.start,
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                                getPropDisplay(context, e.equipment.displayName),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                ),
-              )
-              .toList(),
+                    )
+                    .toList(),
+              ),
+            ),
+          ),
         ],
       );
 
