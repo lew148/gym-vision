@@ -10,7 +10,7 @@ class UserExerciseDetailsHelper {
     required bool includeRecentUses,
     Database? existingDb,
   }) async {
-    final db = await DatabaseHelper().getDb(existingDb: existingDb);
+    final db = await DatabaseHelper.getDb(existingDb: existingDb);
     return UserExerciseDetails(
       exerciseId: exerciseId,
       // notes: map['notes'],

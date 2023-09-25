@@ -5,7 +5,7 @@ import 'package:gymvision/enums.dart';
 
 class UserSettingsHelper {
   static Future<UserSettings> getUserSettings() async {
-    final db = await DatabaseHelper().getDb();
+    final db = await DatabaseHelper.getDb();
     final List<Map<String, dynamic>> maps = await db.query('user_settings');
     return UserSettings(
       id: maps[0]['id'],
@@ -14,7 +14,7 @@ class UserSettingsHelper {
   }
 
   static setTheme(ThemeSetting newThemeSetting) async {
-    final db = await DatabaseHelper().getDb();
+    final db = await DatabaseHelper.getDb();
     final existingSettings = await getUserSettings();
     existingSettings.theme = newThemeSetting;
     await db.update('user_settings', existingSettings.toMap());

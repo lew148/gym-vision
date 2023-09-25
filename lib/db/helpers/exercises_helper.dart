@@ -3,7 +3,7 @@ import 'package:gymvision/db/db.dart';
 import 'package:gymvision/db/helpers/user_exercise_details_helper.dart';
 import 'package:gymvision/enums.dart';
 
-import '../../shared/workout_category_helper.dart';
+import '../../helpers/workout_category_helper.dart';
 
 class ExercisesHelper {
   static Future<List<Exercise>> getAllExercisesExcludingIds(
@@ -61,7 +61,7 @@ class ExercisesHelper {
     bool includeUserDetails = false,
     bool includeRecentUses = false,
   }) async {
-    final db = await DatabaseHelper().getDb();
+    final db = await DatabaseHelper.getDb();
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
       SELECT
         exercises.id,
@@ -70,8 +70,7 @@ class ExercisesHelper {
         exercises.muscleGroup,
         exercises.equipment,
         exercises.split,
-        exercises.isDouble,
-        exercises.isCustom
+        exercises.isDouble
       FROM exercises
       ${whereString != null ? 'WHERE $whereString' : ''}
       ORDER BY exercises.name ASC;
@@ -89,7 +88,6 @@ class ExercisesHelper {
           equipment: ExerciseEquipment.values.elementAt(map['equipment']),
           split: ExerciseSplit.values.elementAt(map['split']),
           isDouble: map['isDouble'] == 1,
-          isCustom: map['isCustom'] == 1,
           userExerciseDetails: includeUserDetails
               ? await UserExerciseDetailsHelper.getUserDetailsForExercise(
                   exerciseId: map['id'], includeRecentUses: includeRecentUses)
@@ -106,7 +104,7 @@ class ExercisesHelper {
     bool includeUserDetails = false,
     bool includeRecentUses = false,
   }) async {
-    final db = await DatabaseHelper().getDb();
+    final db = await DatabaseHelper.getDb();
     final List<Map<String, dynamic>> maps = await db.query(
       'exercises',
       where: 'id = ?',
@@ -122,7 +120,6 @@ class ExercisesHelper {
       equipment: ExerciseEquipment.values.elementAt(map['equipment']),
       split: ExerciseSplit.values.elementAt(map['split']),
       isDouble: map['isDouble'] == 1,
-      isCustom: map['isCustom'] == 1,
       userExerciseDetails: includeUserDetails
           ? await UserExerciseDetailsHelper.getUserDetailsForExercise(
               exerciseId: map['id'], includeRecentUses: includeRecentUses)

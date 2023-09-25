@@ -9,7 +9,7 @@ import '../db.dart';
 
 class WorkoutsHelper {
   static Future<List<Workout>> getWorkouts() async {
-    final db = await DatabaseHelper().getDb();
+    final db = await DatabaseHelper.getDb();
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
       SELECT
         workouts.id,
@@ -58,7 +58,7 @@ class WorkoutsHelper {
   }
 
   static Future<bool> workoutIsDone({required int workoutId, Database? db}) async {
-    db ??= await DatabaseHelper().getDb();
+    db ??= await DatabaseHelper.getDb();
     int? noIncompleteSets = Sqflite.firstIntValue(await db.rawQuery('''
       SELECT COUNT(*)
       FROM workout_sets
@@ -74,7 +74,7 @@ class WorkoutsHelper {
     bool includeCategories = false,
     bool includeSets = false,
   }) async {
-    final db = await DatabaseHelper().getDb();
+    final db = await DatabaseHelper.getDb();
     final List<Map<String, dynamic>> maps = await db.query(
       'workouts',
       where: 'id = ?',
@@ -92,7 +92,7 @@ class WorkoutsHelper {
   static Future<List<WorkoutCategory>?> getWorkoutCategoriesForWorkout(
     int workoutId,
   ) async {
-    final db = await DatabaseHelper().getDb();
+    final db = await DatabaseHelper.getDb();
     final List<Map<String, dynamic>> maps = await db.query(
       'workout_categories',
       where: 'workoutId = ?',
@@ -113,7 +113,7 @@ class WorkoutsHelper {
   }
 
   static Future<int> insertWorkout(Workout workout) async {
-    final db = await DatabaseHelper().getDb();
+    final db = await DatabaseHelper.getDb();
     final workoutId = await db.insert(
       'workouts',
       workout.toMap(),
@@ -123,7 +123,7 @@ class WorkoutsHelper {
   }
 
   static setWorkoutCategories(int workoutId, List<int> shellIds) async {
-    final db = await DatabaseHelper().getDb();
+    final db = await DatabaseHelper.getDb();
 
     // caregoryIds == category shell ids (in workout_category_helper.dart)
     final existingWCs = await getWorkoutCategoriesForWorkout(workoutId);
@@ -152,7 +152,7 @@ class WorkoutsHelper {
   }
 
   static removeWorkoutCategory(int shellId) async {
-    final db = await DatabaseHelper().getDb();
+    final db = await DatabaseHelper.getDb();
     await db.delete(
       'workout_categories',
       where: 'id = ?',
@@ -161,7 +161,7 @@ class WorkoutsHelper {
   }
 
   static deleteWorkout(int workoutId) async {
-    final db = await DatabaseHelper().getDb();
+    final db = await DatabaseHelper.getDb();
     await db.delete(
       'workout_sets',
       where: 'workoutId = ?',
@@ -182,7 +182,7 @@ class WorkoutsHelper {
   }
 
   static updateDate(int id, DateTime newDate) async {
-    final db = await DatabaseHelper().getDb();
+    final db = await DatabaseHelper.getDb();
     final workout = await getWorkout(workoutId: id);
     workout.date = DateTime(newDate.year, newDate.month, newDate.day, workout.date.hour, workout.date.minute);
     await db.update(
@@ -194,7 +194,7 @@ class WorkoutsHelper {
   }
 
   static updateTime(int id, TimeOfDay newTime) async {
-    final db = await DatabaseHelper().getDb();
+    final db = await DatabaseHelper.getDb();
     final workout = await getWorkout(workoutId: id);
     workout.date = DateTime(workout.date.year, workout.date.month, workout.date.day, newTime.hour, newTime.minute);
     await db.update(

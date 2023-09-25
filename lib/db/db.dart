@@ -1,12 +1,13 @@
+import 'package:gymvision/helpers/data_helper.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class DatabaseHelper {
-  Future<Database>? database;
+  static Future<Database>? database;
 
   static deleteDb() async => await deleteDatabase('gymvision.db');
 
-  openDb() async {
+  static openDb() async {
     database = openDatabase(
       join(await getDatabasesPath(), 'gymvision.db'),
       version: 1,
@@ -18,13 +19,13 @@ class DatabaseHelper {
     );
   }
 
-  Future<Database> getDb({Database? existingDb}) async {
+  static Future<Database> getDb({Database? existingDb}) async {
     if (existingDb != null) return existingDb;
     if (database == null) await openDb();
     return database!;
   }
 
-  void initialDbCreate(Batch batch) {
+  static void initialDbCreate(Batch batch) {
     batch.execute('''
           CREATE TABLE workouts(
             id INTEGER PRIMARY KEY,
@@ -104,139 +105,37 @@ class DatabaseHelper {
             muscleGroup INTEGER NOT NULL,
             equipment INTEGER,
             split INTEGER,
-            isDouble INTEGER DEFAULT 0,
-            isCustom INTEGER DEFAULT 0
+            isDouble INTEGER DEFAULT 0
           );
         ''');
 
-    // Shoulders
-    batch.execute('''
-          INSERT INTO exercises(id, name, exerciseType, muscleGroup, equipment, split, isDouble, isCustom)
-          VALUES
-            (1, "Shoulder Press", 2, 7, 4, 0, 1, 0),
-            (2, "Steering Wheel Raise", 2, 7, 7, 0, 0, 0),
-            (3, "Shrug", 2, 7, 4, 1, 1, 0),
-            (4, "Dumbbell Delt Raise", 2, 7, 4, 0, 1, 0),
-            (5, "Cable Delt Raise", 2, 7, 4, 0, 1, 0),
-            (6, "Front Delt Raise", 2, 7, 3, 0, 1, 0),
-            (7, "External Rotation", 2, 7, 4, 1, 1, 0),
-            (8, "Barbell Raise", 2, 7, 1, 0, 0, 0),
-            (9, "Plated Shoulder Press", 2, 7, 7, 0, 1, 0),
-            (10, "Rear Delt Skis", 2, 7, 1, 1, 1, 0);
-        ''');
+    batch.execute(getInsertExercisesSql());
+  }
 
-    // Chest
-    batch.execute('''
-          INSERT INTO exercises(id, name, exerciseType, muscleGroup, equipment, split, isDouble, isCustom)
-          VALUES
-            (11, "Plated Chest Press", 2, 2, 7, 0, 1, 0),
-            (12, "Cable Low Fly", 2, 2, 3, 0, 1, 0),
-            (13, "Cable Fly", 2, 2, 3, 0, 1, 0),
-            (14, "Cable High Fly", 2, 2, 3, 0, 1, 0),
-            (15, "Dumbbell Low Fly", 2, 2, 4, 0, 1, 0),
-            (16, "Dumbbell Fly", 2, 2, 4, 0, 1, 0),
-            (17, "Flat Chest Press", 2, 2, 4, 0, 1, 0),
-            (18, "Incline Chest Press", 2, 2, 4, 0, 1, 0),
-            (19, "Flat Bench Press", 2, 2, 7, 0, 0, 0),
-            (20, "Incline Bench Press", 2, 2, 7, 0, 0, 0),
-            (21, "Pectoral Machine", 2, 2, 6, 0, 0, 0);
-        ''');
+  static updateExercises() async {
+    final db = await getDb();
+    final insertSql = getInsertExercisesSql();
 
-    // Biceps
-    batch.execute('''
-          INSERT INTO exercises(id, name, exerciseType, muscleGroup, equipment, split, isDouble, isCustom)
-          VALUES
-            (22, "Seated Dumbbell Bicep Curl", 2, 1, 4, 1, 1, 0),
-            (23, "W Bicep Curl", 2, 1, 4, 1, 1, 0),
-            (24, "Barbell Bicep Curl", 2, 1, 1, 1, 0, 0),
-            (25, "Chin Up", 2, 1, 2, 1, 0, 0),
-            (26, "Cable Bicep Curl", 2, 1, 3, 1, 0, 0),
-            (27, "Single Cable Bicep Curl", 2, 1, 3, 1, 1, 0),
-            (28, "Hammer Curl", 2, 1, 7, 1, 0, 0),
-            (29, "Single Hammer Curl", 2, 1, 4, 1, 1, 0),
-            (30, "Preacher Curl", 2, 1, 7, 1, 0, 0);
-        ''');
+    await db.delete('exercises');
+    await db.rawInsert(insertSql);
+  }
 
-    // Back
-    batch.execute('''
-          INSERT INTO exercises(id, name, exerciseType, muscleGroup, equipment, split, isDouble, isCustom)
-          VALUES
-            (31, "Diverging Row", 2, 0, 3, 1, 1, 0),
-            (32, "Straight Arm Pulldown", 2, 0, 3, 1, 0, 0),
-            (33, "Lat Pulldown", 2, 0, 6, 1, 0, 0),
-            (34, "Small Lat Pulldown", 2, 0, 6, 1, 0, 0),
-            (35, "Low Row", 2, 0, 7, 1, 0, 0),
-            (36, "Single Row", 2, 0, 7, 1, 1, 0),
-            (37, "T Row", 2, 0, 7, 1, 0, 0),
-            (38, "Bench Row", 2, 0, 4, 1, 1, 0),
-            (39, "Pull Up", 2, 0, 2, 1, 0, 0);
-        ''');
+  static String getInsertExercisesSql() {
+    var buffer = StringBuffer();
 
-    // Triceps
-    batch.execute('''
-          INSERT INTO exercises(id, name, exerciseType, muscleGroup, equipment, split, isDouble, isCustom)
-          VALUES
-            (40, "Triceps Pulldown", 2, 8, 3, 1, 0, 0),
-            (41, "Single Tricep Pulldown", 2, 8, 3, 1, 1, 0),
-            (42, "Dumbbell Triceps Extension", 2, 8, 4, 0, 0, 0),
-            (43, "Single Dumbbell Tricep Extension", 2, 8, 4, 0, 1, 0),
-            (44, "Triceps Dip", 2, 8, 2, 0, 0, 0),
-            (45, "Overhead Triceps Extension", 2, 8, 3, 0, 0, 0),
-            (46, "Skull Crushers", 2, 8, 1, 0, 0, 0);
-        ''');
+    buffer.writeln('INSERT INTO exercises');
+    buffer.writeln('VALUES');
 
-    // Core
-    batch.execute('''
-          INSERT INTO exercises(id, name, exerciseType, muscleGroup, equipment, split, isDouble, isCustom)
-          VALUES
-            (47, "Crunch Machine", 2, 3, 6, 1, 0, 0),
-            (48, "Suspended Leg Lifts", 2, 3, 2, 1, 0, 0),
-            (49, "Oblique Lift", 2, 3, 5, 1, 0, 0),
-            (50, "Weighted Sit-Ups", 2, 3, 7, 1, 0, 0),
-            (51, "Russian Twists", 2, 3, 7, 1, 0, 0),
-            (52, "Cable Crunch", 2, 3, 3, 1, 0, 0);
-        ''');
+    final exercises = DataHelper.getDefaultExercises();
+    final length = exercises.length;
 
-    // Hamstrings & Glutes
-    batch.execute('''
-          INSERT INTO exercises(id, name, exerciseType, muscleGroup, equipment, split, isDouble, isCustom)
-          VALUES
-            (53, "Cable Abductor Lift", 2, 5, 3, 2, 1, 0),
-            (54, "Abductor Machine", 2, 5, 6, 2, 0, 0),
-            (55, "Leg Curl", 2, 5, 6, 2, 0, 0),
-            (56, "Single Leg Curl", 2, 5, 6, 2, 1, 0),
-            (57, "Sumo Squat", 2, 5, 7, 2, 0, 0),
-            (58, "Deadlift", 2, 5, 7, 2, 0, 0),
-            (59, "RDL", 2, 5, 4, 2, 1, 0),
-            (60, "Hip Thrusts", 2, 5, 7, 2, 0, 0),
-            (61, "Prone Leg Curl", 2, 5, 6, 2, 0, 0);
-        ''');
+    for (int i = 0; i < length; i++) {
+      final ex = exercises[i];
+      buffer.writeln(
+        '(${ex.id}, "${ex.name}", ${ex.exerciseType.index}, ${ex.muscleGroup.index}, ${ex.equipment.index}, ${ex.split.index}, ${ex.isDouble ? 1 : 0})${i == length - 1 ? ';' : ','}',
+      );
+    }
 
-    // Quadriceps & Calves
-    batch.execute('''
-          INSERT INTO exercises(id, name, exerciseType, muscleGroup, equipment, split, isDouble, isCustom)
-          VALUES
-            (62, "Hack Squat", 2, 6, 7, 2, 0, 0),
-            (63, "Squat", 2, 6, 7, 2, 0, 0),
-            (64, "Lunge", 2, 6, 7, 2, 0, 0),
-            (65, "Dumbbell Lunge", 2, 6, 4, 2, 1, 0),
-            (66, "Leg Press", 2, 6, 7, 2, 0, 0),
-            (67, "Calf Press", 2, 6, 7, 2, 0, 0),
-            (68, "Leg Extension", 2, 6, 6, 2, 0, 0),
-            (69, "Single Leg Extension", 2, 6, 6, 2, 1, 0),
-            (70, "Calf Raise", 2, 6, 7, 2, 0, 0),
-            (71, "Adductor Machine", 2, 6, 6, 2, 0, 0),
-            (72, "Single Calf Raise", 2, 6, 7, 2, 1, 0);
-        ''');
-
-    // Forearms
-    batch.execute('''
-          INSERT INTO exercises(id, name, exerciseType, muscleGroup, equipment, split, isDouble, isCustom)
-          VALUES
-            (73, "Wrist Curl", 2, 4, 4, 1, 1, 0),
-            (74, "Reverse Wrist Curl", 2, 4, 4, 1, 1, 0),
-            (75, "Wrist Rotations", 2, 4, 4, 0, 1, 0),
-            (76, "Cable Wrist Curl", 2, 4, 3, 0, 0, 0);
-        ''');
+    return buffer.toString();
   }
 }

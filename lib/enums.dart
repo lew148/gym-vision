@@ -1,4 +1,4 @@
-import 'package:gymvision/shared/workout_category_helper.dart';
+import 'package:gymvision/helpers/workout_category_helper.dart';
 
 enum ExerciseEditableField {
   name,

@@ -49,6 +49,10 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                       child: const Text('Un-Dismiss Flavour Text'),
                     ),
                     ElevatedButton(
+                      onPressed: () async => await DatabaseHelper.updateExercises(),
+                      child: const Text('Update Exercises'),
+                    ),
+                    ElevatedButton(
                       onPressed: () async => await DatabaseHelper.deleteDb(),
                       child: const Text('Delete DB'),
                     ),

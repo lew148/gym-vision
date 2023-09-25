@@ -24,7 +24,7 @@ class WorkoutSetsHelper {
     required int value,
     bool shallow = false,
   }) async {
-    final db = await DatabaseHelper().getDb();
+    final db = await DatabaseHelper.getDb();
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
       SELECT
         workout_sets.id,
@@ -39,8 +39,7 @@ class WorkoutSetsHelper {
         exercises.muscleGroup,
         exercises.equipment,
         exercises.split,
-        exercises.isDouble,
-        exercises.isCustom
+        exercises.isDouble
       FROM workout_sets
       LEFT JOIN workouts ON workout_sets.workoutId = workouts.id
       LEFT JOIN exercises ON workout_sets.exerciseId = exercises.id
@@ -65,7 +64,6 @@ class WorkoutSetsHelper {
                 equipment: ExerciseEquipment.values.elementAt(map['equipment']),
                 split: ExerciseSplit.values.elementAt(map['split']),
                 isDouble: map['isDouble'] == 1,
-                isCustom: map['isCustom'] == 1,
                 userExerciseDetails: await UserExerciseDetailsHelper.getUserDetailsForExercise(
                   exerciseId: map['exerciseId'],
                   includeRecentUses: false,
@@ -86,7 +84,7 @@ class WorkoutSetsHelper {
     int? reps,
     bool? done,
   }) async {
-    final db = await DatabaseHelper().getDb();
+    final db = await DatabaseHelper.getDb();
     await db.insert(
       'workout_sets',
       WorkoutSet(
@@ -101,7 +99,7 @@ class WorkoutSetsHelper {
   }
 
   static removeSet(int setId) async {
-    final db = await DatabaseHelper().getDb();
+    final db = await DatabaseHelper.getDb();
     await db.delete(
       'workout_sets',
       where: 'id = ?',
@@ -110,7 +108,7 @@ class WorkoutSetsHelper {
   }
 
   static updateWorkoutSet(WorkoutSet workoutSet) async {
-    final db = await DatabaseHelper().getDb();
+    final db = await DatabaseHelper.getDb();
     await db.update(
       'workout_sets',
       workoutSet.toMap(),
@@ -120,7 +118,7 @@ class WorkoutSetsHelper {
   }
 
   static removegroupedSetsFromWorkout(int workoutId, int exerciseId) async {
-    final db = await DatabaseHelper().getDb();
+    final db = await DatabaseHelper.getDb();
     await db.delete(
       'workout_sets',
       where: 'workoutId = ? AND exerciseId = ?',
@@ -129,7 +127,7 @@ class WorkoutSetsHelper {
   }
 
   static Future<WorkoutSet?> getPr({required int exerciseId, Database? existingDb}) async {
-    final db = await DatabaseHelper().getDb(existingDb: existingDb);
+    final db = await DatabaseHelper.getDb(existingDb: existingDb);
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
       WITH max_table AS (
         SELECT
@@ -145,6 +143,7 @@ class WorkoutSetsHelper {
         INNER JOIN (
           SELECT MAX(workout_sets.weight) AS max_weight
           FROM workout_sets
+          WHERE workout_sets.exerciseId = $exerciseId
         ) AS b ON workout_sets.weight = b.max_weight
       )
 
@@ -171,7 +170,7 @@ class WorkoutSetsHelper {
   }
 
   static Future<WorkoutSet?> getLast({required int exerciseId, Database? existingDb}) async {
-    final db = await DatabaseHelper().getDb(existingDb: existingDb);
+    final db = await DatabaseHelper.getDb(existingDb: existingDb);
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
       SELECT
         workout_sets.id,
@@ -183,6 +182,7 @@ class WorkoutSetsHelper {
         workouts.date
       FROM workout_sets
       LEFT JOIN workouts ON workout_sets.workoutId = workouts.id
+      WHERE workout_sets.exerciseId = $exerciseId
       ORDER BY workout_sets.lastUpdated DESC
       LIMIT 1;
     ''');
@@ -193,7 +193,7 @@ class WorkoutSetsHelper {
     return WorkoutSet(
       id: set['id'],
       workoutId: set['workoutId'],
-      exerciseId: set['exerciseId'],
+      exerciseId: exerciseId,
       done: set['done'] == 1,
       weight: set['weight'],
       reps: set['reps'],

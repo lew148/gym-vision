@@ -6,7 +6,7 @@ import 'package:sqflite/sqflite.dart';
 
 class FlavourTextHelper {
   static Future<FlavourTextSchedule> getTodaysFlavourTextSchedule() async {
-    final db = await DatabaseHelper().getDb();
+    final db = await DatabaseHelper.getDb();
 
     final recentFlavourTextSchedules = await getRecentFlavourTextSchedules(db);
     if (recentFlavourTextSchedules.isNotEmpty &&
@@ -77,7 +77,7 @@ class FlavourTextHelper {
   static Future<FlavourText> getRandomFlavourText(
     List<int> excludedFlavourTextInts,
   ) async {
-    final db = await DatabaseHelper().getDb();
+    final db = await DatabaseHelper.getDb();
     final List<Map<String, dynamic>> maps = await db.rawQuery(
       '''
         SELECT * FROM flavour_texts
@@ -93,7 +93,7 @@ class FlavourTextHelper {
   }
 
   static setFlavourTextScheduleDismissed(FlavourTextSchedule fts) async {
-    final db = await DatabaseHelper().getDb();
+    final db = await DatabaseHelper.getDb();
     fts.dismissed = true;
     await db.update(
       'flavour_text_schedules',
@@ -104,7 +104,7 @@ class FlavourTextHelper {
   }
 
   static setRecentFlavourTextScheduleNotDismissed() async {
-    final db = await DatabaseHelper().getDb();
+    final db = await DatabaseHelper.getDb();
     final FlavourTextSchedule mostRecentFTS =
         await getMostRecentFlavourTextSchedule(db);
     mostRecentFTS.dismissed = false;

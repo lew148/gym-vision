@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/helpers/workouts_helper.dart';
-import 'package:gymvision/shared/workout_category_helper.dart';
+import 'package:gymvision/helpers/workout_category_helper.dart';
 
 class AddCategoryToWorkoutForm extends StatefulWidget {
   final int workoutId;

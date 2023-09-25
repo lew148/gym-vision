@@ -11,7 +11,6 @@ class Exercise {
   ExerciseEquipment equipment;
   ExerciseSplit split;
   bool isDouble;
-  bool isCustom;
   
   UserExerciseDetails? userExerciseDetails;
 
@@ -24,7 +23,6 @@ class Exercise {
     this.equipment = ExerciseEquipment.other,
     this.split = ExerciseSplit.other,
     this.isDouble = false,
-    this.isCustom = false,
     this.userExerciseDetails,
   });
 
@@ -36,6 +34,5 @@ class Exercise {
         'equipment': equipment,
         'split': split,
         'isDouble': isDouble,
-        'isCustom': isCustom,
       };
 }
