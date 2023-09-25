@@ -12,8 +12,7 @@ class Exercise {
   ExerciseSplit split;
   bool isDouble;
   bool isCustom;
-
-  int? userExerciseDetailsId;
+  
   UserExerciseDetails? userExerciseDetails;
 
   Exercise({
@@ -26,7 +25,6 @@ class Exercise {
     this.split = ExerciseSplit.other,
     this.isDouble = false,
     this.isCustom = false,
-    this.userExerciseDetailsId,
     this.userExerciseDetails,
   });
 

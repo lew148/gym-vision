@@ -34,6 +34,7 @@ class WorkoutSet {
         'done': done,
         'workoutId': workoutId,
         'exerciseId': exerciseId,
+        'lastUpdated': DateTime.now().toString()
       };
 
   bool hasWeight() => weight != null && weight != 0;

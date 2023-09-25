@@ -48,7 +48,8 @@ class DatabaseHelper {
           exerciseId INTEGER,
           done INTEGER DEFAULT 0,
           weight REAL,
-          reps INTEGER
+          reps INTEGER,
+          lastUpdated TEXT NOT NULL
         );
       ''');
 
@@ -105,16 +106,6 @@ class DatabaseHelper {
             split INTEGER,
             isDouble INTEGER DEFAULT 0,
             isCustom INTEGER DEFAULT 0
-          );
-        ''');
-
-    batch.execute('''
-          CREATE TABLE user_exercise_details(
-            id INTEGER PRIMARY KEY,
-            exerciseId INTEGER NOT NULL,
-            notes TEXT,
-            prId INT,
-            lastId INT
           );
         ''');
 
@@ -176,73 +167,76 @@ class DatabaseHelper {
             (34, "Small Lat Pulldown", 2, 0, 6, 1, 0, 0),
             (35, "Low Row", 2, 0, 7, 1, 0, 0),
             (36, "Single Row", 2, 0, 7, 1, 1, 0),
-            (37, "Bench Row", 2, 0, 4, 1, 1, 0),
-            (38, "Pull Up", 2, 0, 2, 1, 0, 0);
+            (37, "T Row", 2, 0, 7, 1, 0, 0),
+            (38, "Bench Row", 2, 0, 4, 1, 1, 0),
+            (39, "Pull Up", 2, 0, 2, 1, 0, 0);
         ''');
 
     // Triceps
     batch.execute('''
           INSERT INTO exercises(id, name, exerciseType, muscleGroup, equipment, split, isDouble, isCustom)
           VALUES
-            (39, "Tricep Pulldown", 2, 8, 3, 1, 0, 0),
-            (40, "Single Tricep Pulldown", 2, 8, 3, 1, 1, 0),
-            (41, "Dumbbell Triceps Extension", 2, 8, 4, 0, 0, 0),
-            (42, "Single Dumbbell Tricep Extension", 2, 8, 4, 0, 1, 0),
-            (43, "Triceps Dip", 2, 8, 2, 0, 0, 0),
-            (44, "Skull Crushers", 2, 8, 1, 0, 0, 0);
+            (40, "Triceps Pulldown", 2, 8, 3, 1, 0, 0),
+            (41, "Single Tricep Pulldown", 2, 8, 3, 1, 1, 0),
+            (42, "Dumbbell Triceps Extension", 2, 8, 4, 0, 0, 0),
+            (43, "Single Dumbbell Tricep Extension", 2, 8, 4, 0, 1, 0),
+            (44, "Triceps Dip", 2, 8, 2, 0, 0, 0),
+            (45, "Overhead Triceps Extension", 2, 8, 3, 0, 0, 0),
+            (46, "Skull Crushers", 2, 8, 1, 0, 0, 0);
         ''');
 
     // Core
     batch.execute('''
           INSERT INTO exercises(id, name, exerciseType, muscleGroup, equipment, split, isDouble, isCustom)
           VALUES
-            (45, "Crunch Machine", 2, 3, 6, 1, 0, 0),
-            (46, "Suspended Leg Lifts", 2, 3, 2, 1, 0, 0),
-            (47, "Oblique Lift", 2, 3, 5, 1, 0, 0),
-            (48, "Weighted Sit-Ups", 2, 3, 7, 1, 0, 0),
-            (49, "Russian Twists", 2, 3, 7, 1, 0, 0),
-            (50, "Cable Crunch", 2, 3, 3, 1, 0, 0);
+            (47, "Crunch Machine", 2, 3, 6, 1, 0, 0),
+            (48, "Suspended Leg Lifts", 2, 3, 2, 1, 0, 0),
+            (49, "Oblique Lift", 2, 3, 5, 1, 0, 0),
+            (50, "Weighted Sit-Ups", 2, 3, 7, 1, 0, 0),
+            (51, "Russian Twists", 2, 3, 7, 1, 0, 0),
+            (52, "Cable Crunch", 2, 3, 3, 1, 0, 0);
         ''');
 
     // Hamstrings & Glutes
     batch.execute('''
           INSERT INTO exercises(id, name, exerciseType, muscleGroup, equipment, split, isDouble, isCustom)
           VALUES
-            (51, "Cable Abductor Lift", 2, 5, 3, 2, 1, 0),
-            (52, "Adductor Machine", 2, 5, 6, 2, 0, 0),
-            (53, "Leg Curl", 2, 5, 6, 2, 0, 0),
-            (54, "Single Leg Curl", 2, 5, 6, 2, 1, 0),
-            (55, "Sumo Squat", 2, 5, 7, 2, 0, 0),
-            (56, "Deadlift", 2, 5, 7, 2, 0, 0),
-            (57, "RDL", 2, 5, 4, 2, 1, 0),
-            (58, "Hip Thrusts", 2, 5, 7, 2, 0, 0),
-            (59, "Prone Leg Curl", 2, 5, 6, 2, 0, 0);
+            (53, "Cable Abductor Lift", 2, 5, 3, 2, 1, 0),
+            (54, "Abductor Machine", 2, 5, 6, 2, 0, 0),
+            (55, "Leg Curl", 2, 5, 6, 2, 0, 0),
+            (56, "Single Leg Curl", 2, 5, 6, 2, 1, 0),
+            (57, "Sumo Squat", 2, 5, 7, 2, 0, 0),
+            (58, "Deadlift", 2, 5, 7, 2, 0, 0),
+            (59, "RDL", 2, 5, 4, 2, 1, 0),
+            (60, "Hip Thrusts", 2, 5, 7, 2, 0, 0),
+            (61, "Prone Leg Curl", 2, 5, 6, 2, 0, 0);
         ''');
 
     // Quadriceps & Calves
     batch.execute('''
           INSERT INTO exercises(id, name, exerciseType, muscleGroup, equipment, split, isDouble, isCustom)
           VALUES
-            (60, "Hack Squat", 2, 6, 7, 2, 0, 0),
-            (61, "Squat", 2, 6, 7, 2, 0, 0),
-            (62, "Lunge", 2, 6, 7, 2, 0, 0),
-            (63, "Dumbbell Lunge", 2, 6, 4, 2, 1, 0),
-            (64, "Leg Press", 2, 6, 7, 2, 0, 0),
-            (65, "Calf Press", 2, 6, 7, 2, 0, 0),
-            (66, "Leg Extension", 2, 6, 6, 2, 0, 0),
-            (67, "Single Leg Extension", 2, 6, 6, 2, 1, 0),
-            (68, "Calf Raise", 2, 6, 7, 2, 0, 0),
-            (69, "Single Calf Raise", 2, 6, 7, 2, 1, 0);
+            (62, "Hack Squat", 2, 6, 7, 2, 0, 0),
+            (63, "Squat", 2, 6, 7, 2, 0, 0),
+            (64, "Lunge", 2, 6, 7, 2, 0, 0),
+            (65, "Dumbbell Lunge", 2, 6, 4, 2, 1, 0),
+            (66, "Leg Press", 2, 6, 7, 2, 0, 0),
+            (67, "Calf Press", 2, 6, 7, 2, 0, 0),
+            (68, "Leg Extension", 2, 6, 6, 2, 0, 0),
+            (69, "Single Leg Extension", 2, 6, 6, 2, 1, 0),
+            (70, "Calf Raise", 2, 6, 7, 2, 0, 0),
+            (71, "Adductor Machine", 2, 6, 6, 2, 0, 0),
+            (72, "Single Calf Raise", 2, 6, 7, 2, 1, 0);
         ''');
 
     // Forearms
     batch.execute('''
           INSERT INTO exercises(id, name, exerciseType, muscleGroup, equipment, split, isDouble, isCustom)
           VALUES
-            (70, "Wrist Curl", 2, 4, 4, 1, 1, 0),
-            (71, "Reverse Wrist Curl", 2, 4, 4, 1, 1, 0),
-            (72, "Wrist Rotations", 2, 4, 4, 0, 1, 0),
-            (73, "Cable Wrist Curl", 2, 4, 3, 0, 0, 0);
+            (73, "Wrist Curl", 2, 4, 4, 1, 1, 0),
+            (74, "Reverse Wrist Curl", 2, 4, 4, 1, 1, 0),
+            (75, "Wrist Rotations", 2, 4, 4, 0, 1, 0),
+            (76, "Cable Wrist Curl", 2, 4, 3, 0, 0, 0);
         ''');
   }
 }

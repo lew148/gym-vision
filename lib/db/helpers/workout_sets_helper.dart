@@ -1,4 +1,3 @@
-import 'package:gymvision/db/classes/user_exercise_details.dart';
 import 'package:gymvision/db/classes/workout.dart';
 import 'package:gymvision/db/helpers/user_exercise_details_helper.dart';
 import 'package:sqflite/sqflite.dart';
@@ -41,15 +40,10 @@ class WorkoutSetsHelper {
         exercises.equipment,
         exercises.split,
         exercises.isDouble,
-        exercises.isCustom,
-        user_exercise_details.id AS userExerciseDetailsId,
-        user_exercise_details.notes,
-        user_exercise_details.prId,
-        user_exercise_details.lastId
+        exercises.isCustom
       FROM workout_sets
       LEFT JOIN workouts ON workout_sets.workoutId = workouts.id
       LEFT JOIN exercises ON workout_sets.exerciseId = exercises.id
-      LEFT JOIN user_exercise_details ON exercises.id = user_exercise_details.exerciseId
       WHERE workout_sets.$whereProp = $value;
     ''');
 
@@ -72,19 +66,11 @@ class WorkoutSetsHelper {
                 split: ExerciseSplit.values.elementAt(map['split']),
                 isDouble: map['isDouble'] == 1,
                 isCustom: map['isCustom'] == 1,
-                userExerciseDetails: map['userExerciseDetailsId'] == null
-                    ? null
-                    : UserExerciseDetails(
-                        id: map['userExerciseDetailsId'],
-                        exerciseId: map['exerciseId'],
-                        notes: map['notes'],
-                        pr: map['prId'] != null
-                            ? await WorkoutSetsHelper.getWorkoutSet(id: map['prId'], shallow: true)
-                            : null,
-                        last: map['lastId'] != null
-                            ? await WorkoutSetsHelper.getWorkoutSet(id: map['lastId'], shallow: true)
-                            : null,
-                      ),
+                userExerciseDetails: await UserExerciseDetailsHelper.getUserDetailsForExercise(
+                  exerciseId: map['exerciseId'],
+                  includeRecentUses: false,
+                  existingDb: db,
+                ),
               )
             : null,
       ));
@@ -101,8 +87,7 @@ class WorkoutSetsHelper {
     bool? done,
   }) async {
     final db = await DatabaseHelper().getDb();
-
-    var setId = await db.insert(
+    await db.insert(
       'workout_sets',
       WorkoutSet(
         workoutId: workoutId,
@@ -113,29 +98,6 @@ class WorkoutSetsHelper {
       ).toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-
-    if (weight == null) return;
-
-    final details = await UserExerciseDetailsHelper.getUserDetailsForExercise(
-      exerciseId: exerciseId,
-      includeRecentUses: false,
-      existingDb: db,
-    );
-    
-    if (details == null) {
-      await UserExerciseDetailsHelper.insertUserExerciseDetails(UserExerciseDetails(
-        exerciseId: exerciseId,
-        prId: setId,
-        lastId: setId,
-      ));
-    } else {
-      if (details.pr == null || details.pr!.weight! < weight) {
-        details.prId = setId;
-      }
-
-      details.lastId = setId;
-      await UserExerciseDetailsHelper.updateUserExerciseDetails(details);
-    }
   }
 
   static removeSet(int setId) async {
@@ -163,6 +125,79 @@ class WorkoutSetsHelper {
       'workout_sets',
       where: 'workoutId = ? AND exerciseId = ?',
       whereArgs: [workoutId, exerciseId],
+    );
+  }
+
+  static Future<WorkoutSet?> getPr({required int exerciseId, Database? existingDb}) async {
+    final db = await DatabaseHelper().getDb(existingDb: existingDb);
+    final List<Map<String, dynamic>> maps = await db.rawQuery('''
+      WITH max_table AS (
+        SELECT
+          workout_sets.id,
+          workout_sets.workoutId,
+          workout_sets.exerciseId,
+          workout_sets.done,
+          workout_sets.weight,
+          workout_sets.reps,
+          workouts.date
+        FROM workout_sets
+        LEFT JOIN workouts ON workout_sets.workoutId = workouts.id
+        INNER JOIN (
+          SELECT MAX(workout_sets.weight) AS max_weight
+          FROM workout_sets
+        ) AS b ON workout_sets.weight = b.max_weight
+      )
+
+      SELECT *
+      FROM max_table
+      INNER JOIN (
+        SELECT MAX(max_table.date) AS max_date
+        FROM max_table
+      ) AS b ON max_table.date = b.max_date;
+    ''');
+
+    if (maps.isEmpty) return null;
+
+    final set = maps[0];
+    return WorkoutSet(
+      id: set['id'],
+      workoutId: set['workoutId'],
+      exerciseId: set['exerciseId'],
+      done: set['done'] == 1,
+      weight: set['weight'],
+      reps: set['reps'],
+      workout: Workout(date: DateTime.parse(set['date'])),
+    );
+  }
+
+  static Future<WorkoutSet?> getLast({required int exerciseId, Database? existingDb}) async {
+    final db = await DatabaseHelper().getDb(existingDb: existingDb);
+    final List<Map<String, dynamic>> maps = await db.rawQuery('''
+      SELECT
+        workout_sets.id,
+        workout_sets.workoutId,
+        workout_sets.exerciseId,
+        workout_sets.done,
+        workout_sets.weight,
+        workout_sets.reps,
+        workouts.date
+      FROM workout_sets
+      LEFT JOIN workouts ON workout_sets.workoutId = workouts.id
+      ORDER BY workout_sets.lastUpdated DESC
+      LIMIT 1;
+    ''');
+
+    if (maps.isEmpty) return null;
+
+    final set = maps[0];
+    return WorkoutSet(
+      id: set['id'],
+      workoutId: set['workoutId'],
+      exerciseId: set['exerciseId'],
+      done: set['done'] == 1,
+      weight: set['weight'],
+      reps: set['reps'],
+      workout: Workout(date: DateTime.parse(set['date'])),
     );
   }
 }

@@ -11,43 +11,12 @@ class UserExerciseDetailsHelper {
     Database? existingDb,
   }) async {
     final db = await DatabaseHelper().getDb(existingDb: existingDb);
-    final List<Map<String, dynamic>> maps = await db.query(
-      'user_exercise_details',
-      where: 'exerciseId = ?',
-      whereArgs: [exerciseId],
-    );
-
-    if (maps.isEmpty) return null;
-
-    final map = maps[0];
     return UserExerciseDetails(
-      id: map['id'],
-      exerciseId: map['exerciseId'],
-      notes: map['notes'],
-      prId: map['prId'],
-      pr: map['prId'] != null ? await WorkoutSetsHelper.getWorkoutSet(id: map['prId'], shallow: true) : null,
-      lastId: map['lastId'],
-      last: map['lastId'] != null ? await WorkoutSetsHelper.getWorkoutSet(id: map['lastId'], shallow: true) : null,
-      recentUses: includeRecentUses ? await WorkoutSetsHelper.getWorkoutSetsForExercise(map['exerciseId']) : null,
-    );
-  }
-
-  static insertUserExerciseDetails(UserExerciseDetails details) async {
-    final db = await DatabaseHelper().getDb();
-    await db.insert(
-      'user_exercise_details',
-      details.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
-
-  static updateUserExerciseDetails(UserExerciseDetails details) async {
-    final db = await DatabaseHelper().getDb();
-    await db.update(
-      'user_exercise_details',
-      details.toMap(),
-      where: 'id = ?',
-      whereArgs: [details.id],
+      exerciseId: exerciseId,
+      // notes: map['notes'],
+      pr: await WorkoutSetsHelper.getPr(exerciseId: exerciseId, existingDb: db),
+      last: await WorkoutSetsHelper.getLast(exerciseId: exerciseId, existingDb: db),
+      recentUses: includeRecentUses ? await WorkoutSetsHelper.getWorkoutSetsForExercise(exerciseId) : null,
     );
   }
 }

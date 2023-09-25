@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/exercise.dart';
 import 'package:gymvision/db/classes/user_exercise_details.dart';
 import 'package:gymvision/db/classes/workout_set.dart';
-import 'package:gymvision/db/helpers/user_exercise_details_helper.dart';
 import 'package:gymvision/exercises/exercise_recent_uses_view.dart';
 import 'package:gymvision/globals.dart';
 
@@ -129,8 +128,8 @@ class _ExerciseViewState extends State<ExerciseView> {
                                     var newValue = controller.text;
                                     if (exercise.userExerciseDetails?.notes == newValue) return;
                                     exercise.userExerciseDetails!.notes = newValue;
-                                    await UserExerciseDetailsHelper.updateUserExerciseDetails(
-                                        exercise.userExerciseDetails!);
+                                    // await UserExerciseDetailsHelper.updateUserExerciseDetails(
+                                    //     exercise.userExerciseDetails!);
                                   } catch (ex) {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(const SnackBar(content: Text('Failed to edit Notes')));
