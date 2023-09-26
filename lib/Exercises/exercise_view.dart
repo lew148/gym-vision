@@ -50,9 +50,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                   onTap: () => openNotesForm(exercise),
                   child: Container(
                     height: MediaQuery.of(context).size.height * 0.15,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
                     padding: const EdgeInsets.all(10),
                     child: Expanded(
                       child: SingleChildScrollView(
@@ -75,14 +73,22 @@ class _ExerciseViewState extends State<ExerciseView> {
         ),
       ]);
 
-  Widget getExerciseViewWidget(Exercise exercise) =>
-      Column(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-        getExercisePropDisplay("Type", exercise.exerciseType.displayName),
-        getExercisePropDisplay("Muscle Group", exercise.muscleGroup.displayName),
-        getExercisePropDisplay("Split", exercise.split.displayName),
-        getExercisePropDisplay("Equipment", exercise.equipment.displayName),
-        // getNotesDisplay(exercise),
-      ]);
+  Widget getExerciseViewWidget(Exercise exercise) => SizedBox(
+        width: MediaQuery.of(context).size.width * 0.8,
+        child: Column(
+          children: [
+            getExercisePropDisplay("Type", exercise.exerciseType.displayName),
+            getExercisePropDisplay("Muscle Group", exercise.muscleGroup.displayName),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                getExercisePropDisplay("Split", exercise.split.displayName),
+                getExercisePropDisplay("Equipment", exercise.equipment.displayName),
+              ],
+            ),
+          ],
+        ),
+      );
 
   void openNotesForm(Exercise exercise) {
     var controller = TextEditingController(text: exercise.userExerciseDetails?.notes);
@@ -156,47 +162,19 @@ class _ExerciseViewState extends State<ExerciseView> {
     );
   }
 
-  Widget getValueDisplay(String label, Widget widget, Function() onTap) => Card(
-        child: InkWell(
-          onTap: onTap,
-          child: Container(
-            height: 60.00,
-            padding: const EdgeInsets.only(right: 10, left: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(label),
-                Row(
-                  children: [
-                    widget,
-                    const Padding(padding: EdgeInsets.all(5)),
-                    const Icon(
-                      Icons.edit_rounded,
-                      size: 18,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-
-  Widget getExerciseProps(Exercise exercise) => Row();
-
-  Widget getExercisePropDisplay(String label, String value) => Column(children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 15, left: 15),
+  Widget getExercisePropDisplay(String label, String value) => Card(
+        child: Padding(
+          padding: const EdgeInsets.all(10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(label),
+              Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+              const Padding(padding: EdgeInsets.all(10)),
               getPropDisplay(context, value),
             ],
           ),
         ),
-        const Divider(),
-      ]);
+      );
 
   List<Widget> getRecentUsesWidget(List<WorkoutSet> workoutSets) {
     workoutSets.removeWhere((ws) => dateIsInFuture(ws.workout!.date));
@@ -212,9 +190,7 @@ class _ExerciseViewState extends State<ExerciseView> {
       weWidgets.add(
         Padding(
           padding: const EdgeInsets.only(top: 5, bottom: 5),
-          child: ExerciseRecentUsesView(
-            workoutSets: value,
-          ),
+          child: ExerciseRecentUsesView(workoutSets: value),
         ),
       );
     });
@@ -222,70 +198,53 @@ class _ExerciseViewState extends State<ExerciseView> {
     return weWidgets;
   }
 
-  Widget getPrWidget(WorkoutSet pr) => Padding(
-        padding: const EdgeInsets.only(top: 5, bottom: 5),
-        child: Card(
-          child: Column(children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Text(
-                      pr.workout!.getDateAndTimeString(),
-                      style: const TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                ],
+  Widget getPrWidget(WorkoutSet pr) => Card(
+        child: Padding(
+          padding: const EdgeInsets.all(15),
+          child: Row(
+            children: [
+              Text(
+                pr.workout!.getDateAndTimeString(),
+                style: const TextStyle(fontWeight: FontWeight.w600),
               ),
-            ),
-            const Divider(height: 0),
-            Padding(
-              padding: const EdgeInsets.all(15),
-              child: Row(
-                children: [
-                  Expanded(
-                      flex: 3,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: pr.hasWeight()
-                            ? [
-                                const Icon(
-                                  Icons.fitness_center_rounded,
-                                  size: 15,
-                                ),
-                                const Padding(padding: EdgeInsets.all(5)),
-                                Text(pr.getWeightDisplay()),
-                              ]
-                            : [
-                                const Center(
-                                  child: Text(
-                                    '-',
-                                    style: TextStyle(fontSize: 30),
-                                  ),
-                                ),
-                              ],
-                      )),
-                  Expanded(
-                    flex: 3,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.repeat_rounded,
-                          size: 15,
-                        ),
-                        const Padding(padding: EdgeInsets.all(5)),
-                        Text(pr.getRepsDisplayString()),
-                      ],
+              Expanded(
+                  flex: 3,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: pr.hasWeight()
+                        ? [
+                            const Icon(
+                              Icons.fitness_center_rounded,
+                              size: 15,
+                            ),
+                            const Padding(padding: EdgeInsets.all(5)),
+                            Text(pr.getWeightDisplay()),
+                          ]
+                        : [
+                            const Center(
+                              child: Text(
+                                '-',
+                                style: TextStyle(fontSize: 30),
+                              ),
+                            ),
+                          ],
+                  )),
+              Expanded(
+                flex: 3,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.repeat_rounded,
+                      size: 15,
                     ),
-                  ),
-                ],
+                    const Padding(padding: EdgeInsets.all(5)),
+                    Text(pr.getRepsDisplayString()),
+                  ],
+                ),
               ),
-            ),
-          ]),
+            ],
+          ),
         ),
       );
 
@@ -300,7 +259,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                 ),
               )
             : Container(
-                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                padding: const EdgeInsets.all(10),
                 child: getPrWidget(details.pr!),
               ),
         getSectionTitle(context, 'Recent Uses'),
@@ -308,14 +267,14 @@ class _ExerciseViewState extends State<ExerciseView> {
         details.recentUses == null || details.recentUses!.isEmpty
             ? const Center(
                 child: Padding(
-                  padding: EdgeInsets.all(20),
+                  padding: EdgeInsets.all(10),
                   child: Text('No recent uses of this exercise.'),
                 ),
               )
             : Expanded(
                 child: SingleChildScrollView(
                   child: Container(
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    padding: const EdgeInsets.all(10),
                     child: Column(
                       children: getRecentUsesWidget(
                         details.recentUses!,
@@ -349,10 +308,8 @@ class _ExerciseViewState extends State<ExerciseView> {
           ),
           body: Column(
             children: [
-              Container(
-                margin: const EdgeInsets.fromLTRB(0, 10, 0, 10),
-                child: getExerciseViewWidget(snapshot.data!),
-              ),
+              const Padding(padding: EdgeInsets.all(10)),
+              getExerciseViewWidget(snapshot.data!),
               if (details != null) ...getDetailsSections(details),
             ],
           ),

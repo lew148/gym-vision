@@ -14,61 +14,54 @@ class ExerciseRecentUsesView extends StatefulWidget {
 }
 
 class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
-  List<Widget> getWorkoutExerciseWidget(List<WorkoutSet> ws) {
-    // ws.sort((a, b) => b.getWeight().compareTo(a.getWeight()));
-    // todo: probably sort by position eventually
-
-    List<Widget> widgets = ws
-        .map((s) => Column(children: [
-              const Divider(height: 0),
-              Padding(
-                padding: const EdgeInsets.all(15),
-                child: Row(
-                  children: [
-                    Expanded(
-                        flex: 3,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: s.hasWeight()
-                              ? [
-                                  const Icon(
-                                    Icons.fitness_center_rounded,
-                                    size: 15,
-                                  ),
-                                  const Padding(padding: EdgeInsets.all(5)),
-                                  Text(s.getWeightDisplay()),
-                                ]
-                              : [
-                                  const Center(
-                                    child: Text(
-                                      '-',
-                                      style: TextStyle(fontSize: 30),
-                                    ),
-                                  ),
-                                ],
-                        )),
-                    Expanded(
+  List<Widget> getWorkoutExerciseWidget(List<WorkoutSet> ws) => ws
+      .map((s) => Column(children: [
+            const Divider(height: 0),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                children: [
+                  Expanded(
                       flex: 3,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.repeat_rounded,
-                            size: 15,
-                          ),
-                          const Padding(padding: EdgeInsets.all(5)),
-                          Text(s.getRepsDisplayString()),
-                        ],
-                      ),
+                        children: s.hasWeight()
+                            ? [
+                                const Icon(
+                                  Icons.fitness_center_rounded,
+                                  size: 15,
+                                ),
+                                const Padding(padding: EdgeInsets.all(5)),
+                                Text(s.getWeightDisplay()),
+                              ]
+                            : [
+                                const Center(
+                                  child: Text(
+                                    '-',
+                                    style: TextStyle(fontSize: 30),
+                                  ),
+                                ),
+                              ],
+                      )),
+                  Expanded(
+                    flex: 3,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.repeat_rounded,
+                          size: 15,
+                        ),
+                        const Padding(padding: EdgeInsets.all(5)),
+                        Text(s.getRepsDisplayString()),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ]))
-        .toList();
-
-    return widgets;
-  }
+            ),
+          ]))
+      .toList();
 
   @override
   Widget build(BuildContext context) {
@@ -76,20 +69,17 @@ class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
       children: [
         Card(
           child: Column(children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Text(
-                      widget.workoutSets[0].workout!.getDateAndTimeString(),
-                      style: const TextStyle(fontWeight: FontWeight.w600),
-                    ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Text(
+                    widget.workoutSets[0].workout!.getDateAndTimeString(),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
             ...getWorkoutExerciseWidget(widget.workoutSets),
           ]),
