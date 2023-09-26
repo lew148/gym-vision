@@ -107,22 +107,25 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
               ),
               const Padding(padding: EdgeInsets.all(5)),
               if (selectedExercise != null) ...getExerciseFields(selectedExercise!),
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () => onSubmit(addThree: true),
-                      child: const Text('Add 3 Sets'),
-                    ),
-                    ElevatedButton(
-                      onPressed: onSubmit,
-                      child: const Text('Add'),
-                    ),
-                  ],
+              if (selectedExercise != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 20.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      widget.exerciseId == null
+                          ? ElevatedButton(
+                              onPressed: () => onSubmit(addThree: true),
+                              child: const Text('Add 3'),
+                            )
+                          : const SizedBox.shrink(),
+                      ElevatedButton(
+                        onPressed: onSubmit,
+                        child: const Text('Add'),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
             ],
           ),
         ),

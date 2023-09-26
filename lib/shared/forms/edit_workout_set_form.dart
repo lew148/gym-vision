@@ -63,6 +63,19 @@ class _EditWorkoutExerciseFormState extends State<EditWorkoutExerciseForm> {
     }
   }
 
+  void onDeleteButtonTap(int id) async {
+    Navigator.pop(context);
+    try {
+      await WorkoutSetsHelper.removeSet(id);
+    } catch (ex) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to remove Set from workout: ${ex.toString()}')),
+      );
+    }
+
+    widget.reloadState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -90,12 +103,22 @@ class _EditWorkoutExerciseFormState extends State<EditWorkoutExerciseForm> {
                   label: 'Reps',
                   selectableValues: [1, 8, 12],
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: ElevatedButton(
-                    onPressed: onSubmit,
-                    child: const Text('Save'),
-                  ),
+                const Padding(padding: EdgeInsets.only(top: 20.0)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.delete_rounded,
+                        color: Theme.of(context).colorScheme.tertiary,
+                      ),
+                      onPressed: () => onDeleteButtonTap(widget.workoutSet.id!),
+                    ),
+                    ElevatedButton(
+                      onPressed: onSubmit,
+                      child: const Text('Save'),
+                    ),
+                  ],
                 ),
               ],
             ),

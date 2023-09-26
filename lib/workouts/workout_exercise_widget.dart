@@ -11,13 +11,11 @@ import '../exercises/exercise_view.dart';
 class WorkoutExerciseWidget extends StatefulWidget {
   final List<WorkoutSet> workoutSets;
   final Function() reloadState;
-  final bool displayOnly;
 
   const WorkoutExerciseWidget({
     super.key,
     required this.workoutSets,
     required this.reloadState,
-    this.displayOnly = false,
   });
 
   @override
@@ -49,99 +47,26 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         ),
       );
 
-  void showMoreMenu(WorkoutSet ws) async {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) => Padding(
-        padding: const EdgeInsets.all(25),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: InkWell(
-                onTap: () async {
-                  Navigator.pop(context);
-
-                  try {
-                    await WorkoutSetsHelper.addSetToWorkout(
-                      exerciseId: ws.exerciseId,
-                      workoutId: ws.workoutId,
-                      weight: ws.weight,
-                      reps: ws.reps,
-                      done: false,
-                    );
-                  } catch (ex) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Failed add set to workout: ${ex.toString()}',
-                        ),
-                      ),
-                    );
-                  }
-
-                  widget.reloadState();
-                },
-                child: Row(
-                  children: const [
-                    Icon(Icons.repeat_rounded),
-                    Padding(padding: EdgeInsets.all(5)),
-                    Text(
-                      'Duplicate Set',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const Divider(),
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: InkWell(
-                onTap: () async {
-                  Navigator.pop(context);
-
-                  try {
-                    await WorkoutSetsHelper.removeSet(ws.id!);
-                  } catch (ex) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Failed to remove Set from workout: ${ex.toString()}',
-                        ),
-                      ),
-                    );
-                  }
-
-                  widget.reloadState();
-                },
-                child: Row(
-                  children: const [
-                    Icon(Icons.delete_rounded),
-                    Padding(padding: EdgeInsets.all(5)),
-                    Text(
-                      'Remove set from Workout',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
+  void onCopySetButtonTap(WorkoutSet ws) async {
+    try {
+      await WorkoutSetsHelper.addSetToWorkout(
+        exerciseId: ws.exerciseId,
+        workoutId: ws.workoutId,
+        weight: ws.weight,
+        reps: ws.reps,
+        done: false,
+      );
+    } catch (ex) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Failed add set to workout: ${ex.toString()}',
+          ),
         ),
-      ),
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
-      ),
-    );
+      );
+    }
+
+    widget.reloadState();
   }
 
   void onAddSetsButtonTap(Exercise exercise, int workoutId) {
@@ -178,9 +103,9 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       widgets.add(Column(children: [
         const Divider(height: 0),
         InkWell(
-          onTap: () => widget.displayOnly ? null : onEditWorkoutExerciseTap(ws),
+          onTap: () => onEditWorkoutExerciseTap(ws),
           child: Padding(
-            padding: widget.displayOnly ? const EdgeInsets.all(15) : const EdgeInsets.fromLTRB(15, 5, 15, 5),
+            padding: const EdgeInsets.all(10),
             child: Row(
               children: [
                 Expanded(
@@ -212,10 +137,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                                 size: 15,
                               ),
                               const Padding(padding: EdgeInsets.all(5)),
-                              Text((widget.displayOnly
-                                      ? ws.getNumberedWeightString(showNone: false)
-                                      : ws.getWeightString(showNone: false)) ??
-                                  ''),
+                              Text(ws.getWeightString(showNone: false) ?? ''),
                             ]
                           : [
                               const Center(
@@ -240,22 +162,6 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                     ],
                   ),
                 ),
-                if (!widget.displayOnly)
-                  Expanded(
-                    flex: 1,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Expanded(
-                          child: IconButton(
-                            splashRadius: 20,
-                            onPressed: () => showMoreMenu(ws),
-                            icon: const Icon(Icons.more_vert_rounded),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
               ],
             ),
           ),
@@ -263,9 +169,18 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       ]));
     }
 
-    if (!widget.displayOnly) {
-      widgets.add(Column(children: [
-        getPrimaryButton(
+    widgets.add(Row(children: [
+      Expanded(
+        child: getPrimaryButton(
+          actionButton: ActionButton(
+            icon: Icons.copy_rounded,
+            onTap: () => onCopySetButtonTap(widget.workoutSets.last),
+          ),
+          padding: 0,
+        ),
+      ),
+      Expanded(
+        child: getPrimaryButton(
           actionButton: ActionButton(
             icon: Icons.add_rounded,
             onTap: () => onAddSetsButtonTap(
@@ -274,9 +189,9 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
             ),
           ),
           padding: 0,
-        )
-      ]));
-    }
+        ),
+      ),
+    ]));
 
     return widgets;
   }
@@ -314,13 +229,13 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
 
         try {
           await WorkoutSetsHelper.removegroupedSetsFromWorkout(
-              widget.workoutSets[0].workoutId, widget.workoutSets[0].exerciseId);
+            widget.workoutSets[0].workoutId,
+            widget.workoutSets[0].exerciseId,
+          );
         } catch (ex) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(
-                'Failed to remove Exercise from workout: ${ex.toString()}',
-              ),
+              content: Text('Failed to remove Exercise from workout: ${ex.toString()}'),
             ),
           );
         }
@@ -330,8 +245,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     );
 
     AlertDialog alert = AlertDialog(
-      title: const Text("Delete Exercise?"),
-      content: const Text("Are you sure you would like to delete this exercise?"),
+      title: const Text("Remove Sets?"),
+      content: const Text("Are you sure you would like to remove these sets?"),
       actions: [
         cancelButton,
         continueButton,
@@ -341,43 +256,6 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     showDialog(
       context: context,
       builder: (context) => alert,
-    );
-  }
-
-  void showHeaderMoreMenu() {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) => Padding(
-        padding: const EdgeInsets.all(25),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                  showDeleteGroupedWorkoutExercisesConfirm();
-                },
-                child: Row(
-                  children: const [
-                    Icon(Icons.delete_rounded),
-                    Padding(padding: EdgeInsets.all(5)),
-                    Text(
-                      'Remove Exercise from Workout',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
-      ),
     );
   }
 
@@ -393,71 +271,62 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                   dropped = !dropped;
                 }),
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 10, bottom: 10),
+                  padding: const EdgeInsets.all(10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      widget.displayOnly
-                          ? Padding(
-                              padding: const EdgeInsets.all(15),
-                              child: Text(
-                                widget.workoutSets[0].workout!.getDateAndTimeString(),
-                                style: const TextStyle(fontWeight: FontWeight.w600),
-                              ),
-                            )
-                          : Row(
-                              children: [
-                                Checkbox(
-                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                  checkColor: Colors.white,
-                                  fillColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
-                                  value: widget.workoutSets.every((ws) => ws.done),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                  onChanged: (bool? value) => onGroupedWorkoutExercisesDoneTap(value),
-                                ),
-                                Text(
-                                  widget.workoutSets[0].exercise!.name,
-                                  style: const TextStyle(fontWeight: FontWeight.w600),
-                                ),
-                                dropped
-                                    ? const Icon(Icons.arrow_drop_up_rounded)
-                                    : const Icon(Icons.arrow_drop_down_rounded)
-                              ],
-                            ),
-                      if (!widget.displayOnly)
-                        Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              getPrimaryButton(
-                                actionButton: ActionButton(
-                                  icon: Icons.visibility_rounded,
-                                  onTap: () => Navigator.of(context)
-                                      .push(
-                                        MaterialPageRoute(
-                                          builder: (context) => ExerciseView(
-                                            exerciseId: widget.workoutSets[0].exerciseId,
-                                          ),
-                                        ),
-                                      )
-                                      .then((value) => widget.reloadState()),
-                                ),
-                                padding: 0,
-                              ),
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.more_vert_rounded,
-                                ),
-                                onPressed: showHeaderMoreMenu,
-                              )
-                            ],
+                      Row(
+                        children: [
+                          Checkbox(
+                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            checkColor: Colors.white,
+                            fillColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
+                            value: widget.workoutSets.every((ws) => ws.done),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                            onChanged: (bool? value) => onGroupedWorkoutExercisesDoneTap(value),
                           ),
+                          const Padding(padding: EdgeInsets.all(5)),
+                          Text(
+                            widget.workoutSets[0].exercise!.name,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          dropped ? const Icon(Icons.arrow_drop_up_rounded) : const Icon(Icons.arrow_drop_down_rounded)
+                        ],
+                      ),
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            getPrimaryButton(
+                              actionButton: ActionButton(
+                                icon: Icons.visibility_rounded,
+                                onTap: () => Navigator.of(context)
+                                    .push(
+                                      MaterialPageRoute(
+                                        builder: (context) => ExerciseView(
+                                          exerciseId: widget.workoutSets[0].exerciseId,
+                                        ),
+                                      ),
+                                    )
+                                    .then((value) => widget.reloadState()),
+                              ),
+                              padding: 0,
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.delete_rounded,
+                                color: Theme.of(context).colorScheme.tertiary,
+                              ),
+                              onPressed: showDeleteGroupedWorkoutExercisesConfirm,
+                            )
+                          ],
                         ),
+                      ),
                     ],
                   ),
                 ),
               ),
-              if (widget.displayOnly || dropped) ...getWorkoutExerciseWidget(widget.workoutSets),
+              if (dropped) ...getWorkoutExerciseWidget(widget.workoutSets),
             ],
           ),
         ),

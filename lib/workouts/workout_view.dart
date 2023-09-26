@@ -250,10 +250,13 @@ class _WorkoutViewState extends State<WorkoutView> {
                   showDeleteWorkoutConfirm(workout.id!);
                 },
                 child: Row(
-                  children: const [
-                    Icon(Icons.delete_rounded),
-                    Padding(padding: EdgeInsets.all(5)),
-                    Text(
+                  children: [
+                    Icon(
+                      Icons.delete_rounded,
+                      color: Theme.of(context).colorScheme.tertiary,
+                    ),
+                    const Padding(padding: EdgeInsets.all(5)),
+                    const Text(
                       'Delete Workout',
                       style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
                     ),

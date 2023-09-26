@@ -38,10 +38,13 @@ class _ExercisePickerState extends State<ExercisePicker> {
   void initState() {
     super.initState();
     categoryShellFilters = widget.categoryShellIds ?? [];
-    allExercises = ExercisesHelper.getAllExercisesExcludingIds(widget.excludeIds, categoryShellFilters);
 
-    if (widget.exerciseId != null && widget.exercise == null) {
+    // exercise pre-selected
+    if (widget.exerciseId != null) {
+      allExercises = Future<List<Exercise>>.value([]);
       selectedExercise = ExercisesHelper.getExercise(id: widget.exerciseId!, includeUserDetails: true);
+    } else {
+      allExercises = ExercisesHelper.getAllExercisesExcludingIds(widget.excludeIds, categoryShellFilters);
     }
   }
 
@@ -257,7 +260,9 @@ class _ExercisePickerState extends State<ExercisePicker> {
           }
 
           var allExercises = allExercisesSnapshot.data!;
-          allExercises.sort((a, b) => a.equipment.index.compareTo(b.equipment.index));
+          var zeroExercises = allExercises.isEmpty;
+
+          if (!zeroExercises) allExercises.sort((a, b) => a.equipment.index.compareTo(b.equipment.index));
 
           return FutureBuilder<Exercise>(
             future: selectedExercise,
@@ -282,10 +287,12 @@ class _ExercisePickerState extends State<ExercisePicker> {
                 children: [
                   Expanded(
                     child: GestureDetector(
-                      onTap: () => showExercisePicker(
-                        allExercises,
-                        exercise,
-                      ),
+                      onTap: zeroExercises
+                          ? null
+                          : () => showExercisePicker(
+                                allExercises,
+                                exercise,
+                              ),
                       child: Container(
                         decoration: BoxDecoration(
                           border: Border(
