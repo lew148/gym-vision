@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.dark(
           primary: Colors.green[400]!,
           secondary: const Color.fromARGB(255, 216, 160, 233),
-          tertiary: const Color.fromARGB(255, 235, 156, 140),
+          tertiary: const Color.fromARGB(255, 255, 101, 101),
           shadow: Colors.grey[400],
         ),
       ),

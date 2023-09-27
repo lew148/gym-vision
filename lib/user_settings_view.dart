@@ -39,27 +39,31 @@ class _UserSettingsViewState extends State<UserSettingsView> {
             return Column(
               children: [
                 // dev buttons
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Wrap(
+                  alignment: WrapAlignment.spaceBetween,
+                  spacing: 5,
                   children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        await FlavourTextHelper.setRecentFlavourTextScheduleNotDismissed();
-                      },
-                      child: const Text('Un-Dismiss Flavour Text'),
-                    ),
+                    // ElevatedButton(
+                    //   onPressed: () async {
+                    //     await FlavourTextHelper.setRecentFlavourTextScheduleNotDismissed();
+                    //   },
+                    //   child: const Text('Un-Dismiss Flavour Text'),
+                    // ),
                     ElevatedButton(
                       onPressed: () async => await DatabaseHelper.updateExercises(),
                       child: const Text('Update Exercises'),
                     ),
                     ElevatedButton(
                       onPressed: () async => await DatabaseHelper.deleteDb(),
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStatePropertyAll<Color>(
+                          Theme.of(context).colorScheme.tertiary,
+                        ),
+                      ),
                       child: const Text('Delete DB'),
                     ),
                   ],
                 ),
-                const Padding(padding: EdgeInsets.all(5)),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

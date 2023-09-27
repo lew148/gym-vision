@@ -73,21 +73,18 @@ class _ExerciseViewState extends State<ExerciseView> {
         ),
       ]);
 
-  Widget getExerciseViewWidget(Exercise exercise) => SizedBox(
-        width: MediaQuery.of(context).size.width * 0.8,
-        child: Column(
-          children: [
-            getExercisePropDisplay("Type", exercise.exerciseType.displayName),
-            getExercisePropDisplay("Muscle Group", exercise.muscleGroup.displayName),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                getExercisePropDisplay("Split", exercise.split.displayName),
-                getExercisePropDisplay("Equipment", exercise.equipment.displayName),
-              ],
-            ),
-          ],
-        ),
+  Widget getExerciseViewWidget(Exercise exercise) => Wrap(
+        alignment: WrapAlignment.center,
+        children: [
+          Wrap(children: [
+            getPropDisplay(context, exercise.exerciseType.displayName),
+            getPropDisplay(context, exercise.muscleGroup.displayName),
+          ]),
+          Wrap(children: [
+            getPropDisplay(context, exercise.split.displayName),
+            getPropDisplay(context, exercise.equipment.displayName),
+          ]),
+        ],
       );
 
   void openNotesForm(Exercise exercise) {
@@ -162,20 +159,6 @@ class _ExerciseViewState extends State<ExerciseView> {
     );
   }
 
-  Widget getExercisePropDisplay(String label, String value) => Card(
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
-              const Padding(padding: EdgeInsets.all(10)),
-              getPropDisplay(context, value),
-            ],
-          ),
-        ),
-      );
-
   List<Widget> getRecentUsesWidget(List<WorkoutSet> workoutSets) {
     workoutSets.removeWhere((ws) => dateIsInFuture(ws.workout!.date));
     workoutSets.sort(((a, b) => b.workout!.date.compareTo(a.workout!.date)));
@@ -203,31 +186,22 @@ class _ExerciseViewState extends State<ExerciseView> {
           padding: const EdgeInsets.all(15),
           child: Row(
             children: [
-              Text(
-                pr.workout!.getDateAndTimeString(),
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
+              Text(pr.workout!.getDateAndTimeString()),
               Expanded(
                   flex: 3,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: pr.hasWeight()
-                        ? [
-                            const Icon(
-                              Icons.fitness_center_rounded,
-                              size: 15,
-                            ),
-                            const Padding(padding: EdgeInsets.all(5)),
-                            Text(pr.getWeightDisplay()),
-                          ]
-                        : [
-                            const Center(
-                              child: Text(
-                                '-',
-                                style: TextStyle(fontSize: 30),
-                              ),
-                            ),
-                          ],
+                    children: [
+                      const Icon(
+                        Icons.fitness_center_rounded,
+                        size: 15,
+                      ),
+                      const Padding(padding: EdgeInsets.all(5)),
+                      Text(
+                        pr.getWeightDisplay(),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   )),
               Expanded(
                 flex: 3,
@@ -251,7 +225,7 @@ class _ExerciseViewState extends State<ExerciseView> {
   List<Widget> getDetailsSections(UserExerciseDetails details) => [
         getSectionTitle(context, 'PR'),
         const Divider(),
-        details.pr == null
+        details.pr == null || !details.pr!.hasWeight()
             ? const Center(
                 child: Padding(
                   padding: EdgeInsets.all(10),

@@ -13,7 +13,7 @@ class WorkoutMonthScoller extends StatefulWidget {
   final Function reloadState;
 
   const WorkoutMonthScoller({
-    super.key, 
+    super.key,
     required this.workouts,
     required this.reloadState,
   });
@@ -167,9 +167,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
           return GlobalKey();
         }
 
-        if (day != 1) {
-          widgets.insert(0, Divider(color: currentDate.weekday == 1 ? Theme.of(context).colorScheme.shadow : null));
-        }
+        if (currentDate.weekday == 1) widgets.insert(0, const Divider());
 
         widgets.insert(
           0, // adds to start of list for most recent date at top
@@ -223,7 +221,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                                           ),
                                           const Padding(padding: EdgeInsets.all(5)),
                                           Text(
-                                            'Rest Day',
+                                            'Rest',
                                             style: TextStyle(
                                               color: Theme.of(context).colorScheme.shadow,
                                             ),

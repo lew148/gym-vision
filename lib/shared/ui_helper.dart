@@ -66,15 +66,14 @@ Widget getSectionTitleWithActions(BuildContext context, String title, List<Actio
     );
 
 Widget getPropDisplay(BuildContext context, String text) => Container(
-      margin: const EdgeInsets.only(bottom: 5, right: 5),
+      margin: const EdgeInsets.all(2.5),
       padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
-        border: Border.all(color: Theme.of(context).colorScheme.onBackground),
+        border: Border.all(color: Theme.of(context).colorScheme.shadow),
         borderRadius: BorderRadius.circular(5),
       ),
       child: Text(
         text,
         textAlign: TextAlign.center,
-        style: const TextStyle(fontWeight: FontWeight.w500),
       ),
     );

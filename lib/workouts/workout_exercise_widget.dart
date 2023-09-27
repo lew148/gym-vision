@@ -271,28 +271,25 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                   dropped = !dropped;
                 }),
                 child: Padding(
-                  padding: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(5),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          Checkbox(
-                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            checkColor: Colors.white,
-                            fillColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
-                            value: widget.workoutSets.every((ws) => ws.done),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                            onChanged: (bool? value) => onGroupedWorkoutExercisesDoneTap(value),
-                          ),
-                          const Padding(padding: EdgeInsets.all(5)),
-                          Text(
-                            widget.workoutSets[0].exercise!.name,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          dropped ? const Icon(Icons.arrow_drop_up_rounded) : const Icon(Icons.arrow_drop_down_rounded)
-                        ],
+                      Checkbox(
+                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        checkColor: Colors.white,
+                        fillColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
+                        value: widget.workoutSets.every((ws) => ws.done),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                        onChanged: (bool? value) => onGroupedWorkoutExercisesDoneTap(value),
                       ),
+                      Expanded(
+                        child: Text(
+                          widget.workoutSets[0].exercise!.name,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      dropped ? const Icon(Icons.arrow_drop_up_rounded) : const Icon(Icons.arrow_drop_down_rounded),
                       Expanded(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,

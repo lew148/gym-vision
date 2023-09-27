@@ -759,5 +759,16 @@ class DataHelper {
           split: ExerciseSplit.pull,
           isDouble: false,
         ),
+
+// additions
+        Exercise(
+          id: 83,
+          name: 'Barbell Row',
+          exerciseType: ExerciseType.weight,
+          muscleGroup: MuscleGroup.back,
+          equipment: ExerciseEquipment.plates,
+          split: ExerciseSplit.pull,
+          isDouble: false,
+        ),
       ];
 }

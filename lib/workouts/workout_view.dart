@@ -96,38 +96,27 @@ class _WorkoutViewState extends State<WorkoutView> {
         ),
       );
 
-  getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories) => Wrap(
-        alignment: WrapAlignment.spaceEvenly,
-        children: workoutCategories
-            .map(
-              (wc) => Padding(
-                padding: const EdgeInsets.all(10),
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 0.75,
-                      color: Theme.of(context).colorScheme.onBackground,
-                    ),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Wrap(
-                    children: [
-                      Text(
-                        wc.getDisplayName(),
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      // const Icon(Icons.chevron_right_rounded, size: 18)
-                    ],
-                  ),
-                ),
+  getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories, List<int> existingCategoryIds) =>
+      Column(children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Wrap(
+                alignment: WrapAlignment.start,
+                children: workoutCategories.map((wc) => getPropDisplay(context, wc.getDisplayName())).toList(),
               ),
-            )
-            .toList(),
-      );
+            ),
+            getPrimaryButton(
+              actionButton: ActionButton(
+                icon: Icons.edit_rounded,
+                onTap: () => onAddCategoryClick(existingCategoryIds),
+              ),
+            ),
+          ],
+        ),
+        const Divider(),
+      ]);
 
   List<Widget> getWorkoutExercisesWidget(List<WorkoutSet>? workoutSets) {
     if (workoutSets == null || workoutSets.isEmpty) {
@@ -274,34 +263,20 @@ class _WorkoutViewState extends State<WorkoutView> {
     );
   }
 
-  List<Widget> getCategoriesParts(Workout workout, List<int> existingCategoryIds) =>
+  Widget getCategoriesWidget(Workout workout, List<int> existingCategoryIds) =>
       workout.workoutCategories == null || workout.workoutCategories!.isEmpty
-          ? [
-              Row(children: [
-                Expanded(
-                  child: getPrimaryButton(
-                    actionButton: ActionButton(
-                      onTap: () => onAddCategoryClick([]),
-                      text: 'Add Categories',
-                      icon: Icons.add_rounded,
-                    ),
+          ? Row(children: [
+              Expanded(
+                child: getPrimaryButton(
+                  actionButton: ActionButton(
+                    onTap: () => onAddCategoryClick([]),
+                    text: 'Add Categories',
+                    icon: Icons.add_rounded,
                   ),
                 ),
-              ]),
-              const Padding(padding: EdgeInsets.all(5)),
-            ]
-          : [
-              getSectionTitleWithAction(
-                context,
-                '',
-                ActionButton(
-                  icon: Icons.edit_rounded,
-                  onTap: () => onAddCategoryClick(existingCategoryIds),
-                ),
               ),
-              const Divider(),
-              getWorkoutCategoriesWidget(workout.workoutCategories!),
-            ];
+            ])
+          : getWorkoutCategoriesWidget(workout.workoutCategories!, existingCategoryIds);
 
   @override
   Widget build(BuildContext context) {
@@ -378,7 +353,7 @@ class _WorkoutViewState extends State<WorkoutView> {
             child: IntrinsicHeight(
               child: Column(
                 children: [
-                  ...getCategoriesParts(workout, existingCategoryShellIds),
+                  getCategoriesWidget(workout, existingCategoryShellIds),
                   const Padding(padding: EdgeInsets.all(5)),
                   getSectionTitleWithAction(
                     context,
