@@ -1,14 +1,16 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/helpers/exercises_helper.dart';
 import 'package:gymvision/enums.dart';
+import 'package:gymvision/shared/forms/add_exercise_form.dart';
 import 'package:gymvision/shared/ui_helper.dart';
+import 'package:sticky_headers/sticky_headers/widget.dart';
 
 import '../../../db/classes/exercise.dart';
 
 class ExercisePicker extends StatefulWidget {
   final int? exerciseId;
   final Exercise? exercise;
-  final List<int>? excludeIds;
   final List<int>? categoryShellIds;
   final bool autoOpen;
   final Function setExercise;
@@ -17,7 +19,6 @@ class ExercisePicker extends StatefulWidget {
     Key? key,
     this.exerciseId,
     this.exercise,
-    this.excludeIds,
     this.categoryShellIds,
     this.autoOpen = false,
     required this.setExercise,
@@ -44,7 +45,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
       allExercises = Future<List<Exercise>>.value([]);
       selectedExercise = ExercisesHelper.getExercise(id: widget.exerciseId!, includeUserDetails: true);
     } else {
-      allExercises = ExercisesHelper.getAllExercisesExcludingIds(widget.excludeIds, categoryShellFilters);
+      allExercises = ExercisesHelper.getAllExercisesExcludingCategories(categoryShellFilters);
     }
   }
 
@@ -57,7 +58,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
         categoryShellFilters.remove(shellId);
       }
 
-      allExercises = ExercisesHelper.getAllExercisesExcludingIds(widget.excludeIds, categoryShellFilters);
+      allExercises = ExercisesHelper.getAllExercisesExcludingCategories(categoryShellFilters);
     });
   }
 
@@ -150,42 +151,53 @@ class _ExercisePickerState extends State<ExercisePicker> {
   void showExercisePicker(
     List<Exercise> allExercises,
     Exercise? selectedExercise,
-  ) {
-    allExercises.sort(
-      (a, b) => a.muscleGroup.index.compareTo(b.muscleGroup.index),
-    );
-
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
-            child: Padding(
+  ) =>
+      showModalBottomSheet(
+        context: context,
+        builder: (context) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
               padding: const EdgeInsets.all(10),
               child: Column(
                 children: [
-                  const Text(
-                    'Select Exercise',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
+                  getSectionTitleWithAction(
+                      context,
+                      'Select Exercise',
+                      ActionButton(
+                        icon: Icons.add_rounded,
+                        onTap: showAddExerciseForm,
+                      )),
                   const Divider(),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * .8,
+                    height: MediaQuery.of(context).size.height * .7,
                     child: getPickerContent(allExercises, selectedExercise),
                   ),
                 ],
               ),
             ),
+          ],
+        ),
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+      );
+
+  void showAddExerciseForm() {
+    Navigator.pop(context);
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Column(mainAxisSize: MainAxisSize.min, children: [
+        Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
           ),
-        ],
-      ),
+          child: AddExerciseForm(
+            onAdd: (int id) => setState(() {
+              selectedExercise = ExercisesHelper.getExercise(id: id);
+            }),
+          ),
+        ),
+      ]),
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
     );
@@ -194,61 +206,77 @@ class _ExercisePickerState extends State<ExercisePicker> {
   Widget getPickerContent(
     List<Exercise> allExercises,
     Exercise? selectedExercise,
-  ) =>
-      Column(
-        children: [
-          getFilterButton(),
-          const Divider(),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: allExercises
-                    .map(
-                      (e) => GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                          widget.setExercise(e);
-                        },
-                        child: Card(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(5),
-                              ),
-                              border: Border.all(
-                                width: 2,
-                                color: selectedExercise != null && e.id == selectedExercise.id
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Colors.transparent,
-                              ),
+  ) {
+    final Map<int, List<Exercise>> groupedExercises = groupBy<Exercise, int>(allExercises, (e) => e.muscleGroup.index);
+    final List<Widget> sections = [];
+
+    groupedExercises.forEach((key, value) => sections.add(
+          StickyHeader(
+            header: Container(
+              color: Theme.of(context).canvasColor,
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Row(children: [
+                Text(
+                  value[0].muscleGroup.displayName,
+                  style: const TextStyle(fontWeight: FontWeight.w400),
+                ),
+              ]),
+            ),
+            content: Column(
+              children: value
+                  .map(
+                    (e) => GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                        widget.setExercise(e);
+                      },
+                      child: Card(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(5),
                             ),
-                            padding: const EdgeInsets.all(10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Flexible(
-                                  child: Text(
-                                    e.name,
-                                    textAlign: TextAlign.start,
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                            border: Border.all(
+                              width: 2,
+                              color: selectedExercise != null && e.id == selectedExercise.id
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Colors.transparent,
+                            ),
+                          ),
+                          padding: const EdgeInsets.all(10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  e.name,
+                                  textAlign: TextAlign.start,
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400,
                                   ),
                                 ),
-                                getPropDisplay(context, e.equipment.displayName),
-                              ],
-                            ),
+                              ),
+                              getPropDisplay(context, e.equipment.displayName),
+                            ],
                           ),
                         ),
                       ),
-                    )
-                    .toList(),
-              ),
+                    ),
+                  )
+                  .toList(),
             ),
           ),
-        ],
-      );
+        ));
+
+    return Column(
+      children: [
+        // getFilterButton(),
+        // const Padding(padding: EdgeInsets.all(5)),
+        Expanded(child: SingleChildScrollView(child: Column(children: sections))),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

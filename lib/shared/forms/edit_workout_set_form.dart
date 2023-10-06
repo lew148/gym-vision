@@ -54,9 +54,7 @@ class _EditWorkoutExerciseFormState extends State<EditWorkoutExerciseForm> {
       try {
         await WorkoutSetsHelper.updateWorkoutSet(widget.workoutSet);
       } catch (ex) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Failed to edit Workout Set'),
-        ));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to edit Workout Set')));
       }
 
       widget.reloadState();
@@ -68,9 +66,8 @@ class _EditWorkoutExerciseFormState extends State<EditWorkoutExerciseForm> {
     try {
       await WorkoutSetsHelper.removeSet(id);
     } catch (ex) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to remove Set from workout: ${ex.toString()}')),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Failed to remove Set from workout: ${ex.toString()}')));
     }
 
     widget.reloadState();

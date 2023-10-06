@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 Widget getSectionTitle(BuildContext context, String title) => Padding(
-      padding: const EdgeInsets.fromLTRB(10, 20, 10, 0),
+      padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
@@ -17,25 +17,22 @@ Widget getSectionTitle(BuildContext context, String title) => Padding(
       ),
     );
 
-Widget getPrimaryButton({required ActionButton actionButton, double? padding}) => Padding(
+Widget getPrimaryButton({required ActionButton actionButton}) => Padding(
       padding: const EdgeInsets.only(right: 10, left: 10),
       child: OutlinedButton(
         onPressed: actionButton.onTap,
-        child: Padding(
-          padding: EdgeInsets.all(padding ?? 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (actionButton.icon != null)
-                Icon(
-                  actionButton.icon,
-                  size: 25,
-                ),
-              if (actionButton.icon != null && actionButton.text != null)
-                const Padding(padding: EdgeInsets.only(left: 5)),
-              if (actionButton.text != null) Text(actionButton.text!),
-            ],
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (actionButton.icon != null)
+              Icon(
+                actionButton.icon,
+                size: 25,
+              ),
+            if (actionButton.icon != null && actionButton.text != null)
+              const Padding(padding: EdgeInsets.only(left: 5)),
+            if (actionButton.text != null) Text(actionButton.text!),
+          ],
         ),
       ),
     );
@@ -57,11 +54,10 @@ Widget getSectionTitleWithAction(BuildContext context, String title, ActionButto
 
 Widget getSectionTitleWithActions(BuildContext context, String title, List<ActionButton> actionButtons) => Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         getSectionTitle(context, title),
-        Row(
-          children: actionButtons.map((ab) => getPrimaryButton(actionButton: ab)).toList(),
-        ),
+        Row(children: actionButtons.map((ab) => getPrimaryButton(actionButton: ab)).toList()),
       ],
     );
 

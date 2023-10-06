@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gymvision/enums.dart';
 
 class CustomFormFields {
   static stringField({
@@ -159,23 +160,24 @@ class CustomFormFields {
     ]);
   }
 
-  static checkbox(
-    BuildContext context,
-    String label,
-    bool value,
-    Function(bool?) onChange,
-  ) =>
-      FormField(
-        builder: (field) => CheckboxListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Text(
-            label,
-            style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-          ),
-          value: value,
-          onChanged: onChange,
-          activeColor: Theme.of(context).colorScheme.primary,
-          checkboxShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+  static enumDropdown<T>(String label, T value, List<T> items, Function(T?) onChanged) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: Row(children: [
+        Expanded(
+          child: DropdownButton<T>(
+              isExpanded: true,
+              hint: Text(label),
+              value: value,
+              onChanged: onChanged,
+              items: items
+                  .map<DropdownMenuItem<T>>((T e) => DropdownMenuItem<T>(
+                        value: e,
+                        child: Text((e as Enum).displayName),
+                      ))
+                  .toList()),
         ),
-      );
+      ]),
+    );
+  }
 }

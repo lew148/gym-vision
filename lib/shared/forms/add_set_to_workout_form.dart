@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymvision/shared/ui_helper.dart';
 import '../../db/classes/exercise.dart';
 import '../../db/helpers/workout_sets_helper.dart';
 import '../../globals.dart';
@@ -8,7 +9,6 @@ import 'fields/exercise_picker.dart';
 class AddSetToWorkoutForm extends StatefulWidget {
   final int? workoutId;
   final int? exerciseId;
-  final List<int>? excludeExerciseIds;
   final List<int>? categoryShellIds;
   final Function reloadState;
 
@@ -16,7 +16,6 @@ class AddSetToWorkoutForm extends StatefulWidget {
     Key? key,
     this.workoutId,
     this.exerciseId,
-    this.excludeExerciseIds,
     this.categoryShellIds,
     required this.reloadState,
   }) : super(key: key);
@@ -70,9 +69,8 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
             );
           }
         } catch (ex) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to add set(s) to workout')),
-          );
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add set(s) to workout')));
         }
 
         widget.reloadState();
@@ -86,18 +84,11 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
         child: IntrinsicHeight(
           child: Column(
             children: [
-              const Text(
-                'Add Set To Workout',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-              ),
+              getSectionTitle(context, 'Add Set To Workout'),
               const Divider(),
               ExercisePicker(
                 exerciseId: widget.exerciseId,
                 exercise: selectedExercise,
-                excludeIds: widget.excludeExerciseIds,
                 categoryShellIds: widget.categoryShellIds,
                 autoOpen: true,
                 setExercise: (newExercise) => setState(() {

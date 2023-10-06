@@ -17,9 +17,7 @@ class _FlavourTextCardState extends State<FlavourTextCard> {
     try {
       await FlavourTextHelper.setFlavourTextScheduleDismissed(fts);
     } catch (ex) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to dismiss Flavour Text')),
-      );
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to dismiss Flavour Text')));
     }
     setState(() {});
   }

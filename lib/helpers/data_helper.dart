@@ -1,12 +1,26 @@
+import 'package:gymvision/db/classes/flavour_text.dart';
 import 'package:gymvision/enums.dart';
 
 import '../db/classes/exercise.dart';
 
 class DataHelper {
+  static List<FlavourText> getFlavourTests() => [
+        FlavourText(message: "Make sure you are drinking enough water!"),
+        FlavourText(message: "Rest days are as important as workout days!"),
+        FlavourText(message: "Giving up kills gains!"),
+        FlavourText(message: "Remember to warm-up and cool-down!"),
+        FlavourText(message: "Even the smallest workouts help you grow!"),
+        FlavourText(message: "Mindset is half of the struggle!"),
+        FlavourText(message: "Your limits arent real. Only in the mind"),
+        FlavourText(message: "Have a good workout!"),
+        FlavourText(message: "Routine is the best form of discipline!"),
+        FlavourText(message: "Be extra careful when hitting PRs!"),
+        FlavourText(message: "If you keep showing up, you'll be unbeatable!"),
+      ];
+
   static List<Exercise> getDefaultExercises() => [
 // shoulders
         Exercise(
-          id: 1,
           name: 'DB Shoulder Press',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.shoulders,
@@ -15,7 +29,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 2,
           name: 'Steering Wheel Raise',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.shoulders,
@@ -24,16 +37,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 3,
-          name: 'DB Shrug',
-          exerciseType: ExerciseType.weight,
-          muscleGroup: MuscleGroup.shoulders,
-          equipment: ExerciseEquipment.dumbbell,
-          split: ExerciseSplit.pull,
-          isDouble: true,
-        ),
-        Exercise(
-          id: 4,
           name: 'DB Side Delt Raise',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.shoulders,
@@ -42,7 +45,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 5,
           name: 'DB Front Delt Raise',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.shoulders,
@@ -51,7 +53,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 6,
           name: 'DB Rear Delt Raise',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.shoulders,
@@ -60,7 +61,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 7,
           name: 'Cable Side Delt Raise',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.shoulders,
@@ -69,7 +69,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 8,
           name: 'Cable Front Delt Raise',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.shoulders,
@@ -78,7 +77,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 9,
           name: 'Cable Rear Delt Fly',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.shoulders,
@@ -87,7 +85,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 10,
           name: 'Cable External Rotation',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.shoulders,
@@ -96,7 +93,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 11,
           name: 'Barbell Shoulder Press',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.shoulders,
@@ -105,7 +101,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 12,
           name: 'Plated Shoulder Press',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.shoulders,
@@ -114,7 +109,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 13,
           name: 'Shoulder Press Machine',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.shoulders,
@@ -125,7 +119,6 @@ class DataHelper {
 
 // chest
         Exercise(
-          id: 14,
           name: 'Plated Chest Press',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.chest,
@@ -134,7 +127,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 15,
           name: 'Cable Low Fly',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.chest,
@@ -143,7 +135,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 16,
           name: 'Cable Mid Fly',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.chest,
@@ -152,7 +143,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 17,
           name: 'Cable High Fly',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.chest,
@@ -161,7 +151,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 18,
           name: 'DB Fly',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.chest,
@@ -170,7 +159,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 19,
           name: 'Flat Chest Press',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.chest,
@@ -179,7 +167,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 20,
           name: 'Incline Chest Press',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.chest,
@@ -188,7 +175,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 21,
           name: 'Flat Bench Press',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.chest,
@@ -197,7 +183,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 22,
           name: 'Incline Bench Press',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.chest,
@@ -206,7 +191,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 23,
           name: 'Pectoral Machine',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.chest,
@@ -217,7 +201,6 @@ class DataHelper {
 
 // biceps
         Exercise(
-          id: 24,
           name: 'DB Curl',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.biceps,
@@ -226,7 +209,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 25,
           name: 'Seated DB Curl',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.biceps,
@@ -235,7 +217,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 26,
           name: 'Barbell Bicep Curl',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.biceps,
@@ -244,7 +225,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 27,
           name: 'Cable Bar Curl',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.biceps,
@@ -253,7 +233,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 28,
           name: 'Single Cable Curl',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.biceps,
@@ -262,7 +241,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 29,
           name: 'DB Hammer Curl',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.biceps,
@@ -271,7 +249,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 30,
           name: 'Chin Up',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.biceps,
@@ -280,7 +257,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 31,
           name: 'Preacher Curl',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.biceps,
@@ -291,7 +267,22 @@ class DataHelper {
 
 // back
         Exercise(
-          id: 32,
+          name: 'DB Shrug',
+          exerciseType: ExerciseType.weight,
+          muscleGroup: MuscleGroup.back,
+          equipment: ExerciseEquipment.dumbbell,
+          split: ExerciseSplit.pull,
+          isDouble: true,
+        ),
+        Exercise(
+          name: 'Barbell Row',
+          exerciseType: ExerciseType.weight,
+          muscleGroup: MuscleGroup.back,
+          equipment: ExerciseEquipment.plates,
+          split: ExerciseSplit.pull,
+          isDouble: false,
+        ),
+        Exercise(
           name: 'Cable Diverging Row',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.back,
@@ -300,7 +291,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 33,
           name: 'Cable Pullover',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.back,
@@ -309,7 +299,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 34,
           name: 'Cable Single Pullover',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.back,
@@ -318,7 +307,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 35,
           name: 'Lat Pulldown',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.back,
@@ -327,7 +315,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 36,
           name: 'Short Grip Lat Pulldown',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.back,
@@ -336,7 +323,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 37,
           name: 'Seated Low Row',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.back,
@@ -345,7 +331,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 38,
           name: 'Plated Low Row',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.back,
@@ -354,7 +339,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 39,
           name: 'T Row',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.back,
@@ -363,7 +347,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 40,
           name: 'Bench DB Row',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.back,
@@ -372,7 +355,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 41,
           name: 'Pull up',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.back,
@@ -381,7 +363,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 42,
           name: 'Kneeling Cable Row',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.back,
@@ -392,7 +373,6 @@ class DataHelper {
 
 // triceps
         Exercise(
-          id: 43,
           name: 'Triceps Pushdown',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.triceps,
@@ -401,7 +381,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 44,
           name: 'Single Tricep Pushdown',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.triceps,
@@ -410,7 +389,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 45,
           name: 'Cable Triceps Extension',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.triceps,
@@ -419,7 +397,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 46,
           name: 'Single Cable Tricep Extension',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.triceps,
@@ -428,7 +405,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 47,
           name: 'DB Triceps Extension',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.triceps,
@@ -437,7 +413,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 48,
           name: 'Single DB Tricep Extension',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.triceps,
@@ -446,7 +421,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 49,
           name: 'Triceps Dip',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.triceps,
@@ -455,7 +429,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 50,
           name: 'Skull Crushers',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.triceps,
@@ -466,7 +439,6 @@ class DataHelper {
 
 // core
         Exercise(
-          id: 51,
           name: 'Crunch Machine',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.core,
@@ -475,7 +447,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 52,
           name: 'Suspended Leg Lifts',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.core,
@@ -484,7 +455,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 53,
           name: 'Oblique Lift',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.core,
@@ -493,7 +463,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 54,
           name: 'Sit-Ups',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.core,
@@ -502,7 +471,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 55,
           name: 'Russian Twists',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.core,
@@ -511,7 +479,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 56,
           name: 'Cable Crunch',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.core,
@@ -522,7 +489,6 @@ class DataHelper {
 
 // hamstrings & glutes
         Exercise(
-          id: 57,
           name: 'Cable Abductor Lift',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.hamstringsAndGlutes,
@@ -531,7 +497,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 58,
           name: 'Abductor Machine',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.hamstringsAndGlutes,
@@ -540,7 +505,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 59,
           name: 'Seated Leg Curl',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.hamstringsAndGlutes,
@@ -549,7 +513,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 60,
           name: 'Single Seated Leg Curl',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.hamstringsAndGlutes,
@@ -558,7 +521,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 61,
           name: 'Prone Leg Curl',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.hamstringsAndGlutes,
@@ -567,7 +529,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 62,
           name: 'Single Prone Leg Curl',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.hamstringsAndGlutes,
@@ -576,7 +537,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 63,
           name: 'Sumo Squat',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.hamstringsAndGlutes,
@@ -585,7 +545,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 64,
           name: 'Deadlift',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.hamstringsAndGlutes,
@@ -594,7 +553,14 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 65,
+          name: 'Sumo Deadlift',
+          exerciseType: ExerciseType.weight,
+          muscleGroup: MuscleGroup.hamstringsAndGlutes,
+          equipment: ExerciseEquipment.plates,
+          split: ExerciseSplit.legs,
+          isDouble: false,
+        ),
+        Exercise(
           name: 'RDL',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.hamstringsAndGlutes,
@@ -603,7 +569,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 66,
           name: 'DB RDL',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.hamstringsAndGlutes,
@@ -612,7 +577,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 67,
           name: 'Hip Thrust',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.hamstringsAndGlutes,
@@ -623,7 +587,6 @@ class DataHelper {
 
 // quads & calves
         Exercise(
-          id: 68,
           name: 'Hack Squat',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.quadsAndCalves,
@@ -632,7 +595,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 69,
           name: 'Squat',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.quadsAndCalves,
@@ -641,7 +603,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 70,
           name: 'Barbell Lunge',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.quadsAndCalves,
@@ -650,7 +611,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 71,
           name: 'DB Lunge',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.quadsAndCalves,
@@ -659,7 +619,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 72,
           name: 'Leg Press',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.quadsAndCalves,
@@ -668,7 +627,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 73,
           name: 'Calf Press',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.quadsAndCalves,
@@ -677,7 +635,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 74,
           name: 'Leg Extension',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.quadsAndCalves,
@@ -686,7 +643,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 75,
           name: 'Single Leg Extension',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.quadsAndCalves,
@@ -695,7 +651,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 76,
           name: 'Barbell Calf Raise',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.quadsAndCalves,
@@ -704,7 +659,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 77,
           name: 'Single Barbell Calf Raise',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.quadsAndCalves,
@@ -713,7 +667,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 78,
           name: 'DB Calf Raise',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.quadsAndCalves,
@@ -722,7 +675,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 79,
           name: 'Adductor Machine',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.quadsAndCalves,
@@ -733,7 +685,6 @@ class DataHelper {
 
 // forearms
         Exercise(
-          id: 80,
           name: 'DB Wrist Curl',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.forearms,
@@ -742,7 +693,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 81,
           name: 'DB Wrist Rotation',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.forearms,
@@ -751,22 +701,10 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 82,
           name: 'Cable Wrist Curl',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.forearms,
           equipment: ExerciseEquipment.cable,
-          split: ExerciseSplit.pull,
-          isDouble: false,
-        ),
-
-// additions
-        Exercise(
-          id: 83,
-          name: 'Barbell Row',
-          exerciseType: ExerciseType.weight,
-          muscleGroup: MuscleGroup.back,
-          equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.pull,
           isDouble: false,
         ),

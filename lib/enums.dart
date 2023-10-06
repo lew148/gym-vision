@@ -1,5 +1,6 @@
 import 'package:gymvision/helpers/workout_category_helper.dart';
 
+
 enum ExerciseEditableField {
   name,
   weight,
@@ -60,48 +61,11 @@ enum WorkoutCategoryType {
   other,
 }
 
-extension WorkoutCategoryTypeHelper on WorkoutCategoryType {
-  String get displayName {
-    switch (this) {
-      case WorkoutCategoryType.muscleGroup:
-        return muscleGroupDisplayName;
-      case WorkoutCategoryType.split:
-        return splitDisplayName;
-      case WorkoutCategoryType.stretch:
-        return stretchDisplayName;
-      case WorkoutCategoryType.cardio:
-        return cardioDisplayName;
-      case WorkoutCategoryType.Class:
-        return classDisplayName;
-      case WorkoutCategoryType.other:
-        return otherDisplayName;
-    }
-  }
-}
-
 enum ExerciseType {
   cardio,
   stretch,
   weight, // includes body-weight
   other,
-}
-
-extension ExerciseTypeHelper on ExerciseType {
-  String get displayName {
-    switch (this) {
-      case ExerciseType.cardio:
-        return cardioDisplayName;
-      case ExerciseType.stretch:
-        return stretchDisplayName;
-      case ExerciseType.weight:
-        return weightDisplayName;
-      case ExerciseType.other:
-        return otherDisplayName;
-    }
-  }
-
-  WorkoutCategoryShell get categoryShell =>
-      WorkoutCategoryHelper.getMiscCategoryShells().firstWhere((e) => e.displayName == displayName);
 }
 
 enum MuscleGroup {
@@ -117,9 +81,69 @@ enum MuscleGroup {
   other,
 }
 
+enum ExerciseSplit {
+  push,
+  pull,
+  legs,
+  other,
+}
+
+enum ExerciseEquipment {
+  none,
+  barbell,
+  bodyWeight,
+  cable,
+  dumbbell,
+  kettlebell,
+  machine,
+  plates,
+  other,
+}
+
+//
+// Extensions
+//
+
+extension ExerciseTypeHelper on ExerciseType {
+  WorkoutCategoryShell get categoryShell =>
+      WorkoutCategoryHelper.getMiscCategoryShells().firstWhere((e) => e.displayName == displayName);
+}
+
 extension MuscleGroupHelper on MuscleGroup {
+  WorkoutCategoryShell get categoryShell =>
+      WorkoutCategoryHelper.getMuscleGroupCategoryShells().firstWhere((e) => e.displayName == displayName);
+}
+
+extension ExerciseSplitHelper on ExerciseSplit {
+  WorkoutCategoryShell get categoryShell =>
+      WorkoutCategoryHelper.getSplitCategoryShells().firstWhere((e) => e.displayName == displayName);
+}
+
+extension EnumHelper on Enum {
   String get displayName {
     switch (this) {
+      case WorkoutCategoryType.muscleGroup:
+        return muscleGroupDisplayName;
+      case WorkoutCategoryType.split:
+        return splitDisplayName;
+      case WorkoutCategoryType.stretch:
+        return stretchDisplayName;
+      case WorkoutCategoryType.cardio:
+        return cardioDisplayName;
+      case WorkoutCategoryType.Class:
+        return classDisplayName;
+      case WorkoutCategoryType.other:
+        return otherDisplayName;
+
+      case ExerciseType.cardio:
+        return cardioDisplayName;
+      case ExerciseType.stretch:
+        return stretchDisplayName;
+      case ExerciseType.weight:
+        return weightDisplayName;
+      case ExerciseType.other:
+        return otherDisplayName;
+
       case MuscleGroup.back:
         return backDisplayName;
       case MuscleGroup.biceps:
@@ -140,23 +164,7 @@ extension MuscleGroupHelper on MuscleGroup {
         return tricepsDisplayName;
       case MuscleGroup.other:
         return otherDisplayName;
-    }
-  }
 
-  WorkoutCategoryShell get categoryShell =>
-      WorkoutCategoryHelper.getMuscleGroupCategoryShells().firstWhere((e) => e.displayName == displayName);
-}
-
-enum ExerciseSplit {
-  push,
-  pull,
-  legs,
-  other,
-}
-
-extension ExerciseSplitHelper on ExerciseSplit {
-  String get displayName {
-    switch (this) {
       case ExerciseSplit.push:
         return pushDisplayName;
       case ExerciseSplit.pull:
@@ -165,28 +173,7 @@ extension ExerciseSplitHelper on ExerciseSplit {
         return legsDisplayName;
       case ExerciseSplit.other:
         return otherDisplayName;
-    }
-  }
 
-  WorkoutCategoryShell get categoryShell =>
-      WorkoutCategoryHelper.getSplitCategoryShells().firstWhere((e) => e.displayName == displayName);
-}
-
-enum ExerciseEquipment {
-  none,
-  barbell,
-  bodyWeight,
-  cable,
-  dumbbell,
-  kettlebell,
-  machine,
-  plates,
-  other,
-}
-
-extension ExerciseEquipmentHelper on ExerciseEquipment {
-  String get displayName {
-    switch (this) {
       case ExerciseEquipment.none:
         return noneDisplayName;
       case ExerciseEquipment.barbell:
@@ -205,6 +192,9 @@ extension ExerciseEquipmentHelper on ExerciseEquipment {
         return platesDisplayName;
       case ExerciseEquipment.other:
         return otherDisplayName;
+
+      default:
+        return '';
     }
   }
 }

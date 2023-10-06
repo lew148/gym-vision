@@ -2,19 +2,13 @@ import 'package:gymvision/db/classes/exercise.dart';
 import 'package:gymvision/db/db.dart';
 import 'package:gymvision/db/helpers/user_exercise_details_helper.dart';
 import 'package:gymvision/enums.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '../../helpers/workout_category_helper.dart';
 
 class ExercisesHelper {
-  static Future<List<Exercise>> getAllExercisesExcludingIds(
-    List<int>? excludedExerciseIds,
-    List<int>? categoryShellIds,
-  ) async {
+  static Future<List<Exercise>> getAllExercisesExcludingCategories(List<int>? categoryShellIds) async {
     StringBuffer? whereString;
-
-    if (excludedExerciseIds != null && excludedExerciseIds.isNotEmpty) {
-      whereString = StringBuffer('exercises.id NOT IN (${excludedExerciseIds.join(',')})');
-    }
 
     if (categoryShellIds != null && categoryShellIds.isNotEmpty) {
       final shellDisplayNames =
@@ -25,28 +19,23 @@ class ExercisesHelper {
           MuscleGroup.values.where((mg) => shellDisplayNames.contains(mg.displayName)).map((e) => e.index);
       final splits = ExerciseSplit.values.where((mg) => shellDisplayNames.contains(mg.displayName)).map((e) => e.index);
 
-      if (whereString != null) {
-        whereString.write(' AND ');
-      } else {
-        whereString = StringBuffer();
-      }
-
       var needAnd = false;
+      whereString = StringBuffer();
 
       if (exerciseTypes.isNotEmpty) {
-        whereString.write('exercises.exerciseType IN (${exerciseTypes.join(',')})');
+        whereString.write('exerciseType IN (${exerciseTypes.join(',')})');
         needAnd = true;
       }
 
       if (muscleGroups.isNotEmpty) {
         if (needAnd) whereString.write(' AND ');
-        whereString.write('exercises.muscleGroup IN (${muscleGroups.join(',')})');
+        whereString.write('muscleGroup IN (${muscleGroups.join(',')})');
         needAnd = true;
       }
 
       if (splits.isNotEmpty) {
         if (needAnd) whereString.write(' AND ');
-        whereString.write('exercises.split IN (${splits.join(',')})');
+        whereString.write('split IN (${splits.join(',')})');
       }
     }
 
@@ -63,17 +52,9 @@ class ExercisesHelper {
   }) async {
     final db = await DatabaseHelper.getDb();
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
-      SELECT
-        exercises.id,
-        exercises.name,
-        exercises.exerciseType,
-        exercises.muscleGroup,
-        exercises.equipment,
-        exercises.split,
-        exercises.isDouble
+      SELECT *
       FROM exercises
-      ${whereString != null ? 'WHERE $whereString' : ''}
-      ORDER BY exercises.name ASC;
+      ${whereString != null ? 'WHERE $whereString' : ''};
     ''');
 
     List<Exercise> exercises = [];
@@ -88,6 +69,7 @@ class ExercisesHelper {
           equipment: ExerciseEquipment.values.elementAt(map['equipment']),
           split: ExerciseSplit.values.elementAt(map['split']),
           isDouble: map['isDouble'] == 1,
+          isCustom: map['isCustom'],
           userExerciseDetails: includeUserDetails
               ? await UserExerciseDetailsHelper.getUserDetailsForExercise(
                   exerciseId: map['id'], includeRecentUses: includeRecentUses)
@@ -120,6 +102,7 @@ class ExercisesHelper {
       equipment: ExerciseEquipment.values.elementAt(map['equipment']),
       split: ExerciseSplit.values.elementAt(map['split']),
       isDouble: map['isDouble'] == 1,
+      isCustom: map['isCustom'],
       userExerciseDetails: includeUserDetails
           ? await UserExerciseDetailsHelper.getUserDetailsForExercise(
               exerciseId: map['id'], includeRecentUses: includeRecentUses)
@@ -127,15 +110,19 @@ class ExercisesHelper {
     );
   }
 
-  // static Future<void> insertExercise(Exercise exercise) async {
-  //   final db = await DatabaseHelper().getDb();
-  //   await exerciseIsValidAndUnique(db, exercise);
-  //   await db.insert(
-  //     'exercises',
-  //     exercise.toMap(),
-  //     conflictAlgorithm: ConflictAlgorithm.replace,
-  //   );
-  // }
+  //
+  // user exercises
+  //
+
+  static Future<int> insertExercise(Exercise exercise) async {
+    final db = await DatabaseHelper.getDb();
+    await exerciseIsValidAndUnique(db, exercise);
+    return await db.insert(
+      'exercises',
+      exercise.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
 
   // static Future<void> deleteExercise(int id) async {
   //   final db = await DatabaseHelper().getDb();
@@ -157,18 +144,18 @@ class ExercisesHelper {
   //   );
   // }
 
-  // static exerciseIsValidAndUnique(Database db, Exercise exercise) async {
-  //   if (exercise.name.isEmpty) throw Exception('Exercise must have a name.');
+  static exerciseIsValidAndUnique(Database db, Exercise exercise) async {
+    if (exercise.name.isEmpty) throw Exception('Exercise must have a name.');
 
-  //   final numWithSameName = Sqflite.firstIntValue(await db.rawQuery('''
-  //     SELECT COUNT(name)
-  //     FROM exercises
-  //     WHERE lower(name) = lower('${exercise.name}')
-  //     AND id is not ${exercise.id};
-  //   '''));
+    final numWithSameName = Sqflite.firstIntValue(await db.rawQuery('''
+      SELECT COUNT(name)
+      FROM exercises
+      WHERE lower(name) = lower('${exercise.name}')
+      AND id is not ${exercise.id};
+    '''));
 
-  //   if (numWithSameName != null && numWithSameName > 0) {
-  //     throw Exception('Exercise with this name already exists.');
-  //   }
-  // }
+    if (numWithSameName != null && numWithSameName > 0) {
+      throw Exception('Exercise with this name already exists.');
+    }
+  }
 }

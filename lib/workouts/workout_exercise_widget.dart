@@ -57,13 +57,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         done: false,
       );
     } catch (ex) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Failed add set to workout: ${ex.toString()}',
-          ),
-        ),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Failed add set to workout: ${ex.toString()}')));
     }
 
     widget.reloadState();
@@ -176,7 +171,6 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
             icon: Icons.copy_rounded,
             onTap: () => onCopySetButtonTap(widget.workoutSets.last),
           ),
-          padding: 0,
         ),
       ),
       Expanded(
@@ -188,7 +182,6 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
               widget.workoutSets[0].workoutId,
             ),
           ),
-          padding: 0,
         ),
       ),
     ]));
@@ -233,11 +226,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
             widget.workoutSets[0].exerciseId,
           );
         } catch (ex) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to remove Exercise from workout: ${ex.toString()}'),
-            ),
-          );
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('Failed to remove Exercise from workout: ${ex.toString()}')));
         }
 
         widget.reloadState();
@@ -278,7 +268,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                       Checkbox(
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         checkColor: Colors.white,
-                        fillColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
+                        activeColor: Theme.of(context).colorScheme.primary,
                         value: widget.workoutSets.every((ws) => ws.done),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                         onChanged: (bool? value) => onGroupedWorkoutExercisesDoneTap(value),
@@ -307,7 +297,6 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                                     )
                                     .then((value) => widget.reloadState()),
                               ),
-                              padding: 0,
                             ),
                             IconButton(
                               icon: Icon(

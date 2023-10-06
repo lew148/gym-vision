@@ -2,18 +2,35 @@ import 'package:gymvision/helpers/data_helper.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
+import 'migrations.dart';
+
 class DatabaseHelper {
   static Future<Database>? database;
 
   static deleteDb() async => await deleteDatabase('gymvision.db');
 
   static openDb() async {
+    int amountOfMigrations = migrationScripts.length;
     database = openDatabase(
       join(await getDatabasesPath(), 'gymvision.db'),
-      version: 1,
+      version: amountOfMigrations,
       onCreate: (db, version) async {
         Batch batch = db.batch();
         initialDbCreate(batch);
+
+        for (int i = 1; i <= amountOfMigrations; i++) {
+          batch.execute(migrationScripts[i]!);
+        }
+
+        await batch.commit();
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        Batch batch = db.batch();
+
+        for (int i = oldVersion + 1; i <= newVersion; i++) {
+          batch.execute(migrationScripts[i]!);
+        }
+
         await batch.commit();
       },
     );
@@ -28,85 +45,56 @@ class DatabaseHelper {
   static void initialDbCreate(Batch batch) {
     batch.execute('''
           CREATE TABLE workouts(
-            id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             date TEXT NOT NULL,
             done INTEGER DEFAULT 0
           );
-        ''');
 
-    batch.execute('''
           CREATE TABLE workout_categories(
-            id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             workoutId INTEGER NOT NULL,
             categoryShellId INTEGER NOT NULL
           );
-        ''');
 
-    batch.execute('''
-        CREATE TABLE workout_sets(
-          id INTEGER PRIMARY KEY,
-          workoutId INTEGER NOT NULL,
-          exerciseId INTEGER,
-          done INTEGER DEFAULT 0,
-          weight REAL,
-          reps INTEGER,
-          lastUpdated TEXT NOT NULL
-        );
-      ''');
-
-    batch.execute('''
-          CREATE TABLE flavour_texts(
-            id INTEGER PRIMARY KEY,
-            message TEXT
-          );
-        ''');
-
-    batch.execute('''
-           INSERT INTO flavour_texts(id, message)
-            VALUES
-              (1, "Make sure you are drinking enough water!"),
-              (2, "Rest days are as important as workout days!"),
-              (3, "Giving up kills gains!"),
-              (4, "Remember to warm-up and cool-down!"),
-              (5, "Even the smallest workouts help you grow!"),
-              (6, "Mindset is half of the struggle!"),
-              (7, "Your limits arent real. Only in the mind!"),
-              (8, "Have a good workout!"),
-              (9, "Routine is the best form of discipline!"),
-              (10, "Be extra careful when hitting PRs!"),
-              (11, "If you keep showing up, you'll be unbeatable!");
-        ''');
-
-    batch.execute('''
-          CREATE TABLE flavour_text_schedules(
-            id INTEGER PRIMARY KEY,
-            flavourTextId INTEGER NOT NULL,
-            date TEXT NOT NULL,
-            dismissed INTEGER NOT NULL DEFAULT 0
-          );
-        ''');
-
-    batch.execute('''
-          CREATE TABLE user_settings(
-            id INTEGER PRIMARY KEY,
-            theme TEXT
-          );
-        ''');
-
-    batch.execute('''
-          INSERT INTO user_settings(id, theme) VALUES (1, "system");
-        ''');
-
-    batch.execute('''
           CREATE TABLE exercises(
-            id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
             exerciseType INTEGER NOT NULL,
             muscleGroup INTEGER NOT NULL,
             equipment INTEGER,
             split INTEGER,
-            isDouble INTEGER DEFAULT 0
+            isDouble INTEGER DEFAULT 0,
+            isCustom INTEGER DEFAULT 0
           );
+
+          CREATE TABLE workout_sets(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            workoutId INTEGER NOT NULL,
+            exerciseId INTEGER,
+            done INTEGER DEFAULT 0,
+            weight REAL,
+            reps INTEGER,
+            lastUpdated TEXT NOT NULL
+          );
+
+          CREATE TABLE flavour_texts(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            message TEXT
+          );
+
+          CREATE TABLE flavour_text_schedules(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            flavourTextId INTEGER NOT NULL,
+            date TEXT NOT NULL,
+            dismissed INTEGER NOT NULL DEFAULT 0
+          );
+
+          CREATE TABLE user_settings(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            theme TEXT
+          );
+
+          INSERT INTO user_settings(id, theme) VALUES (1, "system");
         ''');
 
     batch.execute(getInsertExercisesSql());
@@ -137,5 +125,12 @@ class DatabaseHelper {
     }
 
     return buffer.toString();
+  }
+
+  static restartDbWhilePersistingData() async {
+    final db = await getDb();
+    var workouts = db.query('workouts');
+    var categories = db.query('workout_categories');
+    var sets = db.query('workout_sets');
   }
 }
