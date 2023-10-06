@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymvision/shared/ui_helper.dart';
 import '../../db/classes/exercise.dart';
 import '../../db/helpers/workout_sets_helper.dart';
 import '../../globals.dart';
@@ -86,13 +87,7 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
         child: IntrinsicHeight(
           child: Column(
             children: [
-              const Text(
-                'Add Set To Workout',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                ),
-              ),
+              getSectionTitle(context, 'Add Set'),
               const Divider(),
               ExercisePicker(
                 exerciseId: widget.exerciseId,

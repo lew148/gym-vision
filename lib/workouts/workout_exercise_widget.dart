@@ -278,7 +278,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                       Checkbox(
                         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         checkColor: Colors.white,
-                        fillColor: MaterialStateProperty.all(Theme.of(context).colorScheme.primary),
+                        activeColor: Theme.of(context).colorScheme.primary,
                         value: widget.workoutSets.every((ws) => ws.done),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                         onChanged: (bool? value) => onGroupedWorkoutExercisesDoneTap(value),

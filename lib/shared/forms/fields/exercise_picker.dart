@@ -1,7 +1,9 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/helpers/exercises_helper.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/shared/ui_helper.dart';
+import 'package:sticky_headers/sticky_headers/widget.dart';
 
 import '../../../db/classes/exercise.dart';
 
@@ -79,13 +81,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                         padding: const EdgeInsets.all(20),
                         child: Column(
                           children: [
-                            const Text(
-                              'Exercise Filters',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                              ),
-                            ),
+                            getSectionTitle(context, 'Exercise Filters'),
                             const Divider(),
                             SizedBox(
                               height: MediaQuery.of(context).size.height * 0.75,
@@ -168,16 +164,10 @@ class _ExercisePickerState extends State<ExercisePicker> {
               padding: const EdgeInsets.all(10),
               child: Column(
                 children: [
-                  const Text(
-                    'Select Exercise',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
+                  getSectionTitle(context, 'Select Exercise'),
                   const Divider(),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * .8,
+                    height: MediaQuery.of(context).size.height * .7,
                     child: getPickerContent(allExercises, selectedExercise),
                   ),
                 ],
@@ -194,61 +184,77 @@ class _ExercisePickerState extends State<ExercisePicker> {
   Widget getPickerContent(
     List<Exercise> allExercises,
     Exercise? selectedExercise,
-  ) =>
-      Column(
-        children: [
-          getFilterButton(),
-          const Divider(),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: allExercises
-                    .map(
-                      (e) => GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                          widget.setExercise(e);
-                        },
-                        child: Card(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(5),
-                              ),
-                              border: Border.all(
-                                width: 2,
-                                color: selectedExercise != null && e.id == selectedExercise.id
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Colors.transparent,
-                              ),
+  ) {
+    final Map<int, List<Exercise>> groupedExercises = groupBy<Exercise, int>(allExercises, (e) => e.muscleGroup.index);
+    final List<Widget> sections = [];
+
+    groupedExercises.forEach((key, value) => sections.add(
+          StickyHeader(
+            header: Container(
+              color: Theme.of(context).canvasColor,
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Row(children: [
+                Text(
+                  value[0].muscleGroup.displayName,
+                  style: const TextStyle(fontWeight: FontWeight.w400),
+                ),
+              ]),
+            ),
+            content: Column(
+              children: value
+                  .map(
+                    (e) => GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                        widget.setExercise(e);
+                      },
+                      child: Card(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(5),
                             ),
-                            padding: const EdgeInsets.all(10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Flexible(
-                                  child: Text(
-                                    e.name,
-                                    textAlign: TextAlign.start,
-                                    style: const TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                            border: Border.all(
+                              width: 2,
+                              color: selectedExercise != null && e.id == selectedExercise.id
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Colors.transparent,
+                            ),
+                          ),
+                          padding: const EdgeInsets.all(10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  e.name,
+                                  textAlign: TextAlign.start,
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400,
                                   ),
                                 ),
-                                getPropDisplay(context, e.equipment.displayName),
-                              ],
-                            ),
+                              ),
+                              getPropDisplay(context, e.equipment.displayName),
+                            ],
                           ),
                         ),
                       ),
-                    )
-                    .toList(),
-              ),
+                    ),
+                  )
+                  .toList(),
             ),
           ),
-        ],
-      );
+        ));
+
+    return Column(
+      children: [
+        // getFilterButton(),
+        // const Padding(padding: EdgeInsets.all(5)),
+        Expanded(child: SingleChildScrollView(child: Column(children: sections))),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
