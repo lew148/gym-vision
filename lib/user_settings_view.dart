@@ -3,7 +3,6 @@ import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/user_settings.dart';
 import 'package:gymvision/db/db.dart';
-import 'package:gymvision/db/helpers/flavour_text_helper.dart';
 import 'package:gymvision/enums.dart';
 import 'db/helpers/user_settings_helper.dart';
 import 'globals.dart';
@@ -52,6 +51,10 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                     ElevatedButton(
                       onPressed: () async => await DatabaseHelper.updateExercises(),
                       child: const Text('Update Exercises'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async => await DatabaseHelper.restartDbWhilePersistingData(),
+                      child: const Text('Update DB (keep data)'),
                     ),
                     ElevatedButton(
                       onPressed: () async => await DatabaseHelper.deleteDb(),

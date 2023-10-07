@@ -10,7 +10,6 @@ import '../../../db/classes/exercise.dart';
 class ExercisePicker extends StatefulWidget {
   final int? exerciseId;
   final Exercise? exercise;
-  final List<int>? excludeIds;
   final List<int>? categoryShellIds;
   final bool autoOpen;
   final Function setExercise;
@@ -19,7 +18,6 @@ class ExercisePicker extends StatefulWidget {
     Key? key,
     this.exerciseId,
     this.exercise,
-    this.excludeIds,
     this.categoryShellIds,
     this.autoOpen = false,
     required this.setExercise,
@@ -46,7 +44,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
       allExercises = Future<List<Exercise>>.value([]);
       selectedExercise = ExercisesHelper.getExercise(id: widget.exerciseId!, includeUserDetails: true);
     } else {
-      allExercises = ExercisesHelper.getAllExercisesExcludingIds(widget.excludeIds, categoryShellFilters);
+      allExercises = ExercisesHelper.getAllExercisesExcludingCategories(categoryShellFilters);
     }
   }
 
@@ -59,7 +57,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
         categoryShellFilters.remove(shellId);
       }
 
-      allExercises = ExercisesHelper.getAllExercisesExcludingIds(widget.excludeIds, categoryShellFilters);
+      allExercises = ExercisesHelper.getAllExercisesExcludingCategories(categoryShellFilters);
     });
   }
 

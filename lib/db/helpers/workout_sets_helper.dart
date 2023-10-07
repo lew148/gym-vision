@@ -9,19 +9,18 @@ import '../db.dart';
 
 class WorkoutSetsHelper {
   static Future<List<WorkoutSet>?> getWorkoutSetsForWorkout(int workoutId) async =>
-      await getWorkoutSets(whereProp: 'workoutId', value: workoutId);
+      await getWorkoutSets(whereStr: 'workoutId = $workoutId');
 
   static Future<List<WorkoutSet>?> getWorkoutSetsForExercise(int exerciseId) async =>
-      await getWorkoutSets(whereProp: 'exerciseId', value: exerciseId);
+      await getWorkoutSets(whereStr: 'exerciseId = $exerciseId');
 
   static Future<WorkoutSet?> getWorkoutSet({required int id, bool shallow = false}) async {
-    var sets = await getWorkoutSets(whereProp: 'id', value: id, shallow: shallow);
+    var sets = await getWorkoutSets(whereStr: 'id = $id', shallow: shallow);
     return sets.isNotEmpty ? sets.first : null;
   }
 
   static Future<List<WorkoutSet>> getWorkoutSets({
-    required String whereProp,
-    required int value,
+    String? whereStr,
     bool shallow = false,
   }) async {
     final db = await DatabaseHelper.getDb();
@@ -43,7 +42,7 @@ class WorkoutSetsHelper {
       FROM workout_sets
       LEFT JOIN workouts ON workout_sets.workoutId = workouts.id
       LEFT JOIN exercises ON workout_sets.exerciseId = exercises.id
-      WHERE workout_sets.$whereProp = $value;
+      ${whereStr == null ? '' : 'WHERE workout_sets.$whereStr'};
     ''');
 
     List<WorkoutSet> sets = [];

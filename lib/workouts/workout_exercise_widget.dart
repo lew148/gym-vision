@@ -57,13 +57,9 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         done: false,
       );
     } catch (ex) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Failed add set to workout: ${ex.toString()}',
-          ),
-        ),
-      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Failed add set to workout: ${ex.toString()}')));
     }
 
     widget.reloadState();
@@ -233,11 +229,9 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
             widget.workoutSets[0].exerciseId,
           );
         } catch (ex) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to remove Exercise from workout: ${ex.toString()}'),
-            ),
-          );
+          if (!mounted) return;
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('Failed to remove Exercise from workout: ${ex.toString()}')));
         }
 
         widget.reloadState();

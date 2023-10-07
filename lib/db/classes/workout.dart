@@ -6,8 +6,8 @@ import 'package:intl/intl.dart';
 class Workout {
   int? id;
   DateTime date;
-  bool done;
 
+  bool done;
   List<WorkoutCategory>? workoutCategories;
   List<WorkoutSet>? workoutSets;
 
@@ -22,7 +22,6 @@ class Workout {
   Map<String, dynamic> toMap() => {
         'id': id,
         'date': date.toString(),
-        'done': done,
       };
 
   String getTimeString() => DateFormat('Hm').format(date);

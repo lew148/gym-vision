@@ -9,7 +9,6 @@ import 'fields/exercise_picker.dart';
 class AddSetToWorkoutForm extends StatefulWidget {
   final int? workoutId;
   final int? exerciseId;
-  final List<int>? excludeExerciseIds;
   final List<int>? categoryShellIds;
   final Function reloadState;
 
@@ -17,7 +16,6 @@ class AddSetToWorkoutForm extends StatefulWidget {
     Key? key,
     this.workoutId,
     this.exerciseId,
-    this.excludeExerciseIds,
     this.categoryShellIds,
     required this.reloadState,
   }) : super(key: key);
@@ -71,9 +69,8 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
             );
           }
         } catch (ex) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Failed to add set(s) to workout')),
-          );
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add set(s) to workout')));
         }
 
         widget.reloadState();
@@ -92,7 +89,6 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
               ExercisePicker(
                 exerciseId: widget.exerciseId,
                 exercise: selectedExercise,
-                excludeIds: widget.excludeExerciseIds,
                 categoryShellIds: widget.categoryShellIds,
                 autoOpen: true,
                 setExercise: (newExercise) => setState(() {

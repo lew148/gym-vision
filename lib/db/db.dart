@@ -1,3 +1,6 @@
+import 'package:gymvision/db/helpers/workout_sets_helper.dart';
+import 'package:gymvision/db/helpers/workouts_helper.dart';
+import 'package:gymvision/db/migrations.dart';
 import 'package:gymvision/helpers/data_helper.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -8,12 +11,31 @@ class DatabaseHelper {
   static deleteDb() async => await deleteDatabase('gymvision.db');
 
   static openDb() async {
+    int amountOfMigrations = migrationScripts.length;
     database = openDatabase(
       join(await getDatabasesPath(), 'gymvision.db'),
-      version: 1,
+      version: amountOfMigrations,
       onCreate: (db, version) async {
         Batch batch = db.batch();
         initialDbCreate(batch);
+
+        for (int i = 1; i <= amountOfMigrations; i++) {
+          for (var s in migrationScripts[i]!) {
+            batch.execute(s);
+          }
+        }
+
+        await batch.commit();
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        Batch batch = db.batch();
+
+        for (int i = oldVersion + 1; i <= newVersion; i++) {
+          for (var s in migrationScripts[i]!) {
+            batch.execute(s);
+          }
+        }
+
         await batch.commit();
       },
     );
@@ -27,87 +49,68 @@ class DatabaseHelper {
 
   static void initialDbCreate(Batch batch) {
     batch.execute('''
-          CREATE TABLE workouts(
-            id INTEGER PRIMARY KEY,
-            date TEXT NOT NULL,
-            done INTEGER DEFAULT 0
-          );
-        ''');
+      CREATE TABLE workouts(
+        id INTEGER PRIMARY KEY,
+        date TEXT NOT NULL
+      );
+    ''');
 
     batch.execute('''
-          CREATE TABLE workout_categories(
-            id INTEGER PRIMARY KEY,
-            workoutId INTEGER NOT NULL,
-            categoryShellId INTEGER NOT NULL
-          );
-        ''');
+      CREATE TABLE workout_categories(
+        id INTEGER PRIMARY KEY,
+        workoutId INTEGER NOT NULL,
+        categoryShellId INTEGER NOT NULL
+      );
+    ''');
 
     batch.execute('''
-        CREATE TABLE workout_sets(
-          id INTEGER PRIMARY KEY,
-          workoutId INTEGER NOT NULL,
-          exerciseId INTEGER,
-          done INTEGER DEFAULT 0,
-          weight REAL,
-          reps INTEGER,
-          lastUpdated TEXT NOT NULL
-        );
-      ''');
+      CREATE TABLE exercises(
+        id INTEGER PRIMARY KEY,
+        name TEXT NOT NULL,
+        exerciseType INTEGER NOT NULL,
+        muscleGroup INTEGER NOT NULL,
+        equipment INTEGER,
+        split INTEGER,
+        isDouble INTEGER DEFAULT 0
+      );
+    ''');
 
     batch.execute('''
-          CREATE TABLE flavour_texts(
-            id INTEGER PRIMARY KEY,
-            message TEXT
-          );
-        ''');
+      CREATE TABLE workout_sets(
+        id INTEGER PRIMARY KEY,
+        workoutId INTEGER NOT NULL,
+        exerciseId INTEGER,
+        done INTEGER DEFAULT 0,
+        weight REAL,
+        reps INTEGER,
+        lastUpdated TEXT NOT NULL
+      );
+    ''');
 
     batch.execute('''
-           INSERT INTO flavour_texts(id, message)
-            VALUES
-              (1, "Make sure you are drinking enough water!"),
-              (2, "Rest days are as important as workout days!"),
-              (3, "Giving up kills gains!"),
-              (4, "Remember to warm-up and cool-down!"),
-              (5, "Even the smallest workouts help you grow!"),
-              (6, "Mindset is half of the struggle!"),
-              (7, "Your limits arent real. Only in the mind!"),
-              (8, "Have a good workout!"),
-              (9, "Routine is the best form of discipline!"),
-              (10, "Be extra careful when hitting PRs!"),
-              (11, "If you keep showing up, you'll be unbeatable!");
-        ''');
+      CREATE TABLE flavour_texts(
+        id INTEGER PRIMARY KEY,
+        message TEXT
+      );
+    ''');
 
     batch.execute('''
-          CREATE TABLE flavour_text_schedules(
-            id INTEGER PRIMARY KEY,
-            flavourTextId INTEGER NOT NULL,
-            date TEXT NOT NULL,
-            dismissed INTEGER NOT NULL DEFAULT 0
-          );
-        ''');
+      CREATE TABLE flavour_text_schedules(
+        id INTEGER PRIMARY KEY,
+        flavourTextId INTEGER NOT NULL,
+        date TEXT NOT NULL,
+        dismissed INTEGER NOT NULL DEFAULT 0
+      );
+    ''');
 
     batch.execute('''
-          CREATE TABLE user_settings(
-            id INTEGER PRIMARY KEY,
-            theme TEXT
-          );
-        ''');
+      CREATE TABLE user_settings(
+        id INTEGER PRIMARY KEY,
+        theme TEXT
+      );
+    ''');
 
-    batch.execute('''
-          INSERT INTO user_settings(id, theme) VALUES (1, "system");
-        ''');
-
-    batch.execute('''
-          CREATE TABLE exercises(
-            id INTEGER PRIMARY KEY,
-            name TEXT NOT NULL,
-            exerciseType INTEGER NOT NULL,
-            muscleGroup INTEGER NOT NULL,
-            equipment INTEGER,
-            split INTEGER,
-            isDouble INTEGER DEFAULT 0
-          );
-        ''');
+    batch.execute('INSERT INTO user_settings(id, theme) VALUES (1, "system");');
 
     batch.execute(getInsertExercisesSql());
   }
@@ -137,5 +140,34 @@ class DatabaseHelper {
     }
 
     return buffer.toString();
+  }
+
+  static restartDbWhilePersistingData() async {
+    var workoutsAndCategories = await WorkoutsHelper.getWorkouts();
+    var sets = await WorkoutSetsHelper.getWorkoutSets(shallow: true);
+
+    await deleteDb();
+    await openDb();
+
+    for (var w in workoutsAndCategories) {
+      WorkoutsHelper.insertWorkout(w);
+
+      if (w.workoutCategories != null && w.workoutCategories!.isNotEmpty) {
+        WorkoutsHelper.setWorkoutCategories(
+          w.id!,
+          w.workoutCategories!.map((wc) => wc.categoryShellId).toList(),
+        );
+      }
+    }
+
+    for (var s in sets) {
+      WorkoutSetsHelper.addSetToWorkout(
+        exerciseId: s.exerciseId,
+        workoutId: s.workoutId,
+        weight: s.weight,
+        reps: s.reps,
+        done: s.done,
+      );
+    }
   }
 }

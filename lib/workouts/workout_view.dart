@@ -25,6 +25,8 @@ class WorkoutView extends StatefulWidget {
 }
 
 class _WorkoutViewState extends State<WorkoutView> {
+  late final Map<int, List<WorkoutSet>> groupedWorkoutExercises;
+
   reloadState() => setState(() {});
 
   void showDeleteWorkoutConfirm(int workoutId) {
@@ -47,11 +49,9 @@ class _WorkoutViewState extends State<WorkoutView> {
         try {
           await WorkoutsHelper.deleteWorkout(workoutId);
         } catch (ex) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Failed to delete Workout: ${ex.toString()}'),
-            ),
-          );
+          if (!mounted) return;
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('Failed to delete Workout: ${ex.toString()}')));
         }
 
         widget.reloadParent();
@@ -130,7 +130,7 @@ class _WorkoutViewState extends State<WorkoutView> {
       ];
     }
 
-    final Map<int, List<WorkoutSet>> groupedWorkoutExercises = groupBy<WorkoutSet, int>(
+    groupedWorkoutExercises = groupBy<WorkoutSet, int>(
       workoutSets,
       (x) => x.exerciseId,
     );
@@ -198,8 +198,8 @@ class _WorkoutViewState extends State<WorkoutView> {
                   Navigator.pop(context);
                   showEditDate(workout, reloadState);
                 },
-                child: Row(
-                  children: const [
+                child: const Row(
+                  children: [
                     Icon(Icons.calendar_today_rounded),
                     Padding(padding: EdgeInsets.all(5)),
                     Text(
@@ -218,8 +218,8 @@ class _WorkoutViewState extends State<WorkoutView> {
                   Navigator.pop(context);
                   showEditTime(workout, reloadState);
                 },
-                child: Row(
-                  children: const [
+                child: const Row(
+                  children: [
                     Icon(Icons.watch_rounded),
                     Padding(padding: EdgeInsets.all(5)),
                     Text(
@@ -287,7 +287,6 @@ class _WorkoutViewState extends State<WorkoutView> {
     );
 
     List<int> existingCategoryShellIds = [];
-    List<int> existingExerciseIds = [];
 
     return FutureBuilder<Workout?>(
       future: workout,
@@ -308,12 +307,6 @@ class _WorkoutViewState extends State<WorkoutView> {
           existingCategoryShellIds = [];
         }
 
-        if (workout.workoutSets != null && workout.workoutSets!.isNotEmpty) {
-          existingExerciseIds = workout.workoutSets!.map((ws) => ws.exerciseId).toSet().toList();
-        } else {
-          existingExerciseIds = [];
-        }
-
         void onAddExerciseClick() => showModalBottomSheet(
               context: context,
               builder: (BuildContext context) => Column(
@@ -325,7 +318,6 @@ class _WorkoutViewState extends State<WorkoutView> {
                     ),
                     child: AddSetToWorkoutForm(
                       workoutId: workout.id,
-                      excludeExerciseIds: existingExerciseIds,
                       categoryShellIds: existingCategoryShellIds,
                       reloadState: reloadState,
                     ),

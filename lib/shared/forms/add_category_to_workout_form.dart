@@ -38,9 +38,8 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
         selectedIds,
       );
     } catch (ex) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to add Category to workout')),
-      );
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add Category to workout')));
     }
 
     widget.reloadState();
