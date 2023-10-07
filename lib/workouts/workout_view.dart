@@ -25,7 +25,7 @@ class WorkoutView extends StatefulWidget {
 }
 
 class _WorkoutViewState extends State<WorkoutView> {
-  late final Map<int, List<WorkoutSet>> groupedWorkoutExercises;
+  late Map<int, List<WorkoutSet>> groupedWorkoutExercises;
 
   reloadState() => setState(() {});
 
