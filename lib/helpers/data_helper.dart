@@ -770,5 +770,14 @@ class DataHelper {
           split: ExerciseSplit.pull,
           isDouble: false,
         ),
+        Exercise(
+          id: 84,
+          name: 'Cable Face Pull',
+          exerciseType: ExerciseType.weight,
+          muscleGroup: MuscleGroup.shoulders,
+          equipment: ExerciseEquipment.cable,
+          split: ExerciseSplit.pull,
+          isDouble: false,
+        ),
       ];
 }
