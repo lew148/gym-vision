@@ -1,5 +1,6 @@
 import 'package:gymvision/db/classes/workout.dart';
 import 'package:gymvision/db/helpers/user_exercise_details_helper.dart';
+import 'package:gymvision/db/helpers/workout_exercise_orderings_helper.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../enums.dart';
@@ -84,6 +85,8 @@ class WorkoutSetsHelper {
     bool? done,
   }) async {
     final db = await DatabaseHelper.getDb();
+    final ordering = await WorkoutExerciseOrderingsHelper.getWorkoutExerciseOrderingForWorkout(workoutId);
+
     await db.insert(
       'workout_sets',
       WorkoutSet(
@@ -95,6 +98,13 @@ class WorkoutSetsHelper {
       ).toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+
+    if (ordering != null && !ordering.getPositions().contains(exerciseId)) {
+      final newOrder = ordering.getPositions();
+      newOrder.add(exerciseId);
+      ordering.setPositions(newOrder);
+      await WorkoutExerciseOrderingsHelper.updateWorkoutExerciseOrdering(ordering);
+    }
   }
 
   static removeSet(int setId) async {

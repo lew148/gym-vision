@@ -265,7 +265,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                   dropped = !dropped;
                 }),
                 child: Padding(
-                  padding: const EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -278,40 +278,40 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                         onChanged: (bool? value) => onGroupedWorkoutExercisesDoneTap(value),
                       ),
                       Expanded(
-                        child: Text(
-                          widget.workoutSets[0].exercise!.name,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                        child: Row(children: [
+                          Text(
+                            widget.workoutSets[0].exercise!.name,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          dropped ? const Icon(Icons.arrow_drop_up_rounded) : const Icon(Icons.arrow_drop_down_rounded),
+                        ]),
                       ),
-                      dropped ? const Icon(Icons.arrow_drop_up_rounded) : const Icon(Icons.arrow_drop_down_rounded),
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            getPrimaryButton(
-                              actionButton: ActionButton(
-                                icon: Icons.visibility_rounded,
-                                onTap: () => Navigator.of(context)
-                                    .push(
-                                      MaterialPageRoute(
-                                        builder: (context) => ExerciseView(
-                                          exerciseId: widget.workoutSets[0].exerciseId,
-                                        ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          getPrimaryButton(
+                            actionButton: ActionButton(
+                              icon: Icons.visibility_rounded,
+                              onTap: () => Navigator.of(context)
+                                  .push(
+                                    MaterialPageRoute(
+                                      builder: (context) => ExerciseView(
+                                        exerciseId: widget.workoutSets[0].exerciseId,
                                       ),
-                                    )
-                                    .then((value) => widget.reloadState()),
-                              ),
-                              padding: 0,
+                                    ),
+                                  )
+                                  .then((value) => widget.reloadState()),
                             ),
-                            IconButton(
-                              icon: Icon(
-                                Icons.delete_rounded,
-                                color: Theme.of(context).colorScheme.tertiary,
-                              ),
-                              onPressed: showDeleteGroupedWorkoutExercisesConfirm,
-                            )
-                          ],
-                        ),
+                            padding: 0,
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.delete_rounded,
+                              color: Theme.of(context).colorScheme.tertiary,
+                            ),
+                            onPressed: showDeleteGroupedWorkoutExercisesConfirm,
+                          )
+                        ],
                       ),
                     ],
                   ),

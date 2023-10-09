@@ -1,4 +1,5 @@
 import 'package:gymvision/db/classes/workout_category.dart';
+import 'package:gymvision/db/classes/workout_exercise_ordering.dart';
 import 'package:gymvision/db/classes/workout_set.dart';
 import 'package:gymvision/globals.dart';
 import 'package:intl/intl.dart';
@@ -10,6 +11,7 @@ class Workout {
   bool done;
   List<WorkoutCategory>? workoutCategories;
   List<WorkoutSet>? workoutSets;
+  WorkoutExerciseOrdering? ordering;
 
   Workout({
     this.id,
@@ -17,6 +19,7 @@ class Workout {
     this.done = false,
     this.workoutCategories,
     this.workoutSets,
+    this.ordering,
   });
 
   Map<String, dynamic> toMap() => {

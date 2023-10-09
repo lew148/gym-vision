@@ -1,7 +1,12 @@
+import 'dart:ui';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:gymvision/db/classes/workout_exercise_ordering.dart';
 import 'package:gymvision/db/classes/workout_set.dart';
+import 'package:gymvision/db/helpers/workout_exercise_orderings_helper.dart';
 import 'package:gymvision/workouts/workout_exercise_widget.dart';
+import 'package:reorderables/reorderables.dart';
 
 import '../db/classes/workout.dart';
 import '../db/classes/workout_category.dart';
@@ -118,28 +123,31 @@ class _WorkoutViewState extends State<WorkoutView> {
         const Divider(),
       ]);
 
-  List<Widget> getWorkoutExercisesWidget(List<WorkoutSet>? workoutSets) {
-    if (workoutSets == null || workoutSets.isEmpty) {
-      return const [
-        Center(
-          child: Padding(
-            padding: EdgeInsets.all(15),
-            child: Text('No Exercises added yet...'),
-          ),
-        ),
-      ];
-    }
-
+  List<Widget> getWorkoutExercisesWidget(List<WorkoutSet> workoutSets, WorkoutExerciseOrdering? ordering) {
     groupedWorkoutExercises = groupBy<WorkoutSet, int>(
       workoutSets,
       (x) => x.exerciseId,
     );
 
+    if (ordering != null) {
+      final Map<int, List<WorkoutSet>> remainder = groupedWorkoutExercises;
+      final Map<int, List<WorkoutSet>> newOrder = {};
+      for (var i in ordering.getPositions()) {
+        final group = groupedWorkoutExercises[i];
+        if (group == null) continue;
+        newOrder.addAll({i: group});
+        remainder.remove(i);
+      }
+
+      newOrder.addAll(remainder);
+      groupedWorkoutExercises = newOrder;
+    }
+
     List<Widget> weWidgets = [];
     groupedWorkoutExercises.forEach((key, value) {
       weWidgets.add(
-        Padding(
-          padding: const EdgeInsets.only(top: 5, bottom: 5),
+        Container(
+          key: Key('$key'),
           child: WorkoutExerciseWidget(
             workoutSets: value,
             reloadState: reloadState,
@@ -292,11 +300,7 @@ class _WorkoutViewState extends State<WorkoutView> {
       future: workout,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const Center(
-            child: Scaffold(
-              body: Text('Loading...'),
-            ),
-          );
+          return const Center(child: Scaffold(body: Text('Loading...')));
         }
 
         final workout = snapshot.data!;
@@ -328,6 +332,16 @@ class _WorkoutViewState extends State<WorkoutView> {
               shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
             );
 
+        void onWorkoutExerciseReorder(int oldIndex, int newIndex) async {
+          try {
+            await WorkoutExerciseOrderingsHelper.reorderPositioning(widget.workoutId, oldIndex, newIndex);
+          } catch (e) {
+            // do nothing
+          }
+
+          reloadState();
+        }
+
         return Scaffold(
           appBar: AppBar(
             title: Text(workout.getDateAndTimeString()),
@@ -356,13 +370,15 @@ class _WorkoutViewState extends State<WorkoutView> {
                     ),
                   ),
                   const Divider(),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: getWorkoutExercisesWidget(workout.workoutSets),
-                      ),
-                    ),
-                  ),
+                  workout.workoutSets == null || workout.workoutSets!.isEmpty
+                      ? const Center(
+                          child: Padding(padding: EdgeInsets.all(15), child: Text('No Exercises added yet...')))
+                      : Expanded(
+                          child: ReorderableColumn(
+                            onReorder: onWorkoutExerciseReorder,
+                            children: getWorkoutExercisesWidget(workout.workoutSets!, workout.ordering),
+                          ),
+                        ),
                 ],
               ),
             ),

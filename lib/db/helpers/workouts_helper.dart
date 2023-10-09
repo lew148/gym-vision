@@ -1,6 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/workout_category.dart';
+import 'package:gymvision/db/classes/workout_exercise_ordering.dart';
+import 'package:gymvision/db/helpers/workout_exercise_orderings_helper.dart';
 import 'package:gymvision/db/helpers/workout_sets_helper.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -86,6 +88,8 @@ class WorkoutsHelper {
       date: DateTime.parse(maps[0]['date']),
       workoutCategories: includeCategories ? await getWorkoutCategoriesForWorkout(workoutId) : null,
       workoutSets: includeSets ? await WorkoutSetsHelper.getWorkoutSetsForWorkout(workoutId) : null,
+      ordering:
+          includeSets ? await WorkoutExerciseOrderingsHelper.getWorkoutExerciseOrderingForWorkout(workoutId) : null,
     );
   }
 
@@ -119,6 +123,8 @@ class WorkoutsHelper {
       workout.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+
+    await WorkoutExerciseOrderingsHelper.insertWorkoutExerciseOrdering(WorkoutExerciseOrdering(workoutId: workoutId));
     return workoutId;
   }
 

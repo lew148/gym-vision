@@ -88,6 +88,14 @@ class DatabaseHelper {
     ''');
 
     batch.execute('''
+      CREATE TABLE workout_exercise_orderings(
+        id INTEGER PRIMARY KEY,
+        workoutId INTEGER NOT NULL,
+        positions TEXT
+      );
+    ''');
+
+    batch.execute('''
       CREATE TABLE flavour_texts(
         id INTEGER PRIMARY KEY,
         message TEXT

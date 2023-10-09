@@ -171,7 +171,7 @@ class DataHelper {
         ),
         Exercise(
           id: 19,
-          name: 'Flat Chest Press',
+          name: 'Flat DB Chest Press',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.chest,
           equipment: ExerciseEquipment.dumbbell,
@@ -180,7 +180,7 @@ class DataHelper {
         ),
         Exercise(
           id: 20,
-          name: 'Incline Chest Press',
+          name: 'Incline DB Chest Press',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.chest,
           equipment: ExerciseEquipment.dumbbell,
@@ -777,6 +777,24 @@ class DataHelper {
           muscleGroup: MuscleGroup.shoulders,
           equipment: ExerciseEquipment.cable,
           split: ExerciseSplit.pull,
+          isDouble: false,
+        ),
+        Exercise(
+          id: 85,
+          name: 'Flat Smiths Bench Press',
+          exerciseType: ExerciseType.weight,
+          muscleGroup: MuscleGroup.chest,
+          equipment: ExerciseEquipment.plates,
+          split: ExerciseSplit.push,
+          isDouble: false,
+        ),
+        Exercise(
+          id: 86,
+          name: 'Inclne Smiths Bench Press',
+          exerciseType: ExerciseType.weight,
+          muscleGroup: MuscleGroup.chest,
+          equipment: ExerciseEquipment.plates,
+          split: ExerciseSplit.push,
           isDouble: false,
         ),
       ];
