@@ -50,11 +50,13 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   void onCopySetButtonTap(WorkoutSet ws) async {
     try {
       await WorkoutSetsHelper.addSetToWorkout(
-        exerciseId: ws.exerciseId,
-        workoutId: ws.workoutId,
-        weight: ws.weight,
-        reps: ws.reps,
-        done: false,
+        WorkoutSet(
+          exerciseId: ws.exerciseId,
+          workoutId: ws.workoutId,
+          weight: ws.weight,
+          reps: ws.reps,
+          done: false,
+        ),
       );
     } catch (ex) {
       if (!mounted) return;

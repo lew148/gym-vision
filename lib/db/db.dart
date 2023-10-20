@@ -1,3 +1,5 @@
+import 'package:gymvision/db/classes/workout_set.dart';
+import 'package:gymvision/db/helpers/workout_exercise_orderings_helper.dart';
 import 'package:gymvision/db/helpers/workout_sets_helper.dart';
 import 'package:gymvision/db/helpers/workouts_helper.dart';
 import 'package:gymvision/db/migrations.dart';
@@ -83,6 +85,9 @@ class DatabaseHelper {
         done INTEGER DEFAULT 0,
         weight REAL,
         reps INTEGER,
+        time TEXT,
+        distance REAL,
+        calsBurned INTEGER,
         lastUpdated TEXT NOT NULL
       );
     ''');
@@ -158,23 +163,29 @@ class DatabaseHelper {
     await openDb();
 
     for (var w in workoutsAndCategories) {
-      WorkoutsHelper.insertWorkout(w);
+      await WorkoutsHelper.insertWorkout(w);
 
       if (w.workoutCategories != null && w.workoutCategories!.isNotEmpty) {
-        WorkoutsHelper.setWorkoutCategories(
+        await WorkoutsHelper.setWorkoutCategories(
           w.id!,
           w.workoutCategories!.map((wc) => wc.categoryShellId).toList(),
         );
       }
+
+      if (w.ordering != null) {
+        await WorkoutExerciseOrderingsHelper.insertWorkoutExerciseOrdering(w.ordering!);
+      }
     }
 
     for (var s in sets) {
-      WorkoutSetsHelper.addSetToWorkout(
-        exerciseId: s.exerciseId,
-        workoutId: s.workoutId,
-        weight: s.weight,
-        reps: s.reps,
-        done: s.done,
+      await WorkoutSetsHelper.addSetToWorkout(
+        WorkoutSet(
+          exerciseId: s.exerciseId,
+          workoutId: s.workoutId,
+          weight: s.weight,
+          reps: s.reps,
+          done: s.done,
+        ),
       );
     }
   }

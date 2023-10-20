@@ -1,13 +1,16 @@
 import 'package:gymvision/db/classes/workout.dart';
+import 'package:gymvision/globals.dart';
 
 import 'exercise.dart';
 
 class WorkoutSet {
   int? id;
-  int? userId;
+  bool done;
   double? weight;
   int? reps;
-  bool done;
+  Duration? time;
+  double? distance;
+  int? calsBurned;
 
   final int workoutId;
   Workout? workout;
@@ -17,9 +20,11 @@ class WorkoutSet {
 
   WorkoutSet({
     this.id,
-    this.userId,
     this.weight,
     this.reps,
+    this.time,
+    this.distance,
+    this.calsBurned,
     this.done = false,
     required this.workoutId,
     this.workout,
@@ -32,10 +37,15 @@ class WorkoutSet {
         'weight': weight,
         'reps': reps,
         'done': done,
+        'time': time == null ? '' : time.toString(),
+        'distance': distance,
+        'calsBurned': calsBurned,
         'workoutId': workoutId,
         'exerciseId': exerciseId,
         'lastUpdated': DateTime.now().toString()
       };
+
+  void setTime(String? str) => time = str == null ? null : tryParseDuration(str);
 
   bool hasWeight() => weight != null && weight != 0;
 

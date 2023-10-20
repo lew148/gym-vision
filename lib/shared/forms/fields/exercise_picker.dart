@@ -145,9 +145,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
     List<Exercise> allExercises,
     Exercise? selectedExercise,
   ) {
-    allExercises.sort(
-      (a, b) => a.muscleGroup.index.compareTo(b.muscleGroup.index),
-    );
+    allExercises.sort((a, b) => a.muscleGroup.index.compareTo(b.muscleGroup.index));
 
     showModalBottomSheet(
       context: context,
@@ -193,7 +191,9 @@ class _ExercisePickerState extends State<ExercisePicker> {
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Row(children: [
                 Text(
-                  value[0].muscleGroup.displayName,
+                  value[0].exerciseType == ExerciseType.cardio
+                      ? value[0].exerciseType.displayName
+                      : value[0].muscleGroup.displayName,
                   style: const TextStyle(fontWeight: FontWeight.w400),
                 ),
               ]),

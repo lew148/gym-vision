@@ -1,6 +1,7 @@
 import 'package:gymvision/db/classes/workout.dart';
 import 'package:gymvision/db/helpers/user_exercise_details_helper.dart';
 import 'package:gymvision/db/helpers/workout_exercise_orderings_helper.dart';
+import 'package:gymvision/globals.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../enums.dart';
@@ -33,6 +34,9 @@ class WorkoutSetsHelper {
         workout_sets.done,
         workout_sets.weight,
         workout_sets.reps,
+        workout_sets.time,
+        workout_sets.distance,
+        workout_sets.calsBurned,
         workouts.date,
         exercises.name,
         exercises.exerciseType,
@@ -55,6 +59,9 @@ class WorkoutSetsHelper {
         done: map['done'] == 1,
         weight: map['weight'],
         reps: map['reps'],
+        time: tryParseDuration(map['time']),
+        distance: map['distance'],
+        calsBurned: map['calsBurned'],
         workout: Workout(date: DateTime.parse(map['date'])),
         exercise: !shallow
             ? Exercise(
@@ -77,31 +84,19 @@ class WorkoutSetsHelper {
     return sets;
   }
 
-  static addSetToWorkout({
-    required int exerciseId,
-    required int workoutId,
-    double? weight,
-    int? reps,
-    bool? done,
-  }) async {
+  static addSetToWorkout(WorkoutSet ws) async {
     final db = await DatabaseHelper.getDb();
-    final ordering = await WorkoutExerciseOrderingsHelper.getWorkoutExerciseOrderingForWorkout(workoutId);
+    final ordering = await WorkoutExerciseOrderingsHelper.getWorkoutExerciseOrderingForWorkout(ws.workoutId);
 
     await db.insert(
       'workout_sets',
-      WorkoutSet(
-        workoutId: workoutId,
-        exerciseId: exerciseId,
-        weight: weight ?? 0,
-        reps: reps ?? 0,
-        done: done ?? false,
-      ).toMap(),
+      ws.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
-    if (ordering != null && !ordering.getPositions().contains(exerciseId)) {
+    if (ordering != null && !ordering.getPositions().contains(ws.exerciseId)) {
       final newOrder = ordering.getPositions();
-      newOrder.add(exerciseId);
+      newOrder.add(ws.exerciseId);
       ordering.setPositions(newOrder);
       await WorkoutExerciseOrderingsHelper.updateWorkoutExerciseOrdering(ordering);
     }

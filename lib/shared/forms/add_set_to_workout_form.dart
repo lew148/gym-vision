@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymvision/db/classes/workout_set.dart';
 import 'package:gymvision/shared/ui_helper.dart';
 import '../../db/classes/exercise.dart';
 import '../../db/helpers/workout_sets_helper.dart';
@@ -62,10 +63,12 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
         try {
           for (int i = 0; i < (addThree ? 3 : 1); i++) {
             await WorkoutSetsHelper.addSetToWorkout(
-              exerciseId: selectedExercise?.id ?? widget.exerciseId!,
-              workoutId: widget.workoutId!,
-              weight: double.parse(getNumberStringOrDefault(weightController.text)),
-              reps: int.parse(getNumberStringOrDefault(repsController.text)),
+              WorkoutSet(
+                exerciseId: selectedExercise?.id ?? widget.exerciseId!,
+                workoutId: widget.workoutId!,
+                weight: double.parse(getNumberStringOrDefault(weightController.text)),
+                reps: int.parse(getNumberStringOrDefault(repsController.text)),
+              ),
             );
           }
         } catch (ex) {

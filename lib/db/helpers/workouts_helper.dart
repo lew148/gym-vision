@@ -17,9 +17,12 @@ class WorkoutsHelper {
         workouts.id,
         workouts.date,
         workout_categories.id AS workoutCategoryId,
-        workout_categories.categoryShellId
+        workout_categories.categoryShellId,
+        workout_exercise_orderings.id AS weoId,
+        workout_exercise_orderings.positions
       FROM workouts
       LEFT JOIN workout_categories ON workouts.id = workout_categories.workoutId
+      LEFT JOIN workout_exercise_orderings ON workouts.id = workout_exercise_orderings.workoutId
       ORDER BY workouts.date DESC;
     ''');
 
@@ -33,6 +36,13 @@ class WorkoutsHelper {
           id: k,
           date: DateTime.parse(v.first['date']),
           workoutCategories: processWorkoutCategories(v),
+          ordering: v.first['positions'] != null
+              ? WorkoutExerciseOrdering(
+                  id: v.first['weoId'],
+                  workoutId: k,
+                  positions: v.first['positions'],
+                )
+              : null,
         ),
       );
     });

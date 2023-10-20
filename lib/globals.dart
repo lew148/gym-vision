@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 
-String appVersion = 'V 1.0.0.27';
+String appVersion = 'V 1.0.0.28';
 
 getNumberStringOrDefault(String value) => value == '' ? '0' : value;
 
@@ -37,3 +37,25 @@ String getMonthAndYear(DateTime dt) => DateFormat(dt.year == DateTime.now().year
 int getDaysInMonth(int year, int month) => DateTime(year, month + 1, 0).day;
 
 bool dateIsInFuture(DateTime dt) => DateTime.now().compareTo(dt) < 0;
+
+Duration? tryParseDuration(String? s) {
+  // format = ##:##:##.######
+
+  if (s == null || s == '') return null;
+
+  try {
+    int hours = 0;
+    int minutes = 0;
+    int seconds = 0;
+
+    final parts = s.split(':');
+    final secondsParts = parts[2].split('.');
+    hours = int.parse(parts[0]);
+    minutes = int.parse(parts[1]);
+    seconds = int.parse(secondsParts[0]);
+
+    return Duration(hours: hours, minutes: minutes, seconds: seconds);
+  } catch (e) {
+    return null;
+  }
+}

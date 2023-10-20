@@ -56,15 +56,15 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                       onPressed: () async => await DatabaseHelper.restartDbWhilePersistingData(),
                       child: const Text('Update DB (keep data)'),
                     ),
-                    ElevatedButton(
-                      onPressed: () async => await DatabaseHelper.deleteDb(),
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStatePropertyAll<Color>(
-                          Theme.of(context).colorScheme.tertiary,
-                        ),
-                      ),
-                      child: const Text('Delete DB'),
-                    ),
+                    // ElevatedButton(
+                    //   onPressed: () async => await DatabaseHelper.deleteDb(),
+                    //   style: ButtonStyle(
+                    //     backgroundColor: MaterialStatePropertyAll<Color>(
+                    //       Theme.of(context).colorScheme.tertiary,
+                    //     ),
+                    //   ),
+                    //   child: const Text('Delete DB'),
+                    // ),
                   ],
                 ),
                 Row(

@@ -40,10 +40,11 @@ class _ExercisesState extends State<Exercises> {
                   child: Text(exercise.name),
                 ),
                 Wrap(children: [
-                  if (exercise.muscleGroup != MuscleGroup.other)
-                    getPropDisplay(context, exercise.muscleGroup.displayName),
                   if (exercise.equipment != ExerciseEquipment.other)
                     getPropDisplay(context, exercise.equipment.displayName),
+                  exercise.muscleGroup != MuscleGroup.other
+                      ? getPropDisplay(context, exercise.muscleGroup.displayName)
+                      : getPropDisplay(context, exercise.exerciseType.displayName),
                 ]),
               ],
             ),
@@ -59,9 +60,7 @@ class _ExercisesState extends State<Exercises> {
         future: _exercises,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(
-              child: Text('Loading...'),
-            );
+            return const Center(child: Text('Loading...'));
           }
 
           var exercises = snapshot.data!;
@@ -77,16 +76,11 @@ class _ExercisesState extends State<Exercises> {
               ),
               const Divider(),
               exercises.isEmpty
-                  ? const Center(
-                      child: Padding(padding: EdgeInsets.all(20), child: Text('No Exercises here :(')),
-                    )
+                  ? const Center(child: Padding(padding: EdgeInsets.all(20), child: Text('No Exercises here :(')))
                   : Expanded(
                       child: SingleChildScrollView(
-                        child: Container(
-                          margin: const EdgeInsets.fromLTRB(0, 10, 0, 20),
-                          child: Column(
-                            children: exercises.map((e) => getExerciseWidget(e)).toList(),
-                          ),
+                        child: Column(
+                          children: exercises.map((e) => getExerciseWidget(e)).toList(),
                         ),
                       ),
                     ),
