@@ -2,6 +2,7 @@ import 'package:gymvision/db/classes/workout_set.dart';
 import 'package:gymvision/db/helpers/workout_exercise_orderings_helper.dart';
 import 'package:gymvision/db/helpers/workout_sets_helper.dart';
 import 'package:gymvision/db/helpers/workouts_helper.dart';
+import 'package:gymvision/db/legacy_sql.dart';
 import 'package:gymvision/db/migrations.dart';
 import 'package:gymvision/helpers/data_helper.dart';
 import 'package:sqflite/sqflite.dart';
@@ -156,8 +157,8 @@ class DatabaseHelper {
   }
 
   static restartDbWhilePersistingData() async {
-    var workoutsAndCategories = await WorkoutsHelper.getWorkouts();
-    var sets = await WorkoutSetsHelper.getWorkoutSets(shallow: true);
+    var workoutsAndCategories = await LegacySql.getWorkoutsLegacy();
+    var sets = await LegacySql.getWorkoutSets(shallow: true);
 
     await deleteDb();
     await openDb();
