@@ -29,8 +29,13 @@ class WorkoutView extends StatefulWidget {
 
 class _WorkoutViewState extends State<WorkoutView> {
   late Map<int, List<WorkoutSet>> groupedWorkoutExercises;
+  List<int> droppedWes = [];
 
-  reloadState() => setState(() {});
+  reloadState({int? eId}) => setState(() {
+        if (eId != null) {
+          droppedWes.contains(eId) ? droppedWes.remove(eId) : droppedWes.add(eId);
+        }
+      });
 
   void showDeleteWorkoutConfirm(int workoutId) {
     Widget cancelButton = TextButton(
@@ -149,6 +154,7 @@ class _WorkoutViewState extends State<WorkoutView> {
           child: WorkoutExerciseWidget(
             workoutSets: value,
             reloadState: reloadState,
+            dropped: droppedWes.contains(key),
           ),
         ),
       );

@@ -1,5 +1,7 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/helpers/exercises_helper.dart';
+import 'package:sticky_headers/sticky_headers/widget.dart';
 
 import '../db/classes/exercise.dart';
 import '../enums.dart';
@@ -42,15 +44,43 @@ class _ExercisesState extends State<Exercises> {
                 Wrap(children: [
                   if (exercise.equipment != ExerciseEquipment.other)
                     getPropDisplay(context, exercise.equipment.displayName),
-                  exercise.muscleGroup != MuscleGroup.other
-                      ? getPropDisplay(context, exercise.muscleGroup.displayName)
-                      : getPropDisplay(context, exercise.exerciseType.displayName),
+                  // exercise.muscleGroup != MuscleGroup.other
+                  //     ? getPropDisplay(context, exercise.muscleGroup.displayName)
+                  //     : getPropDisplay(context, exercise.exerciseType.displayName),
                 ]),
               ],
             ),
           ),
         ),
       );
+
+  getExercisesContent(Map<int, List<Exercise>> groupedExercises) {
+    if (groupedExercises.isEmpty) {
+      return const Center(child: Padding(padding: EdgeInsets.all(20), child: Text('No Exercises here :(')));
+    }
+
+    final List<Widget> sections = [];
+
+    groupedExercises.forEach((key, value) => sections.add(
+          StickyHeader(
+            header: Container(
+              color: Theme.of(context).canvasColor,
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Row(children: [
+                Text(
+                  value[0].exerciseType == ExerciseType.cardio
+                      ? value[0].exerciseType.displayName
+                      : value[0].muscleGroup.displayName,
+                  style: const TextStyle(fontWeight: FontWeight.w400),
+                ),
+              ]),
+            ),
+            content: Column(children: value.map((e) => getExerciseWidget(e)).toList()),
+          ),
+        ));
+
+    return Expanded(child: SingleChildScrollView(child: Column(children: sections)));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +94,8 @@ class _ExercisesState extends State<Exercises> {
           }
 
           var exercises = snapshot.data!;
-          exercises.sort(((a, b) => a.muscleGroup.index.compareTo(b.muscleGroup.index)));
+          final Map<int, List<Exercise>> groupedExercises =
+              groupBy<Exercise, int>(exercises, (e) => e.muscleGroup.index);
 
           return Container(
             padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
@@ -75,15 +106,7 @@ class _ExercisesState extends State<Exercises> {
                 [], //[ActionButton(icon: Icons.add_rounded, onTap: () => null)],
               ),
               const Divider(),
-              exercises.isEmpty
-                  ? const Center(child: Padding(padding: EdgeInsets.all(20), child: Text('No Exercises here :(')))
-                  : Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: exercises.map((e) => getExerciseWidget(e)).toList(),
-                        ),
-                      ),
-                    ),
+              getExercisesContent(groupedExercises),
             ]),
           );
         },

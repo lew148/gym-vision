@@ -10,12 +10,14 @@ import '../exercises/exercise_view.dart';
 
 class WorkoutExerciseWidget extends StatefulWidget {
   final List<WorkoutSet> workoutSets;
-  final Function() reloadState;
+  final Function({int? eId}) reloadState;
+  final bool dropped;
 
   const WorkoutExerciseWidget({
     super.key,
     required this.workoutSets,
     required this.reloadState,
+    this.dropped = false,
   });
 
   @override
@@ -23,7 +25,13 @@ class WorkoutExerciseWidget extends StatefulWidget {
 }
 
 class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
-  bool dropped = false;
+  late bool dropped;
+
+  @override
+  void initState() {
+    super.initState();
+    dropped = widget.dropped;
+  }
 
   void onEditWorkoutExerciseTap(WorkoutSet ws) => showModalBottomSheet(
         context: context,
@@ -263,9 +271,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           child: Column(
             children: [
               InkWell(
-                onTap: () => setState(() {
-                  dropped = !dropped;
-                }),
+                onTap: () => widget.reloadState(eId: widget.workoutSets[0].exerciseId),
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: Row(

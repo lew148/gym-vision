@@ -128,6 +128,8 @@ class WorkoutSetsHelper {
       where: 'workoutId = ? AND exerciseId = ?',
       whereArgs: [workoutId, exerciseId],
     );
+
+    await WorkoutExerciseOrderingsHelper.removeExerciseFromOrderingForWorkout(workoutId, exerciseId);
   }
 
   static Future<WorkoutSet?> getPr({required int exerciseId, Database? existingDb}) async {

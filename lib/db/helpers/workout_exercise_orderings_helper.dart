@@ -40,16 +40,27 @@ class WorkoutExerciseOrderingsHelper {
     );
   }
 
+  static removeExerciseFromOrderingForWorkout(int workoutId, int exerciseId) async {
+    final ordering = await getWorkoutExerciseOrderingForWorkout(workoutId);
+    if (ordering == null) return;
+
+    var positions = ordering.getPositions();
+    if (positions.contains(exerciseId)) {
+      positions.remove(exerciseId);
+      ordering.setPositions(positions);
+      await updateWorkoutExerciseOrdering(ordering);
+    }
+  }
+
   static reorderPositioning(int workoutId, int oldIndex, int newIndex) async {
     var ordering = await getWorkoutExerciseOrderingForWorkout(workoutId);
     if (ordering == null) return;
 
-    var positioning = ordering.getPositions();
-    var exerciseId = positioning[oldIndex];
-    positioning.removeAt(oldIndex);
-    positioning.insert(newIndex, exerciseId);
-    ordering.setPositions(positioning);
-
+    var positions = ordering.getPositions();
+    var exerciseId = positions[oldIndex];
+    positions.removeAt(oldIndex);
+    positions.insert(newIndex, exerciseId);
+    ordering.setPositions(positions);
     await updateWorkoutExerciseOrdering(ordering);
   }
 }
