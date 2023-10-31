@@ -24,15 +24,6 @@ class DataHelper {
           isDouble: false,
         ),
         Exercise(
-          id: 3,
-          name: 'DB Shrug',
-          exerciseType: ExerciseType.weight,
-          muscleGroup: MuscleGroup.shoulders,
-          equipment: ExerciseEquipment.dumbbell,
-          split: ExerciseSplit.pull,
-          isDouble: true,
-        ),
-        Exercise(
           id: 4,
           name: 'DB Side Delt Raise',
           exerciseType: ExerciseType.weight,
@@ -386,6 +377,15 @@ class DataHelper {
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.back,
           equipment: ExerciseEquipment.cable,
+          split: ExerciseSplit.pull,
+          isDouble: true,
+        ),
+        Exercise(
+          id: 3,
+          name: 'DB Shrug',
+          exerciseType: ExerciseType.weight,
+          muscleGroup: MuscleGroup.back,       // moved from shoulders to back
+          equipment: ExerciseEquipment.dumbbell,
           split: ExerciseSplit.pull,
           isDouble: true,
         ),

@@ -61,11 +61,17 @@ class WorkoutsHelper {
     for (var m in list) {
       final workoutCategoryId = m['workoutCategoryId'];
       if (workoutCategoryId == null) continue;
+      if (workoutCategories.where((wc) => wc.id == workoutCategoryId).isNotEmpty) continue; // skip dupe WCs
 
       workoutCategories.add(
-        WorkoutCategory(id: workoutCategoryId, workoutId: m['id'], categoryShellId: m['categoryShellId']),
+        WorkoutCategory(
+          id: workoutCategoryId,
+          workoutId: m['id'],
+          categoryShellId: m['categoryShellId'],
+        ),
       );
     }
+    
     return workoutCategories;
   }
 

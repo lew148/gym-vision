@@ -71,7 +71,10 @@ class _ExercisesState extends State<Exercises> {
                   value[0].exerciseType == ExerciseType.cardio
                       ? value[0].exerciseType.displayName
                       : value[0].muscleGroup.displayName,
-                  style: const TextStyle(fontWeight: FontWeight.w400),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 15,
+                  ),
                 ),
               ]),
             ),
