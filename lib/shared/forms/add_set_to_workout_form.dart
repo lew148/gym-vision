@@ -54,8 +54,9 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
 
   @override
   Widget build(BuildContext context) {
-    void onSubmit({bool addThree = false}) async {
-      if (selectedExercise == null && widget.exerciseId == null) return; // todo: show error
+    void onSubmit({bool addThree = false, Exercise? overrideExercise}) async {
+      final subject = overrideExercise ?? selectedExercise;
+      if (subject == null && widget.exerciseId == null) return; // todo: show error
 
       if (formKey.currentState!.validate()) {
         Navigator.pop(context);
@@ -64,7 +65,7 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
           for (int i = 0; i < (addThree ? 3 : 1); i++) {
             await WorkoutSetsHelper.addSetToWorkout(
               WorkoutSet(
-                exerciseId: selectedExercise?.id ?? widget.exerciseId!,
+                exerciseId: subject?.id ?? widget.exerciseId!,
                 workoutId: widget.workoutId!,
                 weight: double.parse(getNumberStringOrDefault(weightController.text)),
                 reps: int.parse(getNumberStringOrDefault(repsController.text)),
@@ -78,6 +79,11 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
 
         widget.reloadState();
       }
+    }
+
+    void onQuickAdd(Exercise exercise) async {
+      onSubmit(overrideExercise: exercise);
+      Navigator.of(context).pop();
     }
 
     return Container(
@@ -94,6 +100,7 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
                 exercise: selectedExercise,
                 categoryShellIds: widget.categoryShellIds,
                 autoOpen: true,
+                onQuickAdd: onQuickAdd,
                 setExercise: (newExercise) => setState(() {
                   selectedExercise = newExercise;
                   resetWeightAndReps();

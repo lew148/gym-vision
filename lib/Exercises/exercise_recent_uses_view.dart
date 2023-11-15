@@ -15,52 +15,54 @@ class ExerciseRecentUsesView extends StatefulWidget {
 
 class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
   List<Widget> getWorkoutExerciseWidget(List<WorkoutSet> ws) => ws
-      .map((s) => Column(children: [
-            const Divider(height: 0),
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Row(
-                children: [
-                  Expanded(
+      .map((s) => s.isPlaceholder()
+          ? const SizedBox.shrink()
+          : Column(children: [
+              const Divider(height: 0),
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: Row(
+                  children: [
+                    Expanded(
+                        flex: 3,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: s.hasWeight()
+                              ? [
+                                  const Icon(
+                                    Icons.fitness_center_rounded,
+                                    size: 15,
+                                  ),
+                                  const Padding(padding: EdgeInsets.all(5)),
+                                  Text(s.getWeightDisplay()),
+                                ]
+                              : [
+                                  const Center(
+                                    child: Text(
+                                      '-',
+                                      style: TextStyle(fontSize: 30),
+                                    ),
+                                  ),
+                                ],
+                        )),
+                    Expanded(
                       flex: 3,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: s.hasWeight()
-                            ? [
-                                const Icon(
-                                  Icons.fitness_center_rounded,
-                                  size: 15,
-                                ),
-                                const Padding(padding: EdgeInsets.all(5)),
-                                Text(s.getWeightDisplay()),
-                              ]
-                            : [
-                                const Center(
-                                  child: Text(
-                                    '-',
-                                    style: TextStyle(fontSize: 30),
-                                  ),
-                                ),
-                              ],
-                      )),
-                  Expanded(
-                    flex: 3,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.repeat_rounded,
-                          size: 15,
-                        ),
-                        const Padding(padding: EdgeInsets.all(5)),
-                        Text(s.getRepsDisplayString()),
-                      ],
+                        children: [
+                          const Icon(
+                            Icons.repeat_rounded,
+                            size: 15,
+                          ),
+                          const Padding(padding: EdgeInsets.all(5)),
+                          Text(s.getRepsDisplayString()),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ]))
+            ]))
       .toList();
 
   @override

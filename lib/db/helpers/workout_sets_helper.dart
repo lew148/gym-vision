@@ -151,6 +151,7 @@ class WorkoutSetsHelper {
           FROM workout_sets
           WHERE workout_sets.exerciseId = $exerciseId
         ) AS b ON workout_sets.weight = b.max_weight
+        WHERE NOT (workout_sets.weight = 0.0 AND workout_sets.reps = 0)
       )
 
       SELECT *
@@ -188,7 +189,7 @@ class WorkoutSetsHelper {
         workouts.date
       FROM workout_sets
       LEFT JOIN workouts ON workout_sets.workoutId = workouts.id
-      WHERE workout_sets.exerciseId = $exerciseId
+      WHERE workout_sets.exerciseId = $exerciseId AND NOT (workout_sets.weight = 0.0 AND workout_sets.reps = 0)
       ORDER BY workout_sets.lastUpdated DESC
       LIMIT 1;
     ''');

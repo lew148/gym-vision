@@ -25,7 +25,7 @@ class DataHelper {
         ),
         Exercise(
           id: 4,
-          name: 'DB Side Delt Raise',
+          name: 'DB Lateral Raise',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.shoulders,
           equipment: ExerciseEquipment.dumbbell,
@@ -52,7 +52,7 @@ class DataHelper {
         ),
         Exercise(
           id: 7,
-          name: 'Cable Side Delt Raise',
+          name: 'Cable Lateral Raise',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.shoulders,
           equipment: ExerciseEquipment.cable,
@@ -835,7 +835,7 @@ class DataHelper {
         ),
         Exercise(
           id: 91,
-          name: 'Rear Delt Fly',
+          name: 'Rear Delt Fly Machine',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.shoulders,
           equipment: ExerciseEquipment.machine,
@@ -883,6 +883,22 @@ class DataHelper {
           muscleGroup: MuscleGroup.other,
           equipment: ExerciseEquipment.machine,
           split: ExerciseSplit.other,
+        ),
+        Exercise(
+          id: 97,
+          name: 'Tricep Bar Curl',
+          exerciseType: ExerciseType.weight,
+          muscleGroup: MuscleGroup.biceps,
+          equipment: ExerciseEquipment.plates,
+          split: ExerciseSplit.pull,
+        ),
+        Exercise(
+          id: 98,
+          name: 'Lateral Raise Machine',
+          exerciseType: ExerciseType.weight,
+          muscleGroup: MuscleGroup.shoulders,
+          equipment: ExerciseEquipment.machine,
+          split: ExerciseSplit.push,
         ),
       ];
 }

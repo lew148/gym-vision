@@ -163,10 +163,8 @@ class _ExerciseViewState extends State<ExerciseView> {
     workoutSets.removeWhere((ws) => dateIsInFuture(ws.workout!.date));
     workoutSets.sort(((a, b) => b.workout!.date.compareTo(a.workout!.date)));
 
-    final Map<int, List<WorkoutSet>> groupedWorkoutExercises = groupBy<WorkoutSet, int>(
-      workoutSets,
-      (x) => x.workoutId,
-    );
+    final Map<int, List<WorkoutSet>> groupedWorkoutExercises =
+        groupBy<WorkoutSet, int>(workoutSets, (x) => x.workoutId);
 
     List<Widget> weWidgets = [];
     groupedWorkoutExercises.forEach((key, value) {
@@ -225,7 +223,7 @@ class _ExerciseViewState extends State<ExerciseView> {
   List<Widget> getDetailsSections(UserExerciseDetails details) => [
         getSectionTitle(context, 'PR'),
         const Divider(),
-        details.pr == null || !details.pr!.hasWeight()
+        details.pr == null
             ? const Center(
                 child: Padding(
                   padding: EdgeInsets.all(10),
@@ -250,9 +248,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                   child: Container(
                     padding: const EdgeInsets.all(10),
                     child: Column(
-                      children: getRecentUsesWidget(
-                        details.recentUses!,
-                      ),
+                      children: getRecentUsesWidget(details.recentUses!),
                     ),
                   ),
                 ),

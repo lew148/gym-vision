@@ -12,6 +12,7 @@ class ExercisePicker extends StatefulWidget {
   final Exercise? exercise;
   final List<int>? categoryShellIds;
   final bool autoOpen;
+  final Function(Exercise exercise)? onQuickAdd;
   final Function setExercise;
 
   const ExercisePicker({
@@ -20,6 +21,7 @@ class ExercisePicker extends StatefulWidget {
     this.exercise,
     this.categoryShellIds,
     this.autoOpen = false,
+    this.onQuickAdd,
     required this.setExercise,
   }) : super(key: key);
 
@@ -183,6 +185,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
   ) {
     final Map<int, List<Exercise>> groupedExercises = groupBy<Exercise, int>(allExercises, (e) => e.muscleGroup.index);
     final List<Widget> sections = [];
+    final addQuickAddButton = widget.onQuickAdd != null;
 
     groupedExercises.forEach((key, value) => sections.add(
           StickyHeader(
@@ -204,44 +207,56 @@ class _ExercisePickerState extends State<ExercisePicker> {
             content: Column(
               children: value
                   .map(
-                    (e) => GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                        widget.setExercise(e);
-                      },
-                      child: Card(
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(5),
-                            ),
-                            border: Border.all(
-                              width: 2,
-                              color: selectedExercise != null && e.id == selectedExercise.id
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Colors.transparent,
-                            ),
-                          ),
-                          padding: const EdgeInsets.all(10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  e.name,
-                                  textAlign: TextAlign.start,
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400,
-                                  ),
+                    (e) => Row(children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                            widget.setExercise(e);
+                          },
+                          child: Card(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: const BorderRadius.all(
+                                  Radius.circular(5),
+                                ),
+                                border: Border.all(
+                                  width: 2,
+                                  color: selectedExercise != null && e.id == selectedExercise.id
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Colors.transparent,
                                 ),
                               ),
-                              getPropDisplay(context, e.equipment.displayName),
-                            ],
+                              padding: const EdgeInsets.all(10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      e.name,
+                                      textAlign: TextAlign.start,
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                  getPropDisplay(context, e.equipment.displayName),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                      if (addQuickAddButton)
+                        getPrimaryButton(
+                          actionButton: ActionButton(
+                            icon: Icons.add_rounded,
+                            onTap: () => widget.onQuickAdd!(e),
+                          ),
+                          padding: 0,
+                        ),
+                    ]),
                   )
                   .toList(),
             ),

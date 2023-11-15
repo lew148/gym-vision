@@ -101,10 +101,11 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   }
 
   List<Widget> getWorkoutExerciseWidget(List<WorkoutSet> sets) {
-    List<Widget> widgets = [];
+    final List<Widget> widgets = [];
+    final filteredSets = sets.where((ws) => ws.hasWeight() || ws.hasReps()).toList();
 
-    for (int i = 0; i < sets.length; i++) {
-      final ws = sets[i];
+    for (int i = 0; i < filteredSets.length; i++) {
+      final ws = filteredSets[i];
 
       widgets.add(Column(children: [
         const Divider(height: 0),
@@ -158,14 +159,23 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                   flex: 3,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.repeat_rounded,
-                        size: 15,
-                      ),
-                      const Padding(padding: EdgeInsets.all(5)),
-                      Text(ws.getRepsDisplayString()),
-                    ],
+                    children: ws.reps != null && ws.reps! > 0
+                        ? [
+                            const Icon(
+                              Icons.repeat_rounded,
+                              size: 15,
+                            ),
+                            const Padding(padding: EdgeInsets.all(5)),
+                            Text(ws.getRepsDisplayString()),
+                          ]
+                        : [
+                            const Center(
+                              child: Text(
+                                '-',
+                                style: TextStyle(fontSize: 30),
+                              ),
+                            ),
+                          ],
                   ),
                 ),
               ],
@@ -176,19 +186,22 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     }
 
     widgets.add(Row(children: [
-      Expanded(
-        child: getPrimaryButton(
-          actionButton: ActionButton(
-            icon: Icons.copy_rounded,
-            onTap: () => onCopySetButtonTap(widget.workoutSets.last),
+      if (filteredSets.isNotEmpty)
+        Expanded(
+          child: getPrimaryButton(
+            actionButton: ActionButton(
+              icon: Icons.copy_rounded,
+              text: 'Copy Last',
+              onTap: () => onCopySetButtonTap(widget.workoutSets.last),
+            ),
+            padding: 0,
           ),
-          padding: 0,
         ),
-      ),
       Expanded(
         child: getPrimaryButton(
           actionButton: ActionButton(
             icon: Icons.add_rounded,
+            text: 'Add Set',
             onTap: () => onAddSetsButtonTap(
               widget.workoutSets[0].exercise!,
               widget.workoutSets[0].workoutId,

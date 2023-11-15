@@ -74,4 +74,6 @@ class WorkoutSet {
   String getRepsAsString() => !hasReps() ? '0' : reps.toString();
 
   String getRepsDisplayString() => hasReps() ? '$reps rep${reps == 1 ? '' : 's'}' : 'No Reps';
+
+  bool isPlaceholder() => !(hasReps() && hasWeight());
 }
