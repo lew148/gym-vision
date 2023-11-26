@@ -207,56 +207,58 @@ class _ExercisePickerState extends State<ExercisePicker> {
             content: Column(
               children: value
                   .map(
-                    (e) => Row(children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.pop(context);
-                            widget.setExercise(e);
-                          },
-                          child: Card(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(5),
-                                ),
-                                border: Border.all(
-                                  width: 2,
-                                  color: selectedExercise != null && e.id == selectedExercise.id
-                                      ? Theme.of(context).colorScheme.primary
-                                      : Colors.transparent,
-                                ),
-                              ),
-                              padding: const EdgeInsets.all(10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Flexible(
-                                    child: Text(
-                                      e.name,
-                                      textAlign: TextAlign.start,
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w400,
+                    (e) => GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                        widget.setExercise(e);
+                      },
+                      child: Card(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(
+                              Radius.circular(5),
+                            ),
+                            border: Border.all(
+                              width: 2,
+                              color: selectedExercise != null && e.id == selectedExercise.id
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Colors.transparent,
+                            ),
+                          ),
+                          padding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Flexible(
+                                      child: Text(
+                                        e.name,
+                                        textAlign: TextAlign.start,
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w400,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  getPropDisplay(context, e.equipment.displayName),
-                                ],
+                                    getPropDisplay(context, e.equipment.displayName),
+                                  ],
+                                ),
                               ),
-                            ),
+                              if (addQuickAddButton)
+                                getActionButton(
+                                  ActionButton(
+                                    icon: Icons.add_rounded,
+                                    onTap: () => widget.onQuickAdd!(e),
+                                  ),
+                                ),
+                            ],
                           ),
                         ),
                       ),
-                      if (addQuickAddButton)
-                        getPrimaryButton(
-                          actionButton: ActionButton(
-                            icon: Icons.add_rounded,
-                            onTap: () => widget.onQuickAdd!(e),
-                          ),
-                          padding: 0,
-                        ),
-                    ]),
+                    ),
                   )
                   .toList(),
             ),
@@ -305,68 +307,68 @@ class _ExercisePickerState extends State<ExercisePicker> {
               // hacky fix for stupid problem (setState triggers build or addPostFrameCallback -> showExercisePicker twice)
               temp = allExercises;
 
-              return Row(
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: zeroExercises
-                          ? null
-                          : () => showExercisePicker(
-                                allExercises,
-                                exercise,
-                              ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                              color: Theme.of(context).hintColor,
+              return zeroExercises
+                  ? const SizedBox.shrink()
+                  : Row(
+                      children: [
+                        Expanded(
+                          child: GestureDetector(
+                            onTap: () => showExercisePicker(
+                              allExercises,
+                              exercise,
                             ),
-                          ),
-                        ),
-                        padding: const EdgeInsets.only(top: 10, bottom: 5),
-                        height: 60,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                children: [
-                                  Row(children: [
-                                    Text(
-                                      exercise == null ? '' : 'Exercise',
-                                      style: TextStyle(
-                                        color: Theme.of(context).colorScheme.shadow,
-                                      ),
-                                    ),
-                                  ]),
-                                  const Padding(
-                                    padding: EdgeInsets.only(bottom: 5),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: Theme.of(context).hintColor,
                                   ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        exercise == null ? 'Select Exercise' : exercise.name,
-                                        style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w400,
-                                          color: exercise == null ? Theme.of(context).colorScheme.shadow : null,
+                                ),
+                              ),
+                              padding: const EdgeInsets.only(top: 10, bottom: 5),
+                              height: 60,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Column(
+                                      children: [
+                                        Row(children: [
+                                          Text(
+                                            exercise == null ? '' : 'Exercise',
+                                            style: TextStyle(
+                                              color: Theme.of(context).colorScheme.shadow,
+                                            ),
+                                          ),
+                                        ]),
+                                        const Padding(
+                                          padding: EdgeInsets.only(bottom: 5),
                                         ),
-                                      ),
-                                    ],
+                                        Row(
+                                          children: [
+                                            Text(
+                                              exercise == null ? 'Select Exercise' : exercise.name,
+                                              style: TextStyle(
+                                                fontSize: 17,
+                                                fontWeight: FontWeight.w400,
+                                                color: exercise == null ? Theme.of(context).colorScheme.shadow : null,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const Padding(
+                                    padding: EdgeInsets.all(5),
+                                    child: Icon(Icons.arrow_drop_down_rounded),
                                   ),
                                 ],
                               ),
                             ),
-                            const Padding(
-                              padding: EdgeInsets.all(5),
-                              child: Icon(Icons.arrow_drop_down_rounded),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                ],
-              );
+                      ],
+                    );
             }),
           );
         });

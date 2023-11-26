@@ -189,17 +189,16 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       if (filteredSets.isNotEmpty)
         Expanded(
           child: getPrimaryButton(
-            actionButton: ActionButton(
+            ActionButton(
               icon: Icons.copy_rounded,
               text: 'Copy Last',
               onTap: () => onCopySetButtonTap(widget.workoutSets.last),
             ),
-            padding: 0,
           ),
         ),
       Expanded(
         child: getPrimaryButton(
-          actionButton: ActionButton(
+          ActionButton(
             icon: Icons.add_rounded,
             text: 'Add Set',
             onTap: () => onAddSetsButtonTap(
@@ -207,7 +206,6 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
               widget.workoutSets[0].workoutId,
             ),
           ),
-          padding: 0,
         ),
       ),
     ]));
@@ -300,9 +298,11 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                       ),
                       Expanded(
                         child: Row(children: [
-                          Text(
-                            widget.workoutSets[0].exercise!.name,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          Expanded(
+                            child: Text(
+                              widget.workoutSets[0].exercise!.name,
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
                           ),
                           dropped ? const Icon(Icons.arrow_drop_up_rounded) : const Icon(Icons.arrow_drop_down_rounded),
                         ]),
@@ -311,7 +311,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           getPrimaryButton(
-                            actionButton: ActionButton(
+                            ActionButton(
                               icon: Icons.visibility_rounded,
                               onTap: () => Navigator.of(context)
                                   .push(
@@ -323,7 +323,6 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                                   )
                                   .then((value) => widget.reloadState()),
                             ),
-                            padding: 0,
                           ),
                           IconButton(
                             icon: Icon(

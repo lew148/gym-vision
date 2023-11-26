@@ -17,25 +17,44 @@ Widget getSectionTitle(BuildContext context, String title) => Padding(
       ),
     );
 
-Widget getPrimaryButton({required ActionButton actionButton, double? padding}) => Padding(
+Widget getPrimaryButton(ActionButton actionButton) => Padding(
       padding: const EdgeInsets.only(right: 10, left: 10),
       child: OutlinedButton(
         onPressed: actionButton.onTap,
-        child: Padding(
-          padding: EdgeInsets.all(padding ?? 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (actionButton.icon != null)
-                Icon(
-                  actionButton.icon,
-                  size: 25,
-                ),
-              if (actionButton.icon != null && actionButton.text != null)
-                const Padding(padding: EdgeInsets.only(left: 5)),
-              if (actionButton.text != null) Text(actionButton.text!),
-            ],
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (actionButton.icon != null)
+              Icon(
+                actionButton.icon,
+                size: 25,
+              ),
+            if (actionButton.icon != null && actionButton.text != null)
+              const Padding(padding: EdgeInsets.only(left: 5)),
+            if (actionButton.text != null) Text(actionButton.text!),
+          ],
+        ),
+      ),
+    );
+
+Widget getActionButton(ActionButton actionButton) => Padding(
+      padding: const EdgeInsets.only(right: 5, left: 5),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(shape: const CircleBorder()),
+        onPressed: actionButton.onTap,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (actionButton.icon != null)
+              Icon(
+                actionButton.icon,
+                size: 20,
+                color: Colors.white
+              ),
+            if (actionButton.icon != null && actionButton.text != null)
+              const Padding(padding: EdgeInsets.only(left: 5)),
+            if (actionButton.text != null) Text(actionButton.text!),
+          ],
         ),
       ),
     );
@@ -59,9 +78,7 @@ Widget getSectionTitleWithActions(BuildContext context, String title, List<Actio
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         getSectionTitle(context, title),
-        Row(
-          children: actionButtons.map((ab) => getPrimaryButton(actionButton: ab)).toList(),
-        ),
+        Row(children: actionButtons.map((ab) => getPrimaryButton(ab)).toList()),
       ],
     );
 

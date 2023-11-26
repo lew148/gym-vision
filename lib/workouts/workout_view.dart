@@ -116,7 +116,7 @@ class _WorkoutViewState extends State<WorkoutView> {
               ),
             ),
             getPrimaryButton(
-              actionButton: ActionButton(
+              ActionButton(
                 icon: Icons.edit_rounded,
                 onTap: () => onAddCategoryClick(existingCategoryIds),
               ),
@@ -280,7 +280,7 @@ class _WorkoutViewState extends State<WorkoutView> {
           ? Row(children: [
               Expanded(
                 child: getPrimaryButton(
-                  actionButton: ActionButton(
+                  ActionButton(
                     onTap: () => onAddCategoryClick([]),
                     text: 'Add Categories',
                     icon: Icons.add_rounded,
