@@ -167,7 +167,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
           return GlobalKey();
         }
 
-        if (currentDate.weekday == 1) widgets.insert(0, const Divider());
+        if (currentDate.weekday == 1) widgets.insert(0, const Divider(thickness: 0.5));
 
         widgets.insert(
           0, // adds to start of list for most recent date at top
@@ -264,7 +264,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
           ActionButton(icon: Icons.add_rounded, onTap: onAddWorkoutButtonTap),
         ],
       ),
-      const Divider(),
+      const Padding(padding: EdgeInsets.all(2.5)),
       Row(
         children: [
           Expanded(
@@ -302,7 +302,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
           ),
         ],
       ),
-      const Divider(),
+      const Divider(thickness: 0.5),
       Expanded(
         child: SingleChildScrollView(
           child: Column(

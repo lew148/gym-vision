@@ -150,7 +150,7 @@ class CustomFormFields {
         child: TextFormField(
           controller: controller,
           autofocus: autofocus,
-          keyboardType: TextInputType.number,
+          keyboardType: const TextInputType.numberWithOptions(signed: false, decimal: true),
           decoration: InputDecoration(labelText: label),
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         ),

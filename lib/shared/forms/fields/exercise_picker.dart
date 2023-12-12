@@ -82,7 +82,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                         child: Column(
                           children: [
                             getSectionTitle(context, 'Exercise Filters'),
-                            const Divider(),
+                            const Divider(thickness: 0.5),
                             SizedBox(
                               height: MediaQuery.of(context).size.height * 0.75,
                               child: SingleChildScrollView(
@@ -163,7 +163,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
               child: Column(
                 children: [
                   getSectionTitle(context, 'Select Exercise'),
-                  const Divider(),
+                  const Divider(thickness: 0.5),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * .7,
                     child: getPickerContent(allExercises, selectedExercise),

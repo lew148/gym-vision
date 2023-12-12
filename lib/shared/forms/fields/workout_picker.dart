@@ -58,7 +58,7 @@ class _WorkoutPickerState extends State<WorkoutPicker> {
                         fontSize: 20,
                       ),
                     ),
-                    const Divider(),
+                    const Divider(thickness: 0.5),
                     SizedBox(
                       height: 500,
                       child: SingleChildScrollView(

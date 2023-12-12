@@ -77,7 +77,7 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
 
     workoutCategories.forEach((k, v) {
       sections.add(Column(children: [
-        const Divider(),
+        const Divider(thickness: 0.5),
         Wrap(
           alignment: WrapAlignment.center,
           children: v.map((c) => getCategoryDisplay(k, c)).toList(),

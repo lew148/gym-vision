@@ -108,7 +108,7 @@ class _ExercisesState extends State<Exercises> {
                 'Exercises',
                 [], //[ActionButton(icon: Icons.add_rounded, onTap: () => null)],
               ),
-              const Divider(),
+              const Divider(thickness: 0.5),
               getExercisesContent(groupedExercises),
             ]),
           );

@@ -123,7 +123,7 @@ class _WorkoutViewState extends State<WorkoutView> {
             ),
           ],
         ),
-        const Divider(),
+        const Divider(thickness: 0.5),
       ]);
 
   List<Widget> getWorkoutExercisesWidget(List<WorkoutSet> workoutSets, WorkoutExerciseOrdering? ordering) {
@@ -222,7 +222,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                 ),
               ),
             ),
-            const Divider(),
+            const Divider(thickness: 0.5),
             Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 10),
               child: InkWell(
@@ -242,7 +242,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                 ),
               ),
             ),
-            const Divider(),
+            const Divider(thickness: 0.5),
             Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 10),
               child: InkWell(
@@ -373,7 +373,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                       onTap: onAddExerciseClick,
                     ),
                   ),
-                  const Divider(),
+                  const Divider(thickness: 0.5),
                   workout.workoutSets == null || workout.workoutSets!.isEmpty
                       ? const Center(
                           child: Padding(padding: EdgeInsets.all(15), child: Text('No Exercises added yet...')))

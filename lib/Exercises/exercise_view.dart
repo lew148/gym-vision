@@ -41,7 +41,7 @@ class _ExerciseViewState extends State<ExerciseView> {
 
   Widget getNotesDisplay(Exercise exercise) => Column(children: [
         getSectionTitle(context, 'Notes'),
-        const Divider(),
+        const Divider(thickness: 0.5),
         Row(
           children: [
             Expanded(
@@ -222,7 +222,7 @@ class _ExerciseViewState extends State<ExerciseView> {
 
   List<Widget> getDetailsSections(UserExerciseDetails details) => [
         getSectionTitle(context, 'PR'),
-        const Divider(),
+        const Divider(thickness: 0.5),
         details.pr == null
             ? const Center(
                 child: Padding(
@@ -235,7 +235,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                 child: getPrWidget(details.pr!),
               ),
         getSectionTitle(context, 'Recent Uses'),
-        const Divider(),
+        const Divider(thickness: 0.5),
         details.recentUses == null || details.recentUses!.isEmpty
             ? const Center(
                 child: Padding(
