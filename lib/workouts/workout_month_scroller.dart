@@ -167,7 +167,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
           return GlobalKey();
         }
 
-        if (currentDate.weekday == 1) widgets.insert(0, const Divider(thickness: 0.5));
+        if (currentDate.weekday == 1) widgets.insert(0, const Divider(thickness: 0.25));
 
         widgets.insert(
           0, // adds to start of list for most recent date at top
@@ -302,7 +302,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
           ),
         ],
       ),
-      const Divider(thickness: 0.5),
+      const Divider(thickness: 0.25),
       Expanded(
         child: SingleChildScrollView(
           child: Column(

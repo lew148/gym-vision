@@ -94,7 +94,7 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
           child: Column(
             children: [
               getSectionTitle(context, 'Add Set'),
-              const Divider(thickness: 0.5),
+              const Divider(thickness: 0.25),
               ExercisePicker(
                 exerciseId: widget.exerciseId,
                 exercise: selectedExercise,

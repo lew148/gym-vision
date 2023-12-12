@@ -28,7 +28,7 @@ class CustomFormFields {
         Expanded(
           child: TextFormField(
             controller: controller,
-            keyboardType: TextInputType.number,
+            keyboardType: const TextInputType.numberWithOptions(signed: false, decimal: true),
             autofocus: autofocus,
             decoration: InputDecoration(
               labelText: label,

@@ -85,7 +85,7 @@ class _EditWorkoutExerciseFormState extends State<EditWorkoutExerciseForm> {
             'Edit Workout Set',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
-          const Divider(thickness: 0.5),
+          const Divider(thickness: 0.25),
           Form(
             key: formKey,
             child: Column(
