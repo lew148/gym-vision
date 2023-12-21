@@ -60,7 +60,7 @@ class ExercisesHelper {
         exercises.split,
         exercises.isDouble
       FROM exercises
-      ${whereString != null ? 'WHERE $whereString' : ''}
+      ${whereString != null && whereString != "" ? 'WHERE $whereString' : ''}
       ORDER BY exercises.name ASC;
     ''');
 

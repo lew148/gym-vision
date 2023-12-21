@@ -46,6 +46,7 @@ class _ExerciseViewState extends State<ExerciseView> {
           children: [
             Expanded(
               child: Card(
+                color: Colors.grey[800],
                 child: InkWell(
                   onTap: () => openNotesForm(exercise),
                   child: Container(
@@ -180,6 +181,7 @@ class _ExerciseViewState extends State<ExerciseView> {
   }
 
   Widget getPrWidget(WorkoutSet pr) => Card(
+        color: Colors.grey[800],
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: Row(

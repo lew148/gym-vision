@@ -17,9 +17,7 @@ Widget getSectionTitle(BuildContext context, String title) => Padding(
       ),
     );
 
-Widget getPrimaryButton(ActionButton actionButton) => Padding(
-      padding: const EdgeInsets.only(right: 10, left: 10),
-      child: OutlinedButton(
+Widget getPrimaryButton(ActionButton actionButton) => TextButton(
         onPressed: actionButton.onTap,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -34,29 +32,6 @@ Widget getPrimaryButton(ActionButton actionButton) => Padding(
             if (actionButton.text != null) Text(actionButton.text!),
           ],
         ),
-      ),
-    );
-
-Widget getActionButton(ActionButton actionButton) => Padding(
-      padding: const EdgeInsets.only(right: 5, left: 5),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(shape: const CircleBorder()),
-        onPressed: actionButton.onTap,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (actionButton.icon != null)
-              Icon(
-                actionButton.icon,
-                size: 20,
-                color: Colors.white
-              ),
-            if (actionButton.icon != null && actionButton.text != null)
-              const Padding(padding: EdgeInsets.only(left: 5)),
-            if (actionButton.text != null) Text(actionButton.text!),
-          ],
-        ),
-      ),
     );
 
 class ActionButton {

@@ -101,14 +101,13 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   }
 
   List<Widget> getWorkoutExerciseWidget(List<WorkoutSet> sets) {
-    final List<Widget> widgets = [];
+    final List<Widget> widgets = [const Divider(height: 0, thickness: 0.25)];
     final filteredSets = sets.where((ws) => ws.hasWeight() || ws.hasReps()).toList();
 
     for (int i = 0; i < filteredSets.length; i++) {
       final ws = filteredSets[i];
 
       widgets.add(Column(children: [
-        const Divider(height: 0),
         InkWell(
           onTap: () => onEditWorkoutExerciseTap(ws),
           child: Padding(
@@ -276,72 +275,69 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Card(
-          child: Column(
-            children: [
-              InkWell(
-                onTap: () => widget.reloadState(eId: widget.workoutSets[0].exerciseId),
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Checkbox(
-                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        checkColor: Colors.white,
-                        activeColor: Theme.of(context).colorScheme.primary,
-                        value: widget.workoutSets.every((ws) => ws.done),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                        onChanged: (bool? value) => onGroupedWorkoutExercisesDoneTap(value),
-                      ),
+    return Card(
+      color: Colors.grey[800],
+      child: Column(
+        children: [
+          InkWell(
+            onTap: () => widget.reloadState(eId: widget.workoutSets[0].exerciseId),
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Checkbox(
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    checkColor: Colors.white,
+                    activeColor: Theme.of(context).colorScheme.primary,
+                    value: widget.workoutSets.every((ws) => ws.done),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                    onChanged: (bool? value) => onGroupedWorkoutExercisesDoneTap(value),
+                  ),
+                  Expanded(
+                    child: Row(children: [
                       Expanded(
-                        child: Row(children: [
-                          Expanded(
-                            child: Text(
-                              widget.workoutSets[0].exercise!.name,
-                              style: const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          dropped ? const Icon(Icons.arrow_drop_up_rounded) : const Icon(Icons.arrow_drop_down_rounded),
-                        ]),
+                        child: Text(
+                          widget.workoutSets[0].exercise!.name,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          getPrimaryButton(
-                            ActionButton(
-                              icon: Icons.visibility_rounded,
-                              onTap: () => Navigator.of(context)
-                                  .push(
-                                    MaterialPageRoute(
-                                      builder: (context) => ExerciseView(
-                                        exerciseId: widget.workoutSets[0].exerciseId,
-                                      ),
-                                    ),
-                                  )
-                                  .then((value) => widget.reloadState()),
-                            ),
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.delete_rounded,
-                              color: Theme.of(context).colorScheme.tertiary,
-                            ),
-                            onPressed: showDeleteGroupedWorkoutExercisesConfirm,
-                          )
-                        ],
+                      dropped ? const Icon(Icons.arrow_drop_up_rounded) : const Icon(Icons.arrow_drop_down_rounded),
+                    ]),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      getPrimaryButton(
+                        ActionButton(
+                          icon: Icons.visibility_rounded,
+                          onTap: () => Navigator.of(context)
+                              .push(
+                                MaterialPageRoute(
+                                  builder: (context) => ExerciseView(
+                                    exerciseId: widget.workoutSets[0].exerciseId,
+                                  ),
+                                ),
+                              )
+                              .then((value) => widget.reloadState()),
+                        ),
                       ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.delete_rounded,
+                          color: Theme.of(context).colorScheme.tertiary,
+                        ),
+                        onPressed: showDeleteGroupedWorkoutExercisesConfirm,
+                      )
                     ],
                   ),
-                ),
+                ],
               ),
-              if (dropped) ...getWorkoutExerciseWidget(widget.workoutSets),
-            ],
+            ),
           ),
-        ),
-      ],
+          if (dropped) ...getWorkoutExerciseWidget(widget.workoutSets),
+        ],
+      ),
     );
   }
 }

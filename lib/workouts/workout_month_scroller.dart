@@ -113,6 +113,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
               )
               .then((value) => widget.reloadState()),
           child: Card(
+            color: Colors.grey[800],
             child: workout.isInFuture() ? getBorderedWorkoutDisplay(workout) : getInnerWorkoutDisplay(workout),
           ),
         );

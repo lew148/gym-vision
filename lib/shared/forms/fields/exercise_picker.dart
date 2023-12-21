@@ -213,6 +213,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                         widget.setExercise(e);
                       },
                       child: Card(
+                        color: Colors.grey[800],
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.all(
@@ -248,7 +249,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                                 ),
                               ),
                               if (addQuickAddButton)
-                                getActionButton(
+                                getPrimaryButton(
                                   ActionButton(
                                     icon: Icons.add_rounded,
                                     onTap: () => widget.onQuickAdd!(e),

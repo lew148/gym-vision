@@ -70,6 +70,7 @@ class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
     return Column(
       children: [
         Card(
+          color: Colors.grey[800],
           child: Column(children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -73,6 +73,7 @@ class _WorkoutPickerState extends State<WorkoutPicker> {
                                       widget.setWorkout(w);
                                     },
                                     child: Card(
+                                      color: Colors.grey[800],
                                       child: Container(
                                         decoration: BoxDecoration(
                                           borderRadius: const BorderRadius.all(
@@ -201,7 +202,7 @@ class _WorkoutPickerState extends State<WorkoutPicker> {
                       ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(10, 10, 5, 0),
-                        child: OutlinedButton(
+                        child: TextButton(
                           onPressed: () => widget.setWorkout(mostRecentWorkout),
                           child: const Text('Most Recent'),
                         ),

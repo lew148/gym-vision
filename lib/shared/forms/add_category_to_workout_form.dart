@@ -56,6 +56,7 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
   Widget getCategoryDisplay(int section, WorkoutCategoryShell wc) => GestureDetector(
         onTap: () => onCategoryTap(wc.id, section),
         child: Card(
+          color: Colors.grey[800],
           child: Container(
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(

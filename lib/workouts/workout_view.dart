@@ -277,7 +277,8 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   Widget getCategoriesWidget(Workout workout, List<int> existingCategoryIds) =>
       workout.workoutCategories == null || workout.workoutCategories!.isEmpty
-          ? Row(children: [
+          ? Row(
+            children: [
               Expanded(
                 child: getPrimaryButton(
                   ActionButton(

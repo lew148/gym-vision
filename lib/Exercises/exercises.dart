@@ -23,6 +23,7 @@ class _ExercisesState extends State<Exercises> {
       });
 
   Widget getExerciseWidget(Exercise exercise) => Card(
+        color: Colors.grey[800],
         child: InkWell(
           onTap: () => Navigator.of(context)
               .push(

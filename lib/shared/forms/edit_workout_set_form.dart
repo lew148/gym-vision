@@ -100,7 +100,7 @@ class _EditWorkoutExerciseFormState extends State<EditWorkoutExerciseForm> {
                 CustomFormFields.intField(
                   controller: repsController,
                   label: 'Reps',
-                  selectableValues: [1, 8, 12],
+                  selectableValues: [1, 8, 10, 12],
                 ),
                 const Padding(padding: EdgeInsets.only(top: 20.0)),
                 Row(

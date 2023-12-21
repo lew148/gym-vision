@@ -42,15 +42,15 @@ class CustomFormFields {
         Row(children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
-            child: OutlinedButton(
+            child: TextButton(
               onPressed: () => controller.clear(),
               child: const Text('None'),
             ),
           ),
           if (last != null)
             Padding(
-              padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
-              child: OutlinedButton(
+              padding: const EdgeInsets.only(top: 10),
+              child: TextButton(
                 onPressed: () {
                   if (last == '0') {
                     controller.clear();
@@ -69,8 +69,8 @@ class CustomFormFields {
             ),
           if (max != null)
             Padding(
-              padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
-              child: OutlinedButton(
+              padding: const EdgeInsets.only(top: 10),
+              child: TextButton(
                 onPressed: () {
                   if (max == '0') {
                     controller.clear();
@@ -95,18 +95,6 @@ class CustomFormFields {
       required String label,
       bool autofocus = false,
       List<int>? selectableValues}) {
-    onOperationButtonClick(int num) {
-      int? currentValue = int.tryParse(controller.text) ?? 0;
-      String newValue = (currentValue + num).toString();
-
-      controller.value = TextEditingValue(
-        text: newValue,
-        selection: TextSelection.fromPosition(
-          TextPosition(offset: newValue.length),
-        ),
-      );
-    }
-
     onSelectableValueButtonClick(int num) {
       String newValue = num.toString();
 
@@ -118,27 +106,10 @@ class CustomFormFields {
       );
     }
 
-    getArrowButtons() => [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
-            child: OutlinedButton(
-              onPressed: () => onOperationButtonClick(-1),
-              child: const Icon(Icons.remove_rounded),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
-            child: OutlinedButton(
-              onPressed: () => onOperationButtonClick(1),
-              child: const Icon(Icons.add_rounded),
-            ),
-          ),
-        ];
-
     getSelectableValueButtons() => selectableValues!
         .map((sv) => Padding(
-              padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
-              child: OutlinedButton(
+              padding: const EdgeInsets.only(top: 10),
+              child: TextButton(
                 onPressed: () => onSelectableValueButtonClick(sv),
                 child: Text(sv.toString()),
               ),
@@ -155,7 +126,7 @@ class CustomFormFields {
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         ),
       ),
-      ...(selectableValues == null ? getArrowButtons() : getSelectableValueButtons())
+      ...getSelectableValueButtons()
     ]);
   }
 
