@@ -11,6 +11,7 @@ class ExercisePicker extends StatefulWidget {
   final int? exerciseId;
   final Exercise? exercise;
   final List<int>? categoryShellIds;
+  final List<int>? existingExerciseIds;
   final bool autoOpen;
   final Function(Exercise exercise)? onQuickAdd;
   final Function setExercise;
@@ -20,6 +21,7 @@ class ExercisePicker extends StatefulWidget {
     this.exerciseId,
     this.exercise,
     this.categoryShellIds,
+    this.existingExerciseIds,
     this.autoOpen = false,
     this.onQuickAdd,
     required this.setExercise,
@@ -33,6 +35,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
   Future<Exercise>? selectedExercise;
   late Future<List<Exercise>> allExercises;
   late List<int> categoryShellFilters = [];
+  late List<int> existingExerciseIds = [];
 
   List<Exercise> temp = [];
 
@@ -40,13 +43,17 @@ class _ExercisePickerState extends State<ExercisePicker> {
   void initState() {
     super.initState();
     categoryShellFilters = widget.categoryShellIds ?? [];
+    existingExerciseIds = widget.existingExerciseIds ?? [];
 
     // exercise pre-selected
     if (widget.exerciseId != null) {
       allExercises = Future<List<Exercise>>.value([]);
       selectedExercise = ExercisesHelper.getExercise(id: widget.exerciseId!, includeUserDetails: true);
     } else {
-      allExercises = ExercisesHelper.getAllExercisesExcludingCategories(categoryShellFilters);
+      allExercises = ExercisesHelper.getAllExercisesExcludingCategories(
+        categoryShellIds: categoryShellFilters,
+        exerciseIds: existingExerciseIds,
+      );
     }
   }
 
@@ -59,7 +66,10 @@ class _ExercisePickerState extends State<ExercisePicker> {
         categoryShellFilters.remove(shellId);
       }
 
-      allExercises = ExercisesHelper.getAllExercisesExcludingCategories(categoryShellFilters);
+      allExercises = ExercisesHelper.getAllExercisesExcludingCategories(
+        categoryShellIds: categoryShellFilters,
+        exerciseIds: existingExerciseIds,
+      );
     });
   }
 

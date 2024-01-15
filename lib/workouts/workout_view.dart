@@ -300,6 +300,7 @@ class _WorkoutViewState extends State<WorkoutView> {
     );
 
     List<int> existingCategoryShellIds = [];
+    List<int> existingExerciseIds = [];
 
     return FutureBuilder<Workout?>(
       future: workout,
@@ -316,6 +317,12 @@ class _WorkoutViewState extends State<WorkoutView> {
           existingCategoryShellIds = [];
         }
 
+        if (workout.workoutSets != null && workout.workoutSets!.isNotEmpty) {
+          existingExerciseIds = workout.workoutSets!.map((ws) => ws.exerciseId).toSet().toList();
+        } else {
+          existingExerciseIds = [];
+        }
+
         void onAddExerciseClick() => showModalBottomSheet(
               context: context,
               builder: (BuildContext context) => Column(
@@ -327,6 +334,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                     ),
                     child: AddSetToWorkoutForm(
                       workoutId: workout.id,
+                      existingExerciseIds: existingExerciseIds,
                       categoryShellIds: existingCategoryShellIds,
                       reloadState: reloadState,
                     ),

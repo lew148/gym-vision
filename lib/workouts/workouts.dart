@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:gymvision/db/classes/body_weight.dart';
+import 'package:gymvision/db/helpers/bodyweight_helper.dart';
 import 'package:gymvision/workouts/workout_month_scroller.dart';
 
 import '../db/classes/workout.dart';
@@ -18,6 +20,7 @@ class _WorkoutsState extends State<Workouts> {
   @override
   Widget build(BuildContext context) {
     final Future<List<Workout>> workouts = WorkoutsHelper.getWorkouts();
+    final Future<List<Bodyweight>> bodyweights = BodyweightHelper.getBodyweights();
 
     return Container(
       padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
@@ -37,10 +40,21 @@ class _WorkoutsState extends State<Workouts> {
                   );
                 }
 
-                return WorkoutMonthScoller(
-                  workouts: snapshot.data!,
-                  reloadState: reloadState,
-                );
+                return FutureBuilder<List<Bodyweight>>(
+                    future: bodyweights,
+                    builder: (context, bwSnapshot) {
+                      if (!bwSnapshot.hasData) {
+                        return const Center(
+                          child: Text('Loading...'),
+                        );
+                      }
+
+                      return WorkoutMonthScoller(
+                        workouts: snapshot.data!,
+                        bodyweights: bwSnapshot.data!,
+                        reloadState: reloadState,
+                      );
+                    });
               },
             ),
           ),

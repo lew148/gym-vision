@@ -384,7 +384,7 @@ class DataHelper {
           id: 3,
           name: 'DB Shrug',
           exerciseType: ExerciseType.weight,
-          muscleGroup: MuscleGroup.back,       // moved from shoulders to back
+          muscleGroup: MuscleGroup.back, // moved from shoulders to back
           equipment: ExerciseEquipment.dumbbell,
           split: ExerciseSplit.pull,
           isDouble: true,
@@ -851,10 +851,18 @@ class DataHelper {
           split: ExerciseSplit.pull,
           isDouble: false,
         ),
+        Exercise(
+          id: 93,
+          name: 'Seated Dip',
+          exerciseType: ExerciseType.weight,
+          muscleGroup: MuscleGroup.triceps,
+          equipment: ExerciseEquipment.machine,
+          split: ExerciseSplit.push,
+        ),
 
 // cardio
         Exercise(
-          id: 93,
+          id: 94,
           name: 'Treadmill',
           exerciseType: ExerciseType.cardio,
           muscleGroup: MuscleGroup.other,
@@ -862,7 +870,7 @@ class DataHelper {
           split: ExerciseSplit.other,
         ),
         Exercise(
-          id: 94,
+          id: 95,
           name: 'Cross Trainer',
           exerciseType: ExerciseType.cardio,
           muscleGroup: MuscleGroup.other,
@@ -870,7 +878,7 @@ class DataHelper {
           split: ExerciseSplit.other,
         ),
         Exercise(
-          id: 95,
+          id: 96,
           name: 'Rowing Machine',
           exerciseType: ExerciseType.cardio,
           muscleGroup: MuscleGroup.other,
@@ -878,7 +886,7 @@ class DataHelper {
           split: ExerciseSplit.other,
         ),
         Exercise(
-          id: 96,
+          id: 97,
           name: 'Stair Climber',
           exerciseType: ExerciseType.cardio,
           muscleGroup: MuscleGroup.other,
@@ -886,7 +894,7 @@ class DataHelper {
           split: ExerciseSplit.other,
         ),
         Exercise(
-          id: 97,
+          id: 98,
           name: 'Seated Bicycle',
           exerciseType: ExerciseType.cardio,
           muscleGroup: MuscleGroup.other,
@@ -894,7 +902,7 @@ class DataHelper {
           split: ExerciseSplit.other,
         ),
         Exercise(
-          id: 98,
+          id: 99,
           name: 'Tricep Bar Curl',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.biceps,
@@ -902,7 +910,7 @@ class DataHelper {
           split: ExerciseSplit.pull,
         ),
         Exercise(
-          id: 99,
+          id: 100,
           name: 'Lateral Raise Machine',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.shoulders,

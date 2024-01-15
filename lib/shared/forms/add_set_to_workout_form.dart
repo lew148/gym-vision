@@ -11,6 +11,7 @@ class AddSetToWorkoutForm extends StatefulWidget {
   final int? workoutId;
   final int? exerciseId;
   final List<int>? categoryShellIds;
+  final List<int>? existingExerciseIds;
   final Function reloadState;
 
   const AddSetToWorkoutForm({
@@ -18,6 +19,7 @@ class AddSetToWorkoutForm extends StatefulWidget {
     this.workoutId,
     this.exerciseId,
     this.categoryShellIds,
+    this.existingExerciseIds,
     required this.reloadState,
   }) : super(key: key);
 
@@ -98,6 +100,7 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
               ExercisePicker(
                 exerciseId: widget.exerciseId,
                 exercise: selectedExercise,
+                existingExerciseIds: widget.existingExerciseIds,
                 categoryShellIds: widget.categoryShellIds,
                 autoOpen: true,
                 onQuickAdd: onQuickAdd,

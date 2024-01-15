@@ -126,6 +126,15 @@ class DatabaseHelper {
 
     batch.execute('INSERT INTO user_settings(id, theme) VALUES (1, "system");');
 
+    batch.execute('''
+      CREATE TABLE bodyweights(
+        id INTEGER PRIMARY KEY,
+        weight REAL NOT NULL,
+        date TEXT NOT NULL,
+        units TEXT NOT NULL
+      );
+    ''');
+
     batch.execute(getInsertExercisesSql());
   }
 

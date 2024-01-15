@@ -1,5 +1,8 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:gymvision/db/classes/body_weight.dart';
+import 'package:gymvision/db/helpers/bodyweight_helper.dart';
+import 'package:gymvision/shared/forms/add_weight_form.dart';
 import 'package:gymvision/shared/ui_helper.dart';
 import 'package:gymvision/workouts/workout_view.dart';
 
@@ -10,11 +13,13 @@ import '../globals.dart';
 
 class WorkoutMonthScoller extends StatefulWidget {
   final List<Workout> workouts;
+  final List<Bodyweight> bodyweights;
   final Function reloadState;
 
   const WorkoutMonthScoller({
     super.key,
     required this.workouts,
+    required this.bodyweights,
     required this.reloadState,
   });
 
@@ -118,7 +123,94 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
           ),
         );
 
-    void onAddWorkoutButtonTap({DateTime? date}) async {
+    void showDeleteBodyweightConfirm(int bodyweightId) {
+      Widget cancelButton = TextButton(
+        child: const Text("No"),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      );
+
+      Widget continueButton = TextButton(
+        child: const Text(
+          "Yes",
+          style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+        ),
+        onPressed: () async {
+          Navigator.pop(context);
+
+          try {
+            await BodyweightHelper.deleteBodyweight(bodyweightId);
+          } catch (ex) {
+            if (!mounted) return;
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text('Failed to delete Bodyweight: ${ex.toString()}')));
+          }
+
+          widget.reloadState();
+        },
+      );
+
+      AlertDialog alert = AlertDialog(
+        title: const Text("Delete Workout?"),
+        content: const Text("Are you sure you would like to delete this Workout?"),
+        actions: [
+          cancelButton,
+          continueButton,
+        ],
+      );
+
+      showDialog(
+        context: context,
+        builder: (context) => alert,
+      );
+    }
+
+    Widget getBodyweightDisplay(Bodyweight bw) => InkWell(
+          onLongPress: () => showDeleteBodyweightConfirm(bw.id!),
+          child: Card(
+            color: Colors.grey[800],
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      const Text(
+                        'Bodyweight',
+                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
+                      const Padding(padding: EdgeInsets.all(5)),
+                      Text(
+                        '@ ${bw.getTimeString()}',
+                        style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                      ),
+                    ],
+                  ),
+                  Text(bw.getWeightDisplay())
+                ],
+              ),
+            ),
+          ),
+        );
+
+    void onAddWeightTap() async => showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                child: AddWeightForm(reloadState: reloadState),
+              ),
+            ],
+          ),
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+        );
+
+    void onAddWorkoutTap({DateTime? date}) async {
       try {
         var now = DateTime.now();
 
@@ -146,7 +238,42 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
       }
     }
 
-    List<Widget> getWorkoutsWidget(List<Workout> workouts) {
+    void onAddButtonTap() => showDialog(
+          context: context,
+          builder: (context) => SimpleDialog(
+            // title: const Text('Add'),
+            children: <Widget>[
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context);
+                  onAddWorkoutTap();
+                },
+                child: const Row(children: [
+                  Icon(Icons.fitness_center_rounded),
+                  Padding(
+                    padding: EdgeInsets.all(5),
+                  ),
+                  Text('Workout'),
+                ]),
+              ),
+              SimpleDialogOption(
+                onPressed: () {
+                  Navigator.pop(context);
+                  onAddWeightTap();
+                },
+                child: const Row(children: [
+                  Icon(Icons.monitor_weight_rounded),
+                  Padding(
+                    padding: EdgeInsets.all(5),
+                  ),
+                  Text('Bodyweight'),
+                ]),
+              ),
+            ],
+          ),
+        );
+
+    List<Widget> getWorkoutsWidget(List<Workout> workouts, List<Bodyweight> bws) {
       var rnAndCurrentAreSameMonth = currentMonth.year == rn.year && currentMonth.month == rn.month;
       var daysInCurrentMonth = getDaysInMonth(currentMonth.year, currentMonth.month);
 
@@ -161,6 +288,11 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
             .where((w) => w.date.year == currentMonth.year && w.date.month == currentMonth.month && w.date.day == day)
             .toList();
         workoutsForDay.sort((w1, w2) => w2.date.compareTo(w1.date));
+
+        var bwsForDay = bws
+            .where((w) => w.date.year == currentMonth.year && w.date.month == currentMonth.month && w.date.day == day)
+            .toList();
+        bwsForDay.sort((w1, w2) => w2.date.compareTo(w1.date));
 
         GlobalKey getKey() {
           if (isToday) return todayKey;
@@ -195,12 +327,15 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                 Expanded(
                   flex: 5,
                   child: Column(
-                    children: workoutsForDay.isNotEmpty
-                        ? workoutsForDay.map<Widget>((workout) => getWorkoutDisplay(workout)).toList()
+                    children: workoutsForDay.isNotEmpty || bwsForDay.isNotEmpty
+                        ? [
+                            ...workoutsForDay.map<Widget>((workout) => getWorkoutDisplay(workout)),
+                            ...bwsForDay.map<Widget>((bw) => getBodyweightDisplay(bw))
+                          ]
                         : [
                             GestureDetector(
                               behavior: HitTestBehavior.translucent,
-                              onTap: () => onAddWorkoutButtonTap(date: currentDate),
+                              onTap: () => onAddWorkoutTap(date: currentDate),
                               child: Padding(
                                 padding: const EdgeInsets.all(15),
                                 child: Row(
@@ -262,7 +397,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
         '',
         [
           ActionButton(icon: Icons.today_outlined, onTap: reloadState, text: 'Today'),
-          ActionButton(icon: Icons.add_rounded, onTap: onAddWorkoutButtonTap),
+          ActionButton(icon: Icons.add_rounded, onTap: onAddButtonTap),
         ],
       ),
       const Padding(padding: EdgeInsets.all(2.5)),
@@ -307,7 +442,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
       Expanded(
         child: SingleChildScrollView(
           child: Column(
-            children: getWorkoutsWidget(widget.workouts),
+            children: getWorkoutsWidget(widget.workouts, widget.bodyweights),
           ),
         ),
       ),

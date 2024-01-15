@@ -6,7 +6,8 @@ import 'package:gymvision/enums.dart';
 import '../../helpers/workout_category_helper.dart';
 
 class ExercisesHelper {
-  static Future<List<Exercise>> getAllExercisesExcludingCategories(List<int>? categoryShellIds) async {
+  static Future<List<Exercise>> getAllExercisesExcludingCategories(
+      {List<int>? categoryShellIds, List<int>? exerciseIds}) async {
     StringBuffer? whereString;
 
     if (categoryShellIds != null && categoryShellIds.isNotEmpty) {
@@ -21,7 +22,13 @@ class ExercisesHelper {
       var needAnd = false;
       whereString = StringBuffer();
 
+      if (exerciseIds != null) {
+        whereString.write('exercises.id NOT IN (${exerciseIds.join(',')})');
+        needAnd = true;
+      }
+
       if (exerciseTypes.isNotEmpty) {
+        if (needAnd) whereString.write(' AND ');
         whereString.write('exercises.exerciseType IN (${exerciseTypes.join(',')})');
         needAnd = true;
       }
