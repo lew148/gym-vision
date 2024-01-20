@@ -790,7 +790,7 @@ class DataHelper {
         ),
         Exercise(
           id: 86,
-          name: 'Inclne Smiths Bench Press',
+          name: 'Incline Smiths Bench Press',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.chest,
           equipment: ExerciseEquipment.plates,

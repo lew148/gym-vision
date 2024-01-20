@@ -93,9 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: const Text('GymVision'),
         actions: [
           IconButton(
-            icon: const Icon(
-              Icons.settings_rounded,
-            ),
+            icon: const Icon(Icons.settings_rounded),
             onPressed: () => Navigator.of(context)
                 .push(
                   MaterialPageRoute(builder: (context) => const UserSettingsView()),
