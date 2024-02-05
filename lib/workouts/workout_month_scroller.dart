@@ -196,7 +196,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
     Widget getBodyweightDisplay(Bodyweight bw) => InkWell(
           onLongPress: () => showDeleteBodyweightConfirm(bw.id!),
           child: Container(
-            padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
+            padding: const EdgeInsets.all(10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

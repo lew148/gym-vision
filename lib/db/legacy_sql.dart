@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:gymvision/db/classes/body_weight.dart';
 import 'package:gymvision/db/classes/exercise.dart';
 import 'package:gymvision/db/classes/workout.dart';
 import 'package:gymvision/db/classes/workout_category.dart';
@@ -125,5 +126,22 @@ class LegacySql {
     }
 
     return sets;
+  }
+
+  static Future<List<Bodyweight>> getBodyweights() async {
+    final db = await DatabaseHelper.getDb();
+    final List<Map<String, dynamic>> maps = await db.query('bodyweights');
+
+    List<Bodyweight> bws = [];
+    for (var map in maps) {
+      bws.add(Bodyweight(
+        id: map['id'],
+        date: DateTime.parse(map['date']),
+        weight: map['weight'],
+        units: map['units'],
+      ));
+    }
+
+    return bws;
   }
 }

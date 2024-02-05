@@ -1,4 +1,6 @@
+import 'package:gymvision/db/classes/body_weight.dart';
 import 'package:gymvision/db/classes/workout_set.dart';
+import 'package:gymvision/db/helpers/bodyweight_helper.dart';
 import 'package:gymvision/db/helpers/workout_exercise_orderings_helper.dart';
 import 'package:gymvision/db/helpers/workout_sets_helper.dart';
 import 'package:gymvision/db/helpers/workouts_helper.dart';
@@ -168,6 +170,7 @@ class DatabaseHelper {
   static restartDbWhilePersistingData() async {
     var workoutsAndCategories = await LegacySql.getWorkoutsLegacy();
     var sets = await LegacySql.getWorkoutSets(shallow: true);
+    var bws = await LegacySql.getBodyweights();
 
     await deleteDb();
     await openDb();
@@ -197,6 +200,14 @@ class DatabaseHelper {
           done: s.done,
         ),
       );
+    }
+
+    for (var b in bws) {
+      await BodyweightHelper.insertBodyweight(Bodyweight(
+        date: b.date,
+        weight: b.weight,
+        units: b.units,
+      ));
     }
   }
 }
