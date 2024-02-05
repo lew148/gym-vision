@@ -44,6 +44,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Gym Vision',
       theme: ThemeData(
+        scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
         colorScheme: ColorScheme.light(
           primary: Colors.green[400]!,
           secondary: const Color.fromARGB(255, 216, 160, 233),
@@ -52,6 +53,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       darkTheme: ThemeData(
+        scaffoldBackgroundColor: const Color.fromARGB(255, 46, 46, 46),
         colorScheme: ColorScheme.dark(
           primary: Colors.green[400]!,
           secondary: const Color.fromARGB(255, 216, 160, 233),
@@ -90,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('GymVision'),
+        title: const Row(children: [Text('GymVision')]),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings_rounded),
@@ -104,6 +106,9 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(child: _widgetPages.elementAt(_selectedIndex)),
       bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.format_list_bulleted_rounded),

@@ -30,8 +30,6 @@ String getDateString(DateTime dt) {
   return DateFormat(dmFormat).format(dt);
 }
 
-String getSmallDateDisplay(DateTime dt) => DateFormat('EEE d').format(dt);
-
 String getMonthAndYear(DateTime dt) => DateFormat(dt.year == DateTime.now().year ? 'MMMM' : 'MMMM yyyy').format(dt);
 
 int getDaysInMonth(int year, int month) => DateTime(year, month + 1, 0).day;

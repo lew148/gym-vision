@@ -46,7 +46,7 @@ class _ExerciseViewState extends State<ExerciseView> {
           children: [
             Expanded(
               child: Card(
-                color: Colors.grey[800],
+                color: const Color.fromARGB(255, 124, 124, 124),
                 child: InkWell(
                   onTap: () => openNotesForm(exercise),
                   child: Container(

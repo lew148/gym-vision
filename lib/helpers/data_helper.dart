@@ -78,15 +78,6 @@ class DataHelper {
           isDouble: true,
         ),
         Exercise(
-          id: 10,
-          name: 'Cable External Rotation',
-          exerciseType: ExerciseType.weight,
-          muscleGroup: MuscleGroup.shoulders,
-          equipment: ExerciseEquipment.cable,
-          split: ExerciseSplit.pull,
-          isDouble: true,
-        ),
-        Exercise(
           id: 11,
           name: 'Barbell Shoulder Press',
           exerciseType: ExerciseType.weight,

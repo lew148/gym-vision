@@ -5,9 +5,9 @@ import 'package:gymvision/db/helpers/bodyweight_helper.dart';
 import 'package:gymvision/shared/forms/add_weight_form.dart';
 import 'package:gymvision/shared/ui_helper.dart';
 import 'package:gymvision/workouts/workout_view.dart';
+import 'package:intl/intl.dart';
 
 import '../db/classes/workout.dart';
-import '../db/classes/workout_category.dart';
 import '../db/helpers/workouts_helper.dart';
 import '../globals.dart';
 
@@ -30,12 +30,11 @@ class WorkoutMonthScoller extends StatefulWidget {
 class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
   final todayKey = GlobalKey();
   final lastDayInMonthKey = GlobalKey();
-
-  final rn = DateTime.now();
-  late DateTime currentMonth;
+  final trueDate = DateTime.now();
+  late DateTime selectedMonth;
 
   void reloadState() => setState(() {
-        currentMonth = rn;
+        selectedMonth = trueDate;
         WidgetsBinding.instance.addPostFrameCallback((_) {
           Scrollable.ensureVisible(todayKey.currentContext!);
         });
@@ -44,7 +43,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
   @override
   void initState() {
     super.initState();
-    currentMonth = rn;
+    selectedMonth = trueDate;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Scrollable.ensureVisible(todayKey.currentContext!);
@@ -139,59 +138,6 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
       );
     }
 
-    Widget getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories, WrapAlignment alignment) => Expanded(
-          child: Wrap(
-            alignment: alignment,
-            children: workoutCategories.map((wc) => getPropDisplay(context, wc.getDisplayName())).toList(),
-          ),
-        );
-
-    Widget getInnerWorkoutDisplay(Workout workout) => Container(
-          padding: const EdgeInsets.all(10),
-          child: Row(
-            children: [
-              if (workout.done && !workout.isInFuture() && (workout.workoutSets?.isNotEmpty ?? true))
-                Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: Icon(
-                    Icons.check_circle_outline_rounded,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '${workout.isInFuture() ? 'Planned ' : ''}Session',
-                    style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    '@ ${workout.getTimeString()}',
-                    style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-                  ),
-                ],
-              ),
-              const Padding(padding: EdgeInsets.only(right: 10)),
-              if (workout.workoutCategories != null && workout.workoutCategories!.isNotEmpty)
-                getWorkoutCategoriesWidget(
-                  workout.workoutCategories!,
-                  WrapAlignment.end,
-                ),
-            ],
-          ),
-        );
-
-    Widget getBorderedWorkoutDisplay(Workout workout) => DottedBorder(
-          color: Theme.of(context).colorScheme.shadow,
-          strokeWidth: workout.isInFuture() ? 0.5 : 0,
-          dashPattern: const [6, 6],
-          padding: EdgeInsets.zero,
-          radius: const Radius.circular(5),
-          borderType: BorderType.RRect,
-          child: getInnerWorkoutDisplay(workout),
-        );
-
     Widget getWorkoutDisplay(Workout workout) => InkWell(
           onLongPress: () => showDeleteWorkoutConfirm(workout.id!),
           onTap: () => Navigator.of(context)
@@ -204,37 +150,65 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                 ),
               )
               .then((value) => widget.reloadState()),
-          child: Card(
-            color: Colors.grey[800],
-            child: workout.isInFuture() ? getBorderedWorkoutDisplay(workout) : getInnerWorkoutDisplay(workout),
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(children: [
+                      if (!workout.isInFuture() && workout.done)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 5),
+                          child: Icon(
+                            Icons.check_box_rounded,
+                            color: Theme.of(context).colorScheme.primary,
+                            size: 18,
+                          ),
+                        ),
+                      Text(
+                        '${workout.isInFuture() ? '📍 Planned ' : ''}Workout',
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                      ),
+                    ]),
+                    Text(
+                      '@ ${workout.getTimeString()}',
+                      style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                    ),
+                  ],
+                ),
+                const Padding(padding: EdgeInsets.only(right: 10)),
+                if (workout.workoutCategories != null && workout.workoutCategories!.isNotEmpty)
+                  Expanded(
+                    child: Wrap(
+                      alignment: WrapAlignment.end,
+                      children:
+                          workout.workoutCategories!.map((wc) => getPropDisplay(context, wc.getDisplayName())).toList(),
+                    ),
+                  )
+              ],
+            ),
           ),
         );
 
     Widget getBodyweightDisplay(Bodyweight bw) => InkWell(
           onLongPress: () => showDeleteBodyweightConfirm(bw.id!),
-          child: Card(
-            color: Colors.grey[800],
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      const Text(
-                        'Bodyweight',
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                      ),
-                      const Padding(padding: EdgeInsets.all(5)),
-                      Text(
-                        '@ ${bw.getTimeString()}',
-                        style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-                      ),
-                    ],
-                  ),
-                  Text(bw.getWeightDisplay())
-                ],
-              ),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      '(${bw.getWeightDisplay()} @ ${bw.getTimeString()})',
+                      style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         );
@@ -285,7 +259,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
     void onAddButtonTap() => showDialog(
           context: context,
           builder: (context) => SimpleDialog(
-            // title: const Text('Add'),
+            title: const Text('Add'),
             children: <Widget>[
               SimpleDialogOption(
                 onPressed: () {
@@ -318,23 +292,23 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
         );
 
     List<Widget> getWorkoutsWidget(List<Workout> workouts, List<Bodyweight> bws) {
-      var rnAndCurrentAreSameMonth = currentMonth.year == rn.year && currentMonth.month == rn.month;
-      var daysInCurrentMonth = getDaysInMonth(currentMonth.year, currentMonth.month);
+      var selectedMonthIsTrueMonth = selectedMonth.year == trueDate.year && selectedMonth.month == trueDate.month;
+      var daysInCurrentMonth = getDaysInMonth(selectedMonth.year, selectedMonth.month);
 
       List<Widget> widgets = [];
 
       for (int day = 1; day <= daysInCurrentMonth; day++) {
-        var currentDate = DateTime(currentMonth.year, currentMonth.month, day);
-        var isToday = rnAndCurrentAreSameMonth && rn.day == day;
+        var currentDate = DateTime(selectedMonth.year, selectedMonth.month, day);
+        var isToday = selectedMonthIsTrueMonth && trueDate.day == day;
         var isLastDayInMonth = day == daysInCurrentMonth;
 
         var workoutsForDay = workouts
-            .where((w) => w.date.year == currentMonth.year && w.date.month == currentMonth.month && w.date.day == day)
+            .where((w) => w.date.year == selectedMonth.year && w.date.month == selectedMonth.month && w.date.day == day)
             .toList();
         workoutsForDay.sort((w1, w2) => w2.date.compareTo(w1.date));
 
         var bwsForDay = bws
-            .where((w) => w.date.year == currentMonth.year && w.date.month == currentMonth.month && w.date.day == day)
+            .where((w) => w.date.year == selectedMonth.year && w.date.month == selectedMonth.month && w.date.day == day)
             .toList();
         bwsForDay.sort((w1, w2) => w2.date.compareTo(w1.date));
 
@@ -344,28 +318,41 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
           return GlobalKey();
         }
 
-        if (currentDate.weekday == 1) widgets.insert(0, const Divider(thickness: 0.25));
+        String getDateDisplay(DateTime dt) {
+          if (isToday) return "Today";
+          // if (currentIsRealMonth && day == realDate.day + 1) return "Tomorrow";
+          // if (currentIsRealMonth && day == realDate.day - 1) return "Yesterday";
+          if (selectedMonth.year != trueDate.year) return DateFormat('EEE d MMM yyyy').format(dt);
+          if (!selectedMonthIsTrueMonth) return DateFormat('EEE d MMM').format(dt);
+          return DateFormat('EEE d').format(dt);
+        }
 
         widgets.insert(
-          0, // adds to start of list for most recent date at top
+            0,
+            Divider(
+              thickness: 1,
+              height: currentDate.weekday == 1 ? null : 0,
+            ));
+
+        widgets.insert(
+          0,
           IntrinsicHeight(
             key: getKey(),
             child: Row(
               children: [
                 Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        getSmallDateDisplay(currentDate),
-                        style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
-                      ),
-                      const Padding(padding: EdgeInsets.all(2)),
-                    ],
+                  child: Text(
+                    getDateDisplay(currentDate),
+                    textAlign: TextAlign.end,
+                    style: isToday
+                        ? TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                          )
+                        : null,
                   ),
                 ),
                 VerticalDivider(
-                  thickness: isToday ? 6 : 1,
+                  thickness: isToday ? 3 : 0.5,
                   color: isToday ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.shadow,
                 ),
                 Expanded(
@@ -424,7 +411,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
 
     void onArrowTap(int i) {
       setState(() {
-        currentMonth = DateTime(currentMonth.year, currentMonth.month + i);
+        selectedMonth = DateTime(selectedMonth.year, selectedMonth.month + i);
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (todayKey.currentContext != null) {
             Scrollable.ensureVisible(todayKey.currentContext!);
@@ -463,7 +450,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
             flex: 4,
             child: Center(
               child: Text(
-                getMonthAndYear(currentMonth),
+                getMonthAndYear(selectedMonth),
                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),

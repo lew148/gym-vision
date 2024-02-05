@@ -22,9 +22,9 @@ class _ExercisesState extends State<Exercises> {
         _exercises = ExercisesHelper.getExercises();
       });
 
-  Widget getExerciseWidget(Exercise exercise) => Card(
-        color: Colors.grey[800],
-        child: InkWell(
+  Widget getExerciseWidget(Exercise exercise) => Column(children: [
+        const Divider(height: 0),
+        InkWell(
           onTap: () => Navigator.of(context)
               .push(
                 MaterialPageRoute(
@@ -35,13 +35,12 @@ class _ExercisesState extends State<Exercises> {
               )
               .then((value) => reloadState()),
           child: Padding(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.symmetric(vertical: 5),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  child: Text(exercise.name),
-                ),
+                Expanded(child: Text(exercise.name)),
+                const Padding(padding: EdgeInsets.all(10)),
                 Wrap(children: [
                   if (exercise.equipment != ExerciseEquipment.other)
                     getPropDisplay(context, exercise.equipment.displayName),
@@ -52,8 +51,8 @@ class _ExercisesState extends State<Exercises> {
               ],
             ),
           ),
-        ),
-      );
+        )
+      ]);
 
   getExercisesContent(Map<int, List<Exercise>> groupedExercises) {
     if (groupedExercises.isEmpty) {
@@ -65,7 +64,7 @@ class _ExercisesState extends State<Exercises> {
     groupedExercises.forEach((key, value) => sections.add(
           StickyHeader(
             header: Container(
-              color: Theme.of(context).canvasColor,
+              color: Theme.of(context).scaffoldBackgroundColor,
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Row(children: [
                 Text(
@@ -73,7 +72,7 @@ class _ExercisesState extends State<Exercises> {
                       ? value[0].exerciseType.displayName
                       : value[0].muscleGroup.displayName,
                   style: const TextStyle(
-                    fontWeight: FontWeight.w400,
+                    fontWeight: FontWeight.bold,
                     fontSize: 15,
                   ),
                 ),

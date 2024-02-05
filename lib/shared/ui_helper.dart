@@ -18,20 +18,19 @@ Widget getSectionTitle(BuildContext context, String title) => Padding(
     );
 
 Widget getPrimaryButton(ActionButton actionButton) => TextButton(
-        onPressed: actionButton.onTap,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (actionButton.icon != null)
-              Icon(
-                actionButton.icon,
-                size: 25,
-              ),
-            if (actionButton.icon != null && actionButton.text != null)
-              const Padding(padding: EdgeInsets.only(left: 5)),
-            if (actionButton.text != null) Text(actionButton.text!),
-          ],
-        ),
+      onPressed: actionButton.onTap,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (actionButton.icon != null)
+            Icon(
+              actionButton.icon,
+              size: 25,
+            ),
+          if (actionButton.icon != null && actionButton.text != null) const Padding(padding: EdgeInsets.only(left: 5)),
+          if (actionButton.text != null) Text(actionButton.text!),
+        ],
+      ),
     );
 
 class ActionButton {
@@ -64,8 +63,5 @@ Widget getPropDisplay(BuildContext context, String text) => Container(
         border: Border.all(color: Theme.of(context).colorScheme.shadow),
         borderRadius: BorderRadius.circular(5),
       ),
-      child: Text(
-        text,
-        textAlign: TextAlign.center,
-      ),
+      child: Text(text, textAlign: TextAlign.center),
     );
