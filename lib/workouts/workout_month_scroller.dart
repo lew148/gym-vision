@@ -330,7 +330,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
         widgets.insert(
             0,
             Divider(
-              thickness: 1,
+              thickness: 0.25,
               height: currentDate.weekday == 1 ? null : 0,
             ));
 

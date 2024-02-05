@@ -23,7 +23,7 @@ class _ExercisesState extends State<Exercises> {
       });
 
   Widget getExerciseWidget(Exercise exercise) => Column(children: [
-        const Divider(height: 0),
+        const Divider(thickness: 0.25, height: 0),
         InkWell(
           onTap: () => Navigator.of(context)
               .push(
