@@ -1,7 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/body_weight.dart';
 import 'package:gymvision/db/helpers/bodyweight_helper.dart';
-import 'package:gymvision/shared/forms/add_weight_form.dart';
 import 'package:gymvision/shared/ui_helper.dart';
 import 'package:gymvision/workouts/workout_view.dart';
 import 'package:intl/intl.dart';
@@ -13,12 +14,14 @@ import '../globals.dart';
 class WorkoutMonthScoller extends StatefulWidget {
   final List<Workout> workouts;
   final List<Bodyweight> bodyweights;
+  final Function({DateTime? date}) onAddWorkoutTap;
   final Function reloadState;
 
   const WorkoutMonthScoller({
     super.key,
     required this.workouts,
     required this.bodyweights,
+    required this.onAddWorkoutTap,
     required this.reloadState,
   });
 
@@ -31,6 +34,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
   final lastDayInMonthKey = GlobalKey();
   final trueDate = DateTime.now();
   late DateTime selectedMonth;
+  late Timer timer;
 
   void reloadState() => setState(() {
         selectedMonth = trueDate;
@@ -39,10 +43,18 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
         });
       });
 
+  void timerReload() => setState(() {
+        selectedMonth = trueDate;
+        timer = Timer.periodic(const Duration(seconds: 60), (timer) => timerReload());
+      });
+
   @override
   void initState() {
     super.initState();
     selectedMonth = trueDate;
+
+    final timeToNextMin = Duration(seconds: 60 - trueDate.second);
+    timer = Timer.periodic(timeToNextMin, (Timer t) => timerReload());
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Scrollable.ensureVisible(todayKey.currentContext!);
@@ -212,95 +224,6 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
           ),
         );
 
-    void onAddWeightTap() async => showModalBottomSheet(
-          context: context,
-          builder: (BuildContext context) => Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-                child: AddWeightForm(reloadState: widget.reloadState),
-              ),
-            ],
-          ),
-          isScrollControlled: true,
-          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
-        );
-
-    void onAddWorkoutTap({DateTime? date}) async {
-      try {
-        var now = DateTime.now();
-
-        if (date != null) {
-          date = DateTime(date.year, date.month, date.day, now.hour, now.minute);
-        }
-
-        final newWorkoutId = await WorkoutsHelper.insertWorkout(Workout(date: date ?? now));
-        if (!mounted) return;
-
-        Navigator.of(context)
-            .push(
-              MaterialPageRoute(
-                builder: (context) => WorkoutView(
-                  workoutId: newWorkoutId,
-                  reloadParent: widget.reloadState,
-                ),
-              ),
-            )
-            .then((value) => widget.reloadState());
-      } catch (ex) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to add workout')),
-        );
-      }
-    }
-
-    void onAddButtonTap() => showModalBottomSheet(
-          context: context,
-          builder: (context) => Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      getSectionTitle(context, 'Add'),
-                      const Divider(thickness: 0.25),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          getOutlinedPrimaryButton(ActionButton(
-                            onTap: () {
-                              Navigator.pop(context);
-                              onAddWorkoutTap();
-                            },
-                            text: 'Workout',
-                            icon: Icons.fitness_center_rounded,
-                          )),
-                          getOutlinedPrimaryButton(ActionButton(
-                            onTap: () {
-                              Navigator.pop(context);
-                              onAddWeightTap();
-                            },
-                            text: 'Bodyweight',
-                            icon: Icons.monitor_weight_rounded,
-                          ))
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-          isScrollControlled: true,
-          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
-        );
-
     List<Widget> getWorkoutsWidget(List<Workout> workouts, List<Bodyweight> bws) {
       var selectedMonthIsTrueMonth = selectedMonth.year == trueDate.year && selectedMonth.month == trueDate.month;
       var daysInCurrentMonth = getDaysInMonth(selectedMonth.year, selectedMonth.month);
@@ -377,7 +300,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                         : [
                             GestureDetector(
                               behavior: HitTestBehavior.translucent,
-                              onTap: () => onAddWorkoutTap(date: currentDate),
+                              onTap: () => widget.onAddWorkoutTap(date: currentDate),
                               child: Padding(
                                 padding: const EdgeInsets.all(15),
                                 child: Row(
@@ -434,15 +357,6 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
     }
 
     return Column(children: [
-      getSectionTitleWithActions(
-        context,
-        '',
-        [
-          ActionButton(icon: Icons.today_outlined, onTap: reloadState, text: 'Today'),
-          ActionButton(icon: Icons.add_rounded, onTap: onAddButtonTap),
-        ],
-      ),
-      const Padding(padding: EdgeInsets.all(2.5)),
       Row(
         children: [
           Expanded(
@@ -478,6 +392,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
               ),
             ),
           ),
+          getPrimaryButton(ActionButton(icon: Icons.today_outlined, onTap: reloadState))
         ],
       ),
       const Divider(thickness: 0.25),

@@ -892,6 +892,9 @@ class DataHelper {
           equipment: ExerciseEquipment.machine,
           split: ExerciseSplit.other,
         ),
+
+// additions
+
         Exercise(
           id: 99,
           name: 'Tricep Bar Curl',

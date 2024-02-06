@@ -109,6 +109,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
 
       widgets.add(Column(children: [
         InkWell(
+          onLongPress: () => showDeleteWorkoutSetConfirm(ws.id!),
           onTap: () => onEditWorkoutExerciseTap(ws),
           child: Padding(
             padding: const EdgeInsets.all(10),
@@ -190,7 +191,6 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           child: getPrimaryButton(
             ActionButton(
               icon: Icons.copy_rounded,
-              text: 'Copy Last',
               onTap: () => onCopySetButtonTap(widget.workoutSets.last),
             ),
           ),
@@ -199,7 +199,6 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         child: getPrimaryButton(
           ActionButton(
             icon: Icons.add_rounded,
-            text: 'Add Set',
             onTap: () => onAddSetsButtonTap(
               widget.workoutSets[0].exercise!,
               widget.workoutSets[0].workoutId,
@@ -261,6 +260,48 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     AlertDialog alert = AlertDialog(
       title: const Text("Remove Sets?"),
       content: const Text("Are you sure you would like to remove these sets?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) => alert,
+    );
+  }
+
+  void showDeleteWorkoutSetConfirm(int id) {
+    Widget cancelButton = TextButton(
+      child: const Text("No"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+
+    Widget continueButton = TextButton(
+      child: const Text(
+        "Yes",
+        style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+      ),
+      onPressed: () async {
+        Navigator.pop(context);
+        try {
+          await WorkoutSetsHelper.removeSet(id);
+        } catch (ex) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('Failed to remove Set from workout: ${ex.toString()}')));
+        }
+
+        widget.reloadState();
+      },
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: const Text("Remove Set?"),
+      content: const Text("Are you sure you would like to remove this set?"),
       actions: [
         cancelButton,
         continueButton,

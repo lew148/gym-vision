@@ -17,11 +17,13 @@ class UserExerciseDetails {
 
   String? getLastAsString() {
     if (last == null) return null;
+    if (last!.weight! <= 0) return null;
     return last!.weight! % 1 == 0 ? last!.weight!.toStringAsFixed(0) : last!.weight!.toStringAsFixed(2);
   }
 
   String? getPRAsString() {
     if (pr == null) return null;
+    if (pr!.weight! <= 0) return null;
     return pr!.weight! % 1 == 0 ? pr!.weight!.toStringAsFixed(0) : pr!.weight!.toStringAsFixed(2);
   }
 }

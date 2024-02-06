@@ -1,8 +1,13 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gymvision/db/classes/workout.dart';
+import 'package:gymvision/db/helpers/workouts_helper.dart';
 import 'package:gymvision/exercises/exercises.dart';
+import 'package:gymvision/shared/forms/add_weight_form.dart';
+import 'package:gymvision/shared/ui_helper.dart';
 import 'package:gymvision/user_settings_view.dart';
+import 'package:gymvision/workouts/workout_view.dart';
 import 'package:gymvision/workouts/workouts.dart';
 
 void main() async {
@@ -78,17 +83,108 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = 0;
+  int selectedIndex = 0;
 
-  void _onItemTapped(int index) {
+  void onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      selectedIndex = index;
     });
   }
 
-  static const List<Widget> _widgetPages = <Widget>[
-    Workouts(),
-    Exercises(),
+  void reloadState() => onItemTapped(selectedIndex);
+
+  void onAddWeightTap() async => showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: AddWeightForm(reloadState: reloadState),
+            ),
+          ],
+        ),
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+      );
+
+  void onAddWorkoutTap({DateTime? date}) async {
+    try {
+      var now = DateTime.now();
+
+      if (date != null) {
+        date = DateTime(date.year, date.month, date.day, now.hour, now.minute);
+      }
+
+      final newWorkoutId = await WorkoutsHelper.insertWorkout(Workout(date: date ?? now));
+      if (!mounted) return;
+
+      Navigator.of(context)
+          .push(
+            MaterialPageRoute(
+              builder: (context) => WorkoutView(
+                workoutId: newWorkoutId,
+                reloadParent: reloadState,
+              ),
+            ),
+          )
+          .then((value) => reloadState());
+    } catch (ex) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to add workout')),
+      );
+    }
+  }
+
+  void onAddButtonTap() => showModalBottomSheet(
+        context: context,
+        builder: (context) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    getSectionTitle(context, 'Add'),
+                    const Divider(thickness: 0.25),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        getOutlinedPrimaryButton(ActionButton(
+                          onTap: () {
+                            Navigator.pop(context);
+                            onAddWorkoutTap();
+                          },
+                          text: 'Workout',
+                          icon: Icons.fitness_center_rounded,
+                        )),
+                        getOutlinedPrimaryButton(ActionButton(
+                          onTap: () {
+                            Navigator.pop(context);
+                            onAddWeightTap();
+                          },
+                          text: 'Bodyweight',
+                          icon: Icons.monitor_weight_rounded,
+                        ))
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+      );
+
+  List<Widget> widgetPages() => [
+    Workouts(onAddWorkoutTap: onAddWorkoutTap),
+    const Exercises(),
   ];
 
   @override
@@ -107,7 +203,13 @@ class _MyHomePageState extends State<MyHomePage> {
           )
         ],
       ),
-      body: Center(child: _widgetPages.elementAt(_selectedIndex)),
+      body: Center(child: widgetPages().elementAt(selectedIndex)),
+      floatingActionButton: FloatingActionButton(
+        onPressed: onAddButtonTap,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        child: const Icon(Icons.add_rounded),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         showSelectedLabels: false,
@@ -122,9 +224,9 @@ class _MyHomePageState extends State<MyHomePage> {
             label: 'Exercises',
           ),
         ],
-        currentIndex: _selectedIndex,
+        currentIndex: selectedIndex,
         selectedItemColor: Theme.of(context).colorScheme.primary,
-        onTap: _onItemTapped,
+        onTap: onItemTapped,
       ),
     );
   }

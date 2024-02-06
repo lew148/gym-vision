@@ -8,7 +8,12 @@ import '../db/helpers/workouts_helper.dart';
 // import 'flavour_text_card.dart';
 
 class Workouts extends StatefulWidget {
-  const Workouts({super.key});
+  final Function({DateTime? date}) onAddWorkoutTap;
+
+  const Workouts({
+    super.key,
+    required this.onAddWorkoutTap,
+  });
 
   @override
   State<Workouts> createState() => _WorkoutsState();
@@ -52,6 +57,7 @@ class _WorkoutsState extends State<Workouts> {
                       return WorkoutMonthScoller(
                         workouts: snapshot.data!,
                         bodyweights: bwSnapshot.data!,
+                        onAddWorkoutTap: widget.onAddWorkoutTap,
                         reloadState: reloadState,
                       );
                     });

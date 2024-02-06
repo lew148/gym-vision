@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/exercise.dart';
 import 'package:gymvision/db/classes/user_exercise_details.dart';
 import 'package:gymvision/db/classes/workout_set.dart';
+import 'package:gymvision/db/helpers/user_exercise_details_helper.dart';
 import 'package:gymvision/exercises/exercise_recent_uses_view.dart';
 import 'package:gymvision/globals.dart';
 
@@ -39,7 +40,7 @@ class _ExerciseViewState extends State<ExerciseView> {
 
   reloadState() => setState(() {});
 
-  Widget getNotesDisplay(Exercise exercise) => Column(children: [
+  Widget getNotesDisplay(UserExerciseDetails details) => Column(children: [
         getSectionTitle(context, 'Notes'),
         const Divider(thickness: 0.25),
         Row(
@@ -48,7 +49,7 @@ class _ExerciseViewState extends State<ExerciseView> {
               child: Card(
                 color: const Color.fromARGB(255, 124, 124, 124),
                 child: InkWell(
-                  onTap: () => openNotesForm(exercise),
+                  onTap: () => openNotesForm(details),
                   child: Container(
                     height: MediaQuery.of(context).size.height * 0.15,
                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
@@ -58,9 +59,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                         child: Row(
                           children: [
                             Flexible(
-                              child: Text(exercise.userExerciseDetails?.notes == null
-                                  ? '-'
-                                  : exercise.userExerciseDetails!.notes!),
+                              child: Text(details.notes == null ? '-' : details.notes!),
                             ),
                           ],
                         ),
@@ -88,8 +87,8 @@ class _ExerciseViewState extends State<ExerciseView> {
         ],
       );
 
-  void openNotesForm(Exercise exercise) {
-    var controller = TextEditingController(text: exercise.userExerciseDetails?.notes);
+  void openNotesForm(UserExerciseDetails details) {
+    var controller = TextEditingController(text: details.notes);
 
     showModalBottomSheet(
       context: context,
@@ -130,11 +129,12 @@ class _ExerciseViewState extends State<ExerciseView> {
 
                                   try {
                                     var newValue = controller.text;
-                                    if (exercise.userExerciseDetails?.notes == newValue) return;
-                                    exercise.userExerciseDetails!.notes = newValue;
-                                    // await UserExerciseDetailsHelper.updateUserExerciseDetails(
-                                    //     exercise.userExerciseDetails!);
+                                    if (details.notes == newValue) return;
+                                    details.notes = newValue;
+                                    // await UserExerciseDetailsHelper.updateUserExerciseDetails(details);
                                   } catch (ex) {
+                                    if (!mounted) return;
+
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(const SnackBar(content: Text('Failed to edit Notes')));
                                   }
@@ -236,6 +236,8 @@ class _ExerciseViewState extends State<ExerciseView> {
                 padding: const EdgeInsets.all(10),
                 child: getPrWidget(details.pr!),
               ),
+        // getSectionTitle(context, 'Notes'),
+        // getNotesDisplay(details),
         getSectionTitle(context, 'Recent Uses'),
         const Divider(thickness: 0.25),
         details.recentUses == null || details.recentUses!.isEmpty
