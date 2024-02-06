@@ -1,4 +1,3 @@
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/body_weight.dart';
 import 'package:gymvision/db/helpers/bodyweight_helper.dart';
@@ -174,7 +173,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                       ),
                     ]),
                     Text(
-                      '@ ${workout.getTimeString()}',
+                      workout.getTimeString(),
                       style: TextStyle(color: Theme.of(context).colorScheme.shadow),
                     ),
                   ],
@@ -203,7 +202,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                 Row(
                   children: [
                     Text(
-                      '(${bw.getWeightDisplay()} @ ${bw.getTimeString()})',
+                      '${bw.getWeightDisplay()} @ ${bw.getTimeString()}',
                       style: TextStyle(color: Theme.of(context).colorScheme.shadow),
                     ),
                   ],
@@ -256,39 +255,50 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
       }
     }
 
-    void onAddButtonTap() => showDialog(
+    void onAddButtonTap() => showModalBottomSheet(
           context: context,
-          builder: (context) => SimpleDialog(
-            title: const Text('Add'),
-            children: <Widget>[
-              SimpleDialogOption(
-                onPressed: () {
-                  Navigator.pop(context);
-                  onAddWorkoutTap();
-                },
-                child: const Row(children: [
-                  Icon(Icons.fitness_center_rounded),
-                  Padding(
-                    padding: EdgeInsets.all(5),
+          builder: (context) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      getSectionTitle(context, 'Add'),
+                      const Divider(thickness: 0.25),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          getOutlinedPrimaryButton(ActionButton(
+                            onTap: () {
+                              Navigator.pop(context);
+                              onAddWorkoutTap();
+                            },
+                            text: 'Workout',
+                            icon: Icons.fitness_center_rounded,
+                          )),
+                          getOutlinedPrimaryButton(ActionButton(
+                            onTap: () {
+                              Navigator.pop(context);
+                              onAddWeightTap();
+                            },
+                            text: 'Bodyweight',
+                            icon: Icons.monitor_weight_rounded,
+                          ))
+                        ],
+                      ),
+                    ],
                   ),
-                  Text('Workout'),
-                ]),
-              ),
-              SimpleDialogOption(
-                onPressed: () {
-                  Navigator.pop(context);
-                  onAddWeightTap();
-                },
-                child: const Row(children: [
-                  Icon(Icons.monitor_weight_rounded),
-                  Padding(
-                    padding: EdgeInsets.all(5),
-                  ),
-                  Text('Bodyweight'),
-                ]),
+                ),
               ),
             ],
           ),
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
         );
 
     List<Widget> getWorkoutsWidget(List<Workout> workouts, List<Bodyweight> bws) {
@@ -330,8 +340,9 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
         widgets.insert(
             0,
             Divider(
-              thickness: 0.25,
-              height: currentDate.weekday == 1 ? null : 0,
+              thickness: 0.1,
+              height: isToday || selectedMonthIsTrueMonth && trueDate.day == day - 1 ? null : 0,
+              color: Theme.of(context).colorScheme.shadow,
             ));
 
         widgets.insert(

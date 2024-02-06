@@ -200,7 +200,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
     groupedExercises.forEach((key, value) => sections.add(
           StickyHeader(
             header: Container(
-              color: Theme.of(context).canvasColor,
+              color: Theme.of(context).scaffoldBackgroundColor,
               padding: const EdgeInsets.symmetric(vertical: 10),
               child: Row(children: [
                 Text(

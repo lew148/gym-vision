@@ -35,6 +35,8 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  final darkThemeBackground = const Color.fromARGB(255, 46, 46, 46);
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
@@ -53,7 +55,8 @@ class MyApp extends StatelessWidget {
         ),
       ),
       darkTheme: ThemeData(
-        scaffoldBackgroundColor: const Color.fromARGB(255, 46, 46, 46),
+        scaffoldBackgroundColor: darkThemeBackground,
+        bottomSheetTheme: BottomSheetThemeData(backgroundColor: darkThemeBackground),
         colorScheme: ColorScheme.dark(
           primary: Colors.green[400]!,
           secondary: const Color.fromARGB(255, 216, 160, 233),

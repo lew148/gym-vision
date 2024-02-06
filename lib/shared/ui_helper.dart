@@ -33,6 +33,22 @@ Widget getPrimaryButton(ActionButton actionButton) => TextButton(
       ),
     );
 
+Widget getOutlinedPrimaryButton(ActionButton actionButton) => OutlinedButton(
+      onPressed: actionButton.onTap,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (actionButton.icon != null)
+            Icon(
+              actionButton.icon,
+              size: 25,
+            ),
+          if (actionButton.icon != null && actionButton.text != null) const Padding(padding: EdgeInsets.only(left: 5)),
+          if (actionButton.text != null) Text(actionButton.text!),
+        ],
+      ),
+    );
+
 class ActionButton {
   Function() onTap;
   IconData? icon;
