@@ -46,7 +46,6 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
   void timerReload() {
     if (!mounted) return;
     setState(() {
-      selectedMonth = trueDate;
       timer = Timer.periodic(const Duration(seconds: 60), (timer) => timerReload());
     });
   }
@@ -258,8 +257,8 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
           if (isToday) return "Today";
           // if (currentIsRealMonth && day == realDate.day + 1) return "Tomorrow";
           // if (currentIsRealMonth && day == realDate.day - 1) return "Yesterday";
-          if (selectedMonth.year != trueDate.year) return DateFormat('EEE d MMM yyyy').format(dt);
-          if (!selectedMonthIsTrueMonth) return DateFormat('EEE d MMM').format(dt);
+          // if (selectedMonth.year != trueDate.year) return DateFormat('EEE d MMM yyyy').format(dt);
+          // if (!selectedMonthIsTrueMonth) return DateFormat('EEE d MMM').format(dt);
           return DateFormat('EEE d').format(dt);
         }
 
@@ -362,16 +361,13 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
     return Column(children: [
       Row(
         children: [
-          Expanded(
-            flex: 4,
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              splashRadius: 20,
-              onPressed: () => onArrowTap(-1),
-              icon: const Icon(
-                Icons.arrow_left_rounded,
-                size: 40,
-              ),
+          IconButton(
+            padding: EdgeInsets.zero,
+            splashRadius: 15,
+            onPressed: () => onArrowTap(-1),
+            icon: const Icon(
+              Icons.arrow_left_rounded,
+              size: 40,
             ),
           ),
           Expanded(
@@ -379,20 +375,17 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
             child: Center(
               child: Text(
                 getMonthAndYear(selectedMonth),
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
             ),
           ),
-          Expanded(
-            flex: 4,
-            child: IconButton(
-              padding: EdgeInsets.zero,
-              splashRadius: 20,
-              onPressed: () => onArrowTap(1),
-              icon: const Icon(
-                Icons.arrow_right_rounded,
-                size: 40,
-              ),
+          IconButton(
+            padding: EdgeInsets.zero,
+            splashRadius: 15,
+            onPressed: () => onArrowTap(1),
+            icon: const Icon(
+              Icons.arrow_right_rounded,
+              size: 40,
             ),
           ),
           getPrimaryButton(ActionButton(icon: Icons.today_outlined, onTap: reloadState))
