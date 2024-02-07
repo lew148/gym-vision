@@ -43,10 +43,13 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
         });
       });
 
-  void timerReload() => setState(() {
-        selectedMonth = trueDate;
-        timer = Timer.periodic(const Duration(seconds: 60), (timer) => timerReload());
-      });
+  void timerReload() {
+    if (!mounted) return;
+    setState(() {
+      selectedMonth = trueDate;
+      timer = Timer.periodic(const Duration(seconds: 60), (timer) => timerReload());
+    });
+  }
 
   @override
   void initState() {

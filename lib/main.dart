@@ -51,6 +51,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Gym Vision',
       theme: ThemeData(
+        splashColor: Colors.transparent,
         scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
         colorScheme: ColorScheme.light(
           primary: Colors.green[400]!,
@@ -60,6 +61,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       darkTheme: ThemeData(
+        splashColor: Colors.transparent,
         scaffoldBackgroundColor: darkThemeBackground,
         bottomSheetTheme: BottomSheetThemeData(backgroundColor: darkThemeBackground),
         colorScheme: ColorScheme.dark(
@@ -146,7 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 bottom: MediaQuery.of(context).viewInsets.bottom,
               ),
               child: Padding(
-                padding: const EdgeInsets.all(20),
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
                 child: Column(
                   children: [
                     getSectionTitle(context, 'Add'),
@@ -183,9 +185,9 @@ class _MyHomePageState extends State<MyHomePage> {
       );
 
   List<Widget> widgetPages() => [
-    Workouts(onAddWorkoutTap: onAddWorkoutTap),
-    const Exercises(),
-  ];
+        Workouts(onAddWorkoutTap: onAddWorkoutTap),
+        const Exercises(),
+      ];
 
   @override
   Widget build(BuildContext context) {
