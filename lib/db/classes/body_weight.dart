@@ -1,3 +1,4 @@
+import 'package:gymvision/globals.dart';
 import 'package:intl/intl.dart';
 
 class Bodyweight {
@@ -17,5 +18,5 @@ class Bodyweight {
 
   String getTimeString() => DateFormat('Hm').format(date);
 
-  String getWeightDisplay() => '${weight % 1 == 0 ? weight.toStringAsFixed(0) : weight.toStringAsFixed(2)}$units';
+  String getWeightDisplay() => '${truncateDouble(weight)}$units';
 }

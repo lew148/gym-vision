@@ -1,5 +1,5 @@
 import 'package:gymvision/db/classes/workout.dart';
-import 'package:gymvision/helpers/workout_category_helper.dart';
+import 'package:gymvision/helpers/category_shell_helper.dart';
 
 class WorkoutCategory {
   int? id;
@@ -23,5 +23,5 @@ class WorkoutCategory {
       };
 
   String getDisplayName() =>
-      WorkoutCategoryHelper.getCategoryShells().firstWhere((s) => s.id == categoryShellId).displayName;
+      CategoryShellHelper.getCategoryShells().firstWhere((s) => s.id == categoryShellId).displayName;
 }

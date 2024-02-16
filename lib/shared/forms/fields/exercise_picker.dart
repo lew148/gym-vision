@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/helpers/exercises_helper.dart';
 import 'package:gymvision/enums.dart';
+import 'package:gymvision/helpers/category_shell_helper.dart';
 import 'package:gymvision/shared/ui_helper.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
@@ -42,7 +43,9 @@ class _ExercisePickerState extends State<ExercisePicker> {
   @override
   void initState() {
     super.initState();
-    categoryShellFilters = widget.categoryShellIds ?? [];
+    categoryShellFilters = CategoryShellHelper.getFunctionaityCategoryShells().map((e) => e.id).toList();
+    categoryShellFilters.addAll(widget.categoryShellIds ?? []);
+    categoryShellFilters = categoryShellFilters.toSet().toList(); // distinct
     existingExerciseIds = widget.existingExerciseIds ?? [];
 
     // exercise pre-selected
@@ -91,10 +94,26 @@ class _ExercisePickerState extends State<ExercisePicker> {
                         padding: const EdgeInsets.all(20),
                         child: Column(
                           children: [
-                            getSectionTitle(context, 'Exercise Filters'),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                BackButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    setState(() {
+                                      allExercises = ExercisesHelper.getAllExercisesExcludingCategories(
+                                        categoryShellIds: categoryShellFilters,
+                                        exerciseIds: existingExerciseIds,
+                                      );
+                                    });
+                                  },
+                                ),
+                                getSectionTitle(context, 'Exercise Filters'),
+                              ],
+                            ),
                             const Divider(thickness: 0.25),
                             SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.75,
+                              height: MediaQuery.of(context).size.height * 0.5,
                               child: SingleChildScrollView(
                                 child: getFilterChips(),
                               ),
@@ -172,10 +191,21 @@ class _ExercisePickerState extends State<ExercisePicker> {
               padding: const EdgeInsets.all(10),
               child: Column(
                 children: [
-                  getSectionTitle(context, 'Select Exercise'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      getSectionTitle(context, 'Select Exercise'),
+                      CloseButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        },
+                      )
+                    ],
+                  ),
                   const Divider(thickness: 0.25),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * .7,
+                    height: MediaQuery.of(context).size.height * .8,
                     child: getPickerContent(allExercises, selectedExercise),
                   ),
                 ],
@@ -185,6 +215,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
         ],
       ),
       isScrollControlled: true,
+      enableDrag: false,
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
     );
   }
@@ -223,7 +254,6 @@ class _ExercisePickerState extends State<ExercisePicker> {
                         widget.setExercise(e);
                       },
                       child: Card(
-                        color: Colors.grey[800],
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.all(
@@ -278,8 +308,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
 
     return Column(
       children: [
-        // getFilterButton(),
-        // const Padding(padding: EdgeInsets.all(5)),
+        getFilterButton(),
         Expanded(child: SingleChildScrollView(child: Column(children: sections))),
       ],
     );

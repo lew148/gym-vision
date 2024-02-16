@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/helpers/workouts_helper.dart';
-import 'package:gymvision/helpers/workout_category_helper.dart';
+import 'package:gymvision/helpers/category_shell_helper.dart';
 import 'package:gymvision/shared/ui_helper.dart';
 
 class AddCategoryToWorkoutForm extends StatefulWidget {
@@ -20,7 +20,7 @@ class AddCategoryToWorkoutForm extends StatefulWidget {
 }
 
 class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
-  Map<int, List<WorkoutCategoryShell>> workoutCategories = WorkoutCategoryHelper.getCategoryShellsMap();
+  Map<int, List<WorkoutCategoryShell>> workoutCategories = CategoryShellHelper.getCategoryShellsMap();
   late List<int> selectedIds;
 
   @override
@@ -56,7 +56,6 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
   Widget getCategoryDisplay(int section, WorkoutCategoryShell wc) => GestureDetector(
         onTap: () => onCategoryTap(wc.id, section),
         child: Card(
-          color: Colors.grey[800],
           child: Container(
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(
@@ -95,7 +94,7 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
 
     if (selectedIds.isNotEmpty) {
       relevantWorkoutCategories
-          .removeWhere((key, value) => key != WorkoutCategoryHelper.getMapIndexOfShell(selectedIds[0]));
+          .removeWhere((key, value) => key != CategoryShellHelper.getMapIndexOfShell(selectedIds[0]));
     }
 
     return Container(

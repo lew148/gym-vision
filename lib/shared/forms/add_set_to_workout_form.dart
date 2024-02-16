@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/workout_set.dart';
+import 'package:gymvision/enums.dart';
 import 'package:gymvision/shared/ui_helper.dart';
 import '../../db/classes/exercise.dart';
 import '../../db/helpers/workout_sets_helper.dart';
@@ -34,16 +35,21 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
   TextEditingController weightController = TextEditingController();
   TextEditingController repsController = TextEditingController();
 
+  Duration duration = const Duration();
+  TextEditingController distanceController = TextEditingController();
+  TextEditingController calsBurnedController = TextEditingController();
+
   void resetWeightAndReps() {
     weightController.text = '';
     repsController.text = '';
   }
 
-  List<Widget> getExerciseFields(Exercise ex) => [
-        CustomFormFields.weightField(
+  List<Widget> getWeightFields(Exercise ex) => [
+        CustomFormFields.doubleField(
           controller: weightController,
           label: 'Weight',
-          isSingle: !ex.isDouble,
+          isDouble: ex.isDouble,
+          unit: 'kg',
           last: ex.userExerciseDetails?.getLastAsString(),
           max: ex.userExerciseDetails?.getPRAsString(),
         ),
@@ -51,6 +57,27 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
           controller: repsController,
           label: 'Reps',
           selectableValues: [1, 8, 10, 12],
+        ),
+      ];
+
+  List<Widget> getCardioFields(Exercise ex) => [
+        CustomFormFields.durationField(
+          'Time',
+          context,
+          duration,
+          (Duration newDuration) => setState(() => duration = newDuration),
+        ),
+        CustomFormFields.doubleField(
+          controller: distanceController,
+          label: 'Distance',
+          isDouble: false,
+          unit: 'km',
+        ),
+        CustomFormFields.intField(
+          controller: calsBurnedController,
+          label: 'Cals Burned',
+          unit: 'kcal',
+          showNone: true,
         ),
       ];
 
@@ -69,8 +96,11 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
               WorkoutSet(
                 exerciseId: subject?.id ?? widget.exerciseId!,
                 workoutId: widget.workoutId!,
-                weight: double.parse(getNumberStringOrDefault(weightController.text)),
-                reps: int.parse(getNumberStringOrDefault(repsController.text)),
+                weight: double.parse(getNumberString(weightController.text)),
+                reps: int.parse(getNumberString(repsController.text)),
+                distance: double.parse(getNumberString(distanceController.text)),
+                calsBurned: int.parse(getNumberString(calsBurnedController.text)),
+                time: duration,
               ),
             );
           }
@@ -110,7 +140,12 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
                 }),
               ),
               const Padding(padding: EdgeInsets.all(5)),
-              if (selectedExercise != null) ...getExerciseFields(selectedExercise!),
+              if (selectedExercise != null && selectedExercise!.exerciseType == ExerciseType.weight)
+                ...getWeightFields(selectedExercise!),
+              if (selectedExercise != null && selectedExercise!.exerciseType == ExerciseType.cardio)
+                ...getCardioFields(selectedExercise!),
+              if (selectedExercise != null && selectedExercise!.exerciseType == ExerciseType.stretch)
+                ...getWeightFields(selectedExercise!),
               if (selectedExercise != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 20.0),

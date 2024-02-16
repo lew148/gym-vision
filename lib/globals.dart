@@ -2,7 +2,12 @@ import 'package:intl/intl.dart';
 
 String appVersion = 'V 1.0.0.32';
 
-getNumberStringOrDefault(String value) => value == '' ? '0' : value;
+String getNumberString(String value) => value == '' ? '0' : value;
+
+String truncateDouble(double? d) {
+  if (d == null) return '0';
+  return d % 1 == 0 ? d.toStringAsFixed(0) : d.toStringAsFixed(2);
+}
 
 bool isToday(DateTime dt) {
   final now = DateTime.now();
@@ -31,9 +36,7 @@ String getDateString(DateTime dt) {
 }
 
 String getMonthAndYear(DateTime dt) => DateFormat(dt.year == DateTime.now().year ? 'MMMM' : 'MMMM yyyy').format(dt);
-
 int getDaysInMonth(int year, int month) => DateTime(year, month + 1, 0).day;
-
 bool dateIsInFuture(DateTime dt) => DateTime.now().compareTo(dt) < 0;
 
 Duration? tryParseDuration(String? s) {

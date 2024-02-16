@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -16,13 +17,15 @@ class CustomFormFields {
         validator: (value) => !canBeBlank && (value == null || value == '') ? '$label cannot be blank' : null,
       );
 
-  static weightField({
+  static doubleField({
     required TextEditingController controller,
     required String label,
-    bool isSingle = true,
-    bool autofocus = false,
+    required String unit,
+    required bool isDouble,
     String? last,
     String? max,
+    bool autofocus = false,
+    bool hideNone = false,
   }) =>
       Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Expanded(
@@ -32,21 +35,22 @@ class CustomFormFields {
             autofocus: autofocus,
             decoration: InputDecoration(
               labelText: label,
-              prefix: isSingle ? const Text('') : const Text('2 x '),
-              suffix: const Text('kg'),
+              prefix: isDouble ? const Text('2 x ') : const Text(''),
+              suffix: Text(unit),
             ),
             validator: (value) =>
                 value != null && value != '' && double.tryParse(value) == null ? 'Please enter a valid weight' : null,
           ),
         ),
         Row(children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
-            child: TextButton(
-              onPressed: () => controller.clear(),
-              child: const Text('None'),
+          if (!hideNone)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
+              child: TextButton(
+                onPressed: () => controller.clear(),
+                child: const Text('None'),
+              ),
             ),
-          ),
           if (last != null)
             Padding(
               padding: const EdgeInsets.only(top: 10),
@@ -90,11 +94,14 @@ class CustomFormFields {
         ]),
       ]);
 
-  static intField(
-      {required TextEditingController controller,
-      required String label,
-      bool autofocus = false,
-      List<int>? selectableValues}) {
+  static intField({
+    required TextEditingController controller,
+    required String label,
+    String unit = '',
+    bool autofocus = false,
+    List<int>? selectableValues,
+    bool showNone = false,
+  }) {
     onSelectableValueButtonClick(int num) {
       String newValue = num.toString();
 
@@ -116,17 +123,29 @@ class CustomFormFields {
             ))
         .toList();
 
+    getNoneButton() => Padding(
+          padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
+          child: TextButton(
+            onPressed: () => controller.clear(),
+            child: const Text('None'),
+          ),
+        );
+
     return Row(children: [
       Expanded(
         child: TextFormField(
           controller: controller,
           autofocus: autofocus,
           keyboardType: const TextInputType.numberWithOptions(signed: false, decimal: true),
-          decoration: InputDecoration(labelText: label),
+          decoration: InputDecoration(
+            labelText: label,
+            suffix: Text(unit),
+          ),
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         ),
       ),
-      ...getSelectableValueButtons()
+      if (showNone) getNoneButton(),
+      if (selectableValues != null && selectableValues.isNotEmpty) ...getSelectableValueButtons()
     ]);
   }
 
@@ -148,5 +167,49 @@ class CustomFormFields {
           activeColor: Theme.of(context).colorScheme.primary,
           checkboxShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         ),
+      );
+
+  static durationField(
+    String label,
+    BuildContext context,
+    Duration duration,
+    void Function(Duration newDuration) onChanged,
+  ) =>
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+          ),
+          CupertinoButton(
+            padding: EdgeInsets.zero,
+            onPressed: () {
+              showCupertinoModalPopup<void>(
+                context: context,
+                builder: (BuildContext context) => Container(
+                  height: 216,
+                  padding: const EdgeInsets.only(top: 6.0),
+                  margin: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom,
+                  ),
+                  color: CupertinoColors.systemBackground.resolveFrom(context),
+                  child: SafeArea(
+                    top: false,
+                    child: CupertinoTimerPicker(
+                      mode: CupertinoTimerPickerMode.hms,
+                      initialTimerDuration: duration,
+                      onTimerDurationChanged: onChanged,
+                    ),
+                  ),
+                ),
+              );
+            },
+            child: Text(
+              duration.toString().split('.').first.padLeft(8, "0"),
+              style: const TextStyle(fontSize: 20),
+            ),
+          ),
+        ],
       );
 }

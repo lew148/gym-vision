@@ -55,7 +55,7 @@ class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
                             size: 15,
                           ),
                           const Padding(padding: EdgeInsets.all(5)),
-                          Text(s.getRepsDisplayString()),
+                          Text(s.getRepsDisplay()),
                         ],
                       ),
                     ),
@@ -70,7 +70,6 @@ class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
     return Column(
       children: [
         Card(
-          color: Colors.grey[800],
           child: Column(children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

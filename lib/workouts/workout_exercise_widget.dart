@@ -62,14 +62,18 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           exerciseId: ws.exerciseId,
           workoutId: ws.workoutId,
           weight: ws.weight,
+          time: ws.time,
+          distance: ws.distance,
+          calsBurned: ws.calsBurned,
           reps: ws.reps,
           done: false,
         ),
       );
     } catch (ex) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Failed add set to workout: ${ex.toString()}')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed add set to workout: ${ex.toString()}')),
+      );
     }
 
     widget.reloadState();
@@ -100,93 +104,170 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     ).then((value) => widget.reloadState());
   }
 
-  List<Widget> getWorkoutExerciseWidget(List<WorkoutSet> sets) {
-    final List<Widget> widgets = [const Divider(height: 0, thickness: 0.25)];
+  Widget dashIcon() => const Center(
+        child: Text(
+          '-',
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
+
+  List<Widget> getWeightedSetWidgets(List<WorkoutSet> sets) {
+    final List<Widget> widgets = [];
     final filteredSets = sets.where((ws) => ws.hasWeight() || ws.hasReps()).toList();
 
     for (int i = 0; i < filteredSets.length; i++) {
       final ws = filteredSets[i];
 
-      widgets.add(Column(children: [
-        InkWell(
-          onLongPress: () => showDeleteWorkoutSetConfirm(ws.id!),
-          onTap: () => onEditWorkoutExerciseTap(ws),
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    padding: const EdgeInsets.all(3),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.shadow,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(
-                      (i + 1).toString(),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.onPrimary,
-                      ),
+      widgets.add(InkWell(
+        onLongPress: () => showDeleteWorkoutSetConfirm(ws.id!),
+        onTap: () => onEditWorkoutExerciseTap(ws),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: Container(
+                  padding: const EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.shadow,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    (i + 1).toString(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onPrimary,
                     ),
                   ),
                 ),
-                Expanded(
-                    flex: 3,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: ws.hasWeight()
-                          ? [
-                              const Icon(
-                                Icons.fitness_center_rounded,
-                                size: 15,
-                              ),
-                              const Padding(padding: EdgeInsets.all(5)),
-                              Text(ws.getWeightString(showNone: false) ?? ''),
-                            ]
-                          : [
-                              const Center(
-                                child: Text(
-                                  '-',
-                                  style: TextStyle(fontSize: 30),
-                                ),
-                              ),
-                            ],
-                    )),
-                Expanded(
+              ),
+              Expanded(
                   flex: 3,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: ws.reps != null && ws.reps! > 0
+                    children: ws.hasWeight()
                         ? [
                             const Icon(
-                              Icons.repeat_rounded,
+                              Icons.fitness_center_rounded,
                               size: 15,
                             ),
                             const Padding(padding: EdgeInsets.all(5)),
-                            Text(ws.getRepsDisplayString()),
+                            Text(ws.getWeightDisplay()),
                           ]
-                        : [
-                            const Center(
-                              child: Text(
-                                '-',
-                                style: TextStyle(fontSize: 30),
-                              ),
-                            ),
-                          ],
-                  ),
+                        : [dashIcon()],
+                  )),
+              Expanded(
+                flex: 3,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: ws.reps != null && ws.reps! > 0
+                      ? [
+                          const Icon(
+                            Icons.repeat_rounded,
+                            size: 15,
+                          ),
+                          const Padding(padding: EdgeInsets.all(5)),
+                          Text(ws.getRepsDisplay()),
+                        ]
+                      : [dashIcon()],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
-      ]));
+      ));
     }
 
+    return widgets;
+  }
+
+  List<Widget> getCardioSetWidgets(List<WorkoutSet> sets) {
+    final List<Widget> widgets = [
+      const Padding(
+        padding: EdgeInsets.all(2),
+      )
+    ];
+    final filteredSets = sets.where((ws) => ws.hasTime() || ws.hasDistance() || ws.hasCalsBurned()).toList();
+
+    for (int i = 0; i < filteredSets.length; i++) {
+      final ws = filteredSets[i];
+
+      widgets.add(InkWell(
+        onLongPress: () => showDeleteWorkoutSetConfirm(ws.id!),
+        onTap: () => onEditWorkoutExerciseTap(ws),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Row(
+            children: [
+              Expanded(
+                  flex: 3,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: ws.hasTime()
+                        ? [
+                            const Icon(
+                              Icons.timer_rounded,
+                              size: 15,
+                            ),
+                            const Padding(padding: EdgeInsets.all(5)),
+                            Text(ws.getTimeDisplay()),
+                          ]
+                        : [dashIcon()],
+                  )),
+              Expanded(
+                flex: 3,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: ws.hasDistance()
+                      ? [
+                          const Icon(
+                            Icons.timeline_rounded,
+                            size: 15,
+                          ),
+                          const Padding(padding: EdgeInsets.all(5)),
+                          Text(ws.getDistanceDisplay()),
+                        ]
+                      : [dashIcon()],
+                ),
+              ),
+              Expanded(
+                flex: 3,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: ws.hasCalsBurned()
+                      ? [
+                          const Icon(
+                            Icons.local_fire_department_rounded,
+                            size: 15,
+                          ),
+                          const Padding(padding: EdgeInsets.all(5)),
+                          Text(ws.getCalsBurnedDisplay()),
+                        ]
+                      : [dashIcon()],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ));
+    }
+
+    return widgets;
+  }
+
+  List<Widget> getWorkoutExerciseWidgets(List<WorkoutSet> sets) {
+    final List<Widget> widgets = [const Divider(height: 0, thickness: 0.25)];
+
+    var setWidgets = sets.first.isCardio() ? getCardioSetWidgets(sets) : getWeightedSetWidgets(sets);
+    widgets.addAll(setWidgets);
+
     widgets.add(Row(children: [
-      if (filteredSets.isNotEmpty)
+      if (setWidgets.isNotEmpty)
         Expanded(
           child: getPrimaryButton(
             ActionButton(
@@ -211,10 +292,14 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     return widgets;
   }
 
-  void onGroupedWorkoutExercisesDoneTap(bool? done) async {
-    if (done == null) return;
-
+  void onGroupedWorkoutExercisesDoneTap(bool done) async {
     try {
+      if (widget.workoutSets[0].workout!.isInFuture()) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Cannot complete sets. Workout is in the future!')));
+        return;
+      }
+
       for (var ws in widget.workoutSets) {
         ws.done = done;
         await WorkoutSetsHelper.updateWorkoutSet(ws);
@@ -317,7 +402,6 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.grey[800],
       child: Column(
         children: [
           InkWell(
@@ -333,7 +417,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                     activeColor: Theme.of(context).colorScheme.primary,
                     value: widget.workoutSets.every((ws) => ws.done),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    onChanged: (bool? value) => onGroupedWorkoutExercisesDoneTap(value),
+                    onChanged: (bool? value) => onGroupedWorkoutExercisesDoneTap(value!),
                   ),
                   Expanded(
                     child: Row(children: [
@@ -376,7 +460,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
               ),
             ),
           ),
-          if (dropped) ...getWorkoutExerciseWidget(widget.workoutSets),
+          if (dropped) ...getWorkoutExerciseWidgets(widget.workoutSets),
         ],
       ),
     );

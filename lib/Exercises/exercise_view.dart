@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/exercise.dart';
 import 'package:gymvision/db/classes/user_exercise_details.dart';
 import 'package:gymvision/db/classes/workout_set.dart';
-import 'package:gymvision/db/helpers/user_exercise_details_helper.dart';
 import 'package:gymvision/exercises/exercise_recent_uses_view.dart';
 import 'package:gymvision/globals.dart';
 
@@ -47,7 +46,6 @@ class _ExerciseViewState extends State<ExerciseView> {
           children: [
             Expanded(
               child: Card(
-                color: const Color.fromARGB(255, 124, 124, 124),
                 child: InkWell(
                   onTap: () => openNotesForm(details),
                   child: Container(
@@ -181,7 +179,6 @@ class _ExerciseViewState extends State<ExerciseView> {
   }
 
   Widget getPrWidget(WorkoutSet pr) => Card(
-        color: Colors.grey[800],
         child: Padding(
           padding: const EdgeInsets.all(15),
           child: Row(
@@ -213,7 +210,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                       size: 15,
                     ),
                     const Padding(padding: EdgeInsets.all(5)),
-                    Text(pr.getRepsDisplayString()),
+                    Text(pr.getRepsDisplay()),
                   ],
                 ),
               ),

@@ -1,4 +1,4 @@
-import 'package:gymvision/helpers/workout_category_helper.dart';
+import 'package:gymvision/helpers/category_shell_helper.dart';
 
 enum ExerciseEditableField {
   name,
@@ -101,7 +101,7 @@ extension ExerciseTypeHelper on ExerciseType {
   }
 
   WorkoutCategoryShell get categoryShell =>
-      WorkoutCategoryHelper.getMiscCategoryShells().firstWhere((e) => e.displayName == displayName);
+      CategoryShellHelper.getFunctionaityCategoryShells().firstWhere((e) => e.displayName == displayName);
 }
 
 enum MuscleGroup {
@@ -144,7 +144,7 @@ extension MuscleGroupHelper on MuscleGroup {
   }
 
   WorkoutCategoryShell get categoryShell =>
-      WorkoutCategoryHelper.getMuscleGroupCategoryShells().firstWhere((e) => e.displayName == displayName);
+      CategoryShellHelper.getMuscleGroupCategoryShells().firstWhere((e) => e.displayName == displayName);
 }
 
 enum ExerciseSplit {
@@ -169,7 +169,7 @@ extension ExerciseSplitHelper on ExerciseSplit {
   }
 
   WorkoutCategoryShell get categoryShell =>
-      WorkoutCategoryHelper.getSplitCategoryShells().firstWhere((e) => e.displayName == displayName);
+      CategoryShellHelper.getSplitCategoryShells().firstWhere((e) => e.displayName == displayName);
 }
 
 enum ExerciseEquipment {

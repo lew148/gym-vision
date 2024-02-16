@@ -12,9 +12,9 @@ class WorkoutCategoryShell {
   });
 }
 
-class WorkoutCategoryHelper {
+class CategoryShellHelper {
   static Map<int, List<WorkoutCategoryShell>> getCategoryShellsMap() => {
-        0: getMiscCategoryShells(),
+        0: getFunctionaityCategoryShells(),
         1: getSplitCategoryShells(),
         2: getMuscleGroupCategoryShells(),
         // 3: [otherCategoryShell],
@@ -22,7 +22,7 @@ class WorkoutCategoryHelper {
 
   static List<WorkoutCategoryShell> getCategoryShells() {
     List<WorkoutCategoryShell> list = [];
-    list.addAll(getMiscCategoryShells());
+    list.addAll(getFunctionaityCategoryShells());
     list.addAll(getSplitCategoryShells());
     list.addAll(getMuscleGroupCategoryShells());
     list.add(otherCategoryShell);
@@ -38,9 +38,12 @@ class WorkoutCategoryHelper {
   static List<WorkoutCategoryShell> getCategoryShellsWithIds(List<int> shellIds) =>
       getCategoryShells().where((s) => shellIds.contains(s.id)).toList();
 
-  static List<WorkoutCategoryShell> getMiscCategoryShells() => [
+  static List<WorkoutCategoryShell> getFunctionaityCategoryShells() => [
         WorkoutCategoryShell(id: 1, type: WorkoutCategoryType.cardio, displayName: cardioDisplayName),
         WorkoutCategoryShell(id: 2, type: WorkoutCategoryType.stretch, displayName: stretchDisplayName),
+      ];
+
+  static List<WorkoutCategoryShell> getSessionTypeCategoryShells() => [
         WorkoutCategoryShell(id: 3, type: WorkoutCategoryType.Class, displayName: classDisplayName),
       ];
 

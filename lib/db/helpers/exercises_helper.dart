@@ -3,7 +3,7 @@ import 'package:gymvision/db/db.dart';
 import 'package:gymvision/db/helpers/user_exercise_details_helper.dart';
 import 'package:gymvision/enums.dart';
 
-import '../../helpers/workout_category_helper.dart';
+import '../../helpers/category_shell_helper.dart';
 
 class ExercisesHelper {
   static Future<List<Exercise>> getAllExercisesExcludingCategories(
@@ -12,35 +12,38 @@ class ExercisesHelper {
 
     if (categoryShellIds != null && categoryShellIds.isNotEmpty) {
       final shellDisplayNames =
-          WorkoutCategoryHelper.getCategoryShellsWithIds(categoryShellIds).map((e) => e.displayName);
+          CategoryShellHelper.getCategoryShellsWithIds(categoryShellIds).map((e) => e.displayName);
       final exerciseTypes =
-          ExerciseType.values.where((mg) => shellDisplayNames.contains(mg.displayName)).map((e) => e.index);
+          ExerciseType.values.where((e) => shellDisplayNames.contains(e.displayName)).map((e) => e.index);
       final muscleGroups =
-          MuscleGroup.values.where((mg) => shellDisplayNames.contains(mg.displayName)).map((e) => e.index);
-      final splits = ExerciseSplit.values.where((mg) => shellDisplayNames.contains(mg.displayName)).map((e) => e.index);
+          MuscleGroup.values.where((e) => shellDisplayNames.contains(e.displayName)).map((e) => e.index);
+      final splits = ExerciseSplit.values.where((e) => shellDisplayNames.contains(e.displayName)).map((e) => e.index);
 
-      var needAnd = false;
+      var needConnector = false;
+      var connector = 'AND';
       whereString = StringBuffer();
 
       if (exerciseIds != null) {
         whereString.write('exercises.id NOT IN (${exerciseIds.join(',')})');
-        needAnd = true;
+        needConnector = true;
       }
 
       if (exerciseTypes.isNotEmpty) {
-        if (needAnd) whereString.write(' AND ');
+        if (needConnector) whereString.write(' $connector ');
         whereString.write('exercises.exerciseType IN (${exerciseTypes.join(',')})');
-        needAnd = true;
+        needConnector = true;
+        connector = "OR";
       }
 
       if (muscleGroups.isNotEmpty) {
-        if (needAnd) whereString.write(' AND ');
+        if (needConnector) whereString.write(' $connector ');
         whereString.write('exercises.muscleGroup IN (${muscleGroups.join(',')})');
-        needAnd = true;
+        needConnector = true;
+        connector = "OR";
       }
 
       if (splits.isNotEmpty) {
-        if (needAnd) whereString.write(' AND ');
+        if (needConnector) whereString.write(' $connector ');
         whereString.write('exercises.split IN (${splits.join(',')})');
       }
     }

@@ -1,4 +1,5 @@
 import 'package:gymvision/db/classes/workout.dart';
+import 'package:gymvision/enums.dart';
 import 'package:gymvision/globals.dart';
 
 import 'exercise.dart';
@@ -46,34 +47,22 @@ class WorkoutSet {
       };
 
   void setTime(String? str) => time = str == null ? null : tryParseDuration(str);
+  bool isPlaceholder() => !(hasReps() && hasWeight());
+  bool isCardio() => exercise?.exerciseType == ExerciseType.cardio;
 
   bool hasWeight() => weight != null && weight != 0;
-
   double getWeight() => hasWeight() ? weight! : 0;
-
-  String getWeightDisplay() =>
-      hasWeight() ? '${weight! % 1 == 0 ? weight!.toStringAsFixed(0) : weight!.toStringAsFixed(2)}kg' : '-';
-
-  String? getWeightAsString() {
-    if (!hasWeight()) return null;
-    return weight! % 1 == 0 ? weight!.toStringAsFixed(0) : weight!.toStringAsFixed(2);
-  }
-
-  String? getWeightString({bool showNone = true}) {
-    if (!hasWeight()) return showNone ? 'None' : null;
-    return '${getWeightAsString()}kg';
-  }
-
-  String? getNumberedWeightString({bool showNone = true}) {
-    if (!hasWeight()) return showNone ? 'None' : null;
-    return '${exercise!.isDouble ? '2 x ' : ''}${getWeightString(showNone: showNone)}';
-  }
+  String getWeightDisplay() => '${truncateDouble(weight)}kg';
 
   bool hasReps() => reps != null && reps! > 0;
+  String getRepsDisplay() => hasReps() ? '$reps rep${reps == 1 ? '' : 's'}' : 'No Reps';
 
-  String getRepsAsString() => !hasReps() ? '0' : reps.toString();
+  bool hasTime() => time != null && time!.inSeconds > 0;
+  String getTimeDisplay() => hasTime() ? time.toString().split('.').first.padLeft(8, "0") : "00.00.00";
 
-  String getRepsDisplayString() => hasReps() ? '$reps rep${reps == 1 ? '' : 's'}' : 'No Reps';
+  bool hasDistance() => distance != null && distance! > 0;
+  String getDistanceDisplay() => '${hasDistance() ? distance!.toStringAsFixed(2) : 0}km';
 
-  bool isPlaceholder() => !(hasReps() && hasWeight());
+  bool hasCalsBurned() => calsBurned != null && calsBurned! > 0;
+  String getCalsBurnedDisplay() => '${hasCalsBurned() ? calsBurned : 0}kcal';
 }

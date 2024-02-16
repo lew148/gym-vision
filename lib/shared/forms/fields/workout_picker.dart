@@ -73,7 +73,6 @@ class _WorkoutPickerState extends State<WorkoutPicker> {
                                       widget.setWorkout(w);
                                     },
                                     child: Card(
-                                      color: Colors.grey[800],
                                       child: Container(
                                         decoration: BoxDecoration(
                                           borderRadius: const BorderRadius.all(

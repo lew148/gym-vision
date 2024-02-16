@@ -68,6 +68,7 @@ class WorkoutSetsHelper {
                 id: map['exerciseId'],
                 name: map['name'],
                 muscleGroup: MuscleGroup.values.elementAt(map['muscleGroup']),
+                exerciseType: ExerciseType.values.elementAt(map['exerciseType']),
                 equipment: ExerciseEquipment.values.elementAt(map['equipment']),
                 split: ExerciseSplit.values.elementAt(map['split']),
                 isDouble: map['isDouble'] == 1,
@@ -151,7 +152,7 @@ class WorkoutSetsHelper {
           FROM workout_sets
           WHERE workout_sets.exerciseId = $exerciseId
         ) AS b ON workout_sets.weight = b.max_weight
-        WHERE NOT (workout_sets.weight = 0.0 AND workout_sets.reps = 0)
+        WHERE workout_sets.done AND NOT (workout_sets.weight = 0.0 AND workout_sets.reps = 0)
       )
 
       SELECT *

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 Widget getSectionTitle(BuildContext context, String title) => Padding(
-      padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+      padding: const EdgeInsets.all(10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [

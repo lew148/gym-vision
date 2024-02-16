@@ -47,10 +47,13 @@ class _AddWeightFormState extends State<AddWeightForm> {
             children: [
               getSectionTitle(context, 'Add Weight'),
               const Divider(thickness: 0.25),
-              CustomFormFields.weightField(
+              CustomFormFields.doubleField(
                 controller: weightController,
                 label: 'Weight',
-                isSingle: true,
+                isDouble: false,
+                unit: 'kg',
+                autofocus: true,
+                hideNone: true,
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 20.0),

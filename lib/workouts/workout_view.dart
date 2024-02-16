@@ -368,7 +368,7 @@ class _WorkoutViewState extends State<WorkoutView> {
             ],
           ),
           body: Container(
-            padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
+            padding: const EdgeInsets.fromLTRB(5, 5, 5, 20),
             child: IntrinsicHeight(
               child: Column(
                 children: [
