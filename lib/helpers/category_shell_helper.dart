@@ -23,6 +23,7 @@ class CategoryShellHelper {
   static List<WorkoutCategoryShell> getCategoryShells() {
     List<WorkoutCategoryShell> list = [];
     list.addAll(getFunctionaityCategoryShells());
+    list.addAll(getSessionTypeCategoryShells());
     list.addAll(getSplitCategoryShells());
     list.addAll(getMuscleGroupCategoryShells());
     list.add(otherCategoryShell);

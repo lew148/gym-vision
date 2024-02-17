@@ -71,18 +71,23 @@ class _ExerciseViewState extends State<ExerciseView> {
         ),
       ]);
 
-  Widget getExerciseViewWidget(Exercise exercise) => Wrap(
-        alignment: WrapAlignment.center,
-        children: [
-          Wrap(children: [
-            getPropDisplay(context, exercise.exerciseType.displayName),
-            getPropDisplay(context, exercise.muscleGroup.displayName),
-          ]),
-          Wrap(children: [
-            getPropDisplay(context, exercise.split.displayName),
-            getPropDisplay(context, exercise.equipment.displayName),
-          ]),
-        ],
+  Widget getExerciseViewWidget(Exercise exercise) => Padding(
+        padding: const EdgeInsets.only(top: 15, bottom: 5),
+        child: Wrap(
+          alignment: WrapAlignment.center,
+          children: [
+            Wrap(children: [
+              if (exercise.exerciseType != ExerciseType.other)
+                getPropDisplay(context, exercise.exerciseType.displayName),
+              if (exercise.muscleGroup != MuscleGroup.other) getPropDisplay(context, exercise.muscleGroup.displayName),
+            ]),
+            Wrap(children: [
+              if (exercise.split != ExerciseSplit.other) getPropDisplay(context, exercise.split.displayName),
+              if (exercise.equipment != ExerciseEquipment.other)
+                getPropDisplay(context, exercise.equipment.displayName),
+            ]),
+          ],
+        ),
       );
 
   void openNotesForm(UserExerciseDetails details) {
@@ -178,51 +183,10 @@ class _ExerciseViewState extends State<ExerciseView> {
     return weWidgets;
   }
 
-  Widget getPrWidget(WorkoutSet pr) => Card(
-        child: Padding(
-          padding: const EdgeInsets.all(15),
-          child: Row(
-            children: [
-              Text(pr.workout!.getDateAndTimeString()),
-              Expanded(
-                  flex: 3,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.fitness_center_rounded,
-                        size: 15,
-                      ),
-                      const Padding(padding: EdgeInsets.all(5)),
-                      Text(
-                        pr.getWeightDisplay(),
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  )),
-              Expanded(
-                flex: 3,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.repeat_rounded,
-                      size: 15,
-                    ),
-                    const Padding(padding: EdgeInsets.all(5)),
-                    Text(pr.getRepsDisplay()),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-
-  List<Widget> getDetailsSections(UserExerciseDetails details) => [
+  List<Widget> getPrSection(WorkoutSet? pr) => [
         getSectionTitle(context, 'PR'),
         const Divider(thickness: 0.25),
-        details.pr == null
+        pr == null
             ? const Center(
                 child: Padding(
                   padding: EdgeInsets.all(10),
@@ -231,8 +195,51 @@ class _ExerciseViewState extends State<ExerciseView> {
               )
             : Container(
                 padding: const EdgeInsets.all(10),
-                child: getPrWidget(details.pr!),
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(15),
+                    child: Row(
+                      children: [
+                        Text(pr.workout!.getDateStr()),
+                        Expanded(
+                            flex: 3,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.fitness_center_rounded,
+                                  size: 15,
+                                ),
+                                const Padding(padding: EdgeInsets.all(5)),
+                                Text(
+                                  pr.getWeightDisplay(),
+                                  style: const TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            )),
+                        Expanded(
+                          flex: 3,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.repeat_rounded,
+                                size: 15,
+                              ),
+                              const Padding(padding: EdgeInsets.all(5)),
+                              Text(pr.getRepsDisplay()),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
+      ];
+
+  List<Widget> getDetailsSections(Exercise exercise, UserExerciseDetails details) => [
+        if (exercise.exerciseType == ExerciseType.weight) ...getPrSection(details.pr),
         // getSectionTitle(context, 'Notes'),
         // getNotesDisplay(details),
         getSectionTitle(context, 'Recent Uses'),
@@ -274,14 +281,11 @@ class _ExerciseViewState extends State<ExerciseView> {
         var details = exercise.userExerciseDetails;
 
         return Scaffold(
-          appBar: AppBar(
-            title: Text(exercise.name),
-          ),
+          appBar: AppBar(title: Text(exercise.name)),
           body: Column(
             children: [
-              const Padding(padding: EdgeInsets.all(10)),
               getExerciseViewWidget(snapshot.data!),
-              if (details != null) ...getDetailsSections(details),
+              if (details != null) ...getDetailsSections(exercise, details),
             ],
           ),
         );

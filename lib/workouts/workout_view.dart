@@ -277,8 +277,7 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   Widget getCategoriesWidget(Workout workout, List<int> existingCategoryIds) =>
       workout.workoutCategories == null || workout.workoutCategories!.isEmpty
-          ? Row(
-            children: [
+          ? Row(children: [
               Expanded(
                 child: getPrimaryButton(
                   ActionButton(
@@ -357,7 +356,19 @@ class _WorkoutViewState extends State<WorkoutView> {
 
         return Scaffold(
           appBar: AppBar(
-            title: Text(workout.getDateAndTimeString()),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  workout.getDateStr(),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  workout.getTimeStr(),
+                  style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
+                ),
+              ],
+            ),
             actions: [
               IconButton(
                 icon: const Icon(

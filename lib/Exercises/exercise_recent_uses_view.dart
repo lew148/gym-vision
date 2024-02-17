@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/workout_set.dart';
+import 'package:gymvision/enums.dart';
 
 class ExerciseRecentUsesView extends StatefulWidget {
   final List<WorkoutSet> workoutSets;
@@ -14,6 +15,16 @@ class ExerciseRecentUsesView extends StatefulWidget {
 }
 
 class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
+  Widget dashIcon() => const Center(
+        child: Text(
+          '-',
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      );
+
   List<Widget> getWorkoutExerciseWidget(List<WorkoutSet> ws) => ws
       .map((s) => s.isPlaceholder()
           ? const SizedBox.shrink()
@@ -22,44 +33,88 @@ class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
               Padding(
                 padding: const EdgeInsets.all(10),
                 child: Row(
-                  children: [
-                    Expanded(
-                        flex: 3,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: s.hasWeight()
-                              ? [
-                                  const Icon(
-                                    Icons.fitness_center_rounded,
-                                    size: 15,
-                                  ),
-                                  const Padding(padding: EdgeInsets.all(5)),
-                                  Text(s.getWeightDisplay()),
-                                ]
-                              : [
-                                  const Center(
-                                    child: Text(
-                                      '-',
-                                      style: TextStyle(fontSize: 30),
-                                    ),
-                                  ),
-                                ],
-                        )),
-                    Expanded(
-                      flex: 3,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.repeat_rounded,
-                            size: 15,
+                  children: s.exercise!.exerciseType == ExerciseType.weight
+                      ? [
+                          Expanded(
+                            flex: 3,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: s.hasWeight()
+                                  ? [
+                                      const Icon(
+                                        Icons.fitness_center_rounded,
+                                        size: 15,
+                                      ),
+                                      const Padding(padding: EdgeInsets.all(5)),
+                                      Text(s.getWeightDisplay()),
+                                    ]
+                                  : [dashIcon()],
+                            ),
                           ),
-                          const Padding(padding: EdgeInsets.all(5)),
-                          Text(s.getRepsDisplay()),
+                          Expanded(
+                            flex: 3,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.repeat_rounded,
+                                  size: 15,
+                                ),
+                                const Padding(padding: EdgeInsets.all(5)),
+                                Text(s.getRepsDisplay()),
+                              ],
+                            ),
+                          ),
+                        ]
+                      : [
+                          Expanded(
+                              flex: 3,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: s.hasTime()
+                                    ? [
+                                        const Icon(
+                                          Icons.timer_rounded,
+                                          size: 15,
+                                        ),
+                                        const Padding(padding: EdgeInsets.all(5)),
+                                        Text(s.getTimeDisplay()),
+                                      ]
+                                    : [dashIcon()],
+                              )),
+                          Expanded(
+                            flex: 3,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: s.hasDistance()
+                                  ? [
+                                      const Icon(
+                                        Icons.timeline_rounded,
+                                        size: 15,
+                                      ),
+                                      const Padding(padding: EdgeInsets.all(5)),
+                                      Text(s.getDistanceDisplay()),
+                                    ]
+                                  : [dashIcon()],
+                            ),
+                          ),
+                          Expanded(
+                            flex: 3,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: s.hasCalsBurned()
+                                  ? [
+                                      const Icon(
+                                        Icons.local_fire_department_rounded,
+                                        size: 15,
+                                      ),
+                                      const Padding(padding: EdgeInsets.all(5)),
+                                      Text(s.getCalsBurnedDisplay()),
+                                    ]
+                                  : [dashIcon()],
+                            ),
+                          ),
                         ],
-                      ),
-                    ),
-                  ],
                 ),
               ),
             ]))
@@ -77,7 +132,7 @@ class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
                 Padding(
                   padding: const EdgeInsets.all(15),
                   child: Text(
-                    widget.workoutSets[0].workout!.getDateAndTimeString(),
+                    widget.workoutSets[0].workout!.getDateStr(),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),

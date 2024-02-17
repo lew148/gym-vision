@@ -189,7 +189,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                     ),
                   ]),
                   Text(
-                    workout.getTimeString(),
+                    workout.getTimeStr(),
                     style: TextStyle(color: Theme.of(context).colorScheme.shadow),
                   ),
                 ],
@@ -399,8 +399,14 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
       },
       onPanEnd: (details) {
         animationInMotion = true;
-        if (right >= MediaQuery.of(context).size.width / 3 || details.velocity.pixelsPerSecond.dx < -500) return onArrowTap(1);
-        if (left >= MediaQuery.of(context).size.width / 3 || details.velocity.pixelsPerSecond.dx > 500) return onArrowTap(-1);
+        if (right >= MediaQuery.of(context).size.width / 3 || details.velocity.pixelsPerSecond.dx < -500) {
+          return onArrowTap(1);
+        }
+
+        if (left >= MediaQuery.of(context).size.width / 3 || details.velocity.pixelsPerSecond.dx > 500) {
+          return onArrowTap(-1);
+        }
+
         setState(() {});
       },
       child: Stack(

@@ -47,7 +47,7 @@ class WorkoutSet {
       };
 
   void setTime(String? str) => time = str == null ? null : tryParseDuration(str);
-  bool isPlaceholder() => !(hasReps() && hasWeight());
+  bool isPlaceholder() => !hasReps() && !hasWeight() && !hasTime() && !hasDistance() && !hasCalsBurned();
   bool isCardio() => exercise?.exerciseType == ExerciseType.cardio;
 
   bool hasWeight() => weight != null && weight != 0;

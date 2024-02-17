@@ -27,9 +27,7 @@ class Workout {
         'date': date.toString(),
       };
 
-  String getTimeString() => DateFormat('Hm').format(date);
-
-  String getDateAndTimeString() => '${getDateString(date)} @ ${getTimeString()}';
-
+  String getTimeStr() => DateFormat('Hm').format(date);
+  String getDateStr() => getDateString(date);
   bool isInFuture() => dateIsInFuture(date);
 }
