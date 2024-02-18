@@ -79,6 +79,10 @@ class _ExercisePickerState extends State<ExercisePicker> {
   Widget getFilterButton() => Row(children: [
         Expanded(
           child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              textStyle: const TextStyle(color: Colors.black),
+            ),
             onPressed: () {
               Navigator.pop(context);
               showModalBottomSheet(

@@ -50,6 +50,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
   void timerReload() {
     if (!mounted) return;
     setState(() {
+      timer.cancel();
       timer = Timer.periodic(const Duration(seconds: 60), (timer) => timerReload());
     });
   }
@@ -98,6 +99,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
     AlertDialog alert = AlertDialog(
       title: const Text("Delete Bodyweight?"),
       content: const Text("Are you sure you would like to delete this Bodyweight?"),
+      backgroundColor: Theme.of(context).cardColor,
       actions: [
         cancelButton,
         continueButton,
@@ -141,6 +143,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
     AlertDialog alert = AlertDialog(
       title: const Text("Delete Workout?"),
       content: const Text("Are you sure you would like to delete this Workout?"),
+      backgroundColor: Theme.of(context).cardColor,
       actions: [
         cancelButton,
         continueButton,

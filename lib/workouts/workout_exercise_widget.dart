@@ -345,6 +345,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     AlertDialog alert = AlertDialog(
       title: const Text("Remove Sets?"),
       content: const Text("Are you sure you would like to remove these sets?"),
+      backgroundColor: Theme.of(context).cardColor,
       actions: [
         cancelButton,
         continueButton,
@@ -387,6 +388,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     AlertDialog alert = AlertDialog(
       title: const Text("Remove Set?"),
       content: const Text("Are you sure you would like to remove this set?"),
+      backgroundColor: Theme.of(context).cardColor,
       actions: [
         cancelButton,
         continueButton,

@@ -155,11 +155,19 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
                       widget.exerciseId == null
                           ? ElevatedButton(
                               onPressed: () => onSubmit(addThree: true),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Theme.of(context).colorScheme.primary,
+                                textStyle: const TextStyle(color: Colors.black),
+                              ),
                               child: const Text('Add 3'),
                             )
                           : const SizedBox.shrink(),
                       ElevatedButton(
                         onPressed: onSubmit,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).colorScheme.primary,
+                          textStyle: const TextStyle(color: Colors.black),
+                        ),
                         child: const Text('Add'),
                       ),
                     ],

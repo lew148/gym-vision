@@ -50,10 +50,18 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                     // ),
                     ElevatedButton(
                       onPressed: () async => await DatabaseHelper.updateExercises(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        textStyle: const TextStyle(color: Colors.black),
+                      ),
                       child: const Text('Update Exercises'),
                     ),
                     ElevatedButton(
                       onPressed: () async => await DatabaseHelper.restartDbWhilePersistingData(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).colorScheme.primary,
+                        textStyle: const TextStyle(color: Colors.black),
+                      ),
                       child: const Text('Update DB (keep data)'),
                     ),
                     // ElevatedButton(

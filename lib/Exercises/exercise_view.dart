@@ -127,6 +127,10 @@ class _ExerciseViewState extends State<ExerciseView> {
                             Padding(
                               padding: const EdgeInsets.only(top: 20.0),
                               child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Theme.of(context).colorScheme.primary,
+                                  textStyle: const TextStyle(color: Colors.black),
+                                ),
                                 onPressed: () async {
                                   Navigator.pop(context);
 

@@ -52,6 +52,10 @@ class _SingleTextFieldFormState extends State<SingleTextFieldForm> {
                       padding: const EdgeInsets.only(top: 20.0),
                       child: ElevatedButton(
                         onPressed: () => widget.onSubmit(formKey.currentState!.validate(), fieldController.text),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Theme.of(context).colorScheme.primary,
+                          textStyle: const TextStyle(color: Colors.black),
+                        ),
                         child: const Text('Save'),
                       ),
                     ),

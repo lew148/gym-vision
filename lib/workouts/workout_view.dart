@@ -69,6 +69,7 @@ class _WorkoutViewState extends State<WorkoutView> {
     AlertDialog alert = AlertDialog(
       title: const Text("Delete Workout?"),
       content: const Text("Are you sure you would like to delete this Workout?"),
+      backgroundColor: Theme.of(context).cardColor,
       actions: [
         cancelButton,
         continueButton,
