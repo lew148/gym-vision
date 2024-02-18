@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
           secondary: const Color.fromARGB(255, 216, 160, 233),
           tertiary: const Color.fromARGB(255, 255, 101, 101),
           shadow: Colors.grey[400],
-          surface: Colors.black,
+          surface: Colors.transparent,
           surfaceTint: Colors.transparent,
         ),
       ),
