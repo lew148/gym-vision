@@ -348,7 +348,7 @@ class _WorkoutViewState extends State<WorkoutView> {
 
         void onWorkoutExerciseReorder(int oldIndex, int newIndex) async {
           try {
-            HapticFeedback.lightImpact();
+            HapticFeedback.mediumImpact();
             await WorkoutExerciseOrderingsHelper.reorderPositioning(widget.workoutId, oldIndex, newIndex);
           } catch (e) {
             // do nothing

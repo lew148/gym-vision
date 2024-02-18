@@ -190,9 +190,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List<Widget> widgetPages() => [
         Workouts(onAddWorkoutTap: onAddWorkoutTap),
-        const ComingSoon(),
-        const ComingSoon(),
         const Exercises(),
+        const ComingSoon(),
+        const ComingSoon(),
       ];
 
   @override
@@ -223,21 +223,37 @@ class _MyHomePageState extends State<MyHomePage> {
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         indicatorColor: Colors.transparent,
         selectedIndex: selectedIndex,
-        destinations: const [
+        destinations: [
           NavigationDestination(
-            icon: Icon(Icons.format_list_bulleted_rounded),
+            icon: const Icon(Icons.format_list_bulleted_rounded),
+            selectedIcon: Icon(
+              Icons.format_list_bulleted_rounded,
+              color: Theme.of(context).colorScheme.primary,
+            ),
             label: 'Workouts',
           ),
           NavigationDestination(
-            icon: Icon(Icons.fitness_center_rounded),
+            icon: const Icon(Icons.fitness_center_rounded),
+            selectedIcon: Icon(
+              Icons.fitness_center_rounded,
+              color: Theme.of(context).colorScheme.primary,
+            ),
             label: 'Exercises',
           ),
           NavigationDestination(
-            icon: Icon(Icons.timeline_rounded),
+            icon: const Icon(Icons.timeline_rounded),
+            selectedIcon: Icon(
+              Icons.timeline_rounded,
+              color: Theme.of(context).colorScheme.primary,
+            ),
             label: 'Progress',
           ),
           NavigationDestination(
-            icon: Icon(Icons.person_rounded),
+            icon: const Icon(Icons.person_rounded),
+            selectedIcon: Icon(
+              Icons.person_rounded,
+              color: Theme.of(context).colorScheme.primary,
+            ),
             label: 'User',
           ),
         ],
