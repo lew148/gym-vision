@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/db/classes/workout.dart';
 import 'package:gymvision/db/helpers/workouts_helper.dart';
-import 'package:gymvision/exercises/exercises.dart';
+import 'package:gymvision/pages/coming_soon.dart';
+import 'package:gymvision/pages/exercises/exercises.dart';
 import 'package:gymvision/shared/forms/add_weight_form.dart';
 import 'package:gymvision/shared/ui_helper.dart';
 import 'package:gymvision/user_settings_view.dart';
-import 'package:gymvision/workouts/workout_view.dart';
-import 'package:gymvision/workouts/workouts.dart';
+import 'package:gymvision/pages/workouts/workout_view.dart';
+import 'package:gymvision/pages/workouts/workouts.dart';
 
 void main() async {
   // final userSettings = await UserSettingsHelper.getUserSettings();
@@ -189,6 +190,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List<Widget> widgetPages() => [
         Workouts(onAddWorkoutTap: onAddWorkoutTap),
+        const ComingSoon(),
+        const ComingSoon(),
         const Exercises(),
       ];
 
@@ -215,23 +218,29 @@ class _MyHomePageState extends State<MyHomePage> {
         child: const Icon(Icons.add_rounded),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: onItemTapped,
+        labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+        indicatorColor: Colors.transparent,
+        selectedIndex: selectedIndex,
+        destinations: const [
+          NavigationDestination(
             icon: Icon(Icons.format_list_bulleted_rounded),
             label: 'Workouts',
           ),
-          BottomNavigationBarItem(
+          NavigationDestination(
             icon: Icon(Icons.fitness_center_rounded),
             label: 'Exercises',
           ),
+          NavigationDestination(
+            icon: Icon(Icons.timeline_rounded),
+            label: 'Progress',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person_rounded),
+            label: 'User',
+          ),
         ],
-        currentIndex: selectedIndex,
-        selectedItemColor: Theme.of(context).colorScheme.primary,
-        onTap: onItemTapped,
       ),
     );
   }

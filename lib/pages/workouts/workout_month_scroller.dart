@@ -1,15 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gymvision/db/classes/body_weight.dart';
 import 'package:gymvision/db/helpers/bodyweight_helper.dart';
 import 'package:gymvision/shared/ui_helper.dart';
-import 'package:gymvision/workouts/workout_view.dart';
+import 'package:gymvision/pages/workouts/workout_view.dart';
 import 'package:intl/intl.dart';
 
-import '../db/classes/workout.dart';
-import '../db/helpers/workouts_helper.dart';
-import '../globals.dart';
+import '../../db/classes/workout.dart';
+import '../../db/helpers/workouts_helper.dart';
+import '../../globals.dart';
 
 class WorkoutMonthScoller extends StatefulWidget {
   final List<Workout> workouts;
@@ -106,6 +107,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
       ],
     );
 
+    HapticFeedback.heavyImpact();
     showDialog(
       context: context,
       builder: (context) => alert,
@@ -150,6 +152,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
       ],
     );
 
+    HapticFeedback.heavyImpact();
     showDialog(
       context: context,
       builder: (context) => alert,

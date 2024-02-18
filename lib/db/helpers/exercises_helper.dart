@@ -120,7 +120,9 @@ class ExercisesHelper {
       isDouble: map['isDouble'] == 1,
       userExerciseDetails: includeUserDetails
           ? await UserExerciseDetailsHelper.getUserDetailsForExercise(
-              exerciseId: map['id'], includeRecentUses: includeRecentUses)
+              exerciseId: map['id'],
+              includeRecentUses: includeRecentUses,
+            )
           : null,
     );
   }

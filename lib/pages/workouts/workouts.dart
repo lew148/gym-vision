@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/body_weight.dart';
 import 'package:gymvision/db/helpers/bodyweight_helper.dart';
-import 'package:gymvision/workouts/workout_month_scroller.dart';
+import 'package:gymvision/pages/workouts/workout_month_scroller.dart';
 
-import '../db/classes/workout.dart';
-import '../db/helpers/workouts_helper.dart';
+import '../../db/classes/workout.dart';
+import '../../db/helpers/workouts_helper.dart';
 // import 'flavour_text_card.dart';
 
 class Workouts extends StatefulWidget {

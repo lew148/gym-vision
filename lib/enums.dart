@@ -81,7 +81,7 @@ extension WorkoutCategoryTypeHelper on WorkoutCategoryType {
 
 enum ExerciseType {
   cardio,
-  // stretch,
+  stretch,
   weight, // includes body-weight
   other,
 }
@@ -91,8 +91,8 @@ extension ExerciseTypeHelper on ExerciseType {
     switch (this) {
       case ExerciseType.cardio:
         return cardioDisplayName;
-      // case ExerciseType.stretch:
-      //   return stretchDisplayName;
+      case ExerciseType.stretch:
+        return stretchDisplayName;
       case ExerciseType.weight:
         return weightDisplayName;
       case ExerciseType.other:

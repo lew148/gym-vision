@@ -137,7 +137,6 @@ class _ExercisePickerState extends State<ExercisePicker> {
   Widget getFilterChips() {
     return Wrap(
       spacing: 5,
-      // runSpacing: 0,
       children: [
         ...MuscleGroup.values
             .map((e) => e.index == MuscleGroup.values.length - 1 // get rid of other
@@ -165,7 +164,8 @@ class _ExercisePickerState extends State<ExercisePicker> {
         const Divider(thickness: 0.25),
         ...ExerciseType.values
             .map((e) => e.index == ExerciseType.values.length - 1 ||
-                    e.index == ExerciseType.weight.index // get rid of other and weight
+                    e.index == ExerciseType.stretch.index ||
+                    e.index == ExerciseType.weight.index // get rid of other, stretch and weight
                 ? const SizedBox.shrink()
                 : FilterChip(
                     backgroundColor: Theme.of(context).cardColor,

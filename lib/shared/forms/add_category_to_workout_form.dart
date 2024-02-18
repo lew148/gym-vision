@@ -93,8 +93,9 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
     var relevantWorkoutCategories = workoutCategories;
 
     if (selectedIds.isNotEmpty) {
-      relevantWorkoutCategories
-          .removeWhere((key, value) => key != CategoryShellHelper.getMapIndexOfShell(selectedIds[0]));
+      relevantWorkoutCategories.removeWhere(
+        (key, value) => key != 2 && key != CategoryShellHelper.getMapIndexOfShell(selectedIds[0]), // keep index 2 (cardio) always
+      );
     }
 
     return Container(
@@ -104,9 +105,7 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
           getSectionTitle(context, 'Add Categories'),
           Padding(
             padding: const EdgeInsets.all(10),
-            child: Column(
-              children: getCategorySections(relevantWorkoutCategories),
-            ),
+            child: Column(children: getCategorySections(relevantWorkoutCategories)),
           ),
         ],
       ),

@@ -14,9 +14,9 @@ class WorkoutCategoryShell {
 
 class CategoryShellHelper {
   static Map<int, List<WorkoutCategoryShell>> getCategoryShellsMap() => {
-        0: getFunctionaityCategoryShells(),
+        0: getMuscleGroupCategoryShells(),
         1: getSplitCategoryShells(),
-        2: getMuscleGroupCategoryShells(),
+        2: getFunctionaityCategoryShells(),
         // 3: [otherCategoryShell],
       };
 

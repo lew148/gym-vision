@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/helpers/flavour_text_helper.dart';
 
-import '../db/classes/flavour_text_schedule.dart';
+import '../../db/classes/flavour_text_schedule.dart';
 
 class FlavourTextCard extends StatefulWidget {
   const FlavourTextCard({super.key});

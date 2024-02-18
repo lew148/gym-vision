@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/exercise.dart';
 import 'package:gymvision/db/classes/user_exercise_details.dart';
 import 'package:gymvision/db/classes/workout_set.dart';
-import 'package:gymvision/exercises/exercise_recent_uses_view.dart';
+import 'package:gymvision/pages/exercises/exercise_recent_uses_view.dart';
 import 'package:gymvision/globals.dart';
 
-import '../db/helpers/exercises_helper.dart';
-import '../enums.dart';
-import '../shared/ui_helper.dart';
+import '../../db/helpers/exercises_helper.dart';
+import '../../enums.dart';
+import '../../shared/ui_helper.dart';
 
 class ExerciseView extends StatefulWidget {
   final int exerciseId;

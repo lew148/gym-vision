@@ -1,17 +1,18 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gymvision/db/classes/workout_exercise_ordering.dart';
 import 'package:gymvision/db/classes/workout_set.dart';
 import 'package:gymvision/db/helpers/workout_exercise_orderings_helper.dart';
-import 'package:gymvision/workouts/workout_exercise_widget.dart';
+import 'package:gymvision/pages/workouts/workout_exercise_widget.dart';
 import 'package:reorderables/reorderables.dart';
 
-import '../db/classes/workout.dart';
-import '../db/classes/workout_category.dart';
-import '../db/helpers/workouts_helper.dart';
-import '../shared/forms/add_set_to_workout_form.dart';
-import '../shared/ui_helper.dart';
-import '../shared/forms/add_category_to_workout_form.dart';
+import '../../db/classes/workout.dart';
+import '../../db/classes/workout_category.dart';
+import '../../db/helpers/workouts_helper.dart';
+import '../../shared/forms/add_set_to_workout_form.dart';
+import '../../shared/ui_helper.dart';
+import '../../shared/forms/add_category_to_workout_form.dart';
 
 class WorkoutView extends StatefulWidget {
   final int workoutId;
@@ -347,6 +348,7 @@ class _WorkoutViewState extends State<WorkoutView> {
 
         void onWorkoutExerciseReorder(int oldIndex, int newIndex) async {
           try {
+            HapticFeedback.lightImpact();
             await WorkoutExerciseOrderingsHelper.reorderPositioning(widget.workoutId, oldIndex, newIndex);
           } catch (e) {
             // do nothing

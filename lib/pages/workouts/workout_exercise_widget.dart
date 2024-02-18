@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gymvision/db/classes/workout_set.dart';
 import 'package:gymvision/shared/forms/add_set_to_workout_form.dart';
 import 'package:gymvision/shared/forms/edit_workout_set_form.dart';
 import 'package:gymvision/shared/ui_helper.dart';
 
-import '../db/classes/exercise.dart';
-import '../db/helpers/workout_sets_helper.dart';
+import '../../db/classes/exercise.dart';
+import '../../db/helpers/workout_sets_helper.dart';
 import '../exercises/exercise_view.dart';
 
 class WorkoutExerciseWidget extends StatefulWidget {
@@ -294,9 +295,12 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
 
   void onGroupedWorkoutExercisesDoneTap(bool done) async {
     try {
+      HapticFeedback.heavyImpact();
+
       if (widget.workoutSets[0].workout!.isInFuture()) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text('Cannot complete sets. Workout is in the future!')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Cannot complete sets. Workout is in the future!'),
+        ));
         return;
       }
 
@@ -395,6 +399,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       ],
     );
 
+    HapticFeedback.heavyImpact();
     showDialog(
       context: context,
       builder: (context) => alert,

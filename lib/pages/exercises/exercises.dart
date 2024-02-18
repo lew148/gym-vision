@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/db/helpers/exercises_helper.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
-import '../db/classes/exercise.dart';
-import '../enums.dart';
-import '../shared/ui_helper.dart';
+import '../../db/classes/exercise.dart';
+import '../../enums.dart';
+import '../../shared/ui_helper.dart';
 import 'exercise_view.dart';
 
 class Exercises extends StatefulWidget {
