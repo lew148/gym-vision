@@ -163,7 +163,7 @@ class _EditWorkoutExerciseFormState extends State<EditWorkoutExerciseForm> {
               children: [
                 if (exercise.exerciseType == ExerciseType.weight) ...getWeightFields(exercise),
                 if (exercise.exerciseType == ExerciseType.cardio) ...getCardioFields(exercise),
-                if (exercise.exerciseType == ExerciseType.stretch) ...getWeightFields(exercise),
+                // if (exercise.exerciseType == ExerciseType.stretch) ...getWeightFields(exercise),
                 const Padding(padding: EdgeInsets.only(top: 20.0)),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

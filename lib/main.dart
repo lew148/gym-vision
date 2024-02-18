@@ -63,13 +63,13 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         splashColor: Colors.transparent,
         scaffoldBackgroundColor: darkThemeBackground,
-        cardColor: Colors.grey[800],
+        cardColor: const Color.fromARGB(255, 66, 66, 66), // grey[800]
         bottomSheetTheme: BottomSheetThemeData(backgroundColor: darkThemeBackground),
-        colorScheme: ColorScheme.dark(
-          primary: Colors.green[400]!,
-          secondary: const Color.fromARGB(255, 216, 160, 233),
-          tertiary: const Color.fromARGB(255, 255, 101, 101),
-          shadow: Colors.grey[400],
+        colorScheme: const ColorScheme.dark(
+          primary: Color.fromARGB(255, 102, 187, 106), // green[400]
+          secondary: Color.fromARGB(255, 216, 160, 233),
+          tertiary: Color.fromARGB(255, 255, 101, 101),
+          shadow: Color.fromARGB(255, 189, 189, 189), // grey[400]
           surface: Colors.transparent,
           surfaceTint: Colors.transparent,
         ),

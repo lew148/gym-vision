@@ -116,9 +116,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                               const Divider(thickness: 0.25),
                               SizedBox(
                                 height: MediaQuery.of(context).size.height * 0.5,
-                                child: SingleChildScrollView(
-                                  child: getFilterChips(),
-                                ),
+                                child: SingleChildScrollView(child: getFilterChips()),
                               ),
                             ],
                           ),
@@ -137,41 +135,47 @@ class _ExercisePickerState extends State<ExercisePicker> {
       ]);
 
   Widget getFilterChips() {
-    return Center(
-      child: Wrap(
-        spacing: 5,
-        runSpacing: 0,
-        children: [
-          ...ExerciseType.values
-              .map((e) => e.index == ExerciseType.values.length - 1 ||
-                      e.index == ExerciseType.weight.index // get rid of other and weight
-                  ? const SizedBox.shrink()
-                  : FilterChip(
-                      label: Text(e.displayName),
-                      selected: categoryShellFilters.contains(e.categoryShell.id),
-                      onSelected: (bool selected) => onFilterSelect(context, e.categoryShell.id, selected),
-                    ))
-              .toList(),
-          ...MuscleGroup.values
-              .map((e) => e.index == MuscleGroup.values.length - 1 // get rid of other
-                  ? const SizedBox.shrink()
-                  : FilterChip(
-                      label: Text(e.displayName),
-                      selected: categoryShellFilters.contains(e.categoryShell.id),
-                      onSelected: (bool selected) => onFilterSelect(context, e.categoryShell.id, selected),
-                    ))
-              .toList(),
-          ...ExerciseSplit.values
-              .map((e) => e.index == ExerciseSplit.values.length - 1 // get rid of other
-                  ? const SizedBox.shrink()
-                  : FilterChip(
-                      label: Text(e.displayName),
-                      selected: categoryShellFilters.contains(e.categoryShell.id),
-                      onSelected: (bool selected) => onFilterSelect(context, e.categoryShell.id, selected),
-                    ))
-              .toList(),
-        ],
-      ),
+    return Wrap(
+      spacing: 5,
+      // runSpacing: 0,
+      children: [
+        ...MuscleGroup.values
+            .map((e) => e.index == MuscleGroup.values.length - 1 // get rid of other
+                ? const SizedBox.shrink()
+                : FilterChip(
+                    backgroundColor: Theme.of(context).cardColor,
+                    selectedColor: Colors.grey[600],
+                    label: Text(e.displayName),
+                    selected: categoryShellFilters.contains(e.categoryShell.id),
+                    onSelected: (bool selected) => onFilterSelect(context, e.categoryShell.id, selected),
+                  ))
+            .toList(),
+        const Divider(thickness: 0.25),
+        ...ExerciseSplit.values
+            .map((e) => e.index == ExerciseSplit.values.length - 1 // get rid of other
+                ? const SizedBox.shrink()
+                : FilterChip(
+                    backgroundColor: Theme.of(context).cardColor,
+                    selectedColor: Colors.grey[600],
+                    label: Text(e.displayName),
+                    selected: categoryShellFilters.contains(e.categoryShell.id),
+                    onSelected: (bool selected) => onFilterSelect(context, e.categoryShell.id, selected),
+                  ))
+            .toList(),
+        const Divider(thickness: 0.25),
+        ...ExerciseType.values
+            .map((e) => e.index == ExerciseType.values.length - 1 ||
+                    e.index == ExerciseType.weight.index // get rid of other and weight
+                ? const SizedBox.shrink()
+                : FilterChip(
+                    backgroundColor: Theme.of(context).cardColor,
+                    selectedColor: Colors.grey[600],
+                    label: Text(e.displayName),
+                    selected: categoryShellFilters.contains(e.categoryShell.id),
+                    onSelected: (bool selected) => onFilterSelect(context, e.categoryShell.id, selected),
+                  ))
+            .toList(),
+      ],
     );
   }
 

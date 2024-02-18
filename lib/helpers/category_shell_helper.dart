@@ -41,7 +41,7 @@ class CategoryShellHelper {
 
   static List<WorkoutCategoryShell> getFunctionaityCategoryShells() => [
         WorkoutCategoryShell(id: 1, type: WorkoutCategoryType.cardio, displayName: cardioDisplayName),
-        WorkoutCategoryShell(id: 2, type: WorkoutCategoryType.stretch, displayName: stretchDisplayName),
+        // WorkoutCategoryShell(id: 2, type: WorkoutCategoryType.stretch, displayName: stretchDisplayName),
       ];
 
   static List<WorkoutCategoryShell> getSessionTypeCategoryShells() => [
