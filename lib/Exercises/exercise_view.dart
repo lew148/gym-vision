@@ -126,29 +126,28 @@ class _ExerciseViewState extends State<ExerciseView> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(top: 20.0),
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Theme.of(context).colorScheme.primary,
-                                  textStyle: const TextStyle(color: Colors.black),
+                              child: getElevatedPrimaryButton(
+                                context,
+                                ActionButton(
+                                  onTap: () async {
+                                    Navigator.pop(context);
+
+                                    try {
+                                      var newValue = controller.text;
+                                      if (details.notes == newValue) return;
+                                      details.notes = newValue;
+                                      // await UserExerciseDetailsHelper.updateUserExerciseDetails(details);
+                                    } catch (ex) {
+                                      if (!mounted) return;
+
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(content: Text('Failed to edit Notes')));
+                                    }
+
+                                    reloadState();
+                                  },
+                                  text: 'Save',
                                 ),
-                                onPressed: () async {
-                                  Navigator.pop(context);
-
-                                  try {
-                                    var newValue = controller.text;
-                                    if (details.notes == newValue) return;
-                                    details.notes = newValue;
-                                    // await UserExerciseDetailsHelper.updateUserExerciseDetails(details);
-                                  } catch (ex) {
-                                    if (!mounted) return;
-
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(const SnackBar(content: Text('Failed to edit Notes')));
-                                  }
-
-                                  reloadState();
-                                },
-                                child: const Text('Save'),
                               ),
                             ),
                           ],

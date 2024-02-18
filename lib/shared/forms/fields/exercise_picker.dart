@@ -78,61 +78,60 @@ class _ExercisePickerState extends State<ExercisePicker> {
 
   Widget getFilterButton() => Row(children: [
         Expanded(
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              textStyle: const TextStyle(color: Colors.black),
-            ),
-            onPressed: () {
-              Navigator.pop(context);
-              showModalBottomSheet(
-                context: context,
-                builder: (context) => Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).viewInsets.bottom,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                BackButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    setState(() {
-                                      allExercises = ExercisesHelper.getAllExercisesExcludingCategories(
-                                        categoryShellIds: categoryShellFilters,
-                                        exerciseIds: existingExerciseIds,
-                                      );
-                                    });
-                                  },
-                                ),
-                                getSectionTitle(context, 'Exercise Filters'),
-                              ],
-                            ),
-                            const Divider(thickness: 0.25),
-                            SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.5,
-                              child: SingleChildScrollView(
-                                child: getFilterChips(),
+          child: getElevatedPrimaryButton(
+            context,
+            ActionButton(
+              onTap: () {
+                Navigator.pop(context);
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) => Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  BackButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                      setState(() {
+                                        allExercises = ExercisesHelper.getAllExercisesExcludingCategories(
+                                          categoryShellIds: categoryShellFilters,
+                                          exerciseIds: existingExerciseIds,
+                                        );
+                                      });
+                                    },
+                                  ),
+                                  getSectionTitle(context, 'Exercise Filters'),
+                                ],
                               ),
-                            ),
-                          ],
+                              const Divider(thickness: 0.25),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.height * 0.5,
+                                child: SingleChildScrollView(
+                                  child: getFilterChips(),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                isScrollControlled: true,
-                shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
-              );
-            },
-            child: const Text('Filters'),
+                    ],
+                  ),
+                  isScrollControlled: true,
+                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+                );
+              },
+              text: 'Filters',
+            ),
           ),
         ),
       ]);

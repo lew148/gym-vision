@@ -49,6 +49,29 @@ Widget getOutlinedPrimaryButton(ActionButton actionButton) => OutlinedButton(
       ),
     );
 
+Widget getElevatedPrimaryButton(BuildContext context, ActionButton actionButton) => ElevatedButton(
+      onPressed: actionButton.onTap,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        textStyle: const TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          if (actionButton.icon != null)
+            Icon(
+              actionButton.icon,
+              size: 25,
+            ),
+          if (actionButton.icon != null && actionButton.text != null) const Padding(padding: EdgeInsets.only(left: 5)),
+          if (actionButton.text != null) Text(actionButton.text!),
+        ],
+      ),
+    );
+
 class ActionButton {
   Function() onTap;
   IconData? icon;

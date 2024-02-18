@@ -153,23 +153,12 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       widget.exerciseId == null
-                          ? ElevatedButton(
-                              onPressed: () => onSubmit(addThree: true),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Theme.of(context).colorScheme.primary,
-                                textStyle: const TextStyle(color: Colors.black),
-                              ),
-                              child: const Text('Add 3'),
+                          ? getElevatedPrimaryButton(
+                              context,
+                              ActionButton(onTap: () => onSubmit(addThree: true), text: 'Add 3'),
                             )
                           : const SizedBox.shrink(),
-                      ElevatedButton(
-                        onPressed: onSubmit,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).colorScheme.primary,
-                          textStyle: const TextStyle(color: Colors.black),
-                        ),
-                        child: const Text('Add'),
-                      ),
+                      getElevatedPrimaryButton(context, ActionButton(onTap: onSubmit, text: 'Add')),
                     ],
                   ),
                 ),

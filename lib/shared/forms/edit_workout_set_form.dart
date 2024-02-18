@@ -3,6 +3,7 @@ import 'package:gymvision/db/classes/exercise.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/shared/forms/fields/custom_form_fields.dart';
+import 'package:gymvision/shared/ui_helper.dart';
 
 import '../../db/classes/workout_set.dart';
 import '../../db/helpers/workout_sets_helper.dart';
@@ -174,13 +175,12 @@ class _EditWorkoutExerciseFormState extends State<EditWorkoutExerciseForm> {
                       ),
                       onPressed: () => onDeleteButtonTap(widget.workoutSet.id!),
                     ),
-                    ElevatedButton(
-                      onPressed: onSubmit,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        textStyle: const TextStyle(color: Colors.black),
+                    getElevatedPrimaryButton(
+                      context,
+                      ActionButton(
+                        onTap: onSubmit,
+                        text: 'Save',
                       ),
-                      child: const Text('Save'),
                     ),
                   ],
                 ),

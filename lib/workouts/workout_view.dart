@@ -357,19 +357,21 @@ class _WorkoutViewState extends State<WorkoutView> {
 
         return Scaffold(
           appBar: AppBar(
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  workout.getDateStr(),
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  workout.getTimeStr(),
-                  style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
-                ),
-              ],
-            ),
+            title: Row(children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    workout.getDateStr(),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    workout.getTimeStr(),
+                    style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
+                  ),
+                ],
+              ),
+            ]),
             actions: [
               IconButton(
                 icon: const Icon(

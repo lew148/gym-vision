@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/user_settings.dart';
 import 'package:gymvision/db/db.dart';
 import 'package:gymvision/enums.dart';
+import 'package:gymvision/shared/ui_helper.dart';
 import 'db/helpers/user_settings_helper.dart';
 import 'globals.dart';
 
@@ -48,21 +49,19 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                     //   },
                     //   child: const Text('Un-Dismiss Flavour Text'),
                     // ),
-                    ElevatedButton(
-                      onPressed: () async => await DatabaseHelper.updateExercises(),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        textStyle: const TextStyle(color: Colors.black),
+                    getElevatedPrimaryButton(
+                      context,
+                      ActionButton(
+                        onTap: () async => await DatabaseHelper.updateExercises(),
+                        text: 'Update Exercises',
                       ),
-                      child: const Text('Update Exercises'),
                     ),
-                    ElevatedButton(
-                      onPressed: () async => await DatabaseHelper.restartDbWhilePersistingData(),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        textStyle: const TextStyle(color: Colors.black),
+                    getElevatedPrimaryButton(
+                      context,
+                      ActionButton(
+                        onTap: () async => await DatabaseHelper.restartDbWhilePersistingData(),
+                        text: 'Update DB (keep data)',
                       ),
-                      child: const Text('Update DB (keep data)'),
                     ),
                     // ElevatedButton(
                     //   onPressed: () async => await DatabaseHelper.deleteDb(),

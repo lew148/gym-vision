@@ -60,13 +60,12 @@ class _AddWeightFormState extends State<AddWeightForm> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    ElevatedButton(
-                      onPressed: onSubmit,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        textStyle: const TextStyle(color: Colors.black),
+                    getElevatedPrimaryButton(
+                      context,
+                      ActionButton(
+                        onTap: onSubmit,
+                        text: 'Add',
                       ),
-                      child: const Text('Add'),
                     ),
                   ],
                 ),

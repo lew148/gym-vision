@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymvision/shared/ui_helper.dart';
 
 import '../fields/custom_form_fields.dart';
 
@@ -50,13 +51,12 @@ class _SingleTextFieldFormState extends State<SingleTextFieldForm> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(top: 20.0),
-                      child: ElevatedButton(
-                        onPressed: () => widget.onSubmit(formKey.currentState!.validate(), fieldController.text),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).colorScheme.primary,
-                          textStyle: const TextStyle(color: Colors.black),
+                      child: getElevatedPrimaryButton(
+                        context,
+                        ActionButton(
+                          onTap: () => widget.onSubmit(formKey.currentState!.validate(), fieldController.text),
+                          text: 'Save',
                         ),
-                        child: const Text('Save'),
                       ),
                     ),
                   ],
