@@ -93,7 +93,7 @@ class _ExercisesState extends State<Exercises> {
         future: _exercises,
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return const Center(child: Text('Loading...'));
+            return const SizedBox.shrink(); // loading
           }
 
           var exercises = snapshot.data!;

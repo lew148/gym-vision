@@ -31,7 +31,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
           future: userSettings,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return const Center(child: Text('Loading...'));
+              return const SizedBox.shrink(); // loading
             }
 
             themeSetting = snapshot.data!.theme;

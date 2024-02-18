@@ -307,7 +307,7 @@ class _WorkoutViewState extends State<WorkoutView> {
       future: workout,
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return const Center(child: Scaffold(body: Text('Loading...')));
+          return const SizedBox.shrink(); // loading
         }
 
         final workout = snapshot.data!;

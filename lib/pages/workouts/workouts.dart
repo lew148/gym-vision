@@ -40,18 +40,14 @@ class _WorkoutsState extends State<Workouts> {
               future: workouts,
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return const Center(
-                    child: Text('Loading...'),
-                  );
+                  return const SizedBox.shrink(); // loading
                 }
 
                 return FutureBuilder<List<Bodyweight>>(
                     future: bodyweights,
                     builder: (context, bwSnapshot) {
                       if (!bwSnapshot.hasData) {
-                        return const Center(
-                          child: Text('Loading...'),
-                        );
+                        return const SizedBox.shrink(); // loading
                       }
 
                       return WorkoutMonthScoller(

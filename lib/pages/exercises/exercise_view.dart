@@ -274,9 +274,7 @@ class _ExerciseViewState extends State<ExerciseView> {
         if (!snapshot.hasData) {
           return Scaffold(
             appBar: AppBar(),
-            body: const Center(
-              child: Text('Loading...'),
-            ),
+            body: const SizedBox.shrink(), // loading
           );
         }
 
