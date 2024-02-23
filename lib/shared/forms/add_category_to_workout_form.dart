@@ -92,9 +92,13 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
   Widget build(BuildContext context) {
     var relevantWorkoutCategories = workoutCategories;
 
-    if (selectedIds.isNotEmpty) {
+    var cardioIsFirstInList = selectedIds.isNotEmpty && selectedIds.first == 1;
+    var selectedIdsIsOnlyCardio = selectedIds.length == 1 && selectedIds.contains(1);
+
+    if (selectedIds.isNotEmpty && !selectedIdsIsOnlyCardio) {
+      // keep index 2 (cardio) always
       relevantWorkoutCategories.removeWhere(
-        (key, value) => key != 2 && key != CategoryShellHelper.getMapIndexOfShell(selectedIds[0]), // keep index 2 (cardio) always
+        (key, value) => key != 2 && key != CategoryShellHelper.getMapIndexOfShell(selectedIds[(cardioIsFirstInList ? 1 : 0)]),
       );
     }
 

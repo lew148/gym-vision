@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:gymvision/db/classes/workout_exercise_ordering.dart';
 import 'package:gymvision/db/classes/workout_set.dart';
 import 'package:gymvision/db/helpers/workout_exercise_orderings_helper.dart';
+import 'package:gymvision/helpers/category_shell_helper.dart';
 import 'package:gymvision/pages/workouts/workout_exercise_widget.dart';
 import 'package:reorderables/reorderables.dart';
 
@@ -101,9 +102,7 @@ class _WorkoutViewState extends State<WorkoutView> {
           ],
         ),
         isScrollControlled: true,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
-        ),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
       );
 
   getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories, List<int> existingCategoryIds) =>
@@ -114,7 +113,9 @@ class _WorkoutViewState extends State<WorkoutView> {
             Expanded(
               child: Wrap(
                 alignment: WrapAlignment.start,
-                children: workoutCategories.map((wc) => getPropDisplay(context, wc.getDisplayName())).toList(),
+                children: CategoryShellHelper.sortCategories(workoutCategories)
+                    .map((wc) => getPropDisplay(context, wc.getDisplayName()))
+                    .toList(),
               ),
             ),
             getPrimaryButton(

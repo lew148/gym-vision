@@ -1,3 +1,4 @@
+import 'package:gymvision/db/classes/workout_category.dart';
 import 'package:gymvision/enums.dart';
 
 class WorkoutCategoryShell {
@@ -34,6 +35,12 @@ class CategoryShellHelper {
     var map = getCategoryShellsMap();
     map.removeWhere((k, v) => !v.any((wcs) => wcs.id == shellId));
     return map.keys.first;
+  }
+
+  static List<WorkoutCategory> sortCategories(List<WorkoutCategory> categories) {
+    categories.sort((a, b) => a.categoryShellId.compareTo(b.categoryShellId));
+    categories.sort(((a, b) => getMapIndexOfShell(a.categoryShellId).compareTo(getMapIndexOfShell(b.categoryShellId))));
+    return categories;
   }
 
   static List<WorkoutCategoryShell> getCategoryShellsWithIds(List<int> shellIds) =>

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/db/classes/body_weight.dart';
 import 'package:gymvision/db/helpers/bodyweight_helper.dart';
+import 'package:gymvision/helpers/category_shell_helper.dart';
 import 'package:gymvision/shared/ui_helper.dart';
 import 'package:gymvision/pages/workouts/workout_view.dart';
 import 'package:intl/intl.dart';
@@ -205,8 +206,9 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                 Expanded(
                   child: Wrap(
                     alignment: WrapAlignment.end,
-                    children:
-                        workout.workoutCategories!.map((wc) => getPropDisplay(context, wc.getDisplayName())).toList(),
+                    children: CategoryShellHelper.sortCategories(workout.workoutCategories!)
+                        .map((wc) => getPropDisplay(context, wc.getDisplayName()))
+                        .toList(),
                   ),
                 )
             ],
@@ -457,9 +459,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
             right: right,
             left: left,
             child: SingleChildScrollView(
-              child: Column(
-                children: getWorkoutsWidget(widget.workouts, widget.bodyweights),
-              ),
+              child: Column(children: getWorkoutsWidget(widget.workouts, widget.bodyweights)),
             ),
           ),
         ],

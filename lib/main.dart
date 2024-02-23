@@ -5,6 +5,7 @@ import 'package:gymvision/db/classes/workout.dart';
 import 'package:gymvision/db/helpers/workouts_helper.dart';
 import 'package:gymvision/pages/coming_soon.dart';
 import 'package:gymvision/pages/exercises/exercises.dart';
+import 'package:gymvision/pages/profile/profile.dart';
 import 'package:gymvision/shared/forms/add_weight_form.dart';
 import 'package:gymvision/shared/ui_helper.dart';
 import 'package:gymvision/user_settings_view.dart';
@@ -65,14 +66,17 @@ class MyApp extends StatelessWidget {
         splashColor: Colors.transparent,
         scaffoldBackgroundColor: darkThemeBackground,
         cardColor: const Color.fromARGB(255, 66, 66, 66), // grey[800]
+        cardTheme: const CardTheme(
+          surfaceTintColor: Colors.transparent,
+        ),
         bottomSheetTheme: BottomSheetThemeData(backgroundColor: darkThemeBackground),
         colorScheme: const ColorScheme.dark(
           primary: Color.fromARGB(255, 102, 187, 106), // green[400]
           secondary: Color.fromARGB(255, 216, 160, 233),
           tertiary: Color.fromARGB(255, 255, 101, 101),
           shadow: Color.fromARGB(255, 189, 189, 189), // grey[400]
-          surface: Colors.transparent,
-          surfaceTint: Colors.transparent,
+          // surface: Colors.transparent,
+          // surfaceTint: Colors.transparent,
         ),
       ),
       themeMode: EasyDynamicTheme.of(context).themeMode,
@@ -204,9 +208,7 @@ class _MyHomePageState extends State<MyHomePage> {
           IconButton(
             icon: const Icon(Icons.settings_rounded),
             onPressed: () => Navigator.of(context)
-                .push(
-                  MaterialPageRoute(builder: (context) => const UserSettingsView()),
-                )
+                .push(MaterialPageRoute(builder: (context) => const UserSettingsView()))
                 .then((value) => setState(() {})),
           )
         ],
@@ -254,7 +256,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Icons.person_rounded,
               color: Theme.of(context).colorScheme.primary,
             ),
-            label: 'User',
+            label: 'Profile',
           ),
         ],
       ),

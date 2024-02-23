@@ -188,12 +188,10 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   }
 
   List<Widget> getCardioSetWidgets(List<WorkoutSet> sets) {
-    final List<Widget> widgets = [
-      const Padding(
-        padding: EdgeInsets.all(2),
-      )
-    ];
+    final List<Widget> widgets = [];
     final filteredSets = sets.where((ws) => ws.hasTime() || ws.hasDistance() || ws.hasCalsBurned()).toList();
+
+    if (filteredSets.isNotEmpty) widgets.add(const Padding(padding: EdgeInsets.all(2)));
 
     for (int i = 0; i < filteredSets.length; i++) {
       final ws = filteredSets[i];
