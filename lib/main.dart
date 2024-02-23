@@ -65,17 +65,15 @@ class MyApp extends StatelessWidget {
         splashColor: Colors.transparent,
         scaffoldBackgroundColor: darkThemeBackground,
         cardColor: const Color.fromARGB(255, 66, 66, 66), // grey[800]
-        cardTheme: const CardTheme(
-          surfaceTintColor: Colors.transparent,
-        ),
+        cardTheme: const CardTheme(surfaceTintColor: Colors.transparent),
         bottomSheetTheme: BottomSheetThemeData(backgroundColor: darkThemeBackground),
         colorScheme: const ColorScheme.dark(
           primary: Color.fromARGB(255, 102, 187, 106), // green[400]
           secondary: Color.fromARGB(255, 216, 160, 233),
           tertiary: Color.fromARGB(255, 255, 101, 101),
           shadow: Color.fromARGB(255, 189, 189, 189), // grey[400]
-          // surface: Colors.transparent,
-          // surfaceTint: Colors.transparent,
+          surface: Colors.transparent,
+          surfaceTint: Colors.transparent,
         ),
       ),
       themeMode: EasyDynamicTheme.of(context).themeMode,
