@@ -407,7 +407,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.transparent,
+      // color: Colors.transparent,
       shadowColor: Colors.transparent,
       surfaceTintColor: Colors.transparent,
       child: Column(
