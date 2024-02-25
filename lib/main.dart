@@ -64,7 +64,7 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         splashColor: Colors.transparent,
         scaffoldBackgroundColor: darkThemeBackground,
-        cardColor: const Color.fromARGB(255, 66, 66, 66), // grey[800]
+        cardColor: Theme.of(context).platform == TargetPlatform.iOS ? Colors.grey[900] : Colors.grey[800],
         cardTheme: const CardTheme(surfaceTintColor: Colors.transparent),
         bottomSheetTheme: BottomSheetThemeData(backgroundColor: darkThemeBackground),
         colorScheme: const ColorScheme.dark(
