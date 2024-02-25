@@ -450,7 +450,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                     size: 40,
                   ),
                 ),
-                getPrimaryButton(ActionButton(icon: Icons.today_outlined, onTap: reloadState))
+                getPrimaryButton(ActionButton(icon: Icons.today_outlined, onTap: reloadState)),
               ],
             ),
           ),

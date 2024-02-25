@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-
+    
     return MaterialApp(
       title: 'Gym Vision',
       theme: ThemeData(
@@ -65,14 +65,14 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         splashColor: Colors.transparent,
         scaffoldBackgroundColor: darkThemeBackground,
-        cardColor: Theme.of(context).platform == TargetPlatform.iOS ? Colors.blue : Colors.grey[800],
+        cardColor: Colors.grey[800],
         cardTheme: const CardTheme(surfaceTintColor: Colors.transparent),
         bottomSheetTheme: BottomSheetThemeData(backgroundColor: darkThemeBackground),
-        colorScheme: const ColorScheme.dark(
-          primary: Color.fromARGB(255, 102, 187, 106), // green[400]
-          secondary: Color.fromARGB(255, 216, 160, 233),
-          tertiary: Color.fromARGB(255, 255, 101, 101),
-          shadow: Color.fromARGB(255, 189, 189, 189), // grey[400]
+        colorScheme: ColorScheme.dark(
+          primary: Colors.green[400]!,
+          secondary: const Color.fromARGB(255, 216, 160, 233),
+          tertiary: const Color.fromARGB(255, 255, 101, 101),
+          shadow: Colors.grey[400],
           surface: Colors.transparent,
           surfaceTint: Colors.transparent,
         ),
