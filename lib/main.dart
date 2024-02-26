@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    
+
     return MaterialApp(
       title: 'Gym Vision',
       theme: ThemeData(
@@ -66,7 +66,11 @@ class MyApp extends StatelessWidget {
         splashColor: Colors.transparent,
         scaffoldBackgroundColor: darkThemeBackground,
         cardColor: Colors.grey[800],
-        cardTheme: const CardTheme(surfaceTintColor: Colors.transparent),
+        // shadowColor: Colors.transparent,
+        cardTheme: const CardTheme(
+          surfaceTintColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+        ),
         bottomSheetTheme: BottomSheetThemeData(backgroundColor: darkThemeBackground),
         colorScheme: ColorScheme.dark(
           primary: Colors.green[400]!,
