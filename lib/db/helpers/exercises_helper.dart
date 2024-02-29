@@ -25,10 +25,15 @@ class ExercisesHelper {
 
       whereString = StringBuffer();
       var needsConnector = false;
-      var connector = 'AND (';
+      var needsTrailingParenthesis = false;
+      const and = 'AND (';
+      var connector = and;
 
       void applyConnector() {
-        if (needsConnector) whereString!.write(' $connector ');
+        if (needsConnector) {
+          if (connector == and) needsTrailingParenthesis = true;
+          whereString!.write(' $connector ');
+        }
         needsConnector = true;
         connector = "OR";
       }
@@ -61,14 +66,11 @@ class ExercisesHelper {
         whereString.write('exercises.split IN (${splits.join(',')})');
       }
 
-      if (needsConnector) {
-        // has ors
-        whereString.write(")");
-      }
+      if (needsTrailingParenthesis) whereString.write(" )");
     }
 
     return await getExercises(
-      whereString: whereString?.toString(),
+      whereString: whereString.toString(),
       includeUserDetails: true,
     );
   }
