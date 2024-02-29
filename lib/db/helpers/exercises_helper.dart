@@ -2,49 +2,68 @@ import 'package:gymvision/db/classes/exercise.dart';
 import 'package:gymvision/db/db.dart';
 import 'package:gymvision/db/helpers/user_exercise_details_helper.dart';
 import 'package:gymvision/enums.dart';
+import 'package:gymvision/globals.dart';
 
 import '../../helpers/category_shell_helper.dart';
 
 class ExercisesHelper {
-  static Future<List<Exercise>> getAllExercisesExcludingCategories(
-      {List<int>? categoryShellIds, List<int>? exerciseIds}) async {
+  static Future<List<Exercise>> getExercisesByCategory({
+    List<int>? categoryShellIds,
+    List<int>? excludedExerciseIds,
+  }) async {
     StringBuffer? whereString;
 
     if (categoryShellIds != null && categoryShellIds.isNotEmpty) {
       final shellDisplayNames =
-          CategoryShellHelper.getCategoryShellsWithIds(categoryShellIds).map((e) => e.displayName);
+          CategoryShellHelper.getCategoryShellsWithIds(categoryShellIds).map((e) => e.displayName).toList();
       final exerciseTypes =
-          ExerciseType.values.where((e) => shellDisplayNames.contains(e.displayName)).map((e) => e.index);
+          ExerciseType.values.where((e) => shellDisplayNames.contains(e.displayName)).map((e) => e.index).toList();
       final muscleGroups =
-          MuscleGroup.values.where((e) => shellDisplayNames.contains(e.displayName)).map((e) => e.index);
-      final splits = ExerciseSplit.values.where((e) => shellDisplayNames.contains(e.displayName)).map((e) => e.index);
+          MuscleGroup.values.where((e) => shellDisplayNames.contains(e.displayName)).map((e) => e.index).toList();
+      final splits =
+          ExerciseSplit.values.where((e) => shellDisplayNames.contains(e.displayName)).map((e) => e.index).toList();
 
-      var needConnector = false;
-      var connector = 'AND';
       whereString = StringBuffer();
+      var needsConnector = false;
+      var connector = 'AND (';
 
-      if (exerciseIds != null) {
-        whereString.write('exercises.id NOT IN (${exerciseIds.join(',')})');
-        needConnector = true;
+      void applyConnector() {
+        if (needsConnector) whereString!.write(' $connector ');
+        needsConnector = true;
+        connector = "OR";
+      }
+
+      if (excludedExerciseIds != null && excludedExerciseIds.isNotEmpty) {
+        whereString.write('exercises.id NOT IN (${excludedExerciseIds.join(',')})');
+        needsConnector = true;
       }
 
       if (exerciseTypes.isNotEmpty) {
-        if (needConnector) whereString.write(' $connector ');
+        applyConnector();
         whereString.write('exercises.exerciseType IN (${exerciseTypes.join(',')})');
-        needConnector = true;
-        connector = "OR";
       }
 
-      if (muscleGroups.isNotEmpty) {
-        if (needConnector) whereString.write(' $connector ');
+      if (muscleGroups.isNotEmpty || splits.contains(ExerciseSplit.arms.index)) {
+        applyConnector();
+
+        if (splits.contains(ExerciseSplit.arms.index)) {
+          // "arms" split selected (add arms muscle groups)
+          muscleGroups.addAll([MuscleGroup.biceps.index, MuscleGroup.triceps.index, MuscleGroup.forearms.index]);
+          distinctIntList(muscleGroups);
+          splits.remove(ExerciseSplit.arms.index);
+        }
+
         whereString.write('exercises.muscleGroup IN (${muscleGroups.join(',')})');
-        needConnector = true;
-        connector = "OR";
       }
 
       if (splits.isNotEmpty) {
-        if (needConnector) whereString.write(' $connector ');
+        applyConnector();
         whereString.write('exercises.split IN (${splits.join(',')})');
+      }
+
+      if (needsConnector) {
+        // has ors
+        whereString.write(")");
       }
     }
 

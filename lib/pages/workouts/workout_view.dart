@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:gymvision/db/classes/workout_exercise_ordering.dart';
 import 'package:gymvision/db/classes/workout_set.dart';
 import 'package:gymvision/db/helpers/workout_exercise_orderings_helper.dart';
+import 'package:gymvision/globals.dart';
 import 'package:gymvision/helpers/category_shell_helper.dart';
 import 'package:gymvision/pages/workouts/workout_exercise_widget.dart';
 import 'package:reorderables/reorderables.dart';
@@ -320,7 +321,7 @@ class _WorkoutViewState extends State<WorkoutView> {
         }
 
         if (workout.workoutSets != null && workout.workoutSets!.isNotEmpty) {
-          existingExerciseIds = workout.workoutSets!.map((ws) => ws.exerciseId).toSet().toList();
+          existingExerciseIds = distinctIntList(workout.workoutSets!.map((ws) => ws.exerciseId));
         } else {
           existingExerciseIds = [];
         }

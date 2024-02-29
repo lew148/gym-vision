@@ -59,6 +59,7 @@ class CategoryShellHelper {
         WorkoutCategoryShell(id: 4, type: WorkoutCategoryType.split, displayName: pushDisplayName),
         WorkoutCategoryShell(id: 5, type: WorkoutCategoryType.split, displayName: pullDisplayName),
         WorkoutCategoryShell(id: 6, type: WorkoutCategoryType.split, displayName: legsDisplayName),
+        WorkoutCategoryShell(id: 16, type: WorkoutCategoryType.split, displayName: armsDisplayName),
       ];
 
   static List<WorkoutCategoryShell> getMuscleGroupCategoryShells() => [
@@ -67,8 +68,7 @@ class CategoryShellHelper {
         WorkoutCategoryShell(id: 9, type: WorkoutCategoryType.muscleGroup, displayName: chestDisplayName),
         WorkoutCategoryShell(id: 10, type: WorkoutCategoryType.muscleGroup, displayName: coreDisplayName),
         WorkoutCategoryShell(id: 11, type: WorkoutCategoryType.muscleGroup, displayName: forearmsDisplayName),
-        WorkoutCategoryShell(
-            id: 12, type: WorkoutCategoryType.muscleGroup, displayName: hamstringsAndGlutesDisplayName),
+        WorkoutCategoryShell(id: 12, type: WorkoutCategoryType.muscleGroup, displayName: hamstringsAndGlutesDisplayName),
         WorkoutCategoryShell(id: 13, type: WorkoutCategoryType.muscleGroup, displayName: quadsAndCalvesDisplayName),
         WorkoutCategoryShell(id: 14, type: WorkoutCategoryType.muscleGroup, displayName: shouldersDisplayName),
         WorkoutCategoryShell(id: 15, type: WorkoutCategoryType.muscleGroup, displayName: tricepsDisplayName),

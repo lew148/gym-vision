@@ -38,6 +38,7 @@ String tricepsDisplayName = "🔱 Triceps";
 String pushDisplayName = "✋ Push";
 String pullDisplayName = "✊ Pull";
 String legsDisplayName = "🦵 Legs";
+String armsDisplayName = "💪 Arms";
 
 String noneDisplayName = "No Equipment";
 String barbellDisplayName = "Barbell";
@@ -152,6 +153,7 @@ enum ExerciseSplit {
   pull,
   legs,
   other,
+  arms,
 }
 
 extension ExerciseSplitHelper on ExerciseSplit {
@@ -163,6 +165,8 @@ extension ExerciseSplitHelper on ExerciseSplit {
         return pullDisplayName;
       case ExerciseSplit.legs:
         return legsDisplayName;
+      case ExerciseSplit.arms:
+        return armsDisplayName;
       case ExerciseSplit.other:
         return otherDisplayName;
     }

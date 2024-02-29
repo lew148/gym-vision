@@ -60,3 +60,5 @@ Duration? tryParseDuration(String? s) {
     return null;
   }
 }
+
+List<int> distinctIntList(Iterable<int> i) => i.toSet().toList();

@@ -152,7 +152,7 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      widget.exerciseId == null
+                      selectedExercise?.exerciseType != ExerciseType.cardio
                           ? getElevatedPrimaryButton(
                               context,
                               ActionButton(onTap: () => onSubmit(addThree: true), text: 'Add 3'),

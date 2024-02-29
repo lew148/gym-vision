@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/helpers/exercises_helper.dart';
 import 'package:gymvision/enums.dart';
+import 'package:gymvision/globals.dart';
 import 'package:gymvision/helpers/category_shell_helper.dart';
 import 'package:gymvision/shared/ui_helper.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
@@ -45,7 +46,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
     super.initState();
     categoryShellFilters = CategoryShellHelper.getFunctionaityCategoryShells().map((e) => e.id).toList();
     categoryShellFilters.addAll(widget.categoryShellIds ?? []);
-    categoryShellFilters = categoryShellFilters.toSet().toList(); // distinct
+    categoryShellFilters = distinctIntList(categoryShellFilters);
     existingExerciseIds = widget.existingExerciseIds ?? [];
 
     // exercise pre-selected
@@ -53,9 +54,9 @@ class _ExercisePickerState extends State<ExercisePicker> {
       allExercises = Future<List<Exercise>>.value([]);
       selectedExercise = ExercisesHelper.getExercise(id: widget.exerciseId!, includeUserDetails: true);
     } else {
-      allExercises = ExercisesHelper.getAllExercisesExcludingCategories(
+      allExercises = ExercisesHelper.getExercisesByCategory(
         categoryShellIds: categoryShellFilters,
-        exerciseIds: existingExerciseIds,
+        excludedExerciseIds: existingExerciseIds,
       );
     }
   }
@@ -69,9 +70,9 @@ class _ExercisePickerState extends State<ExercisePicker> {
         categoryShellFilters.remove(shellId);
       }
 
-      allExercises = ExercisesHelper.getAllExercisesExcludingCategories(
+      allExercises = ExercisesHelper.getExercisesByCategory(
         categoryShellIds: categoryShellFilters,
-        exerciseIds: existingExerciseIds,
+        excludedExerciseIds: existingExerciseIds,
       );
     });
   }
@@ -103,9 +104,9 @@ class _ExercisePickerState extends State<ExercisePicker> {
                                     onPressed: () {
                                       Navigator.pop(context);
                                       setState(() {
-                                        allExercises = ExercisesHelper.getAllExercisesExcludingCategories(
+                                        allExercises = ExercisesHelper.getExercisesByCategory(
                                           categoryShellIds: categoryShellFilters,
-                                          exerciseIds: existingExerciseIds,
+                                          excludedExerciseIds: existingExerciseIds,
                                         );
                                       });
                                     },
@@ -151,7 +152,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
             .toList(),
         const Divider(thickness: 0.25),
         ...ExerciseSplit.values
-            .map((e) => e.index == ExerciseSplit.values.length - 1 // get rid of other
+            .map((e) => e == ExerciseSplit.other // get rid of other
                 ? const SizedBox.shrink()
                 : FilterChip(
                     backgroundColor: Theme.of(context).cardColor,
