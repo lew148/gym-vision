@@ -7,6 +7,7 @@ import 'package:gymvision/db/classes/workout_set.dart';
 import 'package:gymvision/db/db.dart';
 import 'package:gymvision/db/helpers/user_exercise_details_helper.dart';
 import 'package:gymvision/enums.dart';
+import 'package:gymvision/globals.dart';
 import 'package:sqflite/sqflite.dart';
 
 class LegacySql {
@@ -84,6 +85,9 @@ class LegacySql {
         workout_sets.done,
         workout_sets.weight,
         workout_sets.reps,
+        workout_sets.time,
+        workout_sets.distance,
+        workout_sets.calsBurned,
         workouts.date,
         exercises.name,
         exercises.exerciseType,
@@ -106,6 +110,9 @@ class LegacySql {
         done: map['done'] == 1,
         weight: map['weight'],
         reps: map['reps'],
+        time: tryParseDuration(map['time']),
+        distance: map['distance'],
+        calsBurned: map['calsBurned'],
         workout: Workout(date: DateTime.parse(map['date'])),
         exercise: !shallow
             ? Exercise(
