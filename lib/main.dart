@@ -180,7 +180,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           },
                           text: 'Bodyweight',
                           icon: Icons.monitor_weight_rounded,
-                        ))
+                        )),
                       ],
                     ),
                   ],
