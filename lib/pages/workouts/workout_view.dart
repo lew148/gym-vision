@@ -18,12 +18,12 @@ import '../../shared/forms/add_category_to_workout_form.dart';
 
 class WorkoutView extends StatefulWidget {
   final int workoutId;
-  final Function reloadParent;
+  final Function? reloadParent;
 
   const WorkoutView({
     super.key,
     required this.workoutId,
-    required this.reloadParent,
+    this.reloadParent,
   });
 
   @override
@@ -65,7 +65,7 @@ class _WorkoutViewState extends State<WorkoutView> {
               .showSnackBar(SnackBar(content: Text('Failed to delete Workout: ${ex.toString()}')));
         }
 
-        widget.reloadParent();
+        if (widget.reloadParent != null) widget.reloadParent!();
       },
     );
 
@@ -106,6 +106,21 @@ class _WorkoutViewState extends State<WorkoutView> {
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
       );
 
+  goToMostRecentWorkout(WorkoutCategory wc) async {
+    var id = await WorkoutsHelper.getMostRecentWorkoutForCategory(wc);
+    if (id == null) return;
+    if (!mounted) return;
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => WorkoutView(
+          workoutId: id,
+          reloadParent: reloadState,
+        ),
+      ),
+    );
+  }
+
   getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories, List<int> existingCategoryIds) =>
       Column(children: [
         Row(
@@ -115,7 +130,11 @@ class _WorkoutViewState extends State<WorkoutView> {
               child: Wrap(
                 alignment: WrapAlignment.start,
                 children: CategoryShellHelper.sortCategories(workoutCategories)
-                    .map((wc) => getPropDisplay(context, wc.getDisplayName()))
+                    .map((wc) => getTapablePropDisplay(
+                          context,
+                          wc.getDisplayName(),
+                          () => goToMostRecentWorkout(wc),
+                        ))
                     .toList(),
               ),
             ),

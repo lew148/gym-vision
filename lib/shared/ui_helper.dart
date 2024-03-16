@@ -105,3 +105,17 @@ Widget getPropDisplay(BuildContext context, String text) => Container(
       ),
       child: Text(text, textAlign: TextAlign.center),
     );
+
+Widget getTapablePropDisplay(BuildContext context, String text, Function() onTap) => Container(
+    margin: const EdgeInsets.all(2.5),
+    decoration: BoxDecoration(
+      border: Border.all(color: Theme.of(context).colorScheme.shadow),
+      borderRadius: BorderRadius.circular(5),
+    ),
+    child: InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.all(5),
+        child: Text(text, textAlign: TextAlign.center),
+      ),
+    ));

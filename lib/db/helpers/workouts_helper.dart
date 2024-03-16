@@ -71,7 +71,7 @@ class WorkoutsHelper {
         ),
       );
     }
-    
+
     return workoutCategories;
   }
 
@@ -225,5 +225,20 @@ class WorkoutsHelper {
       where: 'id = ?',
       whereArgs: [id],
     );
+  }
+
+  static Future<int?> getMostRecentWorkoutForCategory(WorkoutCategory wc) async {
+    final db = await DatabaseHelper.getDb();
+
+    var workout = await getWorkout(workoutId: wc.workoutId);
+
+    return Sqflite.firstIntValue(await db.rawQuery('''
+      SELECT workoutId
+      FROM workout_categories
+      LEFT JOIN workouts ON workouts.id = workout_categories.workoutId
+      WHERE categoryShellId = ${wc.categoryShellId} AND workout_categories.id != ${wc.id} AND workouts.date < "${workout.date.toString()}"
+      ORDER BY workouts.id DESC
+      LIMIT 1;
+    '''));
   }
 }

@@ -794,7 +794,7 @@ class DataHelper {
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.quadsAndCalves,
           equipment: ExerciseEquipment.plates,
-          split: ExerciseSplit.push,
+          split: ExerciseSplit.legs,
           isDouble: false,
         ),
         Exercise(
@@ -803,7 +803,7 @@ class DataHelper {
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.quadsAndCalves,
           equipment: ExerciseEquipment.plates,
-          split: ExerciseSplit.push,
+          split: ExerciseSplit.legs,
           isDouble: false,
         ),
         Exercise(

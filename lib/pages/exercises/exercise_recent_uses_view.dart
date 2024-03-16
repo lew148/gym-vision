@@ -29,7 +29,7 @@ class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
       .map((s) => s.isPlaceholder()
           ? const SizedBox.shrink()
           : Column(children: [
-              const Divider(height: 0, thickness: 0.25),
+              Divider(height: 0, thickness: ws.indexOf(s) == 1 ? 1 : 0.25),
               Padding(
                 padding: const EdgeInsets.all(10),
                 child: Row(
