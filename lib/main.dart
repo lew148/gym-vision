@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
         splashColor: Colors.transparent,
         scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
         colorScheme: ColorScheme.light(
-          primary: Colors.green[400]!,
+          primary: Colors.lightBlue[400]!,
           secondary: const Color.fromARGB(255, 216, 160, 233),
           tertiary: const Color.fromARGB(255, 235, 156, 140),
           shadow: Colors.grey[600],
@@ -72,7 +72,7 @@ class MyApp extends StatelessWidget {
         ),
         bottomSheetTheme: BottomSheetThemeData(backgroundColor: darkThemeBackground),
         colorScheme: ColorScheme.dark(
-          primary: Colors.green[400]!,
+          primary: Colors.lightBlue[400]!,
           secondary: const Color.fromARGB(255, 216, 160, 233),
           tertiary: const Color.fromARGB(255, 255, 101, 101),
           shadow: Colors.grey[400],
