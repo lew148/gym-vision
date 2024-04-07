@@ -373,8 +373,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                                   ),
                                 ),
                               ),
-                              padding: const EdgeInsets.only(top: 10, bottom: 5),
-                              height: 60,
+                              padding: const EdgeInsets.symmetric(vertical: 5),
                               child: Row(
                                 children: [
                                   Expanded(

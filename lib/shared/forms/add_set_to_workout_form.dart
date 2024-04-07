@@ -118,12 +118,11 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
       Navigator.of(context).pop();
     }
 
-    return Container(
+    return Padding(
       padding: const EdgeInsets.all(20),
       child: Form(
         key: formKey,
-        child: IntrinsicHeight(
-          child: Column(
+        child:  Column(
             children: [
               getSectionTitle(context, 'Add Set'),
               const Divider(thickness: 0.25),
@@ -163,7 +162,6 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
                   ),
                 ),
             ],
-          ),
         ),
       ),
     );

@@ -152,7 +152,7 @@ class WorkoutSetsHelper {
           FROM workout_sets
           WHERE workout_sets.exerciseId = $exerciseId
         ) AS b ON workout_sets.weight = b.max_weight
-        WHERE workout_sets.done AND NOT (workout_sets.weight = 0.0 AND workout_sets.reps = 0)
+        WHERE NOT (workout_sets.weight = 0.0 AND workout_sets.reps = 0)
       )
 
       SELECT *
@@ -160,7 +160,8 @@ class WorkoutSetsHelper {
       INNER JOIN (
         SELECT MAX(max_table.date) AS max_date
         FROM max_table
-      ) AS b ON max_table.date = b.max_date;
+      ) AS b ON max_table.date = b.max_date
+      ORDER BY reps DESC;
     ''');
 
     if (maps.isEmpty) return null;
