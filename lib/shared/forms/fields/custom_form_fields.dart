@@ -35,7 +35,6 @@ class CustomFormFields {
             autofocus: autofocus,
             decoration: InputDecoration(
               labelText: label,
-              prefix: isDouble ? const Text('2 x ') : const Text(''),
               suffix: Text(unit),
             ),
             validator: (value) =>

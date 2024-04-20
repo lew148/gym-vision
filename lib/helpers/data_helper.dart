@@ -911,5 +911,13 @@ class DataHelper {
           equipment: ExerciseEquipment.machine,
           split: ExerciseSplit.push,
         ),
+        Exercise(
+          id: 101,
+          name: 'Low Row Machine',
+          exerciseType: ExerciseType.weight,
+          muscleGroup: MuscleGroup.back,
+          equipment: ExerciseEquipment.machine,
+          split: ExerciseSplit.pull,
+        ),
       ];
 }
