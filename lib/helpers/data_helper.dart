@@ -919,5 +919,13 @@ class DataHelper {
           equipment: ExerciseEquipment.machine,
           split: ExerciseSplit.pull,
         ),
+        Exercise(
+          id: 102,
+          name: 'Single Lat Pulldown',
+          exerciseType: ExerciseType.weight,
+          muscleGroup: MuscleGroup.back,
+          equipment: ExerciseEquipment.machine,
+          split: ExerciseSplit.pull,
+        ),
       ];
 }
