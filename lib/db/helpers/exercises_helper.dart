@@ -89,7 +89,7 @@ class ExercisesHelper {
         exercises.muscleGroup,
         exercises.equipment,
         exercises.split,
-        exercises.isDouble
+        exercises.uniAndBiLateral
       FROM exercises
       ${whereString != null && whereString != "" ? 'WHERE $whereString' : ''}
       ORDER BY exercises.name ASC;
@@ -106,7 +106,7 @@ class ExercisesHelper {
           muscleGroup: MuscleGroup.values.elementAt(map['muscleGroup']),
           equipment: ExerciseEquipment.values.elementAt(map['equipment']),
           split: ExerciseSplit.values.elementAt(map['split']),
-          isDouble: map['isDouble'] == 1,
+          uniAndBiLateral: map['uniAndBiLateral'] == 1,
           userExerciseDetails: includeUserDetails
               ? await UserExerciseDetailsHelper.getUserDetailsForExercise(
                   exerciseId: map['id'],
@@ -140,7 +140,7 @@ class ExercisesHelper {
       muscleGroup: MuscleGroup.values.elementAt(map['muscleGroup']),
       equipment: ExerciseEquipment.values.elementAt(map['equipment']),
       split: ExerciseSplit.values.elementAt(map['split']),
-      isDouble: map['isDouble'] == 1,
+      uniAndBiLateral: map['uniAndBiLateral'] == 1,
       userExerciseDetails: includeUserDetails
           ? await UserExerciseDetailsHelper.getUserDetailsForExercise(
               exerciseId: map['id'],

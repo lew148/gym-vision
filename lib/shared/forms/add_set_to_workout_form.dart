@@ -12,7 +12,6 @@ class AddSetToWorkoutForm extends StatefulWidget {
   final int? workoutId;
   final int? exerciseId;
   final List<int>? categoryShellIds;
-  final List<int>? existingExerciseIds;
   final Function reloadState;
 
   const AddSetToWorkoutForm({
@@ -20,7 +19,6 @@ class AddSetToWorkoutForm extends StatefulWidget {
     this.workoutId,
     this.exerciseId,
     this.categoryShellIds,
-    this.existingExerciseIds,
     required this.reloadState,
   }) : super(key: key);
 
@@ -34,21 +32,23 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
   final formKey = GlobalKey<FormState>();
   TextEditingController weightController = TextEditingController();
   TextEditingController repsController = TextEditingController();
+  bool single = false;
 
   Duration duration = const Duration();
   TextEditingController distanceController = TextEditingController();
   TextEditingController calsBurnedController = TextEditingController();
 
-  void resetWeightAndReps() {
-    weightController.text = '';
-    repsController.text = '';
-  }
-
   List<Widget> getWeightFields(Exercise ex) => [
+        if (ex.uniAndBiLateral)
+          CustomFormFields.checkbox(context, "Single", single, (v) {
+            setState(() {
+              single = v!;
+            });
+          }),
         CustomFormFields.doubleField(
           controller: weightController,
           label: 'Weight',
-          isDouble: ex.isDouble,
+          isDouble: ex.uniAndBiLateral,
           unit: 'kg',
           last: ex.userExerciseDetails?.getLastAsString(),
           max: ex.userExerciseDetails?.getPRAsString(),
@@ -98,6 +98,7 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
                 workoutId: widget.workoutId!,
                 weight: double.parse(getNumberString(weightController.text)),
                 reps: int.parse(getNumberString(repsController.text)),
+                single: single,
                 distance: double.parse(getNumberString(distanceController.text)),
                 calsBurned: int.parse(getNumberString(calsBurnedController.text)),
                 time: duration,
@@ -122,46 +123,47 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
       padding: const EdgeInsets.all(20),
       child: Form(
         key: formKey,
-        child:  Column(
-            children: [
-              getSectionTitle(context, 'Add Set'),
-              const Divider(thickness: 0.25),
-              ExercisePicker(
-                exerciseId: widget.exerciseId,
-                exercise: selectedExercise,
-                existingExerciseIds: widget.existingExerciseIds,
-                categoryShellIds: widget.categoryShellIds,
-                autoOpen: true,
-                onQuickAdd: onQuickAdd,
-                setExercise: (newExercise) => setState(() {
-                  selectedExercise = newExercise;
-                  resetWeightAndReps();
-                }),
-              ),
-              const Padding(padding: EdgeInsets.all(5)),
-              if (selectedExercise != null && selectedExercise!.exerciseType == ExerciseType.weight)
-                ...getWeightFields(selectedExercise!),
-              if (selectedExercise != null && selectedExercise!.exerciseType == ExerciseType.cardio)
-                ...getCardioFields(selectedExercise!),
-              // if (selectedExercise != null && selectedExercise!.exerciseType == ExerciseType.stretch)
-              //   ...getWeightFields(selectedExercise!),
-              if (selectedExercise != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 20.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      selectedExercise?.exerciseType != ExerciseType.cardio
-                          ? getElevatedPrimaryButton(
-                              context,
-                              ActionButton(onTap: () => onSubmit(addThree: true), text: 'Add 3'),
-                            )
-                          : const SizedBox.shrink(),
-                      getElevatedPrimaryButton(context, ActionButton(onTap: onSubmit, text: 'Add')),
-                    ],
-                  ),
+        child: Column(
+          children: [
+            getSectionTitle(context, 'Add Set'),
+            const Divider(thickness: 0.25),
+            ExercisePicker(
+              exerciseId: widget.exerciseId,
+              exercise: selectedExercise,
+              categoryShellIds: widget.categoryShellIds,
+              autoOpen: true,
+              onQuickAdd: onQuickAdd,
+              setExercise: (newExercise) => setState(() {
+                selectedExercise = newExercise;
+                single = false;
+                weightController.text = '';
+                repsController.text = '';
+              }),
+            ),
+            const Padding(padding: EdgeInsets.all(5)),
+            if (selectedExercise != null && selectedExercise!.exerciseType == ExerciseType.weight)
+              ...getWeightFields(selectedExercise!),
+            if (selectedExercise != null && selectedExercise!.exerciseType == ExerciseType.cardio)
+              ...getCardioFields(selectedExercise!),
+            // if (selectedExercise != null && selectedExercise!.exerciseType == ExerciseType.stretch)
+            //   ...getWeightFields(selectedExercise!),
+            if (selectedExercise != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 20.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    selectedExercise?.exerciseType != ExerciseType.cardio
+                        ? getElevatedPrimaryButton(
+                            context,
+                            ActionButton(onTap: () => onSubmit(addThree: true), text: 'Add 3'),
+                          )
+                        : const SizedBox.shrink(),
+                    getElevatedPrimaryButton(context, ActionButton(onTap: onSubmit, text: 'Add')),
+                  ],
                 ),
-            ],
+              ),
+          ],
         ),
       ),
     );

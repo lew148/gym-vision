@@ -76,7 +76,7 @@ class DatabaseHelper {
         muscleGroup INTEGER NOT NULL,
         equipment INTEGER,
         split INTEGER,
-        isDouble INTEGER DEFAULT 0
+        uniAndBiLateral INTEGER DEFAULT 0
       );
     ''');
 
@@ -88,6 +88,7 @@ class DatabaseHelper {
         done INTEGER DEFAULT 0,
         weight REAL,
         reps INTEGER,
+        single INTEGER,
         time TEXT,
         distance REAL,
         calsBurned INTEGER,
@@ -160,7 +161,7 @@ class DatabaseHelper {
     for (int i = 0; i < length; i++) {
       final ex = exercises[i];
       buffer.writeln(
-        '(${ex.id}, "${ex.name}", ${ex.exerciseType.index}, ${ex.muscleGroup.index}, ${ex.equipment.index}, ${ex.split.index}, ${ex.isDouble ? 1 : 0})${i == length - 1 ? ';' : ','}',
+        '(${ex.id}, "${ex.name}", ${ex.exerciseType.index}, ${ex.muscleGroup.index}, ${ex.equipment.index}, ${ex.split.index}, ${ex.uniAndBiLateral ? 1 : 0})${i == length - 1 ? ';' : ','}',
       );
     }
 

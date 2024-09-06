@@ -12,7 +12,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.shoulders,
           equipment: ExerciseEquipment.dumbbell,
           split: ExerciseSplit.push,
-          isDouble: true,
         ),
         Exercise(
           id: 2,
@@ -21,7 +20,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.shoulders,
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.push,
-          isDouble: false,
         ),
         Exercise(
           id: 4,
@@ -30,7 +28,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.shoulders,
           equipment: ExerciseEquipment.dumbbell,
           split: ExerciseSplit.push,
-          isDouble: true,
         ),
         Exercise(
           id: 5,
@@ -39,7 +36,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.shoulders,
           equipment: ExerciseEquipment.dumbbell,
           split: ExerciseSplit.push,
-          isDouble: true,
         ),
         Exercise(
           id: 6,
@@ -48,7 +44,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.shoulders,
           equipment: ExerciseEquipment.dumbbell,
           split: ExerciseSplit.push,
-          isDouble: true,
         ),
         Exercise(
           id: 7,
@@ -57,7 +52,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.shoulders,
           equipment: ExerciseEquipment.cable,
           split: ExerciseSplit.push,
-          isDouble: true,
         ),
         Exercise(
           id: 8,
@@ -66,7 +60,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.shoulders,
           equipment: ExerciseEquipment.cable,
           split: ExerciseSplit.push,
-          isDouble: true,
         ),
         Exercise(
           id: 9,
@@ -75,7 +68,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.shoulders,
           equipment: ExerciseEquipment.cable,
           split: ExerciseSplit.push,
-          isDouble: true,
         ),
         Exercise(
           id: 11,
@@ -84,7 +76,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.shoulders,
           equipment: ExerciseEquipment.barbell,
           split: ExerciseSplit.push,
-          isDouble: false,
         ),
         Exercise(
           id: 12,
@@ -93,7 +84,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.shoulders,
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.push,
-          isDouble: true,
         ),
         Exercise(
           id: 13,
@@ -102,7 +92,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.shoulders,
           equipment: ExerciseEquipment.machine,
           split: ExerciseSplit.push,
-          isDouble: false,
         ),
 
 // chest
@@ -113,7 +102,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.chest,
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.push,
-          isDouble: true,
         ),
         Exercise(
           id: 15,
@@ -122,7 +110,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.chest,
           equipment: ExerciseEquipment.cable,
           split: ExerciseSplit.push,
-          isDouble: true,
         ),
         Exercise(
           id: 16,
@@ -131,7 +118,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.chest,
           equipment: ExerciseEquipment.cable,
           split: ExerciseSplit.push,
-          isDouble: true,
         ),
         Exercise(
           id: 17,
@@ -140,7 +126,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.chest,
           equipment: ExerciseEquipment.cable,
           split: ExerciseSplit.push,
-          isDouble: true,
         ),
         Exercise(
           id: 18,
@@ -149,7 +134,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.chest,
           equipment: ExerciseEquipment.dumbbell,
           split: ExerciseSplit.push,
-          isDouble: true,
         ),
         Exercise(
           id: 19,
@@ -158,7 +142,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.chest,
           equipment: ExerciseEquipment.dumbbell,
           split: ExerciseSplit.push,
-          isDouble: true,
         ),
         Exercise(
           id: 20,
@@ -167,7 +150,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.chest,
           equipment: ExerciseEquipment.dumbbell,
           split: ExerciseSplit.push,
-          isDouble: true,
         ),
         Exercise(
           id: 21,
@@ -176,7 +158,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.chest,
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.push,
-          isDouble: false,
         ),
         Exercise(
           id: 22,
@@ -185,7 +166,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.chest,
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.push,
-          isDouble: false,
         ),
         Exercise(
           id: 23,
@@ -194,7 +174,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.chest,
           equipment: ExerciseEquipment.machine,
           split: ExerciseSplit.push,
-          isDouble: false,
         ),
 
 // biceps
@@ -205,7 +184,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.biceps,
           equipment: ExerciseEquipment.dumbbell,
           split: ExerciseSplit.pull,
-          isDouble: true,
         ),
         Exercise(
           id: 25,
@@ -214,7 +192,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.biceps,
           equipment: ExerciseEquipment.dumbbell,
           split: ExerciseSplit.pull,
-          isDouble: true,
         ),
         Exercise(
           id: 26,
@@ -223,25 +200,15 @@ class DataHelper {
           muscleGroup: MuscleGroup.biceps,
           equipment: ExerciseEquipment.barbell,
           split: ExerciseSplit.pull,
-          isDouble: false,
         ),
         Exercise(
           id: 27,
-          name: 'Cable Bar Curl',
+          name: 'Cable Curl',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.biceps,
           equipment: ExerciseEquipment.cable,
           split: ExerciseSplit.pull,
-          isDouble: false,
-        ),
-        Exercise(
-          id: 28,
-          name: 'Single Cable Curl',
-          exerciseType: ExerciseType.weight,
-          muscleGroup: MuscleGroup.biceps,
-          equipment: ExerciseEquipment.cable,
-          split: ExerciseSplit.pull,
-          isDouble: true,
+          uniAndBiLateral: true,
         ),
         Exercise(
           id: 29,
@@ -250,7 +217,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.biceps,
           equipment: ExerciseEquipment.dumbbell,
           split: ExerciseSplit.pull,
-          isDouble: true,
         ),
         Exercise(
           id: 30,
@@ -259,7 +225,7 @@ class DataHelper {
           muscleGroup: MuscleGroup.biceps,
           equipment: ExerciseEquipment.bodyWeight,
           split: ExerciseSplit.pull,
-          isDouble: false,
+          uniAndBiLateral: true,
         ),
         Exercise(
           id: 31,
@@ -268,7 +234,7 @@ class DataHelper {
           muscleGroup: MuscleGroup.biceps,
           equipment: ExerciseEquipment.machine,
           split: ExerciseSplit.pull,
-          isDouble: false,
+          uniAndBiLateral: true,
         ),
 
 // back
@@ -279,7 +245,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.back,
           equipment: ExerciseEquipment.cable,
           split: ExerciseSplit.pull,
-          isDouble: true,
         ),
         Exercise(
           id: 33,
@@ -288,16 +253,7 @@ class DataHelper {
           muscleGroup: MuscleGroup.back,
           equipment: ExerciseEquipment.cable,
           split: ExerciseSplit.pull,
-          isDouble: false,
-        ),
-        Exercise(
-          id: 34,
-          name: 'Cable Single Pullover',
-          exerciseType: ExerciseType.weight,
-          muscleGroup: MuscleGroup.back,
-          equipment: ExerciseEquipment.cable,
-          split: ExerciseSplit.pull,
-          isDouble: true,
+          uniAndBiLateral: true,
         ),
         Exercise(
           id: 35,
@@ -306,7 +262,7 @@ class DataHelper {
           muscleGroup: MuscleGroup.back,
           equipment: ExerciseEquipment.machine,
           split: ExerciseSplit.pull,
-          isDouble: false,
+          uniAndBiLateral: true,
         ),
         Exercise(
           id: 36,
@@ -315,7 +271,7 @@ class DataHelper {
           muscleGroup: MuscleGroup.back,
           equipment: ExerciseEquipment.machine,
           split: ExerciseSplit.pull,
-          isDouble: false,
+          uniAndBiLateral: false,
         ),
         Exercise(
           id: 37,
@@ -324,16 +280,15 @@ class DataHelper {
           muscleGroup: MuscleGroup.back,
           equipment: ExerciseEquipment.machine,
           split: ExerciseSplit.pull,
-          isDouble: false,
+          uniAndBiLateral: true,
         ),
         Exercise(
           id: 38,
-          name: 'Plated Low Row',
+          name: 'Plated Row',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.back,
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.pull,
-          isDouble: true,
         ),
         Exercise(
           id: 39,
@@ -342,7 +297,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.back,
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.pull,
-          isDouble: false,
         ),
         Exercise(
           id: 40,
@@ -351,7 +305,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.back,
           equipment: ExerciseEquipment.dumbbell,
           split: ExerciseSplit.pull,
-          isDouble: true,
         ),
         Exercise(
           id: 41,
@@ -360,7 +313,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.back,
           equipment: ExerciseEquipment.bodyWeight,
           split: ExerciseSplit.pull,
-          isDouble: false,
         ),
         Exercise(
           id: 42,
@@ -369,7 +321,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.back,
           equipment: ExerciseEquipment.cable,
           split: ExerciseSplit.pull,
-          isDouble: true,
         ),
         Exercise(
           id: 3,
@@ -378,7 +329,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.back, // moved from shoulders to back
           equipment: ExerciseEquipment.dumbbell,
           split: ExerciseSplit.pull,
-          isDouble: true,
         ),
 
 // triceps
@@ -389,16 +339,7 @@ class DataHelper {
           muscleGroup: MuscleGroup.triceps,
           equipment: ExerciseEquipment.cable,
           split: ExerciseSplit.push,
-          isDouble: false,
-        ),
-        Exercise(
-          id: 44,
-          name: 'Single Tricep Pushdown',
-          exerciseType: ExerciseType.weight,
-          muscleGroup: MuscleGroup.triceps,
-          equipment: ExerciseEquipment.cable,
-          split: ExerciseSplit.push,
-          isDouble: true,
+          uniAndBiLateral: true,
         ),
         Exercise(
           id: 45,
@@ -407,16 +348,7 @@ class DataHelper {
           muscleGroup: MuscleGroup.triceps,
           equipment: ExerciseEquipment.cable,
           split: ExerciseSplit.push,
-          isDouble: false,
-        ),
-        Exercise(
-          id: 46,
-          name: 'Single Cable Tricep Extension',
-          exerciseType: ExerciseType.weight,
-          muscleGroup: MuscleGroup.triceps,
-          equipment: ExerciseEquipment.cable,
-          split: ExerciseSplit.push,
-          isDouble: true,
+          uniAndBiLateral: true,
         ),
         Exercise(
           id: 47,
@@ -425,16 +357,7 @@ class DataHelper {
           muscleGroup: MuscleGroup.triceps,
           equipment: ExerciseEquipment.dumbbell,
           split: ExerciseSplit.push,
-          isDouble: false,
-        ),
-        Exercise(
-          id: 48,
-          name: 'Single DB Tricep Extension',
-          exerciseType: ExerciseType.weight,
-          muscleGroup: MuscleGroup.triceps,
-          equipment: ExerciseEquipment.dumbbell,
-          split: ExerciseSplit.push,
-          isDouble: true,
+          uniAndBiLateral: true,
         ),
         Exercise(
           id: 49,
@@ -443,7 +366,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.triceps,
           equipment: ExerciseEquipment.bodyWeight,
           split: ExerciseSplit.push,
-          isDouble: false,
         ),
         Exercise(
           id: 50,
@@ -452,7 +374,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.triceps,
           equipment: ExerciseEquipment.barbell,
           split: ExerciseSplit.push,
-          isDouble: false,
         ),
 
 // core
@@ -463,7 +384,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.core,
           equipment: ExerciseEquipment.machine,
           split: ExerciseSplit.pull,
-          isDouble: false,
         ),
         Exercise(
           id: 52,
@@ -472,7 +392,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.core,
           equipment: ExerciseEquipment.bodyWeight,
           split: ExerciseSplit.pull,
-          isDouble: false,
         ),
         Exercise(
           id: 53,
@@ -481,7 +400,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.core,
           equipment: ExerciseEquipment.kettlebell,
           split: ExerciseSplit.pull,
-          isDouble: true,
         ),
         Exercise(
           id: 54,
@@ -490,7 +408,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.core,
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.pull,
-          isDouble: false,
         ),
         Exercise(
           id: 55,
@@ -499,7 +416,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.core,
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.pull,
-          isDouble: false,
         ),
         Exercise(
           id: 56,
@@ -508,7 +424,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.core,
           equipment: ExerciseEquipment.cable,
           split: ExerciseSplit.pull,
-          isDouble: false,
         ),
 
 // hamstrings & glutes
@@ -519,7 +434,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.hamstringsAndGlutes,
           equipment: ExerciseEquipment.cable,
           split: ExerciseSplit.legs,
-          isDouble: true,
         ),
         Exercise(
           id: 58,
@@ -528,7 +442,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.hamstringsAndGlutes,
           equipment: ExerciseEquipment.machine,
           split: ExerciseSplit.legs,
-          isDouble: false,
         ),
         Exercise(
           id: 59,
@@ -537,16 +450,7 @@ class DataHelper {
           muscleGroup: MuscleGroup.hamstringsAndGlutes,
           equipment: ExerciseEquipment.machine,
           split: ExerciseSplit.legs,
-          isDouble: false,
-        ),
-        Exercise(
-          id: 60,
-          name: 'Single Leg Curl',
-          exerciseType: ExerciseType.weight,
-          muscleGroup: MuscleGroup.hamstringsAndGlutes,
-          equipment: ExerciseEquipment.machine,
-          split: ExerciseSplit.legs,
-          isDouble: true,
+          uniAndBiLateral: true,
         ),
         Exercise(
           id: 61,
@@ -555,16 +459,7 @@ class DataHelper {
           muscleGroup: MuscleGroup.hamstringsAndGlutes,
           equipment: ExerciseEquipment.machine,
           split: ExerciseSplit.legs,
-          isDouble: false,
-        ),
-        Exercise(
-          id: 62,
-          name: 'Single Prone Leg Curl',
-          exerciseType: ExerciseType.weight,
-          muscleGroup: MuscleGroup.hamstringsAndGlutes,
-          equipment: ExerciseEquipment.machine,
-          split: ExerciseSplit.legs,
-          isDouble: true,
+          uniAndBiLateral: true,
         ),
         Exercise(
           id: 63,
@@ -573,7 +468,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.hamstringsAndGlutes,
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.legs,
-          isDouble: false,
         ),
         Exercise(
           id: 64,
@@ -582,7 +476,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.hamstringsAndGlutes,
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.legs,
-          isDouble: false,
         ),
         Exercise(
           id: 65,
@@ -591,7 +484,7 @@ class DataHelper {
           muscleGroup: MuscleGroup.hamstringsAndGlutes,
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.legs,
-          isDouble: false,
+          uniAndBiLateral: true,
         ),
         Exercise(
           id: 66,
@@ -600,7 +493,7 @@ class DataHelper {
           muscleGroup: MuscleGroup.hamstringsAndGlutes,
           equipment: ExerciseEquipment.dumbbell,
           split: ExerciseSplit.legs,
-          isDouble: true,
+          uniAndBiLateral: true,
         ),
         Exercise(
           id: 67,
@@ -609,7 +502,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.hamstringsAndGlutes,
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.legs,
-          isDouble: false,
         ),
 
 // quads & calves
@@ -620,7 +512,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.quadsAndCalves,
           equipment: ExerciseEquipment.machine,
           split: ExerciseSplit.legs,
-          isDouble: false,
         ),
         Exercise(
           id: 69,
@@ -629,7 +520,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.quadsAndCalves,
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.legs,
-          isDouble: false,
         ),
         Exercise(
           id: 70,
@@ -638,7 +528,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.quadsAndCalves,
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.legs,
-          isDouble: false,
         ),
         Exercise(
           id: 71,
@@ -647,7 +536,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.quadsAndCalves,
           equipment: ExerciseEquipment.dumbbell,
           split: ExerciseSplit.legs,
-          isDouble: true,
         ),
         Exercise(
           id: 72,
@@ -656,7 +544,7 @@ class DataHelper {
           muscleGroup: MuscleGroup.quadsAndCalves,
           equipment: ExerciseEquipment.machine,
           split: ExerciseSplit.legs,
-          isDouble: false,
+          uniAndBiLateral: true,
         ),
         Exercise(
           id: 73,
@@ -665,7 +553,7 @@ class DataHelper {
           muscleGroup: MuscleGroup.quadsAndCalves,
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.legs,
-          isDouble: false,
+          uniAndBiLateral: true,
         ),
         Exercise(
           id: 74,
@@ -674,16 +562,7 @@ class DataHelper {
           muscleGroup: MuscleGroup.quadsAndCalves,
           equipment: ExerciseEquipment.machine,
           split: ExerciseSplit.legs,
-          isDouble: false,
-        ),
-        Exercise(
-          id: 75,
-          name: 'Single Leg Extension',
-          exerciseType: ExerciseType.weight,
-          muscleGroup: MuscleGroup.quadsAndCalves,
-          equipment: ExerciseEquipment.machine,
-          split: ExerciseSplit.legs,
-          isDouble: true,
+          uniAndBiLateral: true,
         ),
         Exercise(
           id: 76,
@@ -692,16 +571,7 @@ class DataHelper {
           muscleGroup: MuscleGroup.quadsAndCalves,
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.legs,
-          isDouble: false,
-        ),
-        Exercise(
-          id: 77,
-          name: 'Single Barbell Calf Raise',
-          exerciseType: ExerciseType.weight,
-          muscleGroup: MuscleGroup.quadsAndCalves,
-          equipment: ExerciseEquipment.plates,
-          split: ExerciseSplit.legs,
-          isDouble: true,
+          uniAndBiLateral: true,
         ),
         Exercise(
           id: 78,
@@ -710,7 +580,7 @@ class DataHelper {
           muscleGroup: MuscleGroup.quadsAndCalves,
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.legs,
-          isDouble: true,
+          uniAndBiLateral: true,
         ),
         Exercise(
           id: 79,
@@ -719,7 +589,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.quadsAndCalves,
           equipment: ExerciseEquipment.machine,
           split: ExerciseSplit.legs,
-          isDouble: false,
         ),
 
 // forearms
@@ -730,7 +599,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.forearms,
           equipment: ExerciseEquipment.dumbbell,
           split: ExerciseSplit.pull,
-          isDouble: true,
         ),
         Exercise(
           id: 81,
@@ -739,7 +607,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.forearms,
           equipment: ExerciseEquipment.dumbbell,
           split: ExerciseSplit.pull,
-          isDouble: true,
         ),
         Exercise(
           id: 82,
@@ -748,7 +615,7 @@ class DataHelper {
           muscleGroup: MuscleGroup.forearms,
           equipment: ExerciseEquipment.cable,
           split: ExerciseSplit.pull,
-          isDouble: false,
+          uniAndBiLateral: true,
         ),
 
 // additions
@@ -759,7 +626,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.back,
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.pull,
-          isDouble: false,
         ),
         Exercise(
           id: 84,
@@ -768,7 +634,7 @@ class DataHelper {
           muscleGroup: MuscleGroup.shoulders,
           equipment: ExerciseEquipment.cable,
           split: ExerciseSplit.pull,
-          isDouble: false,
+          uniAndBiLateral: true,
         ),
         Exercise(
           id: 85,
@@ -777,7 +643,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.chest,
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.push,
-          isDouble: false,
         ),
         Exercise(
           id: 86,
@@ -786,7 +651,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.chest,
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.push,
-          isDouble: false,
         ),
         Exercise(
           id: 87,
@@ -795,7 +659,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.quadsAndCalves,
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.legs,
-          isDouble: false,
         ),
         Exercise(
           id: 88,
@@ -804,7 +667,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.quadsAndCalves,
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.legs,
-          isDouble: false,
         ),
         Exercise(
           id: 89,
@@ -813,16 +675,7 @@ class DataHelper {
           muscleGroup: MuscleGroup.back,
           equipment: ExerciseEquipment.cable,
           split: ExerciseSplit.pull,
-          isDouble: false,
-        ),
-        Exercise(
-          id: 90,
-          name: 'Single Calf Press',
-          exerciseType: ExerciseType.weight,
-          muscleGroup: MuscleGroup.quadsAndCalves,
-          equipment: ExerciseEquipment.plates,
-          split: ExerciseSplit.legs,
-          isDouble: true,
+          uniAndBiLateral: true,
         ),
         Exercise(
           id: 91,
@@ -831,7 +684,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.shoulders,
           equipment: ExerciseEquipment.machine,
           split: ExerciseSplit.pull,
-          isDouble: false,
         ),
         Exercise(
           id: 92,
@@ -840,7 +692,6 @@ class DataHelper {
           muscleGroup: MuscleGroup.back,
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.pull,
-          isDouble: false,
         ),
         Exercise(
           id: 93,
@@ -921,11 +772,35 @@ class DataHelper {
         ),
         Exercise(
           id: 102,
-          name: 'Single Lat Pulldown',
+          name: 'Chest Press',
           exerciseType: ExerciseType.weight,
-          muscleGroup: MuscleGroup.back,
+          muscleGroup: MuscleGroup.chest,
+          equipment: ExerciseEquipment.machine,
+          split: ExerciseSplit.push,
+        ),
+        Exercise(
+          id: 103,
+          name: 'Bicep Curl Machine',
+          exerciseType: ExerciseType.weight,
+          muscleGroup: MuscleGroup.biceps,
           equipment: ExerciseEquipment.machine,
           split: ExerciseSplit.pull,
+        ),
+        Exercise(
+          id: 104,
+          name: 'Tricep Extension Machine',
+          exerciseType: ExerciseType.weight,
+          muscleGroup: MuscleGroup.triceps,
+          equipment: ExerciseEquipment.machine,
+          split: ExerciseSplit.push,
+        ),
+        Exercise(
+          id: 105,
+          name: 'cable Chest Press',
+          exerciseType: ExerciseType.weight,
+          muscleGroup: MuscleGroup.chest,
+          equipment: ExerciseEquipment.cable,
+          split: ExerciseSplit.push,
         ),
       ];
 }

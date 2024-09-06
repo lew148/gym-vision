@@ -34,6 +34,7 @@ class WorkoutSetsHelper {
         workout_sets.done,
         workout_sets.weight,
         workout_sets.reps,
+        workout_sets.single,
         workout_sets.time,
         workout_sets.distance,
         workout_sets.calsBurned,
@@ -43,7 +44,7 @@ class WorkoutSetsHelper {
         exercises.muscleGroup,
         exercises.equipment,
         exercises.split,
-        exercises.isDouble
+        exercises.uniAndBiLateral
       FROM workout_sets
       LEFT JOIN workouts ON workout_sets.workoutId = workouts.id
       LEFT JOIN exercises ON workout_sets.exerciseId = exercises.id
@@ -59,6 +60,7 @@ class WorkoutSetsHelper {
         done: map['done'] == 1,
         weight: map['weight'],
         reps: map['reps'],
+        single: map['single'] != null && map['single'] == 1,
         time: tryParseDuration(map['time']),
         distance: map['distance'],
         calsBurned: map['calsBurned'],
@@ -71,7 +73,7 @@ class WorkoutSetsHelper {
                 exerciseType: ExerciseType.values.elementAt(map['exerciseType']),
                 equipment: ExerciseEquipment.values.elementAt(map['equipment']),
                 split: ExerciseSplit.values.elementAt(map['split']),
-                isDouble: map['isDouble'] == 1,
+                uniAndBiLateral: map['uniAndBiLateral'] == 1,
                 userExerciseDetails: await UserExerciseDetailsHelper.getUserDetailsForExercise(
                   exerciseId: map['exerciseId'],
                   includeRecentUses: false,

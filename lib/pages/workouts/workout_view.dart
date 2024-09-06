@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:gymvision/db/classes/workout_exercise_ordering.dart';
 import 'package:gymvision/db/classes/workout_set.dart';
 import 'package:gymvision/db/helpers/workout_exercise_orderings_helper.dart';
-import 'package:gymvision/globals.dart';
 import 'package:gymvision/helpers/category_shell_helper.dart';
 import 'package:gymvision/pages/workouts/workout_exercise_widget.dart';
 import 'package:reorderables/reorderables.dart';
@@ -322,7 +321,6 @@ class _WorkoutViewState extends State<WorkoutView> {
     );
 
     List<int> existingCategoryShellIds = [];
-    List<int> existingExerciseIds = [];
 
     return FutureBuilder<Workout?>(
       future: workout,
@@ -339,11 +337,11 @@ class _WorkoutViewState extends State<WorkoutView> {
           existingCategoryShellIds = [];
         }
 
-        if (workout.workoutSets != null && workout.workoutSets!.isNotEmpty) {
-          existingExerciseIds = distinctIntList(workout.workoutSets!.map((ws) => ws.exerciseId));
-        } else {
-          existingExerciseIds = [];
-        }
+        // if (workout.workoutSets != null && workout.workoutSets!.isNotEmpty) {
+        //   existingExerciseIds = distinctIntList(workout.workoutSets!.map((ws) => ws.exerciseId));
+        // } else {
+        //   existingExerciseIds = [];
+        // }
 
         void onAddExerciseClick() => showModalBottomSheet(
               context: context,
@@ -356,7 +354,6 @@ class _WorkoutViewState extends State<WorkoutView> {
                     ),
                     child: AddSetToWorkoutForm(
                       workoutId: workout.id,
-                      existingExerciseIds: existingExerciseIds,
                       categoryShellIds: existingCategoryShellIds,
                       reloadState: reloadState,
                     ),
@@ -401,7 +398,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                   Icons.more_vert_rounded,
                 ),
                 onPressed: () => showMoreMenu(workout, reloadState),
-              )
+              ),
             ],
           ),
           body: Container(

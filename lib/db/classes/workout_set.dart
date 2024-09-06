@@ -9,6 +9,7 @@ class WorkoutSet {
   bool done;
   double? weight;
   int? reps;
+  bool? single;
   Duration? time;
   double? distance;
   int? calsBurned;
@@ -23,6 +24,7 @@ class WorkoutSet {
     this.id,
     this.weight,
     this.reps,
+    this.single,
     this.time,
     this.distance,
     this.calsBurned,
@@ -37,6 +39,7 @@ class WorkoutSet {
         'id': id,
         'weight': weight,
         'reps': reps,
+        'single': single,
         'done': done,
         'time': time == null ? '' : time.toString(),
         'distance': distance,
@@ -56,6 +59,8 @@ class WorkoutSet {
 
   bool hasReps() => reps != null && reps! > 0;
   String getRepsDisplay() => hasReps() ? '$reps rep${reps == 1 ? '' : 's'}' : 'No Reps';
+
+  bool isSingle() => single ?? false;
 
   bool hasTime() => time != null && time!.inSeconds > 0;
   String getTimeDisplay() => hasTime() ? time.toString().split('.').first.padLeft(8, "0") : "00.00.00";

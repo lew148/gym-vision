@@ -94,7 +94,7 @@ class LegacySql {
         exercises.muscleGroup,
         exercises.equipment,
         exercises.split,
-        exercises.isDouble
+        exercises.uniAndBiLateral
       FROM workout_sets
       LEFT JOIN workouts ON workout_sets.workoutId = workouts.id
       LEFT JOIN exercises ON workout_sets.exerciseId = exercises.id
@@ -121,7 +121,7 @@ class LegacySql {
                 muscleGroup: MuscleGroup.values.elementAt(map['muscleGroup']),
                 equipment: ExerciseEquipment.values.elementAt(map['equipment']),
                 split: ExerciseSplit.values.elementAt(map['split']),
-                isDouble: map['isDouble'] == 1,
+                uniAndBiLateral: map['uniAndBiLateral'] == 1,
                 userExerciseDetails: await UserExerciseDetailsHelper.getUserDetailsForExercise(
                   exerciseId: map['exerciseId'],
                   includeRecentUses: false,

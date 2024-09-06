@@ -10,8 +10,9 @@ class Exercise {
   MuscleGroup muscleGroup;
   ExerciseEquipment equipment;
   ExerciseSplit split;
-  bool isDouble;
-  
+  // true if can be done BOTH bilaterally and unilaterally (defaults to bilateral in set)
+  bool uniAndBiLateral;
+
   UserExerciseDetails? userExerciseDetails;
 
   Exercise({
@@ -22,7 +23,7 @@ class Exercise {
     this.muscleGroup = MuscleGroup.other,
     this.equipment = ExerciseEquipment.other,
     this.split = ExerciseSplit.other,
-    this.isDouble = false,
+    this.uniAndBiLateral = false,
     this.userExerciseDetails,
   });
 
@@ -33,6 +34,6 @@ class Exercise {
         'muscleGroup': muscleGroup,
         'equipment': equipment,
         'split': split,
-        'isDouble': isDouble,
+        'uniAndBiLateral': uniAndBiLateral,
       };
 }

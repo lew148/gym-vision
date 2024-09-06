@@ -111,7 +111,7 @@ class _EditWorkoutExerciseFormState extends State<EditWorkoutExerciseForm> {
         CustomFormFields.doubleField(
           controller: weightController,
           label: 'Weight',
-          isDouble: ex.isDouble,
+          isDouble: ex.uniAndBiLateral,
           unit: 'kg',
           last: ex.userExerciseDetails?.getLastAsString(),
           max: ex.userExerciseDetails?.getPRAsString(),

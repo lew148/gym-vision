@@ -157,10 +157,7 @@ class CustomFormFields {
       FormField(
         builder: (field) => CheckboxListTile(
           contentPadding: EdgeInsets.zero,
-          title: Text(
-            label,
-            style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-          ),
+          title: Text(label),
           value: value,
           onChanged: onChange,
           activeColor: Theme.of(context).colorScheme.primary,

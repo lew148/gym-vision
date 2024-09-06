@@ -13,7 +13,6 @@ class ExercisePicker extends StatefulWidget {
   final int? exerciseId;
   final Exercise? exercise;
   final List<int>? categoryShellIds;
-  final List<int>? existingExerciseIds;
   final bool autoOpen;
   final Function(Exercise exercise)? onQuickAdd;
   final Function setExercise;
@@ -23,7 +22,6 @@ class ExercisePicker extends StatefulWidget {
     this.exerciseId,
     this.exercise,
     this.categoryShellIds,
-    this.existingExerciseIds,
     this.autoOpen = false,
     this.onQuickAdd,
     required this.setExercise,
@@ -37,7 +35,6 @@ class _ExercisePickerState extends State<ExercisePicker> {
   Future<Exercise>? selectedExercise;
   late Future<List<Exercise>> allExercises;
   late List<int> categoryShellFilters = [];
-  late List<int> existingExerciseIds = [];
 
   List<Exercise> temp = [];
 
@@ -47,7 +44,6 @@ class _ExercisePickerState extends State<ExercisePicker> {
     categoryShellFilters = CategoryShellHelper.getFunctionaityCategoryShells().map((e) => e.id).toList();
     categoryShellFilters.addAll(widget.categoryShellIds ?? []);
     categoryShellFilters = distinctIntList(categoryShellFilters);
-    existingExerciseIds = widget.existingExerciseIds ?? [];
 
     // exercise pre-selected
     if (widget.exerciseId != null) {
@@ -56,7 +52,6 @@ class _ExercisePickerState extends State<ExercisePicker> {
     } else {
       allExercises = ExercisesHelper.getExercisesByCategory(
         categoryShellIds: categoryShellFilters,
-        excludedExerciseIds: existingExerciseIds,
       );
     }
   }
@@ -72,7 +67,6 @@ class _ExercisePickerState extends State<ExercisePicker> {
 
       allExercises = ExercisesHelper.getExercisesByCategory(
         categoryShellIds: categoryShellFilters,
-        excludedExerciseIds: existingExerciseIds,
       );
     });
   }
@@ -106,7 +100,6 @@ class _ExercisePickerState extends State<ExercisePicker> {
                                       setState(() {
                                         allExercises = ExercisesHelper.getExercisesByCategory(
                                           categoryShellIds: categoryShellFilters,
-                                          excludedExerciseIds: existingExerciseIds,
                                         );
                                       });
                                     },
