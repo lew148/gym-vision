@@ -67,8 +67,6 @@ class LegacySql {
       FROM workout_sets
       WHERE workoutId = $workoutId AND done = 0;
     '''));
-
-    if (noIncompleteSets == null) return false;
     return noIncompleteSets == 0;
   }
 
