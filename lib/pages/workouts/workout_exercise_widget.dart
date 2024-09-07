@@ -515,7 +515,10 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
             Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 10),
               child: InkWell(
-                onTap: () => onEditWorkoutExerciseTap(ws),
+                onTap: () {
+                  Navigator.pop(context);
+                  onEditWorkoutExerciseTap(ws);
+                },
                 child: Row(
                   children: [
                     Icon(
@@ -535,7 +538,10 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
             Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 10),
               child: InkWell(
-                onTap: () => showDeleteWorkoutSetConfirm(ws.id!),
+                onTap: () {
+                  Navigator.pop(context);
+                  showDeleteWorkoutSetConfirm(ws.id!);
+                },
                 child: Row(
                   children: [
                     Icon(
@@ -589,7 +595,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
-                      if (onlyPlaceholderSets)
+                      if (!onlyPlaceholderSets)
                         dropped ? const Icon(Icons.arrow_drop_up_rounded) : const Icon(Icons.arrow_drop_down_rounded),
                     ]),
                   ),
@@ -620,8 +626,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           if (dropped && widget.workoutSets.any((ws) => !ws.isSingle()))
             ...getWorkoutExerciseWidgets(widget.workoutSets.where((ws) => !ws.isSingle()).toList(), false),
           if (dropped && widget.workoutSets.any((ws) => ws.isSingle()))
-            ...getWorkoutExerciseWidgets(widget.workoutSets.where((ws) => ws.isSingle()).toList(),
-                realWorkoutSets.any((ws) => !ws.isSingle())),
+            ...getWorkoutExerciseWidgets(
+                widget.workoutSets.where((ws) => ws.isSingle()).toList(), realWorkoutSets.any((ws) => !ws.isSingle())),
         ],
       ),
     );

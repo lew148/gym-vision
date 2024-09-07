@@ -10,6 +10,7 @@ import 'package:gymvision/shared/ui_helper.dart';
 import 'package:gymvision/user_settings_view.dart';
 import 'package:gymvision/pages/workouts/workout_view.dart';
 import 'package:gymvision/pages/workouts/workouts.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 void main() async {
   // final userSettings = await UserSettingsHelper.getUserSettings();
@@ -32,10 +33,30 @@ void main() async {
 
   // todo: need to get this from shared prefs as sqflite is not setup yet
 
-  runApp(EasyDynamicThemeWidget(
-    initialThemeMode: ThemeMode.system,
-    child: const MyApp(),
-  ));
+  WidgetsFlutterBinding.ensureInitialized();
+  FlutterError.onError = (FlutterErrorDetails details) async {
+    await Sentry.captureException(
+      details.exception,
+      stackTrace: details.stack,
+    );
+    FlutterError.dumpErrorToConsole(details);
+  };
+
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = 'https://2b42d972537c900eabae2739a88e994b@o4507913067823104.ingest.de.sentry.io/4507913074770000';
+      // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
+      // We recommend adjusting this value in production.
+      options.tracesSampleRate = 1.0;
+      // The sampling rate for profiling is relative to tracesSampleRate
+      // Setting to 1.0 will profile 100% of sampled transactions:
+      options.profilesSampleRate = 1.0;
+    },
+    appRunner: () => runApp(EasyDynamicThemeWidget(
+      initialThemeMode: ThemeMode.system,
+      child: const MyApp(),
+    )),
+  );
 }
 
 class MyApp extends StatelessWidget {
