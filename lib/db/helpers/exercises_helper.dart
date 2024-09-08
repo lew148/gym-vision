@@ -3,6 +3,7 @@ import 'package:gymvision/db/db.dart';
 import 'package:gymvision/db/helpers/user_exercise_details_helper.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/globals.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import '../../helpers/category_shell_helper.dart';
 
@@ -80,44 +81,49 @@ class ExercisesHelper {
     bool includeUserDetails = false,
     bool includeRecentUses = false,
   }) async {
-    final db = await DatabaseHelper.getDb();
-    final List<Map<String, dynamic>> maps = await db.rawQuery('''
-      SELECT
-        exercises.id,
-        exercises.name,
-        exercises.exerciseType,
-        exercises.muscleGroup,
-        exercises.equipment,
-        exercises.split,
-        exercises.uniAndBiLateral
-      FROM exercises
-      ${whereString != null && whereString != "" ? 'WHERE $whereString' : ''}
-      ORDER BY exercises.name ASC;
-    ''');
+    try {
+      final db = await DatabaseHelper.getDb();
+      final List<Map<String, dynamic>> maps = await db.rawQuery('''
+        SELECT
+          exercises.id,
+          exercises.name,
+          exercises.exerciseType,
+          exercises.muscleGroup,
+          exercises.equipment,
+          exercises.split,
+          exercises.uniAndBiLateral
+        FROM exercises
+        ${whereString != null && whereString != "" ? 'WHERE $whereString' : ''}
+        ORDER BY exercises.name ASC;
+      ''');
 
-    List<Exercise> exercises = [];
+      List<Exercise> exercises = [];
 
-    for (var map in maps) {
-      exercises.add(
-        Exercise(
-          id: map['id'],
-          name: map['name'],
-          exerciseType: ExerciseType.values.elementAt(map['exerciseType']),
-          muscleGroup: MuscleGroup.values.elementAt(map['muscleGroup']),
-          equipment: ExerciseEquipment.values.elementAt(map['equipment']),
-          split: ExerciseSplit.values.elementAt(map['split']),
-          uniAndBiLateral: map['uniAndBiLateral'] == 1,
-          userExerciseDetails: includeUserDetails
-              ? await UserExerciseDetailsHelper.getUserDetailsForExercise(
-                  exerciseId: map['id'],
-                  includeRecentUses: includeRecentUses,
-                )
-              : null,
-        ),
-      );
+      for (var map in maps) {
+        exercises.add(
+          Exercise(
+            id: map['id'],
+            name: map['name'],
+            exerciseType: ExerciseType.values.elementAt(map['exerciseType']),
+            muscleGroup: MuscleGroup.values.elementAt(map['muscleGroup']),
+            equipment: ExerciseEquipment.values.elementAt(map['equipment']),
+            split: ExerciseSplit.values.elementAt(map['split']),
+            uniAndBiLateral: map['uniAndBiLateral'] == 1,
+            userExerciseDetails: includeUserDetails
+                ? await UserExerciseDetailsHelper.getUserDetailsForExercise(
+                    exerciseId: map['id'],
+                    includeRecentUses: includeRecentUses,
+                  )
+                : null,
+          ),
+        );
+      }
+
+      return exercises;
+    } catch (ex, stack) {
+      await Sentry.captureException(ex, stackTrace: stack);
+      return [];
     }
-
-    return exercises;
   }
 
   static Future<Exercise> getExercise({
