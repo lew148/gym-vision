@@ -99,11 +99,15 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                         onTap: () async {
                           try {
                             throw ("(IGNORE) This error was sent manually by a developer!");
-                          } catch (exception, stackTrace) {
+                          } catch (ex, stack) {
                             await Sentry.captureException(
-                              exception,
-                              stackTrace: stackTrace,
+                              ex,
+                              stackTrace: stack,
                             );
+
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(content: Text('Error sent to Sentry!')));
                           }
                         },
                         text: 'Send Error to sentry',
@@ -113,7 +117,24 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                     getElevatedPrimaryButton(
                       context,
                       ActionButton(
-                        onTap: () async => await DatabaseHelper.updateExercises(),
+                        onTap: () async {
+                          try {
+                            await DatabaseHelper.updateExercises();
+
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(content: Text('Exercises updated successfully!')));
+                          } catch (ex, stack) {
+                            await Sentry.captureException(
+                              ex,
+                              stackTrace: stack,
+                            );
+
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(content: Text('Failed to update Exercises!')));
+                          }
+                        },
                         text: 'Update Exercises',
                       ),
                     ),
@@ -125,7 +146,12 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                             await DatabaseHelper.restartDbWhilePersistingData();
                             if (!context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Success')));
-                          } catch (ex) {
+                          } catch (ex, stack) {
+                            await Sentry.captureException(
+                              ex,
+                              stackTrace: stack,
+                            );
+
                             if (!context.mounted) return;
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(SnackBar(content: Text('Failed to persist data: ${ex.toString()}')));

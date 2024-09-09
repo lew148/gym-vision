@@ -33,15 +33,6 @@ void main() async {
 
   // todo: need to get this from shared prefs as sqflite is not setup yet
 
-  WidgetsFlutterBinding.ensureInitialized();
-  FlutterError.onError = (FlutterErrorDetails details) async {
-    await Sentry.captureException(
-      details.exception,
-      stackTrace: details.stack,
-    );
-    FlutterError.dumpErrorToConsole(details);
-  };
-
   await SentryFlutter.init(
     (options) {
       options.dsn = 'https://2b42d972537c900eabae2739a88e994b@o4507913067823104.ingest.de.sentry.io/4507913074770000';
