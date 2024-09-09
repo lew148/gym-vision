@@ -170,7 +170,7 @@ class DatabaseHelper {
 
   static restartDbWhilePersistingData() async {
     var workoutsAndCategories = await LegacySql.getWorkoutsLegacy();
-    var sets = await LegacySql.getWorkoutSets(shallow: true);
+    var sets = await LegacySql.getWorkoutSets();
     var bws = await LegacySql.getBodyweights();
 
     await deleteDb();

@@ -1,12 +1,9 @@
 import 'package:collection/collection.dart';
 import 'package:gymvision/db/classes/body_weight.dart';
-import 'package:gymvision/db/classes/exercise.dart';
 import 'package:gymvision/db/classes/workout.dart';
 import 'package:gymvision/db/classes/workout_category.dart';
 import 'package:gymvision/db/classes/workout_set.dart';
 import 'package:gymvision/db/db.dart';
-import 'package:gymvision/db/helpers/user_exercise_details_helper.dart';
-import 'package:gymvision/enums.dart';
 import 'package:gymvision/globals.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -70,34 +67,9 @@ class LegacySql {
     return noIncompleteSets == 0;
   }
 
-  static Future<List<WorkoutSet>> getWorkoutSets({
-    String? whereStr,
-    bool shallow = false,
-  }) async {
+  static Future<List<WorkoutSet>> getWorkoutSets() async {
     final db = await DatabaseHelper.getDb();
-    final List<Map<String, dynamic>> maps = await db.rawQuery('''
-      SELECT
-        workout_sets.id,
-        workout_sets.workoutId,
-        workout_sets.exerciseId,
-        workout_sets.done,
-        workout_sets.weight,
-        workout_sets.reps,
-        workout_sets.time,
-        workout_sets.distance,
-        workout_sets.calsBurned,
-        workouts.date,
-        exercises.name,
-        exercises.exerciseType,
-        exercises.muscleGroup,
-        exercises.equipment,
-        exercises.split,
-        exercises.uniAndBiLateral
-      FROM workout_sets
-      LEFT JOIN workouts ON workout_sets.workoutId = workouts.id
-      LEFT JOIN exercises ON workout_sets.exerciseId = exercises.id
-      ${whereStr == null ? '' : 'WHERE workout_sets.$whereStr'};
-    ''');
+    final List<Map<String, dynamic>> maps = await db.query('workout_sets');
 
     List<WorkoutSet> sets = [];
     for (var map in maps) {
@@ -111,22 +83,6 @@ class LegacySql {
         time: tryParseDuration(map['time']),
         distance: map['distance'],
         calsBurned: map['calsBurned'],
-        workout: Workout(date: DateTime.parse(map['date'])),
-        exercise: !shallow
-            ? Exercise(
-                id: map['exerciseId'],
-                name: map['name'],
-                muscleGroup: MuscleGroup.values.elementAt(map['muscleGroup']),
-                equipment: ExerciseEquipment.values.elementAt(map['equipment']),
-                split: ExerciseSplit.values.elementAt(map['split']),
-                uniAndBiLateral: map['uniAndBiLateral'] == 1,
-                userExerciseDetails: await UserExerciseDetailsHelper.getUserDetailsForExercise(
-                  exerciseId: map['exerciseId'],
-                  includeRecentUses: false,
-                  existingDb: db,
-                ),
-              )
-            : null,
       ));
     }
 
