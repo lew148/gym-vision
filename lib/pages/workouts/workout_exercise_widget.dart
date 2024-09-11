@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gymvision/db/classes/workout.dart';
 import 'package:gymvision/db/classes/workout_set.dart';
 import 'package:gymvision/shared/forms/add_set_to_workout_form.dart';
 import 'package:gymvision/shared/forms/edit_workout_set_form.dart';
@@ -26,16 +27,24 @@ class WorkoutExerciseWidget extends StatefulWidget {
 }
 
 class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
-  late bool dropped;
+  late int workoutId;
+  late Workout workout;
+  late int exerciseId;
+  late Exercise exercise;
   late List<WorkoutSet> realWorkoutSets;
   late bool onlyPlaceholderSets;
+  late bool dropped;
 
   @override
   void initState() {
     super.initState();
-    dropped = widget.dropped;
+    workoutId = widget.workoutSets[0].workoutId;
+    workout = widget.workoutSets[0].workout!;
+    exerciseId = widget.workoutSets[0].exerciseId;
+    exercise = widget.workoutSets[0].exercise!;
     realWorkoutSets = widget.workoutSets.where((ws) => ws.hasWeight() || ws.hasReps()).toList();
     onlyPlaceholderSets = realWorkoutSets.isEmpty;
+    dropped = realWorkoutSets.isNotEmpty && widget.dropped;
   }
 
   void onEditWorkoutExerciseTap(WorkoutSet ws) => showModalBottomSheet(
@@ -307,9 +316,9 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     try {
       HapticFeedback.heavyImpact();
 
-      if (widget.workoutSets[0].workout!.isInFuture()) {
+      if (workout.isInFuture()) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Cannot complete sets. Workout is in the future!'),
+          content: Text('Cannot mark future sets done!'),
         ));
         return;
       }
@@ -343,8 +352,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
 
         try {
           await WorkoutSetsHelper.removegroupedSetsFromWorkout(
-            widget.workoutSets[0].workoutId,
-            widget.workoutSets[0].exerciseId,
+            workoutId,
+            exerciseId,
           );
         } catch (ex) {
           if (!mounted) return;
@@ -432,7 +441,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                   Navigator.pop(context);
                   Navigator.of(context)
                       .push(MaterialPageRoute(
-                        builder: (context) => ExerciseView(exerciseId: widget.workoutSets[0].exerciseId),
+                        builder: (context) => ExerciseView(exerciseId: exerciseId),
                       ))
                       .then((value) => widget.reloadState());
                 },
@@ -573,7 +582,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       child: Column(
         children: [
           InkWell(
-            onTap: onlyPlaceholderSets ? null : () => widget.reloadState(eId: widget.workoutSets[0].exerciseId),
+            onTap: onlyPlaceholderSets ? null : () => widget.reloadState(eId: exerciseId),
             child: Padding(
               padding: const EdgeInsets.all(8),
               child: Row(
@@ -591,7 +600,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                     child: Row(children: [
                       Expanded(
                         child: Text(
-                          '${realWorkoutSets.every((ws) => ws.isSingle()) ? 'Single ' : ''}${widget.workoutSets[0].exercise!.name}',
+                          '${exercise.uniAndBiLateral && realWorkoutSets.isNotEmpty && realWorkoutSets.every((ws) => ws.isSingle()) ? 'Single ' : ''}${exercise.name}',
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -606,8 +615,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                         ActionButton(
                           icon: Icons.add_rounded,
                           onTap: () => onAddSetsButtonTap(
-                            widget.workoutSets[0].exercise!,
-                            widget.workoutSets[0].workoutId,
+                            exercise,
+                            workoutId,
                           ),
                         ),
                       ),

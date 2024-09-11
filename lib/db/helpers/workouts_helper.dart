@@ -4,6 +4,7 @@ import 'package:gymvision/db/classes/workout_category.dart';
 import 'package:gymvision/db/classes/workout_exercise_ordering.dart';
 import 'package:gymvision/db/helpers/workout_exercise_orderings_helper.dart';
 import 'package:gymvision/db/helpers/workout_sets_helper.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../classes/workout.dart';
@@ -85,26 +86,31 @@ class WorkoutsHelper {
     return noIncompleteSets == 0;
   }
 
-  static Future<Workout> getWorkout({
+  static Future<Workout?> getWorkout({
     required int workoutId,
     bool includeCategories = false,
     bool includeSets = false,
   }) async {
-    final db = await DatabaseHelper.getDb();
-    final List<Map<String, dynamic>> maps = await db.query(
-      'workouts',
-      where: 'id = ?',
-      whereArgs: [workoutId],
-    );
+    try {
+      final db = await DatabaseHelper.getDb();
+      final List<Map<String, dynamic>> maps = await db.query(
+        'workouts',
+        where: 'id = ?',
+        whereArgs: [workoutId],
+      );
 
-    return Workout(
-      id: workoutId,
-      date: DateTime.parse(maps[0]['date']),
-      workoutCategories: includeCategories ? await getWorkoutCategoriesForWorkout(workoutId) : null,
-      workoutSets: includeSets ? await WorkoutSetsHelper.getWorkoutSetsForWorkout(workoutId) : null,
-      ordering:
-          includeSets ? await WorkoutExerciseOrderingsHelper.getWorkoutExerciseOrderingForWorkout(workoutId) : null,
-    );
+      return Workout(
+        id: workoutId,
+        date: DateTime.parse(maps[0]['date']),
+        workoutCategories: includeCategories ? await getWorkoutCategoriesForWorkout(workoutId) : null,
+        workoutSets: includeSets ? await WorkoutSetsHelper.getWorkoutSetsForWorkout(workoutId) : null,
+        ordering:
+            includeSets ? await WorkoutExerciseOrderingsHelper.getWorkoutExerciseOrderingForWorkout(workoutId) : null,
+      );
+    } catch (ex, stack) {
+      await Sentry.captureException(ex, stackTrace: stack);
+      return null;
+    }
   }
 
   static Future<List<WorkoutCategory>?> getWorkoutCategoriesForWorkout(
@@ -204,6 +210,8 @@ class WorkoutsHelper {
   static updateDate(int id, DateTime newDate) async {
     final db = await DatabaseHelper.getDb();
     final workout = await getWorkout(workoutId: id);
+    if (workout == null) return;
+
     workout.date = DateTime(newDate.year, newDate.month, newDate.day, workout.date.hour, workout.date.minute);
     await db.update(
       'workouts',
@@ -216,6 +224,8 @@ class WorkoutsHelper {
   static updateTime(int id, TimeOfDay newTime) async {
     final db = await DatabaseHelper.getDb();
     final workout = await getWorkout(workoutId: id);
+    if (workout == null) return;
+
     workout.date = DateTime(workout.date.year, workout.date.month, workout.date.day, newTime.hour, newTime.minute);
     await db.update(
       'workouts',
@@ -229,6 +239,7 @@ class WorkoutsHelper {
     final db = await DatabaseHelper.getDb();
 
     var workout = await getWorkout(workoutId: wc.workoutId);
+    if (workout == null) return null;
 
     return Sqflite.firstIntValue(await db.rawQuery('''
       SELECT workoutId
