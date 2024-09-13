@@ -2,6 +2,7 @@ import 'package:gymvision/db/classes/workout.dart';
 import 'package:gymvision/db/helpers/user_exercise_details_helper.dart';
 import 'package:gymvision/db/helpers/workout_exercise_orderings_helper.dart';
 import 'package:gymvision/globals.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../enums.dart';
@@ -65,7 +66,7 @@ class WorkoutSetsHelper {
         distance: map['distance'],
         calsBurned: map['calsBurned'],
         workout: Workout(date: DateTime.parse(map['date'])),
-        exercise: !shallow
+        exercise: !shallow && map['name'] != null
             ? Exercise(
                 id: map['exerciseId'],
                 name: map['name'],
@@ -88,20 +89,24 @@ class WorkoutSetsHelper {
   }
 
   static addSetToWorkout(WorkoutSet ws) async {
-    final db = await DatabaseHelper.getDb();
-    final ordering = await WorkoutExerciseOrderingsHelper.getWorkoutExerciseOrderingForWorkout(ws.workoutId);
+    try {
+      final db = await DatabaseHelper.getDb();
+      final ordering = await WorkoutExerciseOrderingsHelper.getWorkoutExerciseOrderingForWorkout(ws.workoutId);
 
-    await db.insert(
-      'workout_sets',
-      ws.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+      await db.insert(
+        'workout_sets',
+        ws.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
 
-    if (ordering != null && !ordering.getPositions().contains(ws.exerciseId)) {
-      final newOrder = ordering.getPositions();
-      newOrder.add(ws.exerciseId);
-      ordering.setPositions(newOrder);
-      await WorkoutExerciseOrderingsHelper.updateWorkoutExerciseOrdering(ordering);
+      if (ordering != null && !ordering.getPositions().contains(ws.exerciseId)) {
+        final newOrder = ordering.getPositions();
+        newOrder.add(ws.exerciseId);
+        ordering.setPositions(newOrder);
+        await WorkoutExerciseOrderingsHelper.updateWorkoutExerciseOrdering(ordering);
+      }
+    } catch (ex, stack) {
+      await Sentry.captureException(ex, stackTrace: stack);
     }
   }
 

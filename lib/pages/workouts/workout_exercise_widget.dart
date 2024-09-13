@@ -42,7 +42,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     workout = widget.workoutSets[0].workout!;
     exerciseId = widget.workoutSets[0].exerciseId;
     exercise = widget.workoutSets[0].exercise!;
-    realWorkoutSets = widget.workoutSets.where((ws) => ws.hasWeight() || ws.hasReps()).toList();
+    realWorkoutSets = widget.workoutSets.where((ws) => ws.hasWeight() || ws.hasReps() || ws.isCardio()).toList();
     onlyPlaceholderSets = realWorkoutSets.isEmpty;
     dropped = realWorkoutSets.isNotEmpty && widget.dropped;
   }

@@ -88,7 +88,7 @@ class DatabaseHelper {
         done INTEGER DEFAULT 0,
         weight REAL,
         reps INTEGER,
-        single INTEGER,
+        single INTEGER DEFAULT 0,
         time TEXT,
         distance REAL,
         calsBurned INTEGER,
