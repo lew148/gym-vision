@@ -13,10 +13,10 @@ class EditWorkoutExerciseForm extends StatefulWidget {
   final void Function() reloadState;
 
   const EditWorkoutExerciseForm({
-    Key? key,
+    super.key,
     required this.workoutSet,
     required this.reloadState,
-  }) : super(key: key);
+  });
 
   @override
   State<EditWorkoutExerciseForm> createState() => _EditWorkoutExerciseFormState();

@@ -11,12 +11,12 @@ class SingleTextFieldForm extends StatefulWidget {
   final void Function(bool, String) onSubmit;
 
   const SingleTextFieldForm({
-    Key? key,
+    super.key,
     required this.title,
     required this.label,
     required this.initialValue,
     required this.onSubmit,
-  }) : super(key: key);
+  });
 
   @override
   State<SingleTextFieldForm> createState() => _SingleTextFieldFormState();

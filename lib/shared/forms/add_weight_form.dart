@@ -8,9 +8,9 @@ class AddWeightForm extends StatefulWidget {
   final Function reloadState;
 
   const AddWeightForm({
-    Key? key,
+    super.key,
     required this.reloadState,
-  }) : super(key: key);
+  });
 
   @override
   State<AddWeightForm> createState() => _AddWeightFormState();

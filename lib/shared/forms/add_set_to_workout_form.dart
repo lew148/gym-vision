@@ -15,12 +15,12 @@ class AddSetToWorkoutForm extends StatefulWidget {
   final Function reloadState;
 
   const AddSetToWorkoutForm({
-    Key? key,
+    super.key,
     this.workoutId,
     this.exerciseId,
     this.categoryShellIds,
     required this.reloadState,
-  }) : super(key: key);
+  });
 
   @override
   State<AddSetToWorkoutForm> createState() => _AddSetToWorkoutFormState();

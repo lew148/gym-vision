@@ -9,11 +9,11 @@ class AddCategoryToWorkoutForm extends StatefulWidget {
   final void Function() reloadState;
 
   const AddCategoryToWorkoutForm({
-    Key? key,
+    super.key,
     required this.workoutId,
     required this.selectedWorkoutCategoryIds,
     required this.reloadState,
-  }) : super(key: key);
+  });
 
   @override
   State<AddCategoryToWorkoutForm> createState() => _AddCategoryToWorkoutFormState();

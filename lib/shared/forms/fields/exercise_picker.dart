@@ -18,14 +18,14 @@ class ExercisePicker extends StatefulWidget {
   final Function setExercise;
 
   const ExercisePicker({
-    Key? key,
+    super.key,
     this.exerciseId,
     this.exercise,
     this.categoryShellIds,
     this.autoOpen = false,
     this.onQuickAdd,
     required this.setExercise,
-  }) : super(key: key);
+  });
 
   @override
   State<ExercisePicker> createState() => _ExercisePickerState();
@@ -142,7 +142,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                     selected: categoryShellFilters.contains(e.categoryShell.id),
                     onSelected: (bool selected) => onFilterSelect(context, e.categoryShell.id, selected),
                   ))
-            .toList(),
+            ,
         const Divider(thickness: 0.25),
         ...ExerciseSplit.values
             .map((e) => e == ExerciseSplit.other // get rid of other
@@ -154,7 +154,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                     selected: categoryShellFilters.contains(e.categoryShell.id),
                     onSelected: (bool selected) => onFilterSelect(context, e.categoryShell.id, selected),
                   ))
-            .toList(),
+            ,
         const Divider(thickness: 0.25),
         ...ExerciseType.values
             .map((e) => e.index == ExerciseType.values.length - 1 ||
@@ -168,7 +168,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                     selected: categoryShellFilters.contains(e.categoryShell.id),
                     onSelected: (bool selected) => onFilterSelect(context, e.categoryShell.id, selected),
                   ))
-            .toList(),
+            ,
       ],
     );
   }
