@@ -4,19 +4,19 @@ import 'package:gymvision/db/helpers/bodyweight_helper.dart';
 import 'package:gymvision/shared/ui_helper.dart';
 import 'fields/custom_form_fields.dart';
 
-class AddWeightForm extends StatefulWidget {
+class AddBodyWeightForm extends StatefulWidget {
   final Function reloadState;
 
-  const AddWeightForm({
+  const AddBodyWeightForm({
     super.key,
     required this.reloadState,
   });
 
   @override
-  State<AddWeightForm> createState() => _AddWeightFormState();
+  State<AddBodyWeightForm> createState() => _AddBodyWeightFormState();
 }
 
-class _AddWeightFormState extends State<AddWeightForm> {
+class _AddBodyWeightFormState extends State<AddBodyWeightForm> {
   final formKey = GlobalKey<FormState>();
   TextEditingController weightController = TextEditingController();
 
@@ -31,7 +31,7 @@ class _AddWeightFormState extends State<AddWeightForm> {
         }
         if (!mounted) return;
       } catch (ex) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add workout')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add Bodyweight')));
       }
 
       Navigator.pop(context);

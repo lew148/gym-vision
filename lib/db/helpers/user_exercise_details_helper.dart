@@ -15,7 +15,9 @@ class UserExerciseDetailsHelper {
       exerciseId: exerciseId,
       // notes: map['notes'],
       pr: await WorkoutSetsHelper.getPr(exerciseId: exerciseId, existingDb: db),
+      prSingle: await WorkoutSetsHelper.getPr(exerciseId: exerciseId, existingDb: db, single: true),
       last: await WorkoutSetsHelper.getLast(exerciseId: exerciseId, existingDb: db),
+      lastSingle: await WorkoutSetsHelper.getLast(exerciseId: exerciseId, existingDb: db, single: true),
       recentUses: includeRecentUses ? await WorkoutSetsHelper.getWorkoutSetsForExercise(exerciseId) : null,
     );
   }

@@ -113,8 +113,8 @@ class _EditWorkoutExerciseFormState extends State<EditWorkoutExerciseForm> {
           label: 'Weight',
           isDouble: ex.uniAndBiLateral,
           unit: 'kg',
-          last: ex.userExerciseDetails?.getLastAsString(),
-          max: ex.userExerciseDetails?.getPRAsString(),
+          last: ex.userExerciseDetails?.getLastAsString(single: widget.workoutSet.single),
+          max: ex.userExerciseDetails?.getPRAsString(single: widget.workoutSet.single),
         ),
         CustomFormFields.intField(
           controller: repsController,

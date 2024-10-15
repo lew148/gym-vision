@@ -140,7 +140,7 @@ class WorkoutSetsHelper {
     await WorkoutExerciseOrderingsHelper.removeExerciseFromOrderingForWorkout(workoutId, exerciseId);
   }
 
-  static Future<WorkoutSet?> getPr({required int exerciseId, Database? existingDb}) async {
+  static Future<WorkoutSet?> getPr({required int exerciseId, Database? existingDb, bool single = false}) async {
     final db = await DatabaseHelper.getDb(existingDb: existingDb);
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
       WITH max_table AS (
@@ -151,13 +151,14 @@ class WorkoutSetsHelper {
           workout_sets.done,
           workout_sets.weight,
           workout_sets.reps,
+          workout_sets.single,
           workouts.date
         FROM workout_sets
         LEFT JOIN workouts ON workout_sets.workoutId = workouts.id
         INNER JOIN (
           SELECT MAX(workout_sets.weight) AS max_weight
           FROM workout_sets
-          WHERE workout_sets.exerciseId = $exerciseId
+          WHERE workout_sets.exerciseId = $exerciseId AND workout_sets.single = $single
         ) AS b ON workout_sets.weight = b.max_weight
         WHERE NOT (workout_sets.weight = 0.0 AND workout_sets.reps = 0)
       )
@@ -181,11 +182,12 @@ class WorkoutSetsHelper {
       done: set['done'] == 1,
       weight: set['weight'],
       reps: set['reps'],
+      single: set['single'] == 1,
       workout: Workout(date: DateTime.parse(set['date'])),
     );
   }
 
-  static Future<WorkoutSet?> getLast({required int exerciseId, Database? existingDb}) async {
+  static Future<WorkoutSet?> getLast({required int exerciseId, Database? existingDb, bool single = false}) async {
     final db = await DatabaseHelper.getDb(existingDb: existingDb);
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
       SELECT
@@ -195,10 +197,11 @@ class WorkoutSetsHelper {
         workout_sets.done,
         workout_sets.weight,
         workout_sets.reps,
+        workout_sets.single,
         workouts.date
       FROM workout_sets
       LEFT JOIN workouts ON workout_sets.workoutId = workouts.id
-      WHERE workout_sets.exerciseId = $exerciseId AND NOT (workout_sets.weight = 0.0 AND workout_sets.reps = 0)
+      WHERE workout_sets.exerciseId = $exerciseId AND NOT (workout_sets.weight = 0.0 AND workout_sets.reps = 0) AND workout_sets.single = $single
       ORDER BY workout_sets.lastUpdated DESC
       LIMIT 1;
     ''');
@@ -213,6 +216,7 @@ class WorkoutSetsHelper {
       done: set['done'] == 1,
       weight: set['weight'],
       reps: set['reps'],
+      single: set['single'] == 1,
       workout: Workout(date: DateTime.parse(set['date'])),
     );
   }

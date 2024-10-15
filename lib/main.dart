@@ -5,7 +5,7 @@ import 'package:gymvision/db/classes/workout.dart';
 import 'package:gymvision/db/helpers/workouts_helper.dart';
 import 'package:gymvision/pages/coming_soon.dart';
 import 'package:gymvision/pages/exercises/exercises.dart';
-import 'package:gymvision/shared/forms/add_weight_form.dart';
+import 'package:gymvision/shared/forms/add_bodyweight_form.dart';
 import 'package:gymvision/shared/ui_helper.dart';
 import 'package:gymvision/user_settings_view.dart';
 import 'package:gymvision/pages/workouts/workout_view.dart';
@@ -123,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             Padding(
               padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: AddWeightForm(reloadState: reloadState),
+              child: AddBodyWeightForm(reloadState: reloadState),
             ),
           ],
         ),

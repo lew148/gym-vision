@@ -41,12 +41,23 @@ class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: s.hasWeight()
                                   ? [
-                                      const Icon(
-                                        Icons.fitness_center_rounded,
-                                        size: 15,
+                                      Expanded(
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                          const Icon(
+                                            Icons.fitness_center_rounded,
+                                            size: 15,
+                                          ),
+                                          if (s.single)
+                                            const Icon(
+                                              Icons.fitness_center_rounded,
+                                              size: 15,
+                                            ),
+                                        ],),
                                       ),
                                       const Padding(padding: EdgeInsets.all(5)),
-                                      Text(s.getWeightDisplay()),
+                                      Expanded(child: Text(s.getWeightDisplay())),
                                     ]
                                   : [dashIcon()],
                             ),

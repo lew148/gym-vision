@@ -175,6 +175,7 @@ class _ExerciseViewState extends State<ExerciseView> {
 
     List<Widget> weWidgets = [];
     groupedWorkoutExercises.forEach((key, value) {
+      value.sort(((a, b) => a.workout!.date.compareTo(b.workout!.date)));
       weWidgets.add(
         Padding(
           padding: const EdgeInsets.only(top: 5, bottom: 5),
@@ -186,8 +187,8 @@ class _ExerciseViewState extends State<ExerciseView> {
     return weWidgets;
   }
 
-  List<Widget> getPrSection(WorkoutSet? pr) => [
-        getSectionTitle(context, 'PR'),
+  List<Widget> getPrSection(WorkoutSet? pr, bool single) => [
+        getSectionTitle(context, single ? 'Single PR' : 'PR'),
         const Divider(thickness: 0.25),
         pr == null
             ? const Center(
@@ -242,7 +243,8 @@ class _ExerciseViewState extends State<ExerciseView> {
       ];
 
   List<Widget> getDetailsSections(Exercise exercise, UserExerciseDetails details) => [
-        if (exercise.exerciseType == ExerciseType.weight) ...getPrSection(details.pr),
+        if (exercise.exerciseType == ExerciseType.weight) ...getPrSection(details.pr, false),
+        if (exercise.exerciseType == ExerciseType.weight) ...getPrSection(details.prSingle, true),
         // getSectionTitle(context, 'Notes'),
         // getNotesDisplay(details),
         getSectionTitle(context, 'Recent Uses'),

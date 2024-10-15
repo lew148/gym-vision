@@ -50,8 +50,8 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
           label: 'Weight',
           isDouble: ex.uniAndBiLateral,
           unit: 'kg',
-          last: ex.userExerciseDetails?.getLastAsString(),
-          max: ex.userExerciseDetails?.getPRAsString(),
+          last: ex.userExerciseDetails?.getLastAsString(single: single),
+          max: ex.userExerciseDetails?.getPRAsString(single: single),
         ),
         CustomFormFields.intField(
           controller: repsController,
