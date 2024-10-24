@@ -54,6 +54,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                   Navigator.pop(context);
                   try {
                     await DatabaseHelper.deleteDb();
+                    await DatabaseHelper.openDb();
                     if (!context.mounted) return;
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('DB successfully reset!')));
                   } catch (ex) {

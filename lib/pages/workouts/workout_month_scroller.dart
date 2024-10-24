@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/db/classes/body_weight.dart';
+import 'package:gymvision/db/classes/user_settings.dart';
 import 'package:gymvision/db/helpers/bodyweight_helper.dart';
 import 'package:gymvision/helpers/category_shell_helper.dart';
 import 'package:gymvision/shared/ui_helper.dart';
@@ -16,6 +17,7 @@ import '../../globals.dart';
 class WorkoutMonthScoller extends StatefulWidget {
   final List<Workout> workouts;
   final List<Bodyweight> bodyweights;
+  final UserSettings userSettings;
   final Function({DateTime? date}) onAddWorkoutTap;
   final Function reloadState;
 
@@ -23,6 +25,7 @@ class WorkoutMonthScoller extends StatefulWidget {
     super.key,
     required this.workouts,
     required this.bodyweights,
+    required this.userSettings,
     required this.onAddWorkoutTap,
     required this.reloadState,
   });
@@ -317,7 +320,9 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                                 padding: const EdgeInsets.all(15),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
-                                  children: dateIsInFuture(currentDate) || isToday
+                                  children: dateXIsAfterDateY(widget.userSettings.firstUse, currentDate) ||
+                                          dateIsInFuture(currentDate) ||
+                                          isToday
                                       ? [
                                           Text(
                                             '-',

@@ -123,11 +123,10 @@ class DatabaseHelper {
     batch.execute('''
       CREATE TABLE user_settings(
         id INTEGER PRIMARY KEY,
-        theme TEXT
+        theme TEXT,
+        firstUse TEXT
       );
     ''');
-
-    batch.execute('INSERT INTO user_settings(id, theme) VALUES (1, "system");');
 
     batch.execute('''
       CREATE TABLE bodyweights(
@@ -138,25 +137,26 @@ class DatabaseHelper {
       );
     ''');
 
-    batch.execute(getInsertExercisesSql());
+    batch.execute(
+        'INSERT INTO user_settings(id, theme, firstUse) VALUES (1, "system", "${DateTime.now().toString()}");');
+    batch.execute(getExerciseInsertSql());
   }
 
   static updateExercises() async {
     final db = await getDb();
-    final insertSql = getInsertExercisesSql();
+    final insertSql = getExerciseInsertSql();
 
     await db.delete('exercises');
     await db.rawInsert(insertSql);
   }
 
-  static String getInsertExercisesSql() {
+  static String getExerciseInsertSql() {
     var buffer = StringBuffer();
+    final exercises = DataHelper.getDefaultExercises();
+    final length = exercises.length;
 
     buffer.writeln('INSERT INTO exercises');
     buffer.writeln('VALUES');
-
-    final exercises = DataHelper.getDefaultExercises();
-    final length = exercises.length;
 
     for (int i = 0; i < length; i++) {
       final ex = exercises[i];

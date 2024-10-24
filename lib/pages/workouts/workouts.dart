@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/body_weight.dart';
+import 'package:gymvision/db/classes/user_settings.dart';
 import 'package:gymvision/db/helpers/bodyweight_helper.dart';
+import 'package:gymvision/db/helpers/user_settings_helper.dart';
 import 'package:gymvision/pages/workouts/workout_month_scroller.dart';
 
 import '../../db/classes/workout.dart';
@@ -26,6 +28,7 @@ class _WorkoutsState extends State<Workouts> {
   Widget build(BuildContext context) {
     final Future<List<Workout>> workouts = WorkoutsHelper.getWorkouts();
     final Future<List<Bodyweight>> bodyweights = BodyweightHelper.getBodyweights();
+    final Future<UserSettings> userSettings = UserSettingsHelper.getUserSettings();
 
     return Container(
       padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
@@ -50,12 +53,21 @@ class _WorkoutsState extends State<Workouts> {
                         return const SizedBox.shrink(); // loading
                       }
 
-                      return WorkoutMonthScoller(
-                        workouts: snapshot.data!,
-                        bodyweights: bwSnapshot.data!,
-                        onAddWorkoutTap: widget.onAddWorkoutTap,
-                        reloadState: reloadState,
-                      );
+                      return FutureBuilder<UserSettings>(
+                          future: userSettings,
+                          builder: (context, usSnapshot) {
+                            if (!usSnapshot.hasData) {
+                              return const SizedBox.shrink(); // loading
+                            }
+
+                            return WorkoutMonthScoller(
+                              workouts: snapshot.data!,
+                              bodyweights: bwSnapshot.data!,
+                              userSettings: usSnapshot.data!,
+                              onAddWorkoutTap: widget.onAddWorkoutTap,
+                              reloadState: reloadState,
+                            );
+                          });
                     });
               },
             ),

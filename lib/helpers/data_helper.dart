@@ -796,10 +796,26 @@ class DataHelper {
         ),
         Exercise(
           id: 105,
-          name: 'cable Chest Press',
+          name: 'Cable Chest Press',
           exerciseType: ExerciseType.weight,
           muscleGroup: MuscleGroup.chest,
           equipment: ExerciseEquipment.cable,
+          split: ExerciseSplit.push,
+        ),
+        Exercise(
+          id: 106,
+          name: 'Deficit Push Up',
+          exerciseType: ExerciseType.weight,
+          muscleGroup: MuscleGroup.chest,
+          equipment: ExerciseEquipment.bodyWeight,
+          split: ExerciseSplit.push,
+        ),
+        Exercise(
+          id: 107,
+          name: 'Plated Leg Press',
+          exerciseType: ExerciseType.weight,
+          muscleGroup: MuscleGroup.quadsAndCalves,
+          equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.push,
         ),
       ];

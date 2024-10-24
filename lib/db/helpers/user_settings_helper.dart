@@ -10,6 +10,7 @@ class UserSettingsHelper {
     return UserSettings(
       id: maps[0]['id'],
       theme: EnumToString.fromString(ThemeSetting.values, maps[0]['theme'])!,
+      firstUse: maps[0]['firstUse'] == null ? DateTime.utc(-271821,04,20) : DateTime.parse(maps[0]['firstUse']),
     );
   }
 

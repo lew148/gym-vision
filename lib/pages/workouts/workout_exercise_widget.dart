@@ -71,6 +71,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
 
   void onCopySetButtonTap(WorkoutSet ws) async {
     try {
+      HapticFeedback.heavyImpact();
       await WorkoutSetsHelper.addSetToWorkout(
         WorkoutSet(
           exerciseId: ws.exerciseId,
@@ -86,9 +87,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       );
     } catch (ex) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed add set to workout: ${ex.toString()}')),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Failed add set to workout: ${ex.toString()}')));
     }
 
     widget.reloadState();
@@ -140,11 +140,11 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         onLongPress: () => showDeleteWorkoutSetConfirm(ws.id!),
         onTap: () => onEditWorkoutExerciseTap(ws),
         child: Padding(
-          padding: const EdgeInsets.all(10),
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
           child: Row(
             children: [
               Expanded(
-                flex: 1,
+                flex: 2,
                 child: Container(
                   padding: const EdgeInsets.all(3),
                   decoration: BoxDecoration(
@@ -162,7 +162,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                 ),
               ),
               Expanded(
-                  flex: 2,
+                  flex: 3,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: ws.hasWeight()
@@ -177,7 +177,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                         : [dashIcon()],
                   )),
               Expanded(
-                flex: 2,
+                flex: 3,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: ws.reps != null && ws.reps! > 0
@@ -192,22 +192,17 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                       : [dashIcon()],
                 ),
               ),
-              InkWell(
-                // padding: EdgeInsets.zero,
-                child: const Icon(
-                  Icons.more_vert_rounded,
+              Expanded(
+                flex: 1,
+                child: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    child: Icon(Icons.more_vert_rounded),
+                  ),
+                  onTap: () => showSetMenu(ws),
                 ),
-                onTap: () => showSetMenu(ws),
-              )
-              // Expanded(
-              //   flex: 2,
-              //   child: getPrimaryButton(
-              //     ActionButton(
-              //       icon: Icons.copy_rounded,
-              //       onTap: () => onCopySetButtonTap(widget.workoutSets.last),
-              //     ),
-              //   ),
-              // ),
+              ),
             ],
           ),
         ),

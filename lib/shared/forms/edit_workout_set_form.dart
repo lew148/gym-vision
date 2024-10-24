@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gymvision/db/classes/exercise.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/globals.dart';
@@ -144,6 +145,31 @@ class _EditWorkoutExerciseFormState extends State<EditWorkoutExerciseForm> {
         ),
       ];
 
+  void onCopySetButtonTap() async {
+    try {
+      HapticFeedback.heavyImpact();
+      await WorkoutSetsHelper.addSetToWorkout(
+        WorkoutSet(
+          exerciseId: widget.workoutSet.exerciseId,
+          workoutId: widget.workoutSet.workoutId,
+          weight: widget.workoutSet.weight,
+          time: widget.workoutSet.time,
+          distance: widget.workoutSet.distance,
+          calsBurned: widget.workoutSet.calsBurned,
+          reps: widget.workoutSet.reps,
+          single: widget.workoutSet.single,
+          done: false,
+        ),
+      );
+    } catch (ex) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Failed add set to workout: ${ex.toString()}')));
+    }
+
+    widget.reloadState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final exercise = widget.workoutSet.exercise!;
@@ -168,13 +194,21 @@ class _EditWorkoutExerciseFormState extends State<EditWorkoutExerciseForm> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.delete_rounded,
-                        color: Theme.of(context).colorScheme.tertiary,
+                    Row(children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.delete_rounded,
+                          color: Theme.of(context).colorScheme.tertiary,
+                        ),
+                        onPressed: () => onDeleteButtonTap(widget.workoutSet.id!),
                       ),
-                      onPressed: () => onDeleteButtonTap(widget.workoutSet.id!),
-                    ),
+                      getPrimaryButton(
+                        ActionButton(
+                          icon: Icons.copy_rounded,
+                          onTap: () => onCopySetButtonTap(),
+                        ),
+                      ),
+                    ]),
                     getElevatedPrimaryButton(
                       context,
                       ActionButton(

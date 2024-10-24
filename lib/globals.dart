@@ -38,6 +38,7 @@ String getDateString(DateTime dt) {
 String getMonthAndYear(DateTime dt) => DateFormat(dt.year == DateTime.now().year ? 'MMMM' : 'MMMM yyyy').format(dt);
 int getDaysInMonth(int year, int month) => DateTime(year, month + 1, 0).day;
 bool dateIsInFuture(DateTime dt) => DateTime.now().compareTo(dt) < 0;
+bool dateXIsAfterDateY(DateTime x, DateTime y) => y.compareTo(x) < 0;
 
 Duration? tryParseDuration(String? s) {
   // format = ##:##:##.######
