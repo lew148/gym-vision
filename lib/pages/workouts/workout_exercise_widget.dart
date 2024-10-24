@@ -42,7 +42,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     workout = widget.workoutSets[0].workout!;
     exerciseId = widget.workoutSets[0].exerciseId;
     exercise = widget.workoutSets[0].exercise!;
-    realWorkoutSets = widget.workoutSets.where((ws) => ws.hasWeight() || ws.hasReps() || ws.isCardio()).toList();
+    realWorkoutSets = widget.workoutSets.where((ws) => !ws.isPlaceholder()).toList();
     onlyPlaceholderSets = realWorkoutSets.isEmpty;
     dropped = realWorkoutSets.isNotEmpty && widget.dropped;
   }
@@ -135,7 +135,6 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
 
     for (int i = 0; i < filteredSets.length; i++) {
       final ws = filteredSets[i];
-
       widgets.add(InkWell(
         onLongPress: () => showDeleteWorkoutSetConfirm(ws.id!),
         onTap: () => onEditWorkoutExerciseTap(ws),

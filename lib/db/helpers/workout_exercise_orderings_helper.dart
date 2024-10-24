@@ -1,4 +1,5 @@
 import 'package:gymvision/db/classes/workout_exercise_ordering.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../db.dart';
@@ -21,23 +22,31 @@ class WorkoutExerciseOrderingsHelper {
     );
   }
 
-  static Future<int> insertWorkoutExerciseOrdering(WorkoutExerciseOrdering weo) async {
-    final db = await DatabaseHelper.getDb();
-    return await db.insert(
-      'workout_exercise_orderings',
-      weo.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+  static insertWorkoutExerciseOrdering(WorkoutExerciseOrdering weo) async {
+    try {
+      final db = await DatabaseHelper.getDb();
+      return await db.insert(
+        'workout_exercise_orderings',
+        weo.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    } catch (ex, stack) {
+      await Sentry.captureException(ex, stackTrace: stack);
+    }
   }
 
   static updateWorkoutExerciseOrdering(WorkoutExerciseOrdering weo) async {
-    final db = await DatabaseHelper.getDb();
-    await db.update(
-      'workout_exercise_orderings',
-      weo.toMap(),
-      where: 'id = ?',
-      whereArgs: [weo.id],
-    );
+    try {
+      final db = await DatabaseHelper.getDb();
+      await db.update(
+        'workout_exercise_orderings',
+        weo.toMap(),
+        where: 'id = ?',
+        whereArgs: [weo.id],
+      );
+    } catch (ex, stack) {
+      await Sentry.captureException(ex, stackTrace: stack);
+    }
   }
 
   static removeExerciseFromOrderingForWorkout(int workoutId, int exerciseId) async {
