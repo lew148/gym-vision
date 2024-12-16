@@ -177,6 +177,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
     List<Exercise> allExercises,
     Exercise? selectedExercise,
   ) {
+    allExercises.sort((a, b) => a.name.compareTo(b.name));
     allExercises.sort((a, b) => a.muscleGroup.index.compareTo(b.muscleGroup.index));
 
     showModalBottomSheet(

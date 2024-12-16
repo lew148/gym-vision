@@ -244,7 +244,7 @@ class _ExerciseViewState extends State<ExerciseView> {
 
   List<Widget> getDetailsSections(Exercise exercise, UserExerciseDetails details) => [
         if (exercise.exerciseType == ExerciseType.weight) ...getPrSection(details.pr, false),
-        if (exercise.exerciseType == ExerciseType.weight) ...getPrSection(details.prSingle, true),
+        if (exercise.exerciseType == ExerciseType.weight && exercise.uniAndBiLateral) ...getPrSection(details.prSingle, true),
         // getSectionTitle(context, 'Notes'),
         // getNotesDisplay(details),
         getSectionTitle(context, 'Recent Uses'),

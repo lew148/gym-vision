@@ -818,5 +818,13 @@ class DataHelper {
           equipment: ExerciseEquipment.plates,
           split: ExerciseSplit.push,
         ),
+        Exercise(
+          id: 108,
+          name: 'Preacher DB Hammer Curl',
+          exerciseType: ExerciseType.weight,
+          muscleGroup: MuscleGroup.biceps,
+          equipment: ExerciseEquipment.dumbbell,
+          split: ExerciseSplit.pull,
+        ),
       ];
 }
