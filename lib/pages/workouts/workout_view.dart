@@ -129,7 +129,7 @@ class _WorkoutViewState extends State<WorkoutView> {
               child: Wrap(
                 alignment: WrapAlignment.start,
                 children: CategoryShellHelper.sortCategories(workoutCategories)
-                    .map((wc) => getTapablePropDisplay(
+                    .map((wc) => getTappablePropDisplay(
                           context,
                           wc.getDisplayName(),
                           () => goToMostRecentWorkout(wc),

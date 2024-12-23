@@ -20,6 +20,6 @@ class FlavourTextSchedule {
         'id': id,
         'flavourTextId': flavourTextId,
         'date': date.toString(),
-        'dismissed': dismissed,
+        'dismissed': dismissed ? 1 : 0,
       };
 }

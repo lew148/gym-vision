@@ -38,9 +38,9 @@ class _FlavourTextCardState extends State<FlavourTextCard> {
             children: [
               Expanded(
                 child: Card(
-                  color: Theme.of(context).colorScheme.secondary,
+                  color: Theme.of(context).colorScheme.primary,
                   child: Container(
-                    padding: const EdgeInsets.fromLTRB(10, 10, 5, 10),
+                    padding: const EdgeInsets.all(10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -48,15 +48,15 @@ class _FlavourTextCardState extends State<FlavourTextCard> {
                           child: Text(
                             snapshot.data!.flavourText!.message,
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 15,
                               fontWeight: FontWeight.w400,
                               color: Theme.of(context).colorScheme.onSecondary,
                             ),
                           ),
                         ),
-                        IconButton(
-                          onPressed: () => onDismissTap(snapshot.data!),
-                          icon: Icon(
+                        InkWell(
+                          onTap: () => onDismissTap(snapshot.data!),
+                          child: Icon(
                             Icons.close_rounded,
                             color: Theme.of(context).colorScheme.onSecondary,
                           ),

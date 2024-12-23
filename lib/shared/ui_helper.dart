@@ -59,6 +59,7 @@ Widget getElevatedPrimaryButton(BuildContext context, ActionButton actionButton)
             Icon(
               actionButton.icon,
               size: 25,
+              color: Colors.black,
             ),
           if (actionButton.icon != null && actionButton.text != null) const Padding(padding: EdgeInsets.only(left: 5)),
           if (actionButton.text != null)
@@ -106,7 +107,7 @@ Widget getPropDisplay(BuildContext context, String text) => Container(
       child: Text(text, textAlign: TextAlign.center),
     );
 
-Widget getTapablePropDisplay(BuildContext context, String text, Function() onTap) => Container(
+Widget getTappablePropDisplay(BuildContext context, String text, Function() onTap) => Container(
     margin: const EdgeInsets.all(2.5),
     decoration: BoxDecoration(
       border: Border.all(color: Theme.of(context).colorScheme.shadow),

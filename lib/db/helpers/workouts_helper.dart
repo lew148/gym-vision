@@ -11,6 +11,51 @@ import '../classes/workout.dart';
 import '../db.dart';
 
 class WorkoutsHelper {
+  static Future<List<Workout>> getWorkoutsForDay(DateTime date) async {
+    final db = await DatabaseHelper.getDb();
+    final List<Map<String, dynamic>> maps = await db.rawQuery('''
+      SELECT
+        workouts.id,
+        workouts.date,
+        workout_categories.id AS workoutCategoryId,
+        workout_categories.categoryShellId,
+        workout_exercise_orderings.id AS weoId,
+        workout_exercise_orderings.positions
+      FROM workouts
+      LEFT JOIN workout_categories ON workouts.id = workout_categories.workoutId
+      LEFT JOIN workout_exercise_orderings ON workouts.id = workout_exercise_orderings.workoutId
+      WHERE workouts.date LIKE '%${date.year}-${date.month}-${date.day}%'
+      ORDER BY workouts.date DESC;
+    ''');
+
+    final Map<int, List<Map<String, dynamic>>> groupedMaps = groupBy<Map<String, dynamic>, int>(maps, (x) => x['id']);
+
+    List<Workout> workouts = [];
+
+    groupedMaps.forEach((k, v) async {
+      workouts.add(
+        Workout(
+          id: k,
+          date: DateTime.parse(v.first['date']),
+          workoutCategories: processWorkoutCategories(v),
+          ordering: v.first['positions'] != null
+              ? WorkoutExerciseOrdering(
+                  id: v.first['weoId'],
+                  workoutId: k,
+                  positions: v.first['positions'],
+                )
+              : null,
+        ),
+      );
+    });
+
+    for (var w in workouts) {
+      w.done = await workoutIsDone(workoutId: w.id!, db: db);
+    }
+
+    return workouts;
+  }
+
   static Future<List<Workout>> getWorkouts() async {
     final db = await DatabaseHelper.getDb();
     final List<Map<String, dynamic>> maps = await db.rawQuery('''

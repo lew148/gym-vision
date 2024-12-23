@@ -5,6 +5,7 @@ import 'package:gymvision/db/classes/workout.dart';
 import 'package:gymvision/db/helpers/workouts_helper.dart';
 import 'package:gymvision/pages/coming_soon.dart';
 import 'package:gymvision/pages/exercises/exercises.dart';
+import 'package:gymvision/pages/today/today.dart';
 import 'package:gymvision/shared/forms/add_bodyweight_form.dart';
 import 'package:gymvision/shared/ui_helper.dart';
 import 'package:gymvision/user_settings_view.dart';
@@ -206,6 +207,7 @@ class _MyHomePageState extends State<MyHomePage> {
       );
 
   List<Widget> widgetPages() => [
+        Today(onAddWorkoutTap: onAddWorkoutTap),
         Workouts(onAddWorkoutTap: onAddWorkoutTap),
         const Exercises(),
         const ComingSoon(),
@@ -239,6 +241,14 @@ class _MyHomePageState extends State<MyHomePage> {
         indicatorColor: Colors.transparent,
         selectedIndex: selectedIndex,
         destinations: [
+          NavigationDestination(
+            icon: const Icon(Icons.today_rounded),
+            selectedIcon: Icon(
+              Icons.today_rounded,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            label: 'Today',
+          ),
           NavigationDestination(
             icon: const Icon(Icons.format_list_bulleted_rounded),
             selectedIcon: Icon(

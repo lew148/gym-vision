@@ -9,8 +9,7 @@ class FlavourTextHelper {
     final db = await DatabaseHelper.getDb();
 
     final recentFlavourTextSchedules = await getRecentFlavourTextSchedules(db);
-    if (recentFlavourTextSchedules.isNotEmpty &&
-        isToday(recentFlavourTextSchedules[0].date)) {
+    if (recentFlavourTextSchedules.isNotEmpty && isToday(recentFlavourTextSchedules[0].date)) {
       return recentFlavourTextSchedules[0];
     }
 
@@ -86,6 +85,9 @@ class FlavourTextHelper {
       ''',
     );
 
+    // todo: REMOVE
+    if (maps.isEmpty) return FlavourText(message: 'Dummy FT');
+
     return FlavourText(
       id: maps[0]['id'],
       message: maps[0]['message'],
@@ -105,8 +107,7 @@ class FlavourTextHelper {
 
   static setRecentFlavourTextScheduleNotDismissed() async {
     final db = await DatabaseHelper.getDb();
-    final FlavourTextSchedule mostRecentFTS =
-        await getMostRecentFlavourTextSchedule(db);
+    final FlavourTextSchedule mostRecentFTS = await getMostRecentFlavourTextSchedule(db);
     mostRecentFTS.dismissed = false;
     await db.update(
       'flavour_text_schedules',

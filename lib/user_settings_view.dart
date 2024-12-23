@@ -3,6 +3,7 @@ import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/user_settings.dart';
 import 'package:gymvision/db/db.dart';
+import 'package:gymvision/db/helpers/flavour_text_helper.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/shared/ui_helper.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -88,12 +89,18 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                   alignment: WrapAlignment.spaceBetween,
                   spacing: 5,
                   children: [
-                    // ElevatedButton(
-                    //   onPressed: () async {
-                    //     await FlavourTextHelper.setRecentFlavourTextScheduleNotDismissed();
-                    //   },
-                    //   child: const Text('Un-Dismiss Flavour Text'),
-                    // ),
+                    getElevatedPrimaryButton(
+                      context,
+                      ActionButton(
+                        onTap: () async {
+                          await FlavourTextHelper.setRecentFlavourTextScheduleNotDismissed();
+                          if (!context.mounted) return;
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(content: Text('Flavour Text Un-dismissed!')));
+                        },
+                        text: 'Un-Dismiss Flavour Text',
+                      ),
+                    ),
                     getElevatedPrimaryButton(
                       context,
                       ActionButton(

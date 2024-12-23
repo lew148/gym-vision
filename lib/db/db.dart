@@ -116,7 +116,7 @@ class DatabaseHelper {
         id INTEGER PRIMARY KEY,
         flavourTextId INTEGER NOT NULL,
         date TEXT NOT NULL,
-        dismissed INTEGER NOT NULL DEFAULT 0
+        dismissed INTEGER DEFAULT 0
       );
     ''');
 
@@ -138,7 +138,10 @@ class DatabaseHelper {
     ''');
 
     batch.execute(
-        'INSERT INTO user_settings(id, theme, firstUse) VALUES (1, "system", "${DateTime.now().toString()}");');
+      'INSERT INTO user_settings(id, theme, firstUse) VALUES (1, "system", "${DateTime.now().toString()}");',
+    );
+    
+    batch.execute(getFlavourTextInsertSql());
     batch.execute(getExerciseInsertSql());
   }
 
@@ -163,6 +166,22 @@ class DatabaseHelper {
       buffer.writeln(
         '(${ex.id}, "${ex.name}", ${ex.exerciseType.index}, ${ex.muscleGroup.index}, ${ex.equipment.index}, ${ex.split.index}, ${ex.uniAndBiLateral ? 1 : 0})${i == length - 1 ? ';' : ','}',
       );
+    }
+
+    return buffer.toString();
+  }
+
+  static String getFlavourTextInsertSql() {
+    var buffer = StringBuffer();
+    final fts = DataHelper.getFlavourTexts();
+    final length = fts.length;
+
+    buffer.writeln('INSERT INTO flavour_texts');
+    buffer.writeln('VALUES');
+
+    for (int i = 0; i < length; i++) {
+      final ft = fts[i];
+      buffer.writeln('(${ft.id}, "${ft.message}")${i == length - 1 ? ';' : ','}');
     }
 
     return buffer.toString();

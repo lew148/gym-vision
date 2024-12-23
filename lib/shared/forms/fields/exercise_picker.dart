@@ -132,43 +132,37 @@ class _ExercisePickerState extends State<ExercisePicker> {
     return Wrap(
       spacing: 5,
       children: [
-        ...MuscleGroup.values
-            .map((e) => e.index == MuscleGroup.values.length - 1 // get rid of other
-                ? const SizedBox.shrink()
-                : FilterChip(
-                    backgroundColor: Theme.of(context).cardColor,
-                    selectedColor: Colors.grey[600],
-                    label: Text(e.displayName),
-                    selected: categoryShellFilters.contains(e.categoryShell.id),
-                    onSelected: (bool selected) => onFilterSelect(context, e.categoryShell.id, selected),
-                  ))
-            ,
+        ...MuscleGroup.values.map((e) => e.index == MuscleGroup.values.length - 1 // get rid of other
+            ? const SizedBox.shrink()
+            : FilterChip(
+                backgroundColor: Theme.of(context).cardColor,
+                selectedColor: Colors.grey[600],
+                label: Text(e.displayName),
+                selected: categoryShellFilters.contains(e.categoryShell.id),
+                onSelected: (bool selected) => onFilterSelect(context, e.categoryShell.id, selected),
+              )),
         const Divider(thickness: 0.25),
-        ...ExerciseSplit.values
-            .map((e) => e == ExerciseSplit.other // get rid of other
-                ? const SizedBox.shrink()
-                : FilterChip(
-                    backgroundColor: Theme.of(context).cardColor,
-                    selectedColor: Colors.grey[600],
-                    label: Text(e.displayName),
-                    selected: categoryShellFilters.contains(e.categoryShell.id),
-                    onSelected: (bool selected) => onFilterSelect(context, e.categoryShell.id, selected),
-                  ))
-            ,
+        ...ExerciseSplit.values.map((e) => e == ExerciseSplit.other // get rid of other
+            ? const SizedBox.shrink()
+            : FilterChip(
+                backgroundColor: Theme.of(context).cardColor,
+                selectedColor: Colors.grey[600],
+                label: Text(e.displayName),
+                selected: categoryShellFilters.contains(e.categoryShell.id),
+                onSelected: (bool selected) => onFilterSelect(context, e.categoryShell.id, selected),
+              )),
         const Divider(thickness: 0.25),
-        ...ExerciseType.values
-            .map((e) => e.index == ExerciseType.values.length - 1 ||
-                    e.index == ExerciseType.stretch.index ||
-                    e.index == ExerciseType.weight.index // get rid of other, stretch and weight
-                ? const SizedBox.shrink()
-                : FilterChip(
-                    backgroundColor: Theme.of(context).cardColor,
-                    selectedColor: Colors.grey[600],
-                    label: Text(e.displayName),
-                    selected: categoryShellFilters.contains(e.categoryShell.id),
-                    onSelected: (bool selected) => onFilterSelect(context, e.categoryShell.id, selected),
-                  ))
-            ,
+        ...ExerciseType.values.map((e) => e.index == ExerciseType.values.length - 1 ||
+                e.index == ExerciseType.stretch.index ||
+                e.index == ExerciseType.weight.index // get rid of other, stretch and weight
+            ? const SizedBox.shrink()
+            : FilterChip(
+                backgroundColor: Theme.of(context).cardColor,
+                selectedColor: Colors.grey[600],
+                label: Text(e.displayName),
+                selected: categoryShellFilters.contains(e.categoryShell.id),
+                onSelected: (bool selected) => onFilterSelect(context, e.categoryShell.id, selected),
+              )),
       ],
     );
   }
@@ -178,7 +172,6 @@ class _ExercisePickerState extends State<ExercisePicker> {
     Exercise? selectedExercise,
   ) {
     allExercises.sort((a, b) => a.name.compareTo(b.name));
-    allExercises.sort((a, b) => a.muscleGroup.index.compareTo(b.muscleGroup.index));
 
     showModalBottomSheet(
       context: context,
@@ -328,7 +321,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
           var allExercises = allExercisesSnapshot.data!;
           var zeroExercises = allExercises.isEmpty;
 
-          if (!zeroExercises) allExercises.sort((a, b) => a.equipment.index.compareTo(b.equipment.index));
+          // if (!zeroExercises) allExercises.sort((a, b) => a.equipment.index.compareTo(b.equipment.index));
 
           return FutureBuilder<Exercise>(
             future: selectedExercise,
