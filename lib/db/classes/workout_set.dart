@@ -55,7 +55,7 @@ class WorkoutSet {
 
   bool hasWeight() => weight != null && weight != 0;
   double getWeight() => hasWeight() ? weight! : 0;
-  String getWeightDisplay() => '${truncateDouble(weight)}kg';
+  String getWeightDisplay() => '${truncateDouble(weight)} kg';
 
   bool hasReps() => reps != null && reps! > 0;
   String getRepsDisplay() => hasReps() ? '$reps rep${reps == 1 ? '' : 's'}' : 'No Reps';

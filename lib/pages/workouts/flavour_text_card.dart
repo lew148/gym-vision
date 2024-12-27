@@ -58,6 +58,7 @@ class _FlavourTextCardState extends State<FlavourTextCard> {
                           onTap: () => onDismissTap(snapshot.data!),
                           child: Icon(
                             Icons.close_rounded,
+                            size: 18,
                             color: Theme.of(context).colorScheme.onSecondary,
                           ),
                         ),

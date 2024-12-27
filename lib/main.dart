@@ -224,7 +224,7 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: const Icon(Icons.settings_rounded),
             onPressed: () => Navigator.of(context)
                 .push(MaterialPageRoute(builder: (context) => const UserSettingsView()))
-                .then((value) => setState(() {})),
+                .then((value) => reloadState),
           )
         ],
       ),

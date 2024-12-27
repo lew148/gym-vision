@@ -78,6 +78,7 @@ class LegacySql {
         workoutId: map['workoutId'],
         exerciseId: map['exerciseId'],
         done: map['done'] == 1,
+        single: map['single'] != null && map['single'] == 1,
         weight: map['weight'],
         reps: map['reps'],
         time: tryParseDuration(map['time']),

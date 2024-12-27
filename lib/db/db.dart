@@ -140,7 +140,7 @@ class DatabaseHelper {
     batch.execute(
       'INSERT INTO user_settings(id, theme, firstUse) VALUES (1, "system", "${DateTime.now().toString()}");',
     );
-    
+
     batch.execute(getFlavourTextInsertSql());
     batch.execute(getExerciseInsertSql());
   }
@@ -213,11 +213,16 @@ class DatabaseHelper {
     for (var s in sets) {
       await WorkoutSetsHelper.addSetToWorkout(
         WorkoutSet(
+          id: s.id,
           exerciseId: s.exerciseId,
           workoutId: s.workoutId,
           weight: s.weight,
           reps: s.reps,
           done: s.done,
+          single: s.single,
+          calsBurned: s.calsBurned,
+          distance: s.distance,
+          time: s.time,
         ),
       );
     }
