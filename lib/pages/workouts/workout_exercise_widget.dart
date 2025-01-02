@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/db/classes/workout.dart';
 import 'package:gymvision/db/classes/workout_set.dart';
+import 'package:gymvision/globals.dart';
 import 'package:gymvision/shared/forms/add_set_to_workout_form.dart';
 import 'package:gymvision/shared/forms/edit_workout_set_form.dart';
 import 'package:gymvision/shared/ui_helper.dart';
@@ -118,16 +119,6 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       ),
     ).then((value) => widget.reloadState());
   }
-
-  Widget dashIcon() => const Center(
-        child: Text(
-          '-',
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      );
 
   List<Widget> getWeightedSetWidgets(List<WorkoutSet> sets) {
     final List<Widget> widgets = [];

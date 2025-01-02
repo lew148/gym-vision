@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/workout_set.dart';
 import 'package:gymvision/enums.dart';
+import 'package:gymvision/globals.dart';
 
 class ExerciseRecentUsesView extends StatefulWidget {
   final List<WorkoutSet> workoutSets;
@@ -15,16 +16,6 @@ class ExerciseRecentUsesView extends StatefulWidget {
 }
 
 class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
-  Widget dashIcon() => const Center(
-        child: Text(
-          '-',
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      );
-
   List<Widget> getWorkoutExerciseWidget(List<WorkoutSet> ws) => ws
       .map((s) => s.isPlaceholder()
           ? const SizedBox.shrink()

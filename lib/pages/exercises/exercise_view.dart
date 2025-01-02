@@ -56,9 +56,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                       child: SingleChildScrollView(
                         child: Row(
                           children: [
-                            Flexible(
-                              child: Text(details.notes == null ? '-' : details.notes!),
-                            ),
+                            Flexible(child: Text(details.notes == null ? '-' : details.notes!)),
                           ],
                         ),
                       ),
@@ -244,7 +242,8 @@ class _ExerciseViewState extends State<ExerciseView> {
 
   List<Widget> getDetailsSections(Exercise exercise, UserExerciseDetails details) => [
         if (exercise.exerciseType == ExerciseType.weight) ...getPrSection(details.pr, false),
-        if (exercise.exerciseType == ExerciseType.weight && exercise.uniAndBiLateral) ...getPrSection(details.prSingle, true),
+        if (exercise.exerciseType == ExerciseType.weight && exercise.uniAndBiLateral)
+          ...getPrSection(details.prSingle, true),
         // getSectionTitle(context, 'Notes'),
         // getNotesDisplay(details),
         getSectionTitle(context, 'Recent Uses'),

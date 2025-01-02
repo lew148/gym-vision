@@ -323,14 +323,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                                   children: dateXIsAfterDateY(widget.userSettings.firstUse, currentDate) ||
                                           dateIsInFuture(currentDate) ||
                                           isToday
-                                      ? [
-                                          Text(
-                                            '-',
-                                            style: TextStyle(
-                                              color: Theme.of(context).colorScheme.shadow,
-                                            ),
-                                          ),
-                                        ]
+                                      ? [dashIcon()]
                                       : [
                                           Icon(
                                             Icons.hotel_rounded,

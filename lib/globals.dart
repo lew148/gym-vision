@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 String appVersion = 'V 1.0.0.35';
@@ -63,3 +64,13 @@ Duration? tryParseDuration(String? s) {
 }
 
 List<int> distinctIntList(Iterable<int> i) => i.toSet().toList();
+
+Widget dashIcon() => const Center(
+      child: Text(
+        '-',
+        style: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    );

@@ -75,5 +75,5 @@ class CategoryShellHelper {
       ];
 
   static WorkoutCategoryShell otherCategoryShell =
-      WorkoutCategoryShell(id: 16, type: WorkoutCategoryType.other, displayName: otherDisplayName);
+      WorkoutCategoryShell(id: 17, type: WorkoutCategoryType.other, displayName: otherDisplayName);
 }

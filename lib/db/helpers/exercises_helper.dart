@@ -54,7 +54,12 @@ class ExercisesHelper {
 
         if (splits.contains(ExerciseSplit.arms.index)) {
           // "arms" split selected (add arms muscle groups)
-          muscleGroups.addAll([MuscleGroup.biceps.index, MuscleGroup.triceps.index, MuscleGroup.forearms.index]);
+          muscleGroups.addAll([
+            MuscleGroup.biceps.index,
+            MuscleGroup.triceps.index,
+            MuscleGroup.shoulders.index,
+            MuscleGroup.forearms.index,
+          ]);
           distinctIntList(muscleGroups);
           splits.remove(ExerciseSplit.arms.index);
         }

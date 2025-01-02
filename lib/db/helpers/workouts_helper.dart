@@ -11,6 +11,8 @@ import '../classes/workout.dart';
 import '../db.dart';
 
 class WorkoutsHelper {
+  static String getMonthOrDayString(int num) => num < 10 ? '0$num' : num.toString();
+
   static Future<List<Workout>> getWorkoutsForDay(DateTime date) async {
     final db = await DatabaseHelper.getDb();
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
@@ -24,7 +26,7 @@ class WorkoutsHelper {
       FROM workouts
       LEFT JOIN workout_categories ON workouts.id = workout_categories.workoutId
       LEFT JOIN workout_exercise_orderings ON workouts.id = workout_exercise_orderings.workoutId
-      WHERE workouts.date LIKE '%${date.year}-${date.month}-${date.day}%'
+      WHERE workouts.date LIKE '%${date.year}-${getMonthOrDayString(date.month)}-${getMonthOrDayString(date.day)}%'
       ORDER BY workouts.date DESC;
     ''');
 
@@ -51,6 +53,7 @@ class WorkoutsHelper {
 
     for (var w in workouts) {
       w.done = await workoutIsDone(workoutId: w.id!, db: db);
+      w.workoutSets = await WorkoutSetsHelper.getWorkoutSetsForWorkout(w.id!);
     }
 
     return workouts;

@@ -7,7 +7,6 @@ import 'package:intl/intl.dart';
 class Workout {
   int? id;
   DateTime date;
-
   bool done;
   List<WorkoutCategory>? workoutCategories;
   List<WorkoutSet>? workoutSets;
@@ -30,4 +29,6 @@ class Workout {
   String getTimeStr() => DateFormat('Hm').format(date);
   String getDateStr() => getDateString(date);
   bool isInFuture() => dateIsInFuture(date);
+
+  List<WorkoutSet> getRealSets() => workoutSets == null ? [] : workoutSets!.where((ws) => !ws.isPlaceholder()).toList();
 }

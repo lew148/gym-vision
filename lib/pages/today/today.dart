@@ -1,7 +1,9 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/body_weight.dart';
 import 'package:gymvision/db/classes/workout_set.dart';
 import 'package:gymvision/db/helpers/bodyweight_helper.dart';
+import 'package:gymvision/globals.dart';
 import 'package:gymvision/helpers/category_shell_helper.dart';
 import 'package:gymvision/pages/workouts/flavour_text_card.dart';
 import 'package:gymvision/pages/workouts/workout_view.dart';
@@ -31,15 +33,94 @@ class _TodayState extends State<Today> {
     final Future<List<Workout>> todaysWorkouts = WorkoutsHelper.getWorkoutsForDay(today);
     final Future<Bodyweight?> todaysBodyweight = BodyweightHelper.getBodyweightForDay(today);
 
-    Widget getWorkoutOverview(List<WorkoutSet>? sets) {
+    // Widget getOverviewDetail()
+
+    Widget getWorkoutOverview(List<WorkoutSet>? sets, int exercisesRecorded) {
       if (sets == null || sets.isEmpty) {
         return Text(
-          'No sets yet!',
+          'Tap to record workout sets',
           style: TextStyle(color: Theme.of(context).colorScheme.shadow),
         );
       }
 
-      return Text('Test');
+      var setsGroupedByWeight = groupBy(sets, (s) => s.weight);
+      var heaviestWeight = (setsGroupedByWeight.keys.toList()..sort((a, b) => a! < b! ? 1 : 0))[0];
+      var bestSets = sets.where((s) => s.weight == heaviestWeight);
+      WorkoutSet bestSet;
+
+      if (bestSets.length > 1) {
+        var bestSetsGroupedByReps = groupBy(bestSets, (s) => s.reps);
+        var highestReps = (bestSetsGroupedByReps.keys.toList()..sort((a, b) => a! < b! ? 1 : 0))[0];
+        bestSet = sets.firstWhere((s) => s.weight == heaviestWeight && s.reps == highestReps);
+      } else {
+        bestSet = sets.firstWhere((s) => s.weight == heaviestWeight);
+      }
+
+      return Column(children: [
+        Padding(
+          padding: const EdgeInsets.all(5),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 6,
+                child: Column(
+                  children: [
+                    Text(exercisesRecorded.toString()),
+                    const Text('Exercises'),
+                  ],
+                ),
+              ),
+              Expanded(
+                flex: 6,
+                child: Column(
+                  children: [
+                    Text(sets.length.toString()),
+                    const Text('Sets'),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+            padding: const EdgeInsets.all(5),
+            child: Row(children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Best set:'),
+                  Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: bestSet.hasWeight()
+                          ? [
+                              const Icon(
+                                Icons.fitness_center_rounded,
+                                size: 15,
+                              ),
+                              const Padding(padding: EdgeInsets.all(5)),
+                              Text(bestSet.getWeightDisplay()),
+                            ]
+                          : [dashIcon()],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: bestSet.reps != null && bestSet.reps! > 0
+                          ? [
+                              const Icon(
+                                Icons.repeat_rounded,
+                                size: 15,
+                              ),
+                              const Padding(padding: EdgeInsets.all(5)),
+                              Text(bestSet.getRepsDisplay()),
+                            ]
+                          : [dashIcon()],
+                    ),
+                  ]),
+                ],
+              ),
+            ])),
+      ]);
     }
 
     Widget getWorkoutDisplay(Workout w) => InkWell(
@@ -97,7 +178,11 @@ class _TodayState extends State<Today> {
                     ),
                 ]),
                 const Divider(thickness: 0.25),
-                getWorkoutOverview(w.workoutSets),
+                getWorkoutOverview(
+                    w.getRealSets(),
+                    w.workoutSets == null || w.workoutSets!.isEmpty
+                        ? 0
+                        : distinctIntList(w.workoutSets!.map((ws) => ws.exerciseId).toList()).length),
               ]),
             ),
           ),
@@ -117,7 +202,7 @@ class _TodayState extends State<Today> {
                 ),
                 const Padding(padding: EdgeInsets.all(5)),
                 Text(
-                  'Rest',
+                  'Resting...',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.shadow,
                     fontSize: 20,
@@ -127,14 +212,14 @@ class _TodayState extends State<Today> {
               const Padding(padding: EdgeInsets.all(2.5)),
               Row(children: [
                 Text(
-                  'Tap the + to record a workout!',
+                  'Tap the + to record a workout.',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.shadow,
                   ),
                 ),
               ]),
 
-              // todo: add suggessted workout for today button here?
+              // todo: add suggested workout for today button here?
             ]),
           ),
         ];
