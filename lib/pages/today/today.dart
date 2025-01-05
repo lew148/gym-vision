@@ -63,33 +63,44 @@ class _TodayState extends State<Today> {
             children: [
               Expanded(
                 flex: 6,
-                child: Column(
-                  children: [
-                    Text(exercisesRecorded.toString()),
-                    const Text('Exercises'),
-                  ],
-                ),
+                child: Column(children: [
+                  Text(exercisesRecorded.toString()),
+                  const Text(
+                    'Exercises',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ]),
               ),
               Expanded(
                 flex: 6,
-                child: Column(
-                  children: [
-                    Text(sets.length.toString()),
-                    const Text('Sets'),
-                  ],
-                ),
+                child: Column(children: [
+                  Text(sets.length.toString()),
+                  const Text(
+                    'Sets',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ]),
               ),
             ],
           ),
         ),
+        const Divider(thickness: 0.25),
         Padding(
-            padding: const EdgeInsets.all(5),
-            child: Row(children: [
+          padding: const EdgeInsets.symmetric(vertical: 5),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(Icons.emoji_events_rounded),
+              const Padding(padding: EdgeInsets.all(5)),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Best set:'),
-                  Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
+                  Text(
+                    bestSet.exercise?.name ?? '-',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const Padding(padding: EdgeInsets.all(2.5)),
+                  Row(children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: bestSet.hasWeight()
@@ -103,6 +114,7 @@ class _TodayState extends State<Today> {
                             ]
                           : [dashIcon()],
                     ),
+                    const Padding(padding: EdgeInsets.symmetric(horizontal: 15)),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: bestSet.reps != null && bestSet.reps! > 0
@@ -119,7 +131,9 @@ class _TodayState extends State<Today> {
                   ]),
                 ],
               ),
-            ])),
+            ],
+          ),
+        ),
       ]);
     }
 

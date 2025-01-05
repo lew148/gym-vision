@@ -152,7 +152,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                 ),
               ),
               Expanded(
-                  flex: 3,
+                  flex: 4,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: ws.hasWeight()
@@ -161,13 +161,13 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                               Icons.fitness_center_rounded,
                               size: 15,
                             ),
-                            const Padding(padding: EdgeInsets.all(5)),
+                            const Padding(padding: EdgeInsets.all(2.5)),
                             Text(ws.getWeightDisplay()),
                           ]
                         : [dashIcon()],
                   )),
               Expanded(
-                flex: 3,
+                flex: 4,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: ws.reps != null && ws.reps! > 0
@@ -176,7 +176,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                             Icons.repeat_rounded,
                             size: 15,
                           ),
-                          const Padding(padding: EdgeInsets.all(5)),
+                          const Padding(padding: EdgeInsets.all(2.5)),
                           Text(ws.getRepsDisplay()),
                         ]
                       : [dashIcon()],
@@ -219,6 +219,24 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           child: Row(
             children: [
               Expanded(
+                flex: 2,
+                child: Container(
+                  padding: const EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.shadow,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    (i + 1).toString(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
                   flex: 3,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -228,7 +246,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                               Icons.timer_rounded,
                               size: 15,
                             ),
-                            const Padding(padding: EdgeInsets.all(5)),
+                            const Padding(padding: EdgeInsets.all(2.5)),
                             Text(ws.getTimeDisplay()),
                           ]
                         : [dashIcon()],
@@ -243,7 +261,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                             Icons.timeline_rounded,
                             size: 15,
                           ),
-                          const Padding(padding: EdgeInsets.all(5)),
+                          const Padding(padding: EdgeInsets.all(2.5)),
                           Text(ws.getDistanceDisplay()),
                         ]
                       : [dashIcon()],
@@ -259,7 +277,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                             Icons.local_fire_department_rounded,
                             size: 15,
                           ),
-                          const Padding(padding: EdgeInsets.all(5)),
+                          const Padding(padding: EdgeInsets.all(2.5)),
                           Text(ws.getCalsBurnedDisplay()),
                         ]
                       : [dashIcon()],
