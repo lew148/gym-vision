@@ -3,11 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:gymvision/db/classes/exercise.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/globals.dart';
-import 'package:gymvision/shared/forms/fields/custom_form_fields.dart';
-import 'package:gymvision/shared/ui_helper.dart';
+import 'package:gymvision/forms/fields/custom_form_fields.dart';
+import 'package:gymvision/helpers/ui_helper.dart';
 
-import '../../db/classes/workout_set.dart';
-import '../../db/helpers/workout_sets_helper.dart';
+import '../db/classes/workout_set.dart';
+import '../db/helpers/workout_sets_helper.dart';
 
 class EditWorkoutExerciseForm extends StatefulWidget {
   final WorkoutSet workoutSet;
@@ -202,14 +202,14 @@ class _EditWorkoutExerciseFormState extends State<EditWorkoutExerciseForm> {
                         ),
                         onPressed: () => onDeleteButtonTap(widget.workoutSet.id!),
                       ),
-                      getPrimaryButton(
+                      UiHelper.getPrimaryButton(
                         ActionButton(
                           icon: Icons.copy_rounded,
                           onTap: () => onCopySetButtonTap(),
                         ),
                       ),
                     ]),
-                    getElevatedPrimaryButton(
+                    UiHelper.getElevatedPrimaryButton(
                       context,
                       ActionButton(
                         onTap: onSubmit,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/helpers/workouts_helper.dart';
 import 'package:gymvision/helpers/category_shell_helper.dart';
-import 'package:gymvision/shared/ui_helper.dart';
+import 'package:gymvision/helpers/ui_helper.dart';
 
 class AddCategoryToWorkoutForm extends StatefulWidget {
   final int workoutId;
@@ -94,7 +94,7 @@ return Container(
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
-          getSectionTitle(context, 'Add Categories'),
+          UiHelper.getSectionTitle(context, 'Add Categories'),
           Padding(
             padding: const EdgeInsets.all(10),
             child: Column(children: getCategorySections(workoutCategories)),

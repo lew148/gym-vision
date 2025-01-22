@@ -7,10 +7,11 @@ import 'package:gymvision/db/classes/user_exercise_details.dart';
 import 'package:gymvision/db/classes/workout_set.dart';
 import 'package:gymvision/pages/exercises/exercise_recent_uses_view.dart';
 import 'package:gymvision/globals.dart';
+import 'package:gymvision/pages/workouts/workout_view.dart';
 
 import '../../db/helpers/exercises_helper.dart';
 import '../../enums.dart';
-import '../../shared/ui_helper.dart';
+import '../../helpers/ui_helper.dart';
 
 class ExerciseView extends StatefulWidget {
   final int exerciseId;
@@ -40,14 +41,14 @@ class _ExerciseViewState extends State<ExerciseView> {
   reloadState() => setState(() {});
 
   Widget getNotesDisplay(UserExerciseDetails details) => Column(children: [
-        getSectionTitle(context, 'Notes'),
+        UiHelper.getSectionTitle(context, 'Notes'),
         const Divider(thickness: 0.25),
         Row(
           children: [
             Expanded(
-              child: Card(
-                child: InkWell(
-                  onTap: () => openNotesForm(details),
+              child: InkWell(
+                onTap: () => openNotesForm(details),
+                child: Card(
                   child: Container(
                     height: MediaQuery.of(context).size.height * 0.15,
                     decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
@@ -76,13 +77,13 @@ class _ExerciseViewState extends State<ExerciseView> {
           children: [
             Wrap(children: [
               if (exercise.exerciseType != ExerciseType.other)
-                getPropDisplay(context, exercise.exerciseType.displayName),
-              if (exercise.muscleGroup != MuscleGroup.other) getPropDisplay(context, exercise.muscleGroup.displayName),
+                UiHelper.getPropDisplay(context, exercise.exerciseType.displayName),
+              if (exercise.muscleGroup != MuscleGroup.other) UiHelper.getPropDisplay(context, exercise.muscleGroup.displayName),
             ]),
             Wrap(children: [
-              if (exercise.split != ExerciseSplit.other) getPropDisplay(context, exercise.split.displayName),
+              if (exercise.split != ExerciseSplit.other) UiHelper.getPropDisplay(context, exercise.split.displayName),
               if (exercise.equipment != ExerciseEquipment.other)
-                getPropDisplay(context, exercise.equipment.displayName),
+                UiHelper.getPropDisplay(context, exercise.equipment.displayName),
             ]),
           ],
         ),
@@ -124,7 +125,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(top: 20.0),
-                              child: getElevatedPrimaryButton(
+                              child: UiHelper.getElevatedPrimaryButton(
                                 context,
                                 ActionButton(
                                   onTap: () async {
@@ -177,7 +178,19 @@ class _ExerciseViewState extends State<ExerciseView> {
       weWidgets.add(
         Padding(
           padding: const EdgeInsets.only(top: 5, bottom: 5),
-          child: ExerciseRecentUsesView(workoutSets: value),
+          child: InkWell(
+            onTap: () => Navigator.of(context)
+                .push(
+                  MaterialPageRoute(
+                    builder: (context) => WorkoutView(
+                      workoutId: value[0].workoutId,
+                      reloadParent: reloadState,
+                    ),
+                  ),
+                )
+                .then((value) => reloadState()),
+            child: ExerciseRecentUsesView(workoutSets: value),
+          ),
         ),
       );
     });
@@ -186,7 +199,7 @@ class _ExerciseViewState extends State<ExerciseView> {
   }
 
   List<Widget> getPrSection(WorkoutSet? pr, bool single) => [
-        getSectionTitle(context, single ? 'Single PR' : 'PR'),
+        UiHelper.getSectionTitle(context, single ? 'Single PR' : 'PR'),
         const Divider(thickness: 0.25),
         pr == null
             ? const Center(
@@ -195,45 +208,60 @@ class _ExerciseViewState extends State<ExerciseView> {
                   child: Text('No PR set.'),
                 ),
               )
-            : Container(
+            : Padding(
                 padding: const EdgeInsets.all(10),
                 child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(15),
-                    child: Row(
-                      children: [
-                        Text(pr.workout!.getDateStr()),
-                        Expanded(
+                  child: InkWell(
+                    onTap: () => Navigator.of(context)
+                        .push(
+                          MaterialPageRoute(
+                            builder: (context) => WorkoutView(
+                              workoutId: pr.workoutId,
+                              reloadParent: reloadState,
+                            ),
+                          ),
+                        )
+                        .then((value) => reloadState()),
+                    child: Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: Text(pr.workout!.getDateStr()),
+                          ),
+                          Expanded(
+                              flex: 3,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.fitness_center_rounded,
+                                    size: 15,
+                                  ),
+                                  const Padding(padding: EdgeInsets.all(5)),
+                                  Text(
+                                    pr.getWeightDisplay(),
+                                    style: const TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              )),
+                          Expanded(
                             flex: 3,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 const Icon(
-                                  Icons.fitness_center_rounded,
+                                  Icons.repeat_rounded,
                                   size: 15,
                                 ),
                                 const Padding(padding: EdgeInsets.all(5)),
-                                Text(
-                                  pr.getWeightDisplay(),
-                                  style: const TextStyle(fontWeight: FontWeight.bold),
-                                ),
+                                Text(pr.getRepsDisplay()),
                               ],
-                            )),
-                        Expanded(
-                          flex: 3,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.repeat_rounded,
-                                size: 15,
-                              ),
-                              const Padding(padding: EdgeInsets.all(5)),
-                              Text(pr.getRepsDisplay()),
-                            ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -246,7 +274,7 @@ class _ExerciseViewState extends State<ExerciseView> {
           ...getPrSection(details.prSingle, true),
         // getSectionTitle(context, 'Notes'),
         // getNotesDisplay(details),
-        getSectionTitle(context, 'Recent Uses'),
+        UiHelper.getSectionTitle(context, 'Recent Uses'),
         const Divider(thickness: 0.25),
         details.recentUses == null || details.recentUses!.isEmpty
             ? const Center(

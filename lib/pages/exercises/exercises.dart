@@ -5,7 +5,7 @@ import 'package:sticky_headers/sticky_headers/widget.dart';
 
 import '../../db/classes/exercise.dart';
 import '../../enums.dart';
-import '../../shared/ui_helper.dart';
+import '../../helpers/ui_helper.dart';
 import 'exercise_view.dart';
 
 class Exercises extends StatefulWidget {
@@ -43,7 +43,7 @@ class _ExercisesState extends State<Exercises> {
                 const Padding(padding: EdgeInsets.all(10)),
                 Wrap(children: [
                   if (exercise.equipment != ExerciseEquipment.other)
-                    getPropDisplay(context, exercise.equipment.displayName),
+                    UiHelper.getPropDisplay(context, exercise.equipment.displayName),
                   // exercise.muscleGroup != MuscleGroup.other
                   //     ? getPropDisplay(context, exercise.muscleGroup.displayName)
                   //     : getPropDisplay(context, exercise.exerciseType.displayName),
@@ -103,7 +103,7 @@ class _ExercisesState extends State<Exercises> {
           return Container(
             padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
             child: Column(children: [
-              getSectionTitleWithActions(
+              UiHelper.getSectionTitleWithActions(
                 context,
                 'Exercises',
                 [], //[ActionButton(icon: Icons.add_rounded, onTap: () => null)],

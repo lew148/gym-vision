@@ -4,6 +4,7 @@ import 'package:gymvision/db/classes/workout_category.dart';
 import 'package:gymvision/db/classes/workout_exercise_ordering.dart';
 import 'package:gymvision/db/helpers/workout_exercise_orderings_helper.dart';
 import 'package:gymvision/db/helpers/workout_sets_helper.dart';
+import 'package:gymvision/globals.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -11,8 +12,6 @@ import '../classes/workout.dart';
 import '../db.dart';
 
 class WorkoutsHelper {
-  static String getMonthOrDayString(int num) => num < 10 ? '0$num' : num.toString();
-
   static Future<List<Workout>> getWorkoutsForDay(DateTime date) async {
     final db = await DatabaseHelper.getDb();
     final List<Map<String, dynamic>> maps = await db.rawQuery('''

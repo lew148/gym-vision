@@ -1,14 +1,16 @@
 import 'package:gymvision/db/classes/body_weight.dart';
 import 'package:gymvision/db/db.dart';
+import 'package:gymvision/globals.dart';
 import 'package:sqflite/sqflite.dart';
 
 class BodyweightHelper {
   static Future<Bodyweight?> getBodyweightForDay(DateTime date) async {
     final db = await DatabaseHelper.getDb();
+    final dateStr = "${date.year}-${getMonthOrDayString(date.month)}-${getMonthOrDayString(date.day)}";
     final List<Map<String, dynamic>> maps = await db.query(
       'bodyweights',
-      where: 'date LIKE ?',
-      whereArgs: ['%${date.year}-${date.month}-${date.day}%'],
+      where: 'bodyweights.date LIKE ?',
+      whereArgs: ['%$dateStr%'],
     );
 
     if (maps.isEmpty) return null;

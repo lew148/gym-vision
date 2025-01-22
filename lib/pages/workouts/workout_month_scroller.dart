@@ -6,7 +6,7 @@ import 'package:gymvision/db/classes/body_weight.dart';
 import 'package:gymvision/db/classes/user_settings.dart';
 import 'package:gymvision/db/helpers/bodyweight_helper.dart';
 import 'package:gymvision/helpers/category_shell_helper.dart';
-import 'package:gymvision/shared/ui_helper.dart';
+import 'package:gymvision/helpers/ui_helper.dart';
 import 'package:gymvision/pages/workouts/workout_view.dart';
 import 'package:intl/intl.dart';
 
@@ -73,98 +73,13 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
     });
   }
 
-  void showDeleteBodyweightConfirm(int bodyweightId) {
-    Widget cancelButton = TextButton(
-      child: const Text("No"),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-
-    Widget continueButton = TextButton(
-      child: const Text(
-        "Yes",
-        style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-      ),
-      onPressed: () async {
-        Navigator.pop(context);
-
-        try {
-          await BodyweightHelper.deleteBodyweight(bodyweightId);
-        } catch (ex) {
-          if (!mounted) return;
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('Failed to delete Bodyweight: ${ex.toString()}')));
-        }
-
-        widget.reloadState();
-      },
-    );
-
-    AlertDialog alert = AlertDialog(
-      title: const Text("Delete Bodyweight?"),
-      content: const Text("Are you sure you would like to delete this Bodyweight?"),
-      backgroundColor: Theme.of(context).cardColor,
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-
-    HapticFeedback.heavyImpact();
-    showDialog(
-      context: context,
-      builder: (context) => alert,
-    );
-  }
-
-  void showDeleteWorkoutConfirm(int workoutId) {
-    Widget cancelButton = TextButton(
-      child: const Text("No"),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-
-    Widget continueButton = TextButton(
-      child: const Text(
-        "Yes",
-        style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-      ),
-      onPressed: () async {
-        Navigator.pop(context);
-
-        try {
-          await WorkoutsHelper.deleteWorkout(workoutId);
-        } catch (ex) {
-          if (!mounted) return;
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('Failed to delete Workout: ${ex.toString()}')));
-        }
-
-        widget.reloadState();
-      },
-    );
-
-    AlertDialog alert = AlertDialog(
-      title: const Text("Delete Workout?"),
-      content: const Text("Are you sure you would like to delete this Workout?"),
-      backgroundColor: Theme.of(context).cardColor,
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-
-    HapticFeedback.heavyImpact();
-    showDialog(
-      context: context,
-      builder: (context) => alert,
-    );
-  }
-
   Widget getWorkoutDisplay(Workout workout) => InkWell(
-        onLongPress: () => showDeleteWorkoutConfirm(workout.id!),
+        onLongPress: () => UiHelper.showDeleteConfirm(
+          context,
+          () => WorkoutsHelper.deleteWorkout(workout.id!),
+          widget.reloadState,
+          "workout",
+        ),
         onTap: () => Navigator.of(context)
             .push(
               MaterialPageRoute(
@@ -210,7 +125,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                   child: Wrap(
                     alignment: WrapAlignment.end,
                     children: CategoryShellHelper.sortCategories(workout.workoutCategories!)
-                        .map((wc) => getPropDisplay(context, wc.getDisplayName()))
+                        .map((wc) => UiHelper.getPropDisplay(context, wc.getDisplayName()))
                         .toList(),
                   ),
                 )
@@ -220,7 +135,12 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
       );
 
   Widget getBodyweightDisplay(Bodyweight bw) => InkWell(
-        onLongPress: () => showDeleteBodyweightConfirm(bw.id!),
+        onLongPress: () => UiHelper.showDeleteConfirm(
+          context,
+          () => BodyweightHelper.deleteBodyweight(bw.id!),
+          widget.reloadState,
+          "bodyweight",
+        ),
         child: Container(
           padding: const EdgeInsets.all(10),
           child: Row(
@@ -448,7 +368,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                     size: 40,
                   ),
                 ),
-                getPrimaryButton(ActionButton(icon: Icons.today_outlined, onTap: reloadState)),
+                UiHelper.getPrimaryButton(ActionButton(icon: Icons.today_outlined, onTap: reloadState)),
               ],
             ),
           ),

@@ -4,10 +4,10 @@ import 'package:gymvision/db/helpers/exercises_helper.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/helpers/category_shell_helper.dart';
-import 'package:gymvision/shared/ui_helper.dart';
+import 'package:gymvision/helpers/ui_helper.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
-import '../../../db/classes/exercise.dart';
+import '../../db/classes/exercise.dart';
 
 class ExercisePicker extends StatefulWidget {
   final int? exerciseId;
@@ -73,7 +73,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
 
   Widget getFilterButton() => Row(children: [
         Expanded(
-          child: getElevatedPrimaryButton(
+          child: UiHelper.getElevatedPrimaryButton(
             context,
             ActionButton(
               onTap: () {
@@ -104,7 +104,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                                       });
                                     },
                                   ),
-                                  getSectionTitle(context, 'Exercise Filters'),
+                                  UiHelper.getSectionTitle(context, 'Exercise Filters'),
                                 ],
                               ),
                               const Divider(thickness: 0.25),
@@ -189,7 +189,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      getSectionTitle(context, 'Select Exercise'),
+                      UiHelper.getSectionTitle(context, 'Select Exercise'),
                       CloseButton(
                         onPressed: () {
                           Navigator.pop(context);
@@ -279,12 +279,12 @@ class _ExercisePickerState extends State<ExercisePicker> {
                                         ),
                                       ),
                                     ),
-                                    getPropDisplay(context, e.equipment.displayName),
+                                    UiHelper.getPropDisplay(context, e.equipment.displayName),
                                   ],
                                 ),
                               ),
                               if (addQuickAddButton)
-                                getPrimaryButton(
+                                UiHelper.getPrimaryButton(
                                   ActionButton(
                                     icon: Icons.add_rounded,
                                     onTap: () => widget.onQuickAdd!(e),

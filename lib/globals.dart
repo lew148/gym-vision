@@ -36,6 +36,8 @@ String getDateString(DateTime dt) {
   return DateFormat(dmFormat).format(dt);
 }
 
+String getMonthOrDayString(int num) => num < 10 ? '0$num' : num.toString();
+
 String getMonthAndYear(DateTime dt) => DateFormat(dt.year == DateTime.now().year ? 'MMMM' : 'MMMM yyyy').format(dt);
 int getDaysInMonth(int year, int month) => DateTime(year, month + 1, 0).day;
 bool dateIsInFuture(DateTime dt) => DateTime.now().compareTo(dt) < 0;

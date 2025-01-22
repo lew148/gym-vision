@@ -6,8 +6,8 @@ import 'package:gymvision/db/helpers/workouts_helper.dart';
 import 'package:gymvision/pages/coming_soon.dart';
 import 'package:gymvision/pages/exercises/exercises.dart';
 import 'package:gymvision/pages/today/today.dart';
-import 'package:gymvision/shared/forms/add_bodyweight_form.dart';
-import 'package:gymvision/shared/ui_helper.dart';
+import 'package:gymvision/forms/add_bodyweight_form.dart';
+import 'package:gymvision/helpers/ui_helper.dart';
 import 'package:gymvision/user_settings_view.dart';
 import 'package:gymvision/pages/workouts/workout_view.dart';
 import 'package:gymvision/pages/workouts/workouts.dart';
@@ -173,12 +173,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
                 child: Column(
                   children: [
-                    getSectionTitle(context, 'Add'),
+                    UiHelper.getSectionTitle(context, 'Add'),
                     const Divider(thickness: 0.25),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        getOutlinedPrimaryButton(ActionButton(
+                        UiHelper.getOutlinedPrimaryButton(ActionButton(
                           onTap: () {
                             Navigator.pop(context);
                             onAddWorkoutTap();
@@ -186,7 +186,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           text: 'Workout',
                           icon: Icons.fitness_center_rounded,
                         )),
-                        getOutlinedPrimaryButton(ActionButton(
+                        UiHelper.getOutlinedPrimaryButton(ActionButton(
                           onTap: () {
                             Navigator.pop(context);
                             onAddWeightTap();

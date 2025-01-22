@@ -3,9 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:gymvision/db/classes/workout.dart';
 import 'package:gymvision/db/classes/workout_set.dart';
 import 'package:gymvision/globals.dart';
-import 'package:gymvision/shared/forms/add_set_to_workout_form.dart';
-import 'package:gymvision/shared/forms/edit_workout_set_form.dart';
-import 'package:gymvision/shared/ui_helper.dart';
+import 'package:gymvision/forms/add_set_to_workout_form.dart';
+import 'package:gymvision/forms/edit_workout_set_form.dart';
+import 'package:gymvision/helpers/ui_helper.dart';
 
 import '../../db/classes/exercise.dart';
 import '../../db/helpers/workout_sets_helper.dart';
@@ -127,7 +127,12 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     for (int i = 0; i < filteredSets.length; i++) {
       final ws = filteredSets[i];
       widgets.add(InkWell(
-        onLongPress: () => showDeleteWorkoutSetConfirm(ws.id!),
+        onLongPress: () => UiHelper.showDeleteConfirm(
+          context,
+          () => WorkoutSetsHelper.removeSet(ws.id!),
+          widget.reloadState,
+          "set",
+        ),
         onTap: () => onEditWorkoutExerciseTap(ws),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
@@ -212,7 +217,12 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       final ws = filteredSets[i];
 
       widgets.add(InkWell(
-        onLongPress: () => showDeleteWorkoutSetConfirm(ws.id!),
+        onLongPress: () => UiHelper.showDeleteConfirm(
+          context,
+          () => WorkoutSetsHelper.removeSet(ws.id!),
+          widget.reloadState,
+          "set",
+        ),
         onTap: () => onEditWorkoutExerciseTap(ws),
         child: Padding(
           padding: const EdgeInsets.all(10),
@@ -337,98 +347,6 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     widget.reloadState();
   }
 
-  void showDeleteGroupedWorkoutExercisesConfirm() {
-    Widget cancelButton = TextButton(
-      child: const Text("No"),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-
-    Widget continueButton = TextButton(
-      child: const Text(
-        "Yes",
-        style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-      ),
-      onPressed: () async {
-        Navigator.pop(context);
-
-        try {
-          await WorkoutSetsHelper.removegroupedSetsFromWorkout(
-            workoutId,
-            exerciseId,
-          );
-        } catch (ex) {
-          if (!mounted) return;
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('Failed to remove Exercise from workout: ${ex.toString()}')));
-        }
-
-        widget.reloadState();
-      },
-    );
-
-    AlertDialog alert = AlertDialog(
-      title: const Text("Remove Sets?"),
-      content: const Text("Are you sure you would like to remove these sets?"),
-      backgroundColor: Theme.of(context).cardColor,
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-
-    HapticFeedback.heavyImpact();
-    showDialog(
-      context: context,
-      builder: (context) => alert,
-    );
-  }
-
-  void showDeleteWorkoutSetConfirm(int id) {
-    Widget cancelButton = TextButton(
-      child: const Text("No"),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-
-    Widget continueButton = TextButton(
-      child: const Text(
-        "Yes",
-        style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-      ),
-      onPressed: () async {
-        Navigator.pop(context);
-        try {
-          await WorkoutSetsHelper.removeSet(id);
-        } catch (ex) {
-          if (!mounted) return;
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('Failed to remove Set from workout: ${ex.toString()}')));
-        }
-
-        widget.reloadState();
-      },
-    );
-
-    AlertDialog alert = AlertDialog(
-      title: const Text("Remove Set?"),
-      content: const Text("Are you sure you would like to remove this set?"),
-      backgroundColor: Theme.of(context).cardColor,
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-
-    HapticFeedback.heavyImpact();
-    showDialog(
-      context: context,
-      builder: (context) => alert,
-    );
-  }
-
   void showExerciseMenu() {
     showModalBottomSheet(
       context: context,
@@ -469,7 +387,15 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
               child: InkWell(
                 onTap: () {
                   Navigator.pop(context);
-                  showDeleteGroupedWorkoutExercisesConfirm();
+                  UiHelper.showDeleteConfirm(
+                    context,
+                    () => WorkoutSetsHelper.removegroupedSetsFromWorkout(
+                      workoutId,
+                      exerciseId,
+                    ),
+                    widget.reloadState,
+                    "sets",
+                  );
                 },
                 child: Row(
                   children: [
@@ -552,7 +478,12 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
               child: InkWell(
                 onTap: () {
                   Navigator.pop(context);
-                  showDeleteWorkoutSetConfirm(ws.id!);
+                  UiHelper.showDeleteConfirm(
+                    context,
+                    () => WorkoutSetsHelper.removeSet(ws.id!),
+                    widget.reloadState,
+                    "set",
+                  );
                 },
                 child: Row(
                   children: [
@@ -614,7 +545,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      getPrimaryButton(
+                      UiHelper.getPrimaryButton(
                         ActionButton(
                           icon: Icons.add_rounded,
                           onTap: () => onAddSetsButtonTap(

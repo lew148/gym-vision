@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gymvision/db/classes/body_weight.dart';
 import 'package:gymvision/db/classes/workout_set.dart';
 import 'package:gymvision/db/helpers/bodyweight_helper.dart';
@@ -7,7 +8,8 @@ import 'package:gymvision/globals.dart';
 import 'package:gymvision/helpers/category_shell_helper.dart';
 import 'package:gymvision/pages/workouts/flavour_text_card.dart';
 import 'package:gymvision/pages/workouts/workout_view.dart';
-import 'package:gymvision/shared/ui_helper.dart';
+import 'package:gymvision/forms/add_bodyweight_form.dart';
+import 'package:gymvision/helpers/ui_helper.dart';
 import 'package:intl/intl.dart';
 import '../../db/classes/workout.dart';
 import '../../db/helpers/workouts_helper.dart';
@@ -33,7 +35,20 @@ class _TodayState extends State<Today> {
     final Future<List<Workout>> todaysWorkouts = WorkoutsHelper.getWorkoutsForDay(today);
     final Future<Bodyweight?> todaysBodyweight = BodyweightHelper.getBodyweightForDay(today);
 
-    // Widget getOverviewDetail()
+    void onAddWeightTap() async => showModalBottomSheet(
+          context: context,
+          builder: (BuildContext context) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                child: AddBodyWeightForm(reloadState: reloadState),
+              ),
+            ],
+          ),
+          isScrollControlled: true,
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+        );
 
     Widget getWorkoutOverview(List<WorkoutSet>? sets, int exercisesRecorded) {
       if (sets == null || sets.isEmpty) {
@@ -186,7 +201,7 @@ class _TodayState extends State<Today> {
                       child: Wrap(
                         alignment: WrapAlignment.end,
                         children: CategoryShellHelper.sortCategories(w.workoutCategories!)
-                            .map((wc) => getPropDisplay(context, wc.getDisplayName()))
+                            .map((wc) => UiHelper.getPropDisplay(context, wc.getDisplayName()))
                             .toList(),
                       ),
                     ),
@@ -262,32 +277,70 @@ class _TodayState extends State<Today> {
                       const Text('Today', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
                     ],
                   ),
-                  FutureBuilder<Bodyweight?>(
-                      future: todaysBodyweight,
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return const SizedBox.shrink(); // loading
-                        }
-
-                        return Card(
-                          child: Padding(
-                            padding: const EdgeInsets.all(15),
-                            child: Row(children: [
-                              const Icon(Icons.monitor_weight_rounded),
-                              const Padding(padding: EdgeInsets.all(5)),
-                              Text(
-                                snapshot.data!.getWeightDisplay(),
-                                style: const TextStyle(fontSize: 16),
+                  const Padding(padding: EdgeInsets.symmetric(horizontal: 25)),
+                  Expanded(
+                    child: FutureBuilder<Bodyweight?>(
+                        future: todaysBodyweight,
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) {
+                            return Card(
+                              child: InkWell(
+                                onTap: onAddWeightTap,
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Icon(
+                                        Icons.monitor_weight_rounded,
+                                        size: 25,
+                                      ),
+                                      Icon(
+                                        Icons.add_rounded,
+                                        size: 25,
+                                        color: Theme.of(context).colorScheme.primary,
+                                      )
+                                    ],
+                                  ),
+                                ),
                               ),
-                            ]),
-                          ),
-                        );
-                      }),
+                            );
+                          }
+
+                          return Card(
+                            child: InkWell(
+                              onLongPress: () => UiHelper.showDeleteConfirm(
+                                context,
+                                () => BodyweightHelper.deleteBodyweight(snapshot.data!.id!),
+                                reloadState,
+                                "bodyweight",
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Icon(
+                                      Icons.monitor_weight_rounded,
+                                      size: 25,
+                                    ),
+                                    const Padding(padding: EdgeInsets.all(5)),
+                                    Text(
+                                      snapshot.data!.getWeightDisplay(),
+                                      style: const TextStyle(fontSize: 16),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
+                  ),
                 ],
               ),
             ),
             const FlavourTextCard(),
-            getSectionTitle(context, 'Activities'),
+            UiHelper.getSectionTitle(context, 'Activities'),
             const Divider(thickness: 0.25),
             FutureBuilder<List<Workout>>(
                 future: todaysWorkouts,

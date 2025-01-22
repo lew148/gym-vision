@@ -5,7 +5,7 @@ import 'package:gymvision/db/classes/user_settings.dart';
 import 'package:gymvision/db/db.dart';
 import 'package:gymvision/db/helpers/flavour_text_helper.dart';
 import 'package:gymvision/enums.dart';
-import 'package:gymvision/shared/ui_helper.dart';
+import 'package:gymvision/helpers/ui_helper.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'db/helpers/user_settings_helper.dart';
 import 'globals.dart';
@@ -89,7 +89,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                   alignment: WrapAlignment.spaceBetween,
                   spacing: 5,
                   children: [
-                    getElevatedPrimaryButton(
+                    UiHelper.getElevatedPrimaryButton(
                       context,
                       ActionButton(
                         onTap: () async {
@@ -101,7 +101,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                         text: 'Un-Dismiss Flavour Text',
                       ),
                     ),
-                    getElevatedPrimaryButton(
+                    UiHelper.getElevatedPrimaryButton(
                       context,
                       ActionButton(
                         onTap: () async {
@@ -122,7 +122,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                       ),
                     ),
                     const Divider(),
-                    getElevatedPrimaryButton(
+                    UiHelper.getElevatedPrimaryButton(
                       context,
                       ActionButton(
                         onTap: () async {
@@ -146,7 +146,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                         text: 'Update Exercises',
                       ),
                     ),
-                    getElevatedPrimaryButton(
+                    UiHelper.getElevatedPrimaryButton(
                       context,
                       ActionButton(
                         onTap: () async {
@@ -168,7 +168,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                         text: 'Update DB (keep data)',
                       ),
                     ),
-                    getOutlinedPrimaryButton(
+                    UiHelper.getOutlinedPrimaryButton(
                       ActionButton(
                         onTap: showResetDatabaseConfirm,
                         text: 'RESET DB',

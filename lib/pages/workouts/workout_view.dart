@@ -11,9 +11,9 @@ import 'package:reorderables/reorderables.dart';
 import '../../db/classes/workout.dart';
 import '../../db/classes/workout_category.dart';
 import '../../db/helpers/workouts_helper.dart';
-import '../../shared/forms/add_set_to_workout_form.dart';
-import '../../shared/ui_helper.dart';
-import '../../shared/forms/add_category_to_workout_form.dart';
+import '../../forms/add_set_to_workout_form.dart';
+import '../../helpers/ui_helper.dart';
+import '../../forms/add_category_to_workout_form.dart';
 
 class WorkoutView extends StatefulWidget {
   final int workoutId;
@@ -38,51 +38,6 @@ class _WorkoutViewState extends State<WorkoutView> {
           droppedWes.contains(eId) ? droppedWes.remove(eId) : droppedWes.add(eId);
         }
       });
-
-  void showDeleteWorkoutConfirm(int workoutId) {
-    Widget cancelButton = TextButton(
-      child: const Text("No"),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-
-    Widget continueButton = TextButton(
-      child: const Text(
-        "Yes",
-        style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-      ),
-      onPressed: () async {
-        Navigator.pop(context);
-        Navigator.pop(context);
-
-        try {
-          await WorkoutsHelper.deleteWorkout(workoutId);
-        } catch (ex) {
-          if (!mounted) return;
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text('Failed to delete Workout: ${ex.toString()}')));
-        }
-
-        if (widget.reloadParent != null) widget.reloadParent!();
-      },
-    );
-
-    AlertDialog alert = AlertDialog(
-      title: const Text("Delete Workout?"),
-      content: const Text("Are you sure you would like to delete this Workout?"),
-      backgroundColor: Theme.of(context).cardColor,
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-
-    showDialog(
-      context: context,
-      builder: (context) => alert,
-    );
-  }
 
   void onAddCategoryClick(List<int> existingWorkoutCategoryIds) => showModalBottomSheet(
         context: context,
@@ -129,7 +84,7 @@ class _WorkoutViewState extends State<WorkoutView> {
               child: Wrap(
                 alignment: WrapAlignment.start,
                 children: CategoryShellHelper.sortCategories(workoutCategories)
-                    .map((wc) => getTappablePropDisplay(
+                    .map((wc) => UiHelper.getTappablePropDisplay(
                           context,
                           wc.getDisplayName(),
                           () => goToMostRecentWorkout(wc),
@@ -137,7 +92,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                     .toList(),
               ),
             ),
-            getPrimaryButton(
+            UiHelper.getPrimaryButton(
               ActionButton(
                 icon: Icons.edit_rounded,
                 onTap: () => onAddCategoryClick(existingCategoryIds),
@@ -270,7 +225,12 @@ class _WorkoutViewState extends State<WorkoutView> {
               child: InkWell(
                 onTap: () {
                   Navigator.pop(context);
-                  showDeleteWorkoutConfirm(workout.id!);
+                  UiHelper.showDeleteConfirm(
+                    context,
+                    () => WorkoutsHelper.deleteWorkout(workout.id!),
+                    reloadState,
+                    "workout",
+                  );
                 },
                 child: Row(
                   children: [
@@ -301,7 +261,7 @@ class _WorkoutViewState extends State<WorkoutView> {
       workout.workoutCategories == null || workout.workoutCategories!.isEmpty
           ? Row(children: [
               Expanded(
-                child: getPrimaryButton(
+                child: UiHelper.getPrimaryButton(
                   ActionButton(
                     onTap: () => onAddCategoryClick([]),
                     text: 'Add Categories',
@@ -408,7 +368,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                 children: [
                   getCategoriesWidget(workout, existingCategoryShellIds),
                   const Padding(padding: EdgeInsets.all(5)),
-                  getSectionTitleWithAction(
+                  UiHelper.getSectionTitleWithAction(
                     context,
                     'Exercises',
                     ActionButton(

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/db/classes/workout_set.dart';
 import 'package:gymvision/enums.dart';
-import 'package:gymvision/shared/ui_helper.dart';
-import '../../db/classes/exercise.dart';
-import '../../db/helpers/workout_sets_helper.dart';
-import '../../globals.dart';
+import 'package:gymvision/helpers/ui_helper.dart';
+import '../db/classes/exercise.dart';
+import '../db/helpers/workout_sets_helper.dart';
+import '../globals.dart';
 import 'fields/custom_form_fields.dart';
 import 'fields/exercise_picker.dart';
 
@@ -125,7 +125,7 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
         key: formKey,
         child: Column(
           children: [
-            getSectionTitle(context, 'Add Set'),
+            UiHelper.getSectionTitle(context, 'Add Set'),
             const Divider(thickness: 0.25),
             ExercisePicker(
               exerciseId: widget.exerciseId,
@@ -154,12 +154,12 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     selectedExercise?.exerciseType != ExerciseType.cardio
-                        ? getElevatedPrimaryButton(
+                        ? UiHelper.getElevatedPrimaryButton(
                             context,
                             ActionButton(onTap: () => onSubmit(addThree: true), text: 'Add 3'),
                           )
                         : const SizedBox.shrink(),
-                    getElevatedPrimaryButton(context, ActionButton(onTap: onSubmit, text: 'Add')),
+                    UiHelper.getElevatedPrimaryButton(context, ActionButton(onTap: onSubmit, text: 'Add')),
                   ],
                 ),
               ),
