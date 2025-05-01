@@ -1,19 +1,17 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gymvision/db/classes/workout_exercise_ordering.dart';
-import 'package:gymvision/db/classes/workout_set.dart';
-import 'package:gymvision/db/helpers/workout_exercise_orderings_helper.dart';
-import 'package:gymvision/helpers/category_shell_helper.dart';
+import 'package:gymvision/classes/db/workout.dart';
+import 'package:gymvision/classes/db/workout_category.dart';
+import 'package:gymvision/classes/db/workout_exercise.dart';
+import 'package:gymvision/classes/db/workout_exercise_ordering.dart';
+import 'package:gymvision/models/db_models/workout_exercise_orderings_model.dart';
+import 'package:gymvision/models/db_models/workout_model.dart';
+import 'package:gymvision/pages/forms/add_category_to_workout_form.dart';
+import 'package:gymvision/pages/forms/add_set_to_workout_form.dart';
+import 'package:gymvision/pages/ui_helper.dart';
 import 'package:gymvision/pages/workouts/workout_exercise_widget.dart';
+import 'package:gymvision/static_data/enums.dart';
 import 'package:reorderables/reorderables.dart';
-
-import '../../db/classes/workout.dart';
-import '../../db/classes/workout_category.dart';
-import '../../db/helpers/workouts_helper.dart';
-import '../../forms/add_set_to_workout_form.dart';
-import '../../helpers/ui_helper.dart';
-import '../../forms/add_category_to_workout_form.dart';
 
 class WorkoutView extends StatefulWidget {
   final int workoutId;
@@ -30,16 +28,15 @@ class WorkoutView extends StatefulWidget {
 }
 
 class _WorkoutViewState extends State<WorkoutView> {
-  late Map<int, List<WorkoutSet>> groupedWorkoutExercises;
   List<int> droppedWes = [];
 
-  reloadState({int? eId}) => setState(() {
-        if (eId != null) {
-          droppedWes.contains(eId) ? droppedWes.remove(eId) : droppedWes.add(eId);
+  reloadState({int? wexId}) => setState(() {
+        if (wexId != null) {
+          droppedWes.contains(wexId) ? droppedWes.remove(wexId) : droppedWes.add(wexId);
         }
       });
 
-  void onAddCategoryClick(List<int> existingWorkoutCategoryIds) => showModalBottomSheet(
+  void onAddCategoryClick(List<Category> existingWorkoutCategoryIds) => showModalBottomSheet(
         context: context,
         builder: (BuildContext context) => Column(
           mainAxisSize: MainAxisSize.min,
@@ -50,7 +47,7 @@ class _WorkoutViewState extends State<WorkoutView> {
               ),
               child: AddCategoryToWorkoutForm(
                 workoutId: widget.workoutId,
-                selectedWorkoutCategoryIds: existingWorkoutCategoryIds,
+                existingCategories: existingWorkoutCategoryIds,
                 reloadState: reloadState,
               ),
             ),
@@ -61,7 +58,7 @@ class _WorkoutViewState extends State<WorkoutView> {
       );
 
   goToMostRecentWorkout(WorkoutCategory wc) async {
-    var id = await WorkoutsHelper.getMostRecentWorkoutForCategory(wc);
+    var id = await WorkoutModel.getMostRecentWorkoutIdForCategory(wc);
     if (id == null) return;
     if (!mounted) return;
 
@@ -75,7 +72,7 @@ class _WorkoutViewState extends State<WorkoutView> {
     );
   }
 
-  getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories, List<int> existingCategoryIds) =>
+  getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories, List<Category> existingCategories) =>
       Column(children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -83,10 +80,10 @@ class _WorkoutViewState extends State<WorkoutView> {
             Expanded(
               child: Wrap(
                 alignment: WrapAlignment.start,
-                children: CategoryShellHelper.sortCategories(workoutCategories)
+                children: workoutCategories //todo: sort
                     .map((wc) => UiHelper.getTappablePropDisplay(
                           context,
-                          wc.getDisplayName(),
+                          wc.getCategoryDisplayName(),
                           () => goToMostRecentWorkout(wc),
                         ))
                     .toList(),
@@ -95,7 +92,7 @@ class _WorkoutViewState extends State<WorkoutView> {
             UiHelper.getPrimaryButton(
               ActionButton(
                 icon: Icons.edit_rounded,
-                onTap: () => onAddCategoryClick(existingCategoryIds),
+                onTap: () => onAddCategoryClick(existingCategories),
               ),
             ),
           ],
@@ -103,41 +100,33 @@ class _WorkoutViewState extends State<WorkoutView> {
         const Divider(thickness: 0.25),
       ]);
 
-  List<Widget> getWorkoutExercisesWidget(List<WorkoutSet> workoutSets, WorkoutExerciseOrdering? ordering) {
-    groupedWorkoutExercises = groupBy<WorkoutSet, int>(
-      workoutSets,
-      (x) => x.exerciseId,
-    );
+  List<Widget> getWorkoutExercisesWidget(List<WorkoutExercise> workoutExercises, WorkoutExerciseOrdering? ordering) {
+    // if (ordering != null) {
+    //   final Map<int, List<WorkoutSet>> remainder = groupedWorkoutExercises;
+    //   final Map<int, List<WorkoutSet>> newOrder = {};
+    //   for (var i in ordering.getPositions()) {
+    //     final group = groupedWorkoutExercises[i];
+    //     if (group == null) continue;
+    //     newOrder.addAll({i: group});
+    //     remainder.remove(i);
+    //   }
 
-    if (ordering != null) {
-      final Map<int, List<WorkoutSet>> remainder = groupedWorkoutExercises;
-      final Map<int, List<WorkoutSet>> newOrder = {};
-      for (var i in ordering.getPositions()) {
-        final group = groupedWorkoutExercises[i];
-        if (group == null) continue;
-        newOrder.addAll({i: group});
-        remainder.remove(i);
-      }
+    //   newOrder.addAll(remainder);
+    //   groupedWorkoutExercises = newOrder;
+    // }
 
-      newOrder.addAll(remainder);
-      groupedWorkoutExercises = newOrder;
-    }
-
-    List<Widget> weWidgets = [];
-    groupedWorkoutExercises.forEach((key, value) {
-      weWidgets.add(
-        Container(
-          key: Key('$key'),
-          child: WorkoutExerciseWidget(
-            workoutSets: value,
-            reloadState: reloadState,
-            dropped: droppedWes.contains(key),
+    return workoutExercises
+        .map(
+          (we) => Container(
+            key: Key(we.id.toString()),
+            child: WorkoutExerciseWidget(
+              workoutExercise: we,
+              reloadState: reloadState,
+              dropped: droppedWes.contains(we.id),
+            ),
           ),
-        ),
-      );
-    });
-
-    return weWidgets;
+        )
+        .toList();
   }
 
   void showEditDate(Workout workout, void Function() reloadState) async {
@@ -149,7 +138,7 @@ class _WorkoutViewState extends State<WorkoutView> {
     );
 
     try {
-      await WorkoutsHelper.updateDate(workout.id!, newDate!);
+      await WorkoutModel.updateDate(workout.id!, newDate!);
     } catch (ex) {
       // do nothing
     }
@@ -164,7 +153,7 @@ class _WorkoutViewState extends State<WorkoutView> {
     );
 
     try {
-      await WorkoutsHelper.updateTime(workout.id!, newTime!);
+      await WorkoutModel.updateTime(workout.id!, newTime!);
     } catch (ex) {
       // do nothing
     }
@@ -227,7 +216,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                   Navigator.pop(context);
                   UiHelper.showDeleteConfirm(
                     context,
-                    () => WorkoutsHelper.deleteWorkout(workout.id!),
+                    () => WorkoutModel.deleteWorkout(workout.id!),
                     reloadState,
                     "workout",
                   );
@@ -257,7 +246,7 @@ class _WorkoutViewState extends State<WorkoutView> {
     );
   }
 
-  Widget getCategoriesWidget(Workout workout, List<int> existingCategoryIds) =>
+  Widget getCategoriesWidget(Workout workout, List<Category> existingCategoryIds) =>
       workout.workoutCategories == null || workout.workoutCategories!.isEmpty
           ? Row(children: [
               Expanded(
@@ -274,13 +263,13 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   @override
   Widget build(BuildContext context) {
-    Future<Workout?> workout = WorkoutsHelper.getWorkout(
+    Future<Workout?> workout = WorkoutModel.getWorkout(
       workoutId: widget.workoutId,
       includeCategories: true,
-      includeSets: true,
+      includeWorkoutExercises: true,
     );
 
-    List<int> existingCategoryShellIds = [];
+    List<Category> setCategories = [];
 
     return FutureBuilder<Workout?>(
       future: workout,
@@ -290,18 +279,13 @@ class _WorkoutViewState extends State<WorkoutView> {
         }
 
         final workout = snapshot.data!;
+        final workoutExercises = workout.getWorkoutExercises();
 
         if (workout.workoutCategories != null && workout.workoutCategories!.isNotEmpty) {
-          existingCategoryShellIds = workout.workoutCategories!.map((wc) => wc.categoryShellId).toList();
+          setCategories = workout.workoutCategories!.map((wc) => wc.category).toList();
         } else {
-          existingCategoryShellIds = [];
+          setCategories = [];
         }
-
-        // if (workout.workoutSets != null && workout.workoutSets!.isNotEmpty) {
-        //   existingExerciseIds = distinctIntList(workout.workoutSets!.map((ws) => ws.exerciseId));
-        // } else {
-        //   existingExerciseIds = [];
-        // }
 
         void onAddExerciseClick() => showModalBottomSheet(
               context: context,
@@ -313,8 +297,9 @@ class _WorkoutViewState extends State<WorkoutView> {
                       bottom: MediaQuery.of(context).viewInsets.bottom,
                     ),
                     child: AddSetToWorkoutForm(
-                      workoutId: workout.id,
-                      categoryShellIds: existingCategoryShellIds,
+                      workoutId: workout.id!,
+                      setCategories: setCategories,
+                      excludedExercises: workoutExercises.map((we) => we.exerciseIdentifier).toList(),
                       reloadState: reloadState,
                     ),
                   ),
@@ -327,7 +312,7 @@ class _WorkoutViewState extends State<WorkoutView> {
         void onWorkoutExerciseReorder(int oldIndex, int newIndex) async {
           try {
             HapticFeedback.mediumImpact();
-            await WorkoutExerciseOrderingsHelper.reorderPositioning(widget.workoutId, oldIndex, newIndex);
+            await WorkoutExerciseOrderingsModel.reorderPositioning(widget.workoutId, oldIndex, newIndex);
           } catch (e) {
             // do nothing
           }
@@ -366,7 +351,7 @@ class _WorkoutViewState extends State<WorkoutView> {
             child: IntrinsicHeight(
               child: Column(
                 children: [
-                  getCategoriesWidget(workout, existingCategoryShellIds),
+                  getCategoriesWidget(workout, setCategories),
                   const Padding(padding: EdgeInsets.all(5)),
                   UiHelper.getSectionTitleWithAction(
                     context,
@@ -377,13 +362,14 @@ class _WorkoutViewState extends State<WorkoutView> {
                     ),
                   ),
                   const Divider(thickness: 0.25),
-                  workout.workoutSets == null || workout.workoutSets!.isEmpty
+                  workoutExercises.isEmpty
                       ? const Center(
-                          child: Padding(padding: EdgeInsets.all(15), child: Text('No Exercises added yet...')))
+                          child: Padding(padding: EdgeInsets.all(15), child: Text('No Exercises added yet...')),
+                        )
                       : Expanded(
                           child: ReorderableColumn(
                             onReorder: onWorkoutExerciseReorder,
-                            children: getWorkoutExercisesWidget(workout.workoutSets!, workout.ordering),
+                            children: getWorkoutExercisesWidget(workoutExercises, workout.exerciseOrdering),
                           ),
                         ),
                 ],

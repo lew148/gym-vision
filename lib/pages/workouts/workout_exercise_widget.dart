@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gymvision/db/classes/workout.dart';
-import 'package:gymvision/db/classes/workout_set.dart';
+import 'package:gymvision/classes/db/workout.dart';
+import 'package:gymvision/classes/db/workout_exercise.dart';
+import 'package:gymvision/classes/db/workout_set.dart';
+import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/globals.dart';
-import 'package:gymvision/forms/add_set_to_workout_form.dart';
-import 'package:gymvision/forms/edit_workout_set_form.dart';
-import 'package:gymvision/helpers/ui_helper.dart';
-
-import '../../db/classes/exercise.dart';
-import '../../db/helpers/workout_sets_helper.dart';
-import '../exercises/exercise_view.dart';
+import 'package:gymvision/models/db_models/workout_exercise_model.dart';
+import 'package:gymvision/models/db_models/workout_set_model.dart';
+import 'package:gymvision/pages/exercises/exercise_view.dart';
+import 'package:gymvision/pages/forms/add_set_to_workout_form.dart';
+import 'package:gymvision/pages/forms/edit_workout_set_form.dart';
+import 'package:gymvision/pages/ui_helper.dart';
 
 class WorkoutExerciseWidget extends StatefulWidget {
-  final List<WorkoutSet> workoutSets;
-  final Function({int? eId}) reloadState;
+  final WorkoutExercise workoutExercise;
+  final Function({int? wexId}) reloadState;
   final bool dropped;
 
   const WorkoutExerciseWidget({
     super.key,
-    required this.workoutSets,
+    required this.workoutExercise,
     required this.reloadState,
     this.dropped = false,
   });
@@ -29,60 +30,55 @@ class WorkoutExerciseWidget extends StatefulWidget {
 
 class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   late int workoutId;
-  late Workout workout;
-  late int exerciseId;
+  late Workout? workout;
+  late String exerciseIdentifier;
   late Exercise exercise;
-  late List<WorkoutSet> realWorkoutSets;
-  late bool onlyPlaceholderSets;
+  late List<WorkoutSet> workoutSets;
   late bool dropped;
+  late bool isDroppable;
 
   @override
   void initState() {
     super.initState();
-    workoutId = widget.workoutSets[0].workoutId;
-    workout = widget.workoutSets[0].workout!;
-    exerciseId = widget.workoutSets[0].exerciseId;
-    exercise = widget.workoutSets[0].exercise!;
-    realWorkoutSets = widget.workoutSets.where((ws) => !ws.isPlaceholder()).toList();
-    onlyPlaceholderSets = realWorkoutSets.isEmpty;
-    dropped = realWorkoutSets.isNotEmpty && widget.dropped;
+    workoutId = widget.workoutExercise.workoutId;
+    workout = widget.workoutExercise.workout;
+    exerciseIdentifier = widget.workoutExercise.exerciseIdentifier;
+    exercise = widget.workoutExercise.exercise!;
+    workoutSets = widget.workoutExercise.workoutSets ?? [];
+    dropped = widget.dropped;
+    isDroppable = workoutSets.isNotEmpty;
   }
 
-  void onEditWorkoutExerciseTap(WorkoutSet ws) => showModalBottomSheet(
+  void onEditWorkoutSetTap(WorkoutSet ws) => showModalBottomSheet(
         context: context,
         builder: (BuildContext context) => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
-              ),
-              child: EditWorkoutExerciseForm(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: EditWorkoutSetForm(
                 workoutSet: ws,
                 reloadState: widget.reloadState,
+                exerciseWithDetails: exercise,
               ),
             ),
           ],
         ),
         isScrollControlled: true,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
-        ),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
       );
 
   void onCopySetButtonTap(WorkoutSet ws) async {
     try {
       HapticFeedback.heavyImpact();
-      await WorkoutSetsHelper.addSetToWorkout(
+      await WorkoutSetModel.addSetToWorkout(
         WorkoutSet(
-          exerciseId: ws.exerciseId,
-          workoutId: ws.workoutId,
+          workoutExerciseId: ws.workoutExerciseId,
           weight: ws.weight,
           time: ws.time,
           distance: ws.distance,
           calsBurned: ws.calsBurned,
           reps: ws.reps,
-          single: ws.single,
           done: false,
         ),
       );
@@ -95,7 +91,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     widget.reloadState();
   }
 
-  void onAddSetsButtonTap(Exercise exercise, int workoutId) {
+  void onAddSetsButtonTap() {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) => Column(
@@ -106,7 +102,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
               bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
             child: AddSetToWorkoutForm(
-              exerciseId: exercise.id,
+              exerciseIdentifier: exerciseIdentifier,
               workoutId: workoutId,
               reloadState: widget.reloadState,
             ),
@@ -120,20 +116,21 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     ).then((value) => widget.reloadState());
   }
 
-  List<Widget> getWeightedSetWidgets(List<WorkoutSet> sets) {
+  List<Widget> getWeightedSetWidgets() {
     final List<Widget> widgets = [];
-    final filteredSets = sets.where((ws) => ws.hasWeight() || ws.hasReps()).toList();
+    final filteredSets = workoutSets.where((ws) => ws.hasWeight() || ws.hasReps()).toList();
+    // filteredSets.sort(((a, b) => a.createdAt!.compareTo(b.createdAt!)));
 
     for (int i = 0; i < filteredSets.length; i++) {
       final ws = filteredSets[i];
       widgets.add(InkWell(
         onLongPress: () => UiHelper.showDeleteConfirm(
           context,
-          () => WorkoutSetsHelper.removeSet(ws.id!),
+          () => WorkoutSetModel.removeSet(ws.id!),
           widget.reloadState,
           "set",
         ),
-        onTap: () => onEditWorkoutExerciseTap(ws),
+        onTap: () => onEditWorkoutSetTap(ws),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
           child: Row(
@@ -207,9 +204,9 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     return widgets;
   }
 
-  List<Widget> getCardioSetWidgets(List<WorkoutSet> sets) {
+  List<Widget> getCardioSetWidgets() {
     final List<Widget> widgets = [];
-    final filteredSets = sets.where((ws) => ws.hasTime() || ws.hasDistance() || ws.hasCalsBurned()).toList();
+    final filteredSets = workoutSets.where((ws) => ws.hasTime() || ws.hasDistance() || ws.hasCalsBurned()).toList();
 
     if (filteredSets.isNotEmpty) widgets.add(const Padding(padding: EdgeInsets.all(2)));
 
@@ -219,11 +216,11 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       widgets.add(InkWell(
         onLongPress: () => UiHelper.showDeleteConfirm(
           context,
-          () => WorkoutSetsHelper.removeSet(ws.id!),
+          () => WorkoutSetModel.removeSet(ws.id!),
           widget.reloadState,
           "set",
         ),
-        onTap: () => onEditWorkoutExerciseTap(ws),
+        onTap: () => onEditWorkoutSetTap(ws),
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Row(
@@ -302,44 +299,26 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     return widgets;
   }
 
-  List<Widget> getWorkoutExerciseWidgets(List<WorkoutSet> sets, bool useHeading) {
+  List<Widget> getWorkoutExerciseWidget() {
     final List<Widget> widgets = [const Divider(height: 0, thickness: 0.25)];
-
-    if (useHeading && sets[0].isSingle()) {
-      widgets.add(Padding(
-        padding: const EdgeInsets.all(5),
-        child: Row(children: [
-          Text(
-            'Single',
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.shadow,
-              fontWeight: FontWeight.bold,
-            ),
-          )
-        ]),
-      ));
-    }
-
-    var setWidgets = sets.first.isCardio() ? getCardioSetWidgets(sets) : getWeightedSetWidgets(sets);
+    var setWidgets = widget.workoutExercise.isCardio() ? getCardioSetWidgets() : getWeightedSetWidgets();
     widgets.addAll(setWidgets);
     return widgets;
   }
 
-  void onGroupedWorkoutExercisesDoneTap(bool done) async {
+  void onWorkoutExerciseDoneTap(bool done) async {
     try {
       HapticFeedback.heavyImpact();
 
-      if (workout.isInFuture()) {
+      if (workout?.isInFuture() ?? false) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Cannot mark future sets done!'),
         ));
         return;
       }
 
-      for (var ws in widget.workoutSets) {
-        ws.done = done;
-        await WorkoutSetsHelper.updateWorkoutSet(ws);
-      }
+      widget.workoutExercise.done = done;
+      await WorkoutExerciseModel.updateWorkoutExercise(widget.workoutExercise);
     } catch (ex) {
       // ignore
     }
@@ -361,9 +340,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                 onTap: () {
                   Navigator.pop(context);
                   Navigator.of(context)
-                      .push(MaterialPageRoute(
-                        builder: (context) => ExerciseView(exerciseId: exerciseId),
-                      ))
+                      .push(MaterialPageRoute(builder: (context) => ExerciseView(identifier: exerciseIdentifier)))
                       .then((value) => widget.reloadState());
                 },
                 child: Row(
@@ -389,12 +366,9 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                   Navigator.pop(context);
                   UiHelper.showDeleteConfirm(
                     context,
-                    () => WorkoutSetsHelper.removegroupedSetsFromWorkout(
-                      workoutId,
-                      exerciseId,
-                    ),
+                    () => WorkoutExerciseModel.deleteWorkoutExercise(widget.workoutExercise.id!),
                     widget.reloadState,
-                    "sets",
+                    "exercise from workout",
                   );
                 },
                 child: Row(
@@ -455,7 +429,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
               child: InkWell(
                 onTap: () {
                   Navigator.pop(context);
-                  onEditWorkoutExerciseTap(ws);
+                  onEditWorkoutSetTap(ws);
                 },
                 child: Row(
                   children: [
@@ -480,7 +454,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                   Navigator.pop(context);
                   UiHelper.showDeleteConfirm(
                     context,
-                    () => WorkoutSetsHelper.removeSet(ws.id!),
+                    () => WorkoutSetModel.removeSet(ws.id!),
                     widget.reloadState,
                     "set",
                   );
@@ -516,7 +490,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       child: Column(
         children: [
           InkWell(
-            onTap: onlyPlaceholderSets ? null : () => widget.reloadState(eId: exerciseId),
+            onTap: () => widget.reloadState(wexId: widget.workoutExercise.id),
             child: Padding(
               padding: const EdgeInsets.all(8),
               child: Row(
@@ -526,19 +500,19 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     checkColor: Colors.white,
                     activeColor: Theme.of(context).colorScheme.primary,
-                    value: widget.workoutSets.every((ws) => ws.done),
+                    value: widget.workoutExercise.done,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    onChanged: (bool? value) => onGroupedWorkoutExercisesDoneTap(value!),
+                    onChanged: (bool? value) => onWorkoutExerciseDoneTap(value!),
                   ),
                   Expanded(
                     child: Row(children: [
                       Expanded(
                         child: Text(
-                          '${exercise.uniAndBiLateral && realWorkoutSets.isNotEmpty && realWorkoutSets.every((ws) => ws.isSingle()) ? 'Single ' : ''}${exercise.name}',
+                          exercise.name,
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
-                      if (!onlyPlaceholderSets)
+                      if (isDroppable)
                         dropped ? const Icon(Icons.arrow_drop_up_rounded) : const Icon(Icons.arrow_drop_down_rounded),
                     ]),
                   ),
@@ -548,10 +522,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                       UiHelper.getPrimaryButton(
                         ActionButton(
                           icon: Icons.add_rounded,
-                          onTap: () => onAddSetsButtonTap(
-                            exercise,
-                            workoutId,
-                          ),
+                          onTap: onAddSetsButtonTap,
                         ),
                       ),
                       InkWell(
@@ -566,11 +537,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
               ),
             ),
           ),
-          if (dropped && widget.workoutSets.any((ws) => !ws.isSingle()))
-            ...getWorkoutExerciseWidgets(widget.workoutSets.where((ws) => !ws.isSingle()).toList(), false),
-          if (dropped && widget.workoutSets.any((ws) => ws.isSingle()))
-            ...getWorkoutExerciseWidgets(
-                widget.workoutSets.where((ws) => ws.isSingle()).toList(), realWorkoutSets.any((ws) => !ws.isSingle())),
+          if (isDroppable && dropped) ...getWorkoutExerciseWidget(),
         ],
       ),
     );

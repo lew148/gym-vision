@@ -1,24 +1,22 @@
-import 'dart:async';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:gymvision/db/classes/exercise.dart';
-import 'package:gymvision/db/classes/user_exercise_details.dart';
-import 'package:gymvision/db/classes/workout_set.dart';
-import 'package:gymvision/pages/exercises/exercise_recent_uses_view.dart';
+import 'package:gymvision/classes/exercise.dart';
+import 'package:gymvision/classes/exercise_details.dart';
+import 'package:gymvision/classes/db/workout_set.dart';
 import 'package:gymvision/globals.dart';
+import 'package:gymvision/models/default_exercises_model.dart';
+import 'package:gymvision/pages/exercises/exercise_recent_uses_view.dart';
+import 'package:gymvision/pages/ui_helper.dart';
 import 'package:gymvision/pages/workouts/workout_view.dart';
-
-import '../../db/helpers/exercises_helper.dart';
-import '../../enums.dart';
-import '../../helpers/ui_helper.dart';
+import 'package:gymvision/static_data/enums.dart';
+import 'package:gymvision/static_data/helpers.dart';
 
 class ExerciseView extends StatefulWidget {
-  final int exerciseId;
+  final String identifier;
 
   const ExerciseView({
     super.key,
-    required this.exerciseId,
+    required this.identifier,
   });
 
   @override
@@ -31,44 +29,32 @@ class _ExerciseViewState extends State<ExerciseView> {
   @override
   void initState() {
     super.initState();
-    _exercise = ExercisesHelper.getExercise(
-      id: widget.exerciseId,
-      includeUserDetails: true,
-      includeRecentUses: true,
-    );
+    _exercise = DefaultExercisesModel.getExerciseWithDetails(identifier: widget.identifier, includeRecentUses: true);
   }
 
   reloadState() => setState(() {});
 
-  Widget getNotesDisplay(UserExerciseDetails details) => Column(children: [
-        UiHelper.getSectionTitle(context, 'Notes'),
-        const Divider(thickness: 0.25),
-        Row(
-          children: [
-            Expanded(
-              child: InkWell(
-                onTap: () => openNotesForm(details),
-                child: Card(
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 0.15,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-                    padding: const EdgeInsets.all(10),
-                    child: Expanded(
-                      child: SingleChildScrollView(
-                        child: Row(
-                          children: [
-                            Flexible(child: Text(details.notes == null ? '-' : details.notes!)),
-                          ],
-                        ),
-                      ),
-                    ),
+  Widget getNotesDisplay(ExerciseDetails details) => Row(
+        children: [
+          Expanded(
+            child: InkWell(
+              onTap: () => openNotesForm(details),
+              child: Card(
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.15,
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                  padding: const EdgeInsets.all(10),
+                  child: Row(
+                    children: [
+                      Flexible(child: Text(details.notes == null ? '-' : details.notes!)),
+                    ],
                   ),
                 ),
               ),
             ),
-          ],
-        ),
-      ]);
+          ),
+        ],
+      );
 
   Widget getExerciseViewWidget(Exercise exercise) => Padding(
         padding: const EdgeInsets.only(top: 15, bottom: 5),
@@ -76,20 +62,19 @@ class _ExerciseViewState extends State<ExerciseView> {
           alignment: WrapAlignment.center,
           children: [
             Wrap(children: [
-              if (exercise.exerciseType != ExerciseType.other)
-                UiHelper.getPropDisplay(context, exercise.exerciseType.displayName),
-              if (exercise.muscleGroup != MuscleGroup.other) UiHelper.getPropDisplay(context, exercise.muscleGroup.displayName),
+              if (exercise.type != ExerciseType.other) UiHelper.getPropDisplay(context, exercise.type.displayName),
+              if (exercise.primaryMuscleGroup != MuscleGroup.other)
+                UiHelper.getPropDisplay(context, exercise.primaryMuscleGroup.displayName),
             ]),
             Wrap(children: [
-              if (exercise.split != ExerciseSplit.other) UiHelper.getPropDisplay(context, exercise.split.displayName),
-              if (exercise.equipment != ExerciseEquipment.other)
+              if (exercise.equipment != Equipment.other)
                 UiHelper.getPropDisplay(context, exercise.equipment.displayName),
             ]),
           ],
         ),
       );
 
-  void openNotesForm(UserExerciseDetails details) {
+  void openNotesForm(ExerciseDetails details) {
     var controller = TextEditingController(text: details.notes);
 
     showModalBottomSheet(
@@ -165,16 +150,22 @@ class _ExerciseViewState extends State<ExerciseView> {
     );
   }
 
-  List<Widget> getRecentUsesWidget(List<WorkoutSet> workoutSets) {
-    workoutSets.removeWhere((ws) => dateIsInFuture(ws.workout!.date));
-    workoutSets.sort(((a, b) => b.workout!.date.compareTo(a.workout!.date)));
+  List<Widget> getRecentUsesWidget(Exercise exercise, ExerciseDetails details) {
+    final recentUses = details.recentUses!; // checked for null in caller method
 
-    final Map<int, List<WorkoutSet>> groupedWorkoutExercises =
-        groupBy<WorkoutSet, int>(workoutSets, (x) => x.workoutId);
+    recentUses.removeWhere((ws) {
+      final workout = ws.getWorkout();
+      return workout != null && dateIsInFuture(workout.date);
+    });
+
+    recentUses.sort(((a, b) => b.getWorkout()!.date.compareTo(a.getWorkout()!.date)));
+
+    final Map<int, List<WorkoutSet>> setsGroupedByWorkoutExercise =
+        groupBy<WorkoutSet, int>(recentUses, (x) => x.workoutExerciseId);
 
     List<Widget> weWidgets = [];
-    groupedWorkoutExercises.forEach((key, value) {
-      value.sort(((a, b) => a.workout!.date.compareTo(b.workout!.date)));
+    setsGroupedByWorkoutExercise.forEach((key, value) {
+      // value.sort(((a, b) => a.createdAt!.compareTo(b.createdAt!)));
       weWidgets.add(
         Padding(
           padding: const EdgeInsets.only(top: 5, bottom: 5),
@@ -183,13 +174,13 @@ class _ExerciseViewState extends State<ExerciseView> {
                 .push(
                   MaterialPageRoute(
                     builder: (context) => WorkoutView(
-                      workoutId: value[0].workoutId,
+                      workoutId: value[0].getWorkout()!.id!,
                       reloadParent: reloadState,
                     ),
                   ),
                 )
                 .then((value) => reloadState()),
-            child: ExerciseRecentUsesView(workoutSets: value),
+            child: ExerciseRecentUsesView(workoutSets: value, exercise: exercise),
           ),
         ),
       );
@@ -216,7 +207,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                         .push(
                           MaterialPageRoute(
                             builder: (context) => WorkoutView(
-                              workoutId: pr.workoutId,
+                              workoutId: pr.getWorkout()!.id!,
                               reloadParent: reloadState,
                             ),
                           ),
@@ -228,7 +219,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                         children: [
                           Expanded(
                             flex: 2,
-                            child: Text(pr.workout!.getDateStr()),
+                            child: Text(pr.getWorkout()!.getDateStr()),
                           ),
                           Expanded(
                               flex: 3,
@@ -268,11 +259,10 @@ class _ExerciseViewState extends State<ExerciseView> {
               ),
       ];
 
-  List<Widget> getDetailsSections(Exercise exercise, UserExerciseDetails details) => [
-        if (exercise.exerciseType == ExerciseType.weight) ...getPrSection(details.pr, false),
-        if (exercise.exerciseType == ExerciseType.weight && exercise.uniAndBiLateral)
-          ...getPrSection(details.prSingle, true),
-        // getSectionTitle(context, 'Notes'),
+  List<Widget> getDetailsSections(Exercise exercise, ExerciseDetails details) => [
+        if (exercise.type == ExerciseType.strength) ...getPrSection(details.pr, false),
+        // UiHelper.getSectionTitle(context, 'Notes'),
+        // const Divider(thickness: 0.25),
         // getNotesDisplay(details),
         UiHelper.getSectionTitle(context, 'Recent Uses'),
         const Divider(thickness: 0.25),
@@ -288,7 +278,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                   child: Container(
                     padding: const EdgeInsets.all(10),
                     child: Column(
-                      children: getRecentUsesWidget(details.recentUses!),
+                      children: getRecentUsesWidget(exercise, details),
                     ),
                   ),
                 ),
@@ -308,13 +298,26 @@ class _ExerciseViewState extends State<ExerciseView> {
         }
 
         var exercise = snapshot.data!;
-        var details = exercise.userExerciseDetails;
+        var details = exercise.exerciseDetails;
 
         return Scaffold(
           appBar: AppBar(title: Text(exercise.name)),
           body: Column(
             children: [
-              getExerciseViewWidget(snapshot.data!),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    'ID: ',
+                    style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                  ),
+                  SelectableText(
+                    exercise.identifier,
+                    style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                  ),
+                ],
+              ),
+              getExerciseViewWidget(exercise),
               if (details != null) ...getDetailsSections(exercise, details),
             ],
           ),

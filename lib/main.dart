@@ -1,16 +1,16 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gymvision/db/classes/workout.dart';
-import 'package:gymvision/db/helpers/workouts_helper.dart';
+import 'package:gymvision/classes/db/workout.dart';
+import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/pages/coming_soon.dart';
 import 'package:gymvision/pages/exercises/exercises.dart';
 import 'package:gymvision/pages/today/today.dart';
-import 'package:gymvision/forms/add_bodyweight_form.dart';
-import 'package:gymvision/helpers/ui_helper.dart';
+import 'package:gymvision/pages/forms/add_bodyweight_form.dart';
+import 'package:gymvision/pages/ui_helper.dart';
+import 'package:gymvision/pages/workouts/workouts.dart';
 import 'package:gymvision/user_settings_view.dart';
 import 'package:gymvision/pages/workouts/workout_view.dart';
-import 'package:gymvision/pages/workouts/workouts.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 void main() async {
@@ -140,7 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
         date = DateTime(date.year, date.month, date.day, now.hour, now.minute);
       }
 
-      final newWorkoutId = await WorkoutsHelper.insertWorkout(Workout(date: date ?? now));
+      final newWorkoutId = await WorkoutModel.insertWorkout(Workout(date: date ?? now));
       if (!mounted) return;
 
       Navigator.of(context)
@@ -224,7 +224,7 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: const Icon(Icons.settings_rounded),
             onPressed: () => Navigator.of(context)
                 .push(MaterialPageRoute(builder: (context) => const UserSettingsView()))
-                .then((value) => reloadState),
+                .then((value) => reloadState()),
           )
         ],
       ),

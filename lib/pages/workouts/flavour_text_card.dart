@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gymvision/db/helpers/flavour_text_helper.dart';
-
-import '../../db/classes/flavour_text_schedule.dart';
+import 'package:gymvision/classes/db/flavour_text_schedule.dart';
+import 'package:gymvision/models/db_models/flavour_text_schedule_model.dart';
 
 class FlavourTextCard extends StatefulWidget {
   const FlavourTextCard({super.key});
@@ -11,11 +10,11 @@ class FlavourTextCard extends StatefulWidget {
 }
 
 class _FlavourTextCardState extends State<FlavourTextCard> {
-  final Future<FlavourTextSchedule> flavourTextSchedule = FlavourTextHelper.getTodaysFlavourTextSchedule();
+  final Future<FlavourTextSchedule> flavourTextSchedule = FlavourTextScheduleModel.getTodaysFlavourTextSchedule();
 
   void onDismissTap(FlavourTextSchedule fts) async {
     try {
-      await FlavourTextHelper.setFlavourTextScheduleDismissed(fts);
+      await FlavourTextScheduleModel.setFlavourTextScheduleDismissed(fts);
     } catch (ex) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to dismiss Flavour Text')));

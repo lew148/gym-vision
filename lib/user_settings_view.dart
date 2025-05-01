@@ -1,13 +1,12 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
-import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter/material.dart';
-import 'package:gymvision/db/classes/user_settings.dart';
+import 'package:gymvision/classes/db/user_setting.dart';
 import 'package:gymvision/db/db.dart';
-import 'package:gymvision/db/helpers/flavour_text_helper.dart';
+import 'package:gymvision/models/db_models/flavour_text_schedule_model.dart';
 import 'package:gymvision/enums.dart';
-import 'package:gymvision/helpers/ui_helper.dart';
+import 'package:gymvision/pages/ui_helper.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'db/helpers/user_settings_helper.dart';
+import 'models/db_models/user_settings_model.dart';
 import 'globals.dart';
 
 class UserSettingsView extends StatefulWidget {
@@ -20,7 +19,7 @@ class UserSettingsView extends StatefulWidget {
 class _UserSettingsViewState extends State<UserSettingsView> {
   @override
   Widget build(BuildContext context) {
-    Future<UserSettings> userSettings = UserSettingsHelper.getUserSettings();
+    Future<UserSettings> userSettings = UserSettingsModel.getUserSettings();
     late ThemeSetting themeSetting;
 
     return Scaffold(
@@ -38,50 +37,6 @@ class _UserSettingsViewState extends State<UserSettingsView> {
 
             themeSetting = snapshot.data!.theme;
 
-            void showResetDatabaseConfirm() {
-              Widget cancelButton = TextButton(
-                child: const Text("No"),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              );
-
-              Widget continueButton = TextButton(
-                child: const Text(
-                  "Yes",
-                  style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                ),
-                onPressed: () async {
-                  Navigator.pop(context);
-                  try {
-                    await DatabaseHelper.deleteDb();
-                    await DatabaseHelper.openDb();
-                    if (!context.mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('DB successfully reset!')));
-                  } catch (ex) {
-                    if (!context.mounted) return;
-                    ScaffoldMessenger.of(context)
-                        .showSnackBar(SnackBar(content: Text('Failed reset DB: ${ex.toString()}')));
-                  }
-                },
-              );
-
-              AlertDialog alert = AlertDialog(
-                title: const Text("Reset DB?"),
-                content: const Text("Are you sure you would like PERMANENTLY delete your data?"),
-                backgroundColor: Theme.of(context).cardColor,
-                actions: [
-                  cancelButton,
-                  continueButton,
-                ],
-              );
-
-              showDialog(
-                context: context,
-                builder: (context) => alert,
-              );
-            }
-
             return Column(
               children: [
                 // dev buttons
@@ -93,10 +48,10 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                       context,
                       ActionButton(
                         onTap: () async {
-                          await FlavourTextHelper.setRecentFlavourTextScheduleNotDismissed();
+                          await FlavourTextScheduleModel.setRecentFlavourTextScheduleNotDismissed();
                           if (!context.mounted) return;
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(content: Text('Flavour Text Un-dismissed!')));
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(content: Text('Flavour Text Un-dismissed!')));
                         },
                         text: 'Un-Dismiss Flavour Text',
                       ),
@@ -122,55 +77,42 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                       ),
                     ),
                     const Divider(),
-                    UiHelper.getElevatedPrimaryButton(
-                      context,
-                      ActionButton(
-                        onTap: () async {
-                          try {
-                            await DatabaseHelper.updateExercises();
+                    // UiHelper.getElevatedPrimaryButton(
+                    //   context,
+                    //   ActionButton(
+                    //     onTap: () async {
+                    //       try {
+                    //         await DatabaseHelper.restartDbWhilePersistingData();
+                    //         if (!context.mounted) return;
+                    //         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Success')));
+                    //       } catch (ex, stack) {
+                    //         await Sentry.captureException(
+                    //           ex,
+                    //           stackTrace: stack,
+                    //         );
 
-                            if (!context.mounted) return;
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(content: Text('Exercises updated successfully!')));
-                          } catch (ex, stack) {
-                            await Sentry.captureException(
-                              ex,
-                              stackTrace: stack,
-                            );
-
-                            if (!context.mounted) return;
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(const SnackBar(content: Text('Failed to update Exercises!')));
-                          }
-                        },
-                        text: 'Update Exercises',
-                      ),
-                    ),
-                    UiHelper.getElevatedPrimaryButton(
-                      context,
-                      ActionButton(
-                        onTap: () async {
-                          try {
-                            await DatabaseHelper.restartDbWhilePersistingData();
-                            if (!context.mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Success')));
-                          } catch (ex, stack) {
-                            await Sentry.captureException(
-                              ex,
-                              stackTrace: stack,
-                            );
-
-                            if (!context.mounted) return;
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(SnackBar(content: Text('Failed to persist data: ${ex.toString()}')));
-                          }
-                        },
-                        text: 'Update DB (keep data)',
-                      ),
-                    ),
+                    //         if (!context.mounted) return;
+                    //         ScaffoldMessenger.of(context)
+                    //             .showSnackBar(SnackBar(content: Text('Failed to persist data: ${ex.toString()}')));
+                    //       }
+                    //     },
+                    //     text: 'Update DB (keep data)',
+                    //   ),
+                    // ),
                     UiHelper.getOutlinedPrimaryButton(
                       ActionButton(
-                        onTap: showResetDatabaseConfirm,
+                        onTap: () => UiHelper.showDeleteConfirm(
+                          context,
+                          () async {
+                            await DatabaseHelper.deleteDb();
+                            await DatabaseHelper.openDb();
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(content: Text('Successfully reset DB')));
+                          },
+                          () => null,
+                          "DATABASE",
+                        ),
                         text: 'RESET DB',
                       ),
                     ),
@@ -189,8 +131,8 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                     DropdownButton<String>(
                       value: themeSetting.name,
                       onChanged: (String? value) async {
-                        final newTheme = EnumToString.fromString(ThemeSetting.values, value!)!;
-                        await UserSettingsHelper.setTheme(newTheme);
+                        final newTheme = stringToEnum(value!, ThemeSetting.values)!;
+                        await UserSettingsModel.setTheme(newTheme);
                         setState(() {
                           themeSetting = newTheme;
 
@@ -216,7 +158,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                   ],
                 ),
                 const Padding(padding: EdgeInsets.all(20)),
-                Center(child: Text(appVersion)),
+                const Center(child: Text('Ver: $appVersion')),
               ],
             );
           },

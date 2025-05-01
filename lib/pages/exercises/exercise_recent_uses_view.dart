@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:gymvision/db/classes/workout_set.dart';
-import 'package:gymvision/enums.dart';
+import 'package:gymvision/classes/db/workout_set.dart';
+import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/globals.dart';
+import 'package:gymvision/static_data/enums.dart';
 
 class ExerciseRecentUsesView extends StatefulWidget {
   final List<WorkoutSet> workoutSets;
+  final Exercise exercise;
 
   const ExerciseRecentUsesView({
     super.key,
     required this.workoutSets,
+    required this.exercise,
   });
 
   @override
@@ -16,110 +19,121 @@ class ExerciseRecentUsesView extends StatefulWidget {
 }
 
 class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
-  List<Widget> getWorkoutExerciseWidget(List<WorkoutSet> ws) => ws
-      .map((s) => s.isPlaceholder()
-          ? const SizedBox.shrink()
-          : Column(children: [
-              Divider(height: 0, thickness: ws.indexOf(s) == 1 ? 1 : 0.25),
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: Row(
-                  children: s.exercise!.exerciseType == ExerciseType.weight
-                      ? [
-                          Expanded(
-                            flex: 3,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: s.hasWeight()
-                                  ? [
-                                      Expanded(
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.end,
-                                          children: [
-                                          const Icon(
+  List<Widget> getWorkoutExerciseWidget(List<WorkoutSet> sets) => sets
+      .map((set) => Column(children: [
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                children: widget.exercise.type == ExerciseType.strength
+                    ? [
+                        Expanded(
+                          flex: 2,
+                          child: Container(
+                            padding: const EdgeInsets.all(3),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.shadow,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text(
+                              (sets.indexOf(set) + 1).toString(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.onPrimary,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 4,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: set.hasWeight()
+                                ? [
+                                    const Expanded(
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Icon(
                                             Icons.fitness_center_rounded,
                                             size: 15,
                                           ),
-                                          if (s.single)
-                                            const Icon(
-                                              Icons.fitness_center_rounded,
-                                              size: 15,
-                                            ),
-                                        ],),
+                                        ],
                                       ),
-                                      const Padding(padding: EdgeInsets.all(5)),
-                                      Expanded(child: Text(s.getWeightDisplay())),
-                                    ]
-                                  : [dashIcon()],
-                            ),
+                                    ),
+                                    const Padding(padding: EdgeInsets.all(5)),
+                                    Expanded(child: Text(set.getWeightDisplay())),
+                                  ]
+                                : [dashIcon()],
                           ),
-                          Expanded(
+                        ),
+                        Expanded(
+                          flex: 4,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.repeat_rounded,
+                                size: 15,
+                              ),
+                              const Padding(padding: EdgeInsets.all(5)),
+                              Text(set.getRepsDisplay()),
+                            ],
+                          ),
+                        ),
+                      ]
+                    : [
+                        Expanded(
                             flex: 3,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.repeat_rounded,
-                                  size: 15,
-                                ),
-                                const Padding(padding: EdgeInsets.all(5)),
-                                Text(s.getRepsDisplay()),
-                              ],
-                            ),
-                          ),
-                        ]
-                      : [
-                          Expanded(
-                              flex: 3,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: s.hasTime()
-                                    ? [
-                                        const Icon(
-                                          Icons.timer_rounded,
-                                          size: 15,
-                                        ),
-                                        const Padding(padding: EdgeInsets.all(5)),
-                                        Text(s.getTimeDisplay()),
-                                      ]
-                                    : [dashIcon()],
-                              )),
-                          Expanded(
-                            flex: 3,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: s.hasDistance()
+                              children: set.hasTime()
                                   ? [
                                       const Icon(
-                                        Icons.timeline_rounded,
+                                        Icons.timer_rounded,
                                         size: 15,
                                       ),
                                       const Padding(padding: EdgeInsets.all(5)),
-                                      Text(s.getDistanceDisplay()),
+                                      Text(set.getTimeDisplay()),
                                     ]
                                   : [dashIcon()],
-                            ),
+                            )),
+                        Expanded(
+                          flex: 3,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: set.hasDistance()
+                                ? [
+                                    const Icon(
+                                      Icons.timeline_rounded,
+                                      size: 15,
+                                    ),
+                                    const Padding(padding: EdgeInsets.all(5)),
+                                    Text(set.getDistanceDisplay()),
+                                  ]
+                                : [dashIcon()],
                           ),
-                          Expanded(
-                            flex: 3,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: s.hasCalsBurned()
-                                  ? [
-                                      const Icon(
-                                        Icons.local_fire_department_rounded,
-                                        size: 15,
-                                      ),
-                                      const Padding(padding: EdgeInsets.all(5)),
-                                      Text(s.getCalsBurnedDisplay()),
-                                    ]
-                                  : [dashIcon()],
-                            ),
+                        ),
+                        Expanded(
+                          flex: 3,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: set.hasCalsBurned()
+                                ? [
+                                    const Icon(
+                                      Icons.local_fire_department_rounded,
+                                      size: 15,
+                                    ),
+                                    const Padding(padding: EdgeInsets.all(5)),
+                                    Text(set.getCalsBurnedDisplay()),
+                                  ]
+                                : [dashIcon()],
                           ),
-                        ],
-                ),
+                        ),
+                      ],
               ),
-            ]))
+            ),
+          ]))
       .toList();
 
   @override
@@ -134,12 +148,13 @@ class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
                 Padding(
                   padding: const EdgeInsets.all(15),
                   child: Text(
-                    widget.workoutSets[0].workout!.getDateStr(),
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    widget.workoutSets[0].getWorkout()!.getDateStr(),
+                    // style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ],
             ),
+            const Divider(thickness: 0.25, height: 0),
             ...getWorkoutExerciseWidget(widget.workoutSets),
           ]),
         ),

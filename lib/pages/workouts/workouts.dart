@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:gymvision/db/classes/body_weight.dart';
-import 'package:gymvision/db/classes/user_settings.dart';
-import 'package:gymvision/db/helpers/bodyweight_helper.dart';
-import 'package:gymvision/db/helpers/user_settings_helper.dart';
+import 'package:gymvision/classes/db/bodyweight.dart';
+import 'package:gymvision/classes/db/user_setting.dart';
+import 'package:gymvision/classes/db/workout.dart';
+import 'package:gymvision/models/db_models/bodyweight_model.dart';
+import 'package:gymvision/models/db_models/user_settings_model.dart';
+import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/pages/workouts/workout_month_scroller.dart';
-
-import '../../db/classes/workout.dart';
-import '../../db/helpers/workouts_helper.dart';
-// import 'flavour_text_card.dart';
 
 class Workouts extends StatefulWidget {
   final Function({DateTime? date}) onAddWorkoutTap;
@@ -26,18 +24,14 @@ class _WorkoutsState extends State<Workouts> {
 
   @override
   Widget build(BuildContext context) {
-    final Future<List<Workout>> workouts = WorkoutsHelper.getWorkouts();
-    final Future<List<Bodyweight>> bodyweights = BodyweightHelper.getBodyweights();
-    final Future<UserSettings> userSettings = UserSettingsHelper.getUserSettings();
+    final Future<List<Workout>> workouts = WorkoutModel.getAllWorkouts();
+    final Future<List<Bodyweight>> bodyweights = BodyweightModel.getBodyweights();
+    final Future<UserSettings> userSettings = UserSettingsModel.getUserSettings();
 
     return Container(
       padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
       child: Column(
         children: [
-          // flavour text
-          // const FlavourTextCard(),
-
-          // workouts
           Expanded(
             child: FutureBuilder<List<Workout>>(
               future: workouts,

@@ -1,7 +1,11 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
-String appVersion = 'V 1.0.0.35';
+const String appVersion = '1.0.1.0';
+
+const String dmyFormat = 'd MMMM yyyy';
+const String dmFormat = 'd MMMM';
 
 String getNumberString(String value) => value == '' ? '0' : value;
 
@@ -13,27 +17,6 @@ String truncateDouble(double? d) {
 bool isToday(DateTime dt) {
   final now = DateTime.now();
   return dt.day == now.day && dt.month == now.month && dt.year == now.year;
-}
-
-String getDatePrefix(DateTime dt) {
-  if (dt.day == 1 || dt.day == 21 || dt.day == 31) return 'st';
-  if (dt.day == 2 || dt.day == 22) return 'nd';
-  if (dt.day == 3 || dt.day == 23) return 'rd';
-  return 'th';
-}
-
-String getDateString(DateTime dt) {
-  final today = DateTime.now();
-  final prefix = getDatePrefix(dt);
-
-  final String dmyFormat = 'd\'$prefix\' MMM yyyy';
-  final String dmFormat = 'd\'$prefix\' MMM';
-
-  if (dt.year != today.year) {
-    return DateFormat(dmyFormat).format(dt);
-  }
-
-  return DateFormat(dmFormat).format(dt);
 }
 
 String getMonthOrDayString(int num) => num < 10 ? '0$num' : num.toString();
@@ -76,3 +59,26 @@ Widget dashIcon() => const Center(
         ),
       ),
     );
+
+String? enumToString(Enum e) {
+  try {
+    return e.toString().split('.').last;
+  } catch (e) {
+    return null;
+  }
+}
+
+T? stringToEnum<T extends Enum>(String str, List<T> enumValues) {
+  try {
+    return enumValues.firstWhereOrNull((e) => enumToString(e)?.toLowerCase() == str.toLowerCase());
+  } catch (e) {
+    return null;
+  }
+}
+
+DateTime parseDateTime(String s) => DateTime.parse(s);
+
+DateTime? tryParseDateTime(String? s) {
+  if (s == null || s == '' || s == 'null') return null;
+  return DateTime.tryParse(s);
+}

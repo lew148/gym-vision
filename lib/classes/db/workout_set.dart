@@ -1,0 +1,69 @@
+import 'package:gymvision/classes/db/database_object.dart';
+import 'package:gymvision/classes/db/workout.dart';
+import 'package:gymvision/classes/db/workout_exercise.dart';
+import 'package:gymvision/classes/exercise.dart';
+import 'package:gymvision/globals.dart';
+
+class WorkoutSet extends DatabaseObject {
+  int workoutExerciseId;
+  double? weight;
+  int? reps;
+  Duration? time;
+  double? distance;
+  int? calsBurned;
+
+  // deprecated / subject to change
+  bool done;
+
+  // non-db props
+  WorkoutExercise? workoutExercise;
+
+  WorkoutSet({
+    super.id,
+    super.updatedAt,
+    super.createdAt,
+    required this.workoutExerciseId,
+    this.done = false,
+    this.weight,
+    this.reps,
+    this.time,
+    this.distance,
+    this.calsBurned,
+    this.workoutExercise,
+  });
+
+  @override
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'updatedAt': DateTime.now().toString(),
+        'createdAt': createdAt.toString(),
+        'weight': weight,
+        'reps': reps,
+        'done': done ? 1 : 0,
+        'time': time == null ? '' : time.toString(),
+        'distance': distance,
+        'calsBurned': calsBurned,
+        'workoutExerciseId': workoutExerciseId,
+      };
+
+  void setTime(String? str) => time = str == null ? null : tryParseDuration(str);
+
+  bool hasWeight() => weight != null && weight != 0;
+  double getWeight() => hasWeight() ? weight! : 0;
+  String getWeightDisplay() => '${truncateDouble(weight)} kg';
+
+  bool hasReps() => reps != null && reps! > 0;
+  String getRepsDisplay() => hasReps() ? '$reps rep${reps == 1 ? '' : 's'}' : 'No Reps';
+
+  bool hasTime() => time != null && time!.inSeconds > 0;
+  String getTimeDisplay() => hasTime() ? time.toString().split('.').first.padLeft(8, "0") : "00.00.00";
+
+  bool hasDistance() => distance != null && distance! > 0;
+  String getDistanceDisplay() => '${hasDistance() ? distance!.toStringAsFixed(2) : 0}km';
+
+  bool hasCalsBurned() => calsBurned != null && calsBurned! > 0;
+  String getCalsBurnedDisplay() => '${hasCalsBurned() ? calsBurned : 0}kcal';
+
+  Exercise? getExercise() => workoutExercise?.exercise;
+  Workout? getWorkout() => workoutExercise?.workout;
+}

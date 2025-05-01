@@ -1,18 +1,14 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:gymvision/db/classes/body_weight.dart';
-import 'package:gymvision/db/classes/user_settings.dart';
-import 'package:gymvision/db/helpers/bodyweight_helper.dart';
-import 'package:gymvision/helpers/category_shell_helper.dart';
-import 'package:gymvision/helpers/ui_helper.dart';
+import 'package:gymvision/classes/db/bodyweight.dart';
+import 'package:gymvision/classes/db/user_setting.dart';
+import 'package:gymvision/classes/db/workout.dart';
+import 'package:gymvision/globals.dart';
+import 'package:gymvision/models/db_models/bodyweight_model.dart';
+import 'package:gymvision/models/db_models/workout_model.dart';
+import 'package:gymvision/pages/ui_helper.dart';
 import 'package:gymvision/pages/workouts/workout_view.dart';
 import 'package:intl/intl.dart';
-
-import '../../db/classes/workout.dart';
-import '../../db/helpers/workouts_helper.dart';
-import '../../globals.dart';
 
 class WorkoutMonthScoller extends StatefulWidget {
   final List<Workout> workouts;
@@ -76,7 +72,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
   Widget getWorkoutDisplay(Workout workout) => InkWell(
         onLongPress: () => UiHelper.showDeleteConfirm(
           context,
-          () => WorkoutsHelper.deleteWorkout(workout.id!),
+          () => WorkoutModel.deleteWorkout(workout.id!),
           widget.reloadState,
           "workout",
         ),
@@ -124,8 +120,8 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                 Expanded(
                   child: Wrap(
                     alignment: WrapAlignment.end,
-                    children: CategoryShellHelper.sortCategories(workout.workoutCategories!)
-                        .map((wc) => UiHelper.getPropDisplay(context, wc.getDisplayName()))
+                    children: workout.workoutCategories!
+                        .map((wc) => UiHelper.getPropDisplay(context, wc.getCategoryDisplayName()))
                         .toList(),
                   ),
                 )
@@ -137,7 +133,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
   Widget getBodyweightDisplay(Bodyweight bw) => InkWell(
         onLongPress: () => UiHelper.showDeleteConfirm(
           context,
-          () => BodyweightHelper.deleteBodyweight(bw.id!),
+          () => BodyweightModel.deleteBodyweight(bw.id!),
           widget.reloadState,
           "bodyweight",
         ),
@@ -240,7 +236,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                                 padding: const EdgeInsets.all(15),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.start,
-                                  children: dateXIsAfterDateY(widget.userSettings.firstUse, currentDate) ||
+                                  children: dateXIsAfterDateY(widget.userSettings.createdAt!, currentDate) ||
                                           dateIsInFuture(currentDate) ||
                                           isToday
                                       ? [dashIcon()]
