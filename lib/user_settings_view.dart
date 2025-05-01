@@ -4,7 +4,8 @@ import 'package:gymvision/classes/db/user_setting.dart';
 import 'package:gymvision/db/db.dart';
 import 'package:gymvision/models/db_models/flavour_text_schedule_model.dart';
 import 'package:gymvision/enums.dart';
-import 'package:gymvision/pages/ui_helper.dart';
+import 'package:gymvision/pages/common_functions.dart';
+import 'package:gymvision/pages/common_ui.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'models/db_models/user_settings_model.dart';
 import 'globals.dart';
@@ -44,9 +45,9 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                   alignment: WrapAlignment.spaceBetween,
                   spacing: 5,
                   children: [
-                    UiHelper.getElevatedPrimaryButton(
+                    CommonUi.getElevatedPrimaryButton(
                       context,
-                      ActionButton(
+                      ButtonDetails(
                         onTap: () async {
                           await FlavourTextScheduleModel.setRecentFlavourTextScheduleNotDismissed();
                           if (!context.mounted) return;
@@ -56,9 +57,9 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                         text: 'Un-Dismiss Flavour Text',
                       ),
                     ),
-                    UiHelper.getElevatedPrimaryButton(
+                    CommonUi.getElevatedPrimaryButton(
                       context,
-                      ActionButton(
+                      ButtonDetails(
                         onTap: () async {
                           try {
                             throw ("(IGNORE) This error was sent manually by a developer!");
@@ -99,10 +100,12 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                     //     text: 'Update DB (keep data)',
                     //   ),
                     // ),
-                    UiHelper.getOutlinedPrimaryButton(
-                      ActionButton(
-                        onTap: () => UiHelper.showDeleteConfirm(
+                    CommonUi.getOutlinedPrimaryButton(
+                      context,
+                      ButtonDetails(
+                        onTap: () => CommonFunctions.showDeleteConfirm(
                           context,
+                          "DATABASE",
                           () async {
                             await DatabaseHelper.deleteDb();
                             await DatabaseHelper.openDb();
@@ -111,7 +114,6 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                                 .showSnackBar(const SnackBar(content: Text('Successfully reset DB')));
                           },
                           () => null,
-                          "DATABASE",
                         ),
                         text: 'RESET DB',
                       ),

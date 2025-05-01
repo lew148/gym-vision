@@ -5,7 +5,7 @@ import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';
-import 'package:gymvision/pages/ui_helper.dart';
+import 'package:gymvision/pages/common_ui.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'fields/custom_form_fields.dart';
 import 'fields/exercise_picker.dart';
@@ -88,7 +88,8 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
 
         try {
           var weId = //get existing or create workoutExercise
-              (await WorkoutExerciseModel.getWorkoutExerciseByWorkoutAndExercise(widget.workoutId, subject.identifier))?.id ??
+              (await WorkoutExerciseModel.getWorkoutExerciseByWorkoutAndExercise(widget.workoutId, subject.identifier))
+                      ?.id ??
                   await WorkoutExerciseModel.insertWorkoutExercise(WorkoutExercise(
                     workoutId: widget.workoutId,
                     exerciseIdentifier: subject.identifier,
@@ -131,7 +132,7 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
         key: formKey,
         child: Column(
           children: [
-            UiHelper.getSectionTitle(context, 'Add Set'),
+            CommonUi.getSectionTitle(context, 'Add Set'),
             const Divider(thickness: 0.25),
             ExercisePicker(
               exerciseIdentifier: widget.exerciseIdentifier,
@@ -161,12 +162,12 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     selectedExercise?.type != ExerciseType.cardio
-                        ? UiHelper.getElevatedPrimaryButton(
+                        ? CommonUi.getElevatedPrimaryButton(
                             context,
-                            ActionButton(onTap: () => onSubmit(addThree: true), text: 'Add 3'),
+                            ButtonDetails(onTap: () => onSubmit(addThree: true), text: 'Add 3'),
                           )
                         : const SizedBox.shrink(),
-                    UiHelper.getElevatedPrimaryButton(context, ActionButton(onTap: onSubmit, text: 'Add')),
+                    CommonUi.getElevatedPrimaryButton(context, ButtonDetails(onTap: onSubmit, text: 'Add')),
                   ],
                 ),
               ),

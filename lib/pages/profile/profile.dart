@@ -20,6 +20,7 @@ class _ProfileState extends State<Profile> {
             radius: 50,
             backgroundImage: NetworkImage('https://via.placeholder.com/150'),
           ),
+          const Padding(padding: EdgeInsets.all(20)),
           Column(children: [
             const Text(
               'John Doe',

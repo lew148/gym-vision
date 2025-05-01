@@ -5,7 +5,7 @@ import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';
 import 'package:gymvision/pages/forms/fields/custom_form_fields.dart';
-import 'package:gymvision/pages/ui_helper.dart';
+import 'package:gymvision/pages/common_ui.dart';
 import 'package:gymvision/static_data/enums.dart';
 
 class EditWorkoutSetForm extends StatefulWidget {
@@ -199,16 +199,16 @@ class _EditWorkoutSetFormState extends State<EditWorkoutSetForm> {
                         ),
                         onPressed: () => onDeleteButtonTap(widget.workoutSet.id!),
                       ),
-                      UiHelper.getPrimaryButton(
-                        ActionButton(
+                      CommonUi.getPrimaryButton(
+                        ButtonDetails(
                           icon: Icons.copy_rounded,
                           onTap: () => onCopySetButtonTap(),
                         ),
                       ),
                     ]),
-                    UiHelper.getElevatedPrimaryButton(
+                    CommonUi.getElevatedPrimaryButton(
                       context,
-                      ActionButton(
+                      ButtonDetails(
                         onTap: onSubmit,
                         text: 'Save',
                       ),

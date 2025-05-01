@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
-import 'package:gymvision/pages/ui_helper.dart';
+import 'package:gymvision/pages/common_ui.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
@@ -71,9 +71,9 @@ class _ExercisePickerState extends State<ExercisePicker> {
 
   Widget getFilterButton() => Row(children: [
         Expanded(
-          child: UiHelper.getElevatedPrimaryButton(
+          child: CommonUi.getElevatedPrimaryButton(
             context,
-            ActionButton(
+            ButtonDetails(
               onTap: () {
                 Navigator.pop(context);
                 showModalBottomSheet(
@@ -102,7 +102,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                                       });
                                     },
                                   ),
-                                  UiHelper.getSectionTitle(context, 'Exercise Filters'),
+                                  CommonUi.getSectionTitle(context, 'Exercise Filters'),
                                 ],
                               ),
                               const Divider(thickness: 0.25),
@@ -184,7 +184,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      UiHelper.getSectionTitle(context, 'Select Exercise'),
+                      CommonUi.getSectionTitle(context, 'Select Exercise'),
                       CloseButton(
                         onPressed: () {
                           Navigator.pop(context);
@@ -249,8 +249,8 @@ class _ExercisePickerState extends State<ExercisePicker> {
                         Navigator.pop(context);
                         widget.setExercise(e);
                       },
-                      child: Card(
-                        child: Container(
+                      child: CommonUi.getCard(
+                        Container(
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.all(
                               Radius.circular(5),
@@ -285,8 +285,8 @@ class _ExercisePickerState extends State<ExercisePicker> {
                                 ),
                               ),
                               if (addQuickAddButton)
-                                UiHelper.getPrimaryButton(
-                                  ActionButton(
+                                CommonUi.getPrimaryButton(
+                                  ButtonDetails(
                                     icon: Icons.add_rounded,
                                     onTap: () => widget.onQuickAdd!(e),
                                   ),

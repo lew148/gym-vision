@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/bodyweight.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
-import 'package:gymvision/pages/ui_helper.dart';
+import 'package:gymvision/pages/common_ui.dart';
 import 'fields/custom_form_fields.dart';
 
 class AddBodyWeightForm extends StatefulWidget {
@@ -46,7 +46,7 @@ class _AddBodyWeightFormState extends State<AddBodyWeightForm> {
         child: IntrinsicHeight(
           child: Column(
             children: [
-              UiHelper.getSectionTitle(context, 'Add Weight'),
+              CommonUi.getSectionTitle(context, 'Add Weight'),
               const Divider(thickness: 0.25),
               CustomFormFields.doubleField(
                 controller: weightController,
@@ -60,9 +60,9 @@ class _AddBodyWeightFormState extends State<AddBodyWeightForm> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    UiHelper.getElevatedPrimaryButton(
+                    CommonUi.getElevatedPrimaryButton(
                       context,
-                      ActionButton(
+                      ButtonDetails(
                         onTap: onSubmit,
                         text: 'Add',
                       ),

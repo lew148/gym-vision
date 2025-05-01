@@ -1,19 +1,17 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gymvision/classes/db/workout.dart';
-import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/pages/coming_soon.dart';
 import 'package:gymvision/pages/exercises/exercises.dart';
 import 'package:gymvision/pages/today/today.dart';
 import 'package:gymvision/pages/forms/add_bodyweight_form.dart';
-import 'package:gymvision/pages/ui_helper.dart';
 import 'package:gymvision/pages/workouts/workouts.dart';
 import 'package:gymvision/user_settings_view.dart';
-import 'package:gymvision/pages/workouts/workout_view.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // needed for calling async methods in main()
+
   // final userSettings = await UserSettingsHelper.getUserSettings();
 
   // ThemeMode getThemeModeFromSetting() {
@@ -132,83 +130,9 @@ class _MyHomePageState extends State<MyHomePage> {
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
       );
 
-  void onAddWorkoutTap({DateTime? date}) async {
-    try {
-      var now = DateTime.now();
-
-      if (date != null) {
-        date = DateTime(date.year, date.month, date.day, now.hour, now.minute);
-      }
-
-      final newWorkoutId = await WorkoutModel.insertWorkout(Workout(date: date ?? now));
-      if (!mounted) return;
-
-      Navigator.of(context)
-          .push(
-            MaterialPageRoute(
-              builder: (context) => WorkoutView(
-                workoutId: newWorkoutId,
-                reloadParent: reloadState,
-              ),
-            ),
-          )
-          .then((value) => reloadState());
-    } catch (ex) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to add workout')),
-      );
-    }
-  }
-
-  void onAddButtonTap() => showModalBottomSheet(
-        context: context,
-        builder: (context) => Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
-                child: Column(
-                  children: [
-                    UiHelper.getSectionTitle(context, 'Add'),
-                    const Divider(thickness: 0.25),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        UiHelper.getOutlinedPrimaryButton(ActionButton(
-                          onTap: () {
-                            Navigator.pop(context);
-                            onAddWorkoutTap();
-                          },
-                          text: 'Workout',
-                          icon: Icons.fitness_center_rounded,
-                        )),
-                        UiHelper.getOutlinedPrimaryButton(ActionButton(
-                          onTap: () {
-                            Navigator.pop(context);
-                            onAddWeightTap();
-                          },
-                          text: 'Bodyweight',
-                          icon: Icons.monitor_weight_rounded,
-                        )),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-        isScrollControlled: true,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
-      );
-
   List<Widget> widgetPages() => [
-        Today(onAddWorkoutTap: onAddWorkoutTap),
-        Workouts(onAddWorkoutTap: onAddWorkoutTap),
+        const Today(),
+        const Workouts(),
         const Exercises(),
         const ComingSoon(),
         const ComingSoon(),
@@ -229,12 +153,6 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       body: Center(child: widgetPages().elementAt(selectedIndex)),
-      floatingActionButton: FloatingActionButton(
-        onPressed: onAddButtonTap,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        child: const Icon(Icons.add_rounded),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: onItemTapped,
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/models/db_models/workout_category_model.dart';
-import 'package:gymvision/pages/ui_helper.dart';
+import 'package:gymvision/pages/common_ui.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 
@@ -52,8 +52,8 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
 
   Widget getCategoryDisplay(Category category) => GestureDetector(
         onTap: () => onCategoryTap(category),
-        child: Card(
-          child: Container(
+        child: CommonUi.getCard(
+          Container(
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(
                 Radius.circular(5),
@@ -76,7 +76,7 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
       padding: const EdgeInsets.all(20),
       child: Column(
         children: [
-          UiHelper.getSectionTitle(context, 'Add Categories'),
+          CommonUi.getSectionTitle(context, 'Add Categories'),
           Padding(
             padding: const EdgeInsets.all(10),
             child: Column(children: [

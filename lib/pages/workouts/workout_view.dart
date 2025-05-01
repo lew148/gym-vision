@@ -6,9 +6,10 @@ import 'package:gymvision/classes/db/workout_exercise.dart';
 import 'package:gymvision/classes/db/workout_exercise_ordering.dart';
 import 'package:gymvision/models/db_models/workout_exercise_orderings_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
+import 'package:gymvision/pages/common_functions.dart';
 import 'package:gymvision/pages/forms/add_category_to_workout_form.dart';
 import 'package:gymvision/pages/forms/add_set_to_workout_form.dart';
-import 'package:gymvision/pages/ui_helper.dart';
+import 'package:gymvision/pages/common_ui.dart';
 import 'package:gymvision/pages/workouts/workout_exercise_widget.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:reorderables/reorderables.dart';
@@ -81,7 +82,7 @@ class _WorkoutViewState extends State<WorkoutView> {
               child: Wrap(
                 alignment: WrapAlignment.start,
                 children: workoutCategories //todo: sort
-                    .map((wc) => UiHelper.getTappablePropDisplay(
+                    .map((wc) => CommonUi.getTappablePropDisplay(
                           context,
                           wc.getCategoryDisplayName(),
                           () => goToMostRecentWorkout(wc),
@@ -89,8 +90,8 @@ class _WorkoutViewState extends State<WorkoutView> {
                     .toList(),
               ),
             ),
-            UiHelper.getPrimaryButton(
-              ActionButton(
+            CommonUi.getPrimaryButton(
+              ButtonDetails(
                 icon: Icons.edit_rounded,
                 onTap: () => onAddCategoryClick(existingCategories),
               ),
@@ -161,7 +162,7 @@ class _WorkoutViewState extends State<WorkoutView> {
     reloadState();
   }
 
-  void showMoreMenu(Workout workout, void Function() reloadState) {
+  void showMoreMenu(Workout workout) {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) => Padding(
@@ -214,11 +215,12 @@ class _WorkoutViewState extends State<WorkoutView> {
               child: InkWell(
                 onTap: () {
                   Navigator.pop(context);
-                  UiHelper.showDeleteConfirm(
+                  CommonFunctions.showDeleteConfirm(
                     context,
-                    () => WorkoutModel.deleteWorkout(workout.id!),
-                    reloadState,
                     "workout",
+                    () => WorkoutModel.deleteWorkout(workout.id!),
+                    widget.reloadParent,
+                    popCaller: true,
                   );
                 },
                 child: Row(
@@ -250,8 +252,8 @@ class _WorkoutViewState extends State<WorkoutView> {
       workout.workoutCategories == null || workout.workoutCategories!.isEmpty
           ? Row(children: [
               Expanded(
-                child: UiHelper.getPrimaryButton(
-                  ActionButton(
+                child: CommonUi.getPrimaryButton(
+                  ButtonDetails(
                     onTap: () => onAddCategoryClick([]),
                     text: 'Add Categories',
                     icon: Icons.add_rounded,
@@ -342,7 +344,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                 icon: const Icon(
                   Icons.more_vert_rounded,
                 ),
-                onPressed: () => showMoreMenu(workout, reloadState),
+                onPressed: () => showMoreMenu(workout),
               ),
             ],
           ),
@@ -353,10 +355,10 @@ class _WorkoutViewState extends State<WorkoutView> {
                 children: [
                   getCategoriesWidget(workout, setCategories),
                   const Padding(padding: EdgeInsets.all(5)),
-                  UiHelper.getSectionTitleWithAction(
+                  CommonUi.getSectionTitleWithAction(
                     context,
                     'Exercises',
-                    ActionButton(
+                    ButtonDetails(
                       icon: Icons.add,
                       onTap: onAddExerciseClick,
                     ),

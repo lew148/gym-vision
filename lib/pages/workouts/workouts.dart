@@ -8,26 +8,33 @@ import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/pages/workouts/workout_month_scroller.dart';
 
 class Workouts extends StatefulWidget {
-  final Function({DateTime? date}) onAddWorkoutTap;
-
-  const Workouts({
-    super.key,
-    required this.onAddWorkoutTap,
-  });
+  const Workouts({super.key});
 
   @override
   State<Workouts> createState() => _WorkoutsState();
 }
 
 class _WorkoutsState extends State<Workouts> {
-  reloadState() => setState(() {});
+  late Future<List<Workout>> workouts;
+  late Future<List<Bodyweight>> bodyweights;
+  late Future<UserSettings> userSettings;
+
+  @override
+  void initState() {
+    super.initState();
+    workouts = WorkoutModel.getAllWorkouts();
+    bodyweights = BodyweightModel.getBodyweights();
+    userSettings = UserSettingsModel.getUserSettings();
+  }
+
+  reloadState() => setState(() {
+        workouts = WorkoutModel.getAllWorkouts();
+        bodyweights = BodyweightModel.getBodyweights();
+        userSettings = UserSettingsModel.getUserSettings();
+      });
 
   @override
   Widget build(BuildContext context) {
-    final Future<List<Workout>> workouts = WorkoutModel.getAllWorkouts();
-    final Future<List<Bodyweight>> bodyweights = BodyweightModel.getBodyweights();
-    final Future<UserSettings> userSettings = UserSettingsModel.getUserSettings();
-
     return Container(
       padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
       child: Column(
@@ -58,8 +65,7 @@ class _WorkoutsState extends State<Workouts> {
                               workouts: snapshot.data!,
                               bodyweights: bwSnapshot.data!,
                               userSettings: usSnapshot.data!,
-                              onAddWorkoutTap: widget.onAddWorkoutTap,
-                              reloadState: reloadState,
+                              reloadParent: reloadState,
                             );
                           });
                     });

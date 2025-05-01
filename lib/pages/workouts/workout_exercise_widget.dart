@@ -7,10 +7,11 @@ import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';
+import 'package:gymvision/pages/common_functions.dart';
 import 'package:gymvision/pages/exercises/exercise_view.dart';
 import 'package:gymvision/pages/forms/add_set_to_workout_form.dart';
 import 'package:gymvision/pages/forms/edit_workout_set_form.dart';
-import 'package:gymvision/pages/ui_helper.dart';
+import 'package:gymvision/pages/common_ui.dart';
 
 class WorkoutExerciseWidget extends StatefulWidget {
   final WorkoutExercise workoutExercise;
@@ -124,11 +125,11 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     for (int i = 0; i < filteredSets.length; i++) {
       final ws = filteredSets[i];
       widgets.add(InkWell(
-        onLongPress: () => UiHelper.showDeleteConfirm(
+        onLongPress: () => CommonFunctions.showDeleteConfirm(
           context,
+          "set",
           () => WorkoutSetModel.removeSet(ws.id!),
           widget.reloadState,
-          "set",
         ),
         onTap: () => onEditWorkoutSetTap(ws),
         child: Padding(
@@ -214,11 +215,11 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       final ws = filteredSets[i];
 
       widgets.add(InkWell(
-        onLongPress: () => UiHelper.showDeleteConfirm(
+        onLongPress: () => CommonFunctions.showDeleteConfirm(
           context,
+          "set",
           () => WorkoutSetModel.removeSet(ws.id!),
           widget.reloadState,
-          "set",
         ),
         onTap: () => onEditWorkoutSetTap(ws),
         child: Padding(
@@ -364,11 +365,11 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
               child: InkWell(
                 onTap: () {
                   Navigator.pop(context);
-                  UiHelper.showDeleteConfirm(
+                  CommonFunctions.showDeleteConfirm(
                     context,
+                    "exercise from workout",
                     () => WorkoutExerciseModel.deleteWorkoutExercise(widget.workoutExercise.id!),
                     widget.reloadState,
-                    "exercise from workout",
                   );
                 },
                 child: Row(
@@ -452,11 +453,11 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
               child: InkWell(
                 onTap: () {
                   Navigator.pop(context);
-                  UiHelper.showDeleteConfirm(
+                  CommonFunctions.showDeleteConfirm(
                     context,
+                    "set",
                     () => WorkoutSetModel.removeSet(ws.id!),
                     widget.reloadState,
-                    "set",
                   );
                 },
                 child: Row(
@@ -486,8 +487,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Column(
+    return CommonUi.getCard(
+      Column(
         children: [
           InkWell(
             onTap: () => widget.reloadState(wexId: widget.workoutExercise.id),
@@ -519,8 +520,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      UiHelper.getPrimaryButton(
-                        ActionButton(
+                      CommonUi.getPrimaryButton(
+                        ButtonDetails(
                           icon: Icons.add_rounded,
                           onTap: onAddSetsButtonTap,
                         ),

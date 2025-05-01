@@ -6,7 +6,8 @@ import 'package:gymvision/classes/db/workout.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
-import 'package:gymvision/pages/ui_helper.dart';
+import 'package:gymvision/pages/common_functions.dart';
+import 'package:gymvision/pages/common_ui.dart';
 import 'package:gymvision/pages/workouts/workout_view.dart';
 import 'package:intl/intl.dart';
 
@@ -14,16 +15,14 @@ class WorkoutMonthScoller extends StatefulWidget {
   final List<Workout> workouts;
   final List<Bodyweight> bodyweights;
   final UserSettings userSettings;
-  final Function({DateTime? date}) onAddWorkoutTap;
-  final Function reloadState;
+  final Function reloadParent;
 
   const WorkoutMonthScoller({
     super.key,
     required this.workouts,
     required this.bodyweights,
     required this.userSettings,
-    required this.onAddWorkoutTap,
-    required this.reloadState,
+    required this.reloadParent,
   });
 
   @override
@@ -70,22 +69,17 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
   }
 
   Widget getWorkoutDisplay(Workout workout) => InkWell(
-        onLongPress: () => UiHelper.showDeleteConfirm(
+        onLongPress: () => CommonFunctions.showDeleteConfirm(
           context,
-          () => WorkoutModel.deleteWorkout(workout.id!),
-          widget.reloadState,
           "workout",
+          () => WorkoutModel.deleteWorkout(workout.id!),
+          widget.reloadParent,
         ),
-        onTap: () => Navigator.of(context)
-            .push(
-              MaterialPageRoute(
-                builder: (context) => WorkoutView(
+        onTap: () => Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => WorkoutView(
                   workoutId: workout.id!,
-                  reloadParent: widget.reloadState,
-                ),
-              ),
-            )
-            .then((value) => widget.reloadState()),
+                  reloadParent: widget.reloadParent,
+                ))),
         child: Container(
           padding: const EdgeInsets.all(10),
           child: Row(
@@ -121,7 +115,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                   child: Wrap(
                     alignment: WrapAlignment.end,
                     children: workout.workoutCategories!
-                        .map((wc) => UiHelper.getPropDisplay(context, wc.getCategoryDisplayName()))
+                        .map((wc) => CommonUi.getPropDisplay(context, wc.getCategoryDisplayName()))
                         .toList(),
                   ),
                 )
@@ -131,11 +125,11 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
       );
 
   Widget getBodyweightDisplay(Bodyweight bw) => InkWell(
-        onLongPress: () => UiHelper.showDeleteConfirm(
+        onLongPress: () => CommonFunctions.showDeleteConfirm(
           context,
-          () => BodyweightModel.deleteBodyweight(bw.id!),
-          widget.reloadState,
           "bodyweight",
+          () => BodyweightModel.deleteBodyweight(bw.id!),
+          widget.reloadParent,
         ),
         child: Container(
           padding: const EdgeInsets.all(10),
@@ -231,7 +225,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                         : [
                             GestureDetector(
                               behavior: HitTestBehavior.translucent,
-                              onTap: () => widget.onAddWorkoutTap(date: currentDate),
+                              onTap: () => CommonFunctions.onAddWorkoutTap(context, widget.reloadParent, date: currentDate),
                               child: Padding(
                                 padding: const EdgeInsets.all(15),
                                 child: Row(
@@ -364,7 +358,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                     size: 40,
                   ),
                 ),
-                UiHelper.getPrimaryButton(ActionButton(icon: Icons.today_outlined, onTap: reloadState)),
+                CommonUi.getPrimaryButton(ButtonDetails(icon: Icons.today_outlined, onTap: reloadState)),
               ],
             ),
           ),

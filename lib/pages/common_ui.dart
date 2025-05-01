@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-class ActionButton {
-  Function() onTap;
+class ButtonDetails {
+  Function()? onTap;
+  Function()? onLongTap;
   IconData? icon;
   String? text;
 
-  ActionButton({
-    required this.onTap,
+  ButtonDetails({
+    this.onTap,
+    this.onLongTap,
     this.icon,
     this.text,
   });
 }
 
-class UiHelper {
+class CommonUi {
   static Widget getSectionTitle(BuildContext context, String title) => Padding(
         padding: const EdgeInsets.all(10),
         child: Row(
@@ -31,8 +32,10 @@ class UiHelper {
         ),
       );
 
-  static Widget getPrimaryButton(ActionButton actionButton) => TextButton(
+  static Widget getPrimaryButton(ButtonDetails actionButton) => TextButton(
         onPressed: actionButton.onTap,
+        onLongPress: actionButton.onLongTap,
+        style: TextButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -43,13 +46,20 @@ class UiHelper {
               ),
             if (actionButton.icon != null && actionButton.text != null)
               const Padding(padding: EdgeInsets.only(left: 5)),
-            if (actionButton.text != null) Text(actionButton.text!),
+            if (actionButton.text != null)
+              Text(
+                actionButton.text!,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+              ),
           ],
         ),
       );
 
-  static Widget getOutlinedPrimaryButton(ActionButton actionButton) => OutlinedButton(
+  static Widget getOutlinedPrimaryButton(BuildContext context, ButtonDetails actionButton) => OutlinedButton(
         onPressed: actionButton.onTap,
+        style: OutlinedButton.styleFrom(
+            side: BorderSide(color: Theme.of(context).colorScheme.shadow),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -60,14 +70,21 @@ class UiHelper {
               ),
             if (actionButton.icon != null && actionButton.text != null)
               const Padding(padding: EdgeInsets.only(left: 5)),
-            if (actionButton.text != null) Text(actionButton.text!),
+            if (actionButton.text != null)
+              Text(
+                actionButton.text!,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+              ),
           ],
         ),
       );
 
-  static Widget getElevatedPrimaryButton(BuildContext context, ActionButton actionButton) => ElevatedButton(
+  static Widget getElevatedPrimaryButton(BuildContext context, ButtonDetails actionButton) => ElevatedButton(
         onPressed: actionButton.onTap,
-        style: ElevatedButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.primary),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -82,19 +99,17 @@ class UiHelper {
             if (actionButton.text != null)
               Text(
                 actionButton.text!,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15),
               ),
           ],
         ),
       );
 
-  static Widget getSectionTitleWithAction(BuildContext context, String title, ActionButton actionButton) =>
+  static Widget getSectionTitleWithAction(BuildContext context, String title, ButtonDetails actionButton) =>
       getSectionTitleWithActions(context, title, [actionButton]);
 
-  static Widget getSectionTitleWithActions(BuildContext context, String title, List<ActionButton> actionButtons) => Row(
+  static Widget getSectionTitleWithActions(BuildContext context, String title, List<ButtonDetails> actionButtons) =>
+      Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           getSectionTitle(context, title),
@@ -126,47 +141,9 @@ class UiHelper {
         ),
       ));
 
-  static void showDeleteConfirm(
-    BuildContext context,
-    Function onDelete,
-    Function reloadState,
-    String objectName,
-  ) {
-    HapticFeedback.heavyImpact();
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Remove $objectName?"),
-        content: Text("Are you sure you would like to remove this $objectName?"),
-        backgroundColor: Theme.of(context).cardColor,
-        actions: [
-          TextButton(
-            child: const Text("No"),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          TextButton(
-            child: const Text(
-              "Yes",
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-            ),
-            onPressed: () async {
-              HapticFeedback.heavyImpact();
-              Navigator.pop(context);
-              try {
-                await onDelete();
-              } catch (ex) {
-                if (!context.mounted) return;
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text('Failed to remove $objectName: ${ex.toString()}')));
-              }
-
-              reloadState();
-            },
-          ),
-        ],
-      ),
-    );
-  }
+  static Widget getCard(Widget child, {Color? color}) => Card(
+        color: color,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        child: child,
+      );
 }

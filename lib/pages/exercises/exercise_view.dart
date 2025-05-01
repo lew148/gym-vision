@@ -6,7 +6,7 @@ import 'package:gymvision/classes/db/workout_set.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/pages/exercises/exercise_recent_uses_view.dart';
-import 'package:gymvision/pages/ui_helper.dart';
+import 'package:gymvision/pages/common_ui.dart';
 import 'package:gymvision/pages/workouts/workout_view.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
@@ -39,8 +39,8 @@ class _ExerciseViewState extends State<ExerciseView> {
           Expanded(
             child: InkWell(
               onTap: () => openNotesForm(details),
-              child: Card(
-                child: Container(
+              child: CommonUi.getCard(
+                Container(
                   height: MediaQuery.of(context).size.height * 0.15,
                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
                   padding: const EdgeInsets.all(10),
@@ -62,13 +62,13 @@ class _ExerciseViewState extends State<ExerciseView> {
           alignment: WrapAlignment.center,
           children: [
             Wrap(children: [
-              if (exercise.type != ExerciseType.other) UiHelper.getPropDisplay(context, exercise.type.displayName),
+              if (exercise.type != ExerciseType.other) CommonUi.getPropDisplay(context, exercise.type.displayName),
               if (exercise.primaryMuscleGroup != MuscleGroup.other)
-                UiHelper.getPropDisplay(context, exercise.primaryMuscleGroup.displayName),
+                CommonUi.getPropDisplay(context, exercise.primaryMuscleGroup.displayName),
             ]),
             Wrap(children: [
               if (exercise.equipment != Equipment.other)
-                UiHelper.getPropDisplay(context, exercise.equipment.displayName),
+                CommonUi.getPropDisplay(context, exercise.equipment.displayName),
             ]),
           ],
         ),
@@ -110,9 +110,9 @@ class _ExerciseViewState extends State<ExerciseView> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(top: 20.0),
-                              child: UiHelper.getElevatedPrimaryButton(
+                              child: CommonUi.getElevatedPrimaryButton(
                                 context,
-                                ActionButton(
+                                ButtonDetails(
                                   onTap: () async {
                                     Navigator.pop(context);
 
@@ -173,10 +173,7 @@ class _ExerciseViewState extends State<ExerciseView> {
             onTap: () => Navigator.of(context)
                 .push(
                   MaterialPageRoute(
-                    builder: (context) => WorkoutView(
-                      workoutId: value[0].getWorkout()!.id!,
-                      reloadParent: reloadState,
-                    ),
+                    builder: (context) => WorkoutView(workoutId: value[0].getWorkout()!.id!),
                   ),
                 )
                 .then((value) => reloadState()),
@@ -190,7 +187,7 @@ class _ExerciseViewState extends State<ExerciseView> {
   }
 
   List<Widget> getPrSection(WorkoutSet? pr, bool single) => [
-        UiHelper.getSectionTitle(context, single ? 'Single PR' : 'PR'),
+        CommonUi.getSectionTitle(context, single ? 'Single PR' : 'PR'),
         const Divider(thickness: 0.25),
         pr == null
             ? const Center(
@@ -201,15 +198,12 @@ class _ExerciseViewState extends State<ExerciseView> {
               )
             : Padding(
                 padding: const EdgeInsets.all(10),
-                child: Card(
-                  child: InkWell(
+                child: CommonUi.getCard(
+                  InkWell(
                     onTap: () => Navigator.of(context)
                         .push(
                           MaterialPageRoute(
-                            builder: (context) => WorkoutView(
-                              workoutId: pr.getWorkout()!.id!,
-                              reloadParent: reloadState,
-                            ),
+                            builder: (context) => WorkoutView(workoutId: pr.getWorkout()!.id!),
                           ),
                         )
                         .then((value) => reloadState()),
@@ -264,7 +258,7 @@ class _ExerciseViewState extends State<ExerciseView> {
         // UiHelper.getSectionTitle(context, 'Notes'),
         // const Divider(thickness: 0.25),
         // getNotesDisplay(details),
-        UiHelper.getSectionTitle(context, 'Recent Uses'),
+        CommonUi.getSectionTitle(context, 'Recent Uses'),
         const Divider(thickness: 0.25),
         details.recentUses == null || details.recentUses!.isEmpty
             ? const Center(

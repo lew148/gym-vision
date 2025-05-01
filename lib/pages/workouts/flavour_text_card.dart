@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/flavour_text_schedule.dart';
 import 'package:gymvision/models/db_models/flavour_text_schedule_model.dart';
+import 'package:gymvision/pages/common_ui.dart';
 
 class FlavourTextCard extends StatefulWidget {
   const FlavourTextCard({super.key});
@@ -36,9 +37,9 @@ class _FlavourTextCardState extends State<FlavourTextCard> {
           child: Row(
             children: [
               Expanded(
-                child: Card(
+                child: CommonUi.getCard(
                   color: Theme.of(context).colorScheme.primary,
-                  child: Container(
+                  Container(
                     padding: const EdgeInsets.all(10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,

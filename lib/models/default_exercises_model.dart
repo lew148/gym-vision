@@ -36,7 +36,7 @@ class DefaultExercisesModel {
     return exercise;
   }
 
-  static Exercise? getExerciseById(String identifier) =>
+  static Exercise? getExerciseByIdentifier(String identifier) =>
       defaultExercises.firstWhereOrNull((e) => e.identifier == identifier);
 
   // static Future<void> insertExercise(Exercise exercise) async {

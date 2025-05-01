@@ -25,7 +25,8 @@ class WorkoutExerciseModel {
     );
   }
 
-  static Future<WorkoutExercise?> getWorkoutExerciseByWorkoutAndExercise(int workoutId, String exerciseIdentifier) async {
+  static Future<WorkoutExercise?> getWorkoutExerciseByWorkoutAndExercise(
+      int workoutId, String exerciseIdentifier) async {
     final db = await DatabaseHelper.getDb();
     final List<Map<String, dynamic>> maps = await db.query(
       'workout_exercises',
@@ -81,7 +82,7 @@ class WorkoutExerciseModel {
         createdAt: DateTime.parse(m['createdAt']),
         workoutId: m['workoutId'],
         exerciseIdentifier: m['exerciseIdentifier'],
-        exercise: DefaultExercisesModel.getExerciseById(m['exerciseIdentifier']),
+        exercise: DefaultExercisesModel.getExerciseByIdentifier(m['exerciseIdentifier']),
         workoutSets: await WorkoutSetModel.getWorkoutSetsForWorkoutExercise(m['id'], db),
         done: m['done'] == 1,
       ));
