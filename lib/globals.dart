@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
-const String appVersion = '1.0.1.0';
+const String appVersion = '1.0.1+36';
 
 const String dmyFormat = 'd MMMM yyyy';
 const String dmFormat = 'd MMMM';
