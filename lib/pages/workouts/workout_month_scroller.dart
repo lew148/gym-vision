@@ -6,8 +6,8 @@ import 'package:gymvision/classes/db/workout.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
-import 'package:gymvision/pages/common_functions.dart';
-import 'package:gymvision/pages/common_ui.dart';
+import 'package:gymvision/pages/common/common_functions.dart';
+import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/pages/workouts/workout_view.dart';
 import 'package:intl/intl.dart';
 
@@ -99,7 +99,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                         ),
                       ),
                     Text(
-                      '${workout.isInFuture() ? '📍 Planned ' : ''}Workout',
+                      workout.getWorkoutTitle(),
                       style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                     ),
                   ]),
@@ -225,7 +225,8 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                         : [
                             GestureDetector(
                               behavior: HitTestBehavior.translucent,
-                              onTap: () => CommonFunctions.onAddWorkoutTap(context, widget.reloadParent, date: currentDate),
+                              onTap: () =>
+                                  CommonFunctions.onAddWorkoutTap(context, widget.reloadParent, date: currentDate),
                               child: Padding(
                                 padding: const EdgeInsets.all(15),
                                 child: Row(

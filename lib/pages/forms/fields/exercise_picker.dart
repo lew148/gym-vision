@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
-import 'package:gymvision/pages/common_ui.dart';
+import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
@@ -14,7 +14,7 @@ class ExercisePicker extends StatefulWidget {
   final List<String>? excludedExercises;
   final bool autoOpen;
   final Function(Exercise exercise)? onQuickAdd;
-  final Function setExercise;
+  final Function setExerciseForParent;
 
   const ExercisePicker({
     super.key,
@@ -24,7 +24,7 @@ class ExercisePicker extends StatefulWidget {
     this.excludedExercises,
     this.autoOpen = false,
     this.onQuickAdd,
-    required this.setExercise,
+    required this.setExerciseForParent,
   });
 
   @override
@@ -196,7 +196,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                   const Divider(thickness: 0.25),
                   getFilterButton(),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * .8,
+                    height: MediaQuery.of(context).size.height * .75,
                     child: filteredExercises.isEmpty && selectedExercise == null
                         ? Center(
                             child: Text(
@@ -247,7 +247,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                     (e) => GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
-                        widget.setExercise(e);
+                        widget.setExerciseForParent(e);
                       },
                       child: CommonUi.getCard(
                         Container(
@@ -311,11 +311,12 @@ class _ExercisePickerState extends State<ExercisePicker> {
       future: selectedExercise,
       builder: ((context, snapshot) {
         final exercise = widget.exercise ?? snapshot.data;
+        final disabled = filteredExercises.isEmpty && exercise != null;
 
         // first build of pre-selected exercise
         if (widget.exerciseIdentifier != null && widget.exercise == null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            widget.setExercise(exercise);
+            widget.setExerciseForParent(exercise);
           });
         } else if (widget.autoOpen && exercise == null && temp != filteredExercises) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -330,7 +331,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
           children: [
             Expanded(
               child: GestureDetector(
-                onTap: () => showExercisePicker(filteredExercises, exercise),
+                onTap: () => disabled ? null : showExercisePicker(filteredExercises, exercise),
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border(
@@ -369,10 +370,11 @@ class _ExercisePickerState extends State<ExercisePicker> {
                           ],
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.all(5),
-                        child: Icon(Icons.arrow_drop_down_rounded),
-                      ),
+                      if (!disabled)
+                        const Padding(
+                          padding: EdgeInsets.all(5),
+                          child: Icon(Icons.arrow_drop_down_rounded),
+                        ),
                     ],
                   ),
                 ),

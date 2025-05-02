@@ -51,4 +51,13 @@ class Workout extends DatabaseObject {
   List<WorkoutExercise> getWorkoutExercises() => workoutExercses ?? [];
   List<WorkoutSet> getSets() =>
       workoutExercses?.where((we) => we.workoutSets != null).expand((we) => we.workoutSets!).toList() ?? [];
+
+  String getWorkoutTitle() {
+    if (isInFuture()) return 'Planned Workout 📍';
+    if (date.hour > 3 && date.hour < 12) return 'Morning Workout 🌅';
+    if (date.hour > 12 && date.hour < 18) return 'Afternoon Workout ☀️';
+    if (date.hour > 18 && date.hour < 22) return 'Evening Workout 🌆';
+    if (date.hour < 24) return 'Night Workout 🌙';
+    return 'Workout';
+  }
 }

@@ -6,11 +6,11 @@ import 'package:gymvision/classes/db/workout_set.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
-import 'package:gymvision/pages/common_functions.dart';
+import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/workouts/flavour_text_card.dart';
 import 'package:gymvision/pages/forms/add_bodyweight_form.dart';
 import 'package:gymvision/pages/workouts/workout_view.dart';
-import 'package:gymvision/pages/common_ui.dart';
+import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/static_data/helpers.dart';
 import 'package:intl/intl.dart';
 
@@ -178,44 +178,40 @@ class _TodayState extends State<Today> {
             padding: const EdgeInsets.all(15),
             child: Column(
               children: [
-                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      if (w.done)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: Icon(
-                            Icons.check_box_rounded,
-                            color: Theme.of(context).colorScheme.primary,
-                            size: 22,
-                          ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 10),
+                      child: CommonUi.getCompleteMark(w.done),
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          w.getWorkoutTitle(),
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                         ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Workout',
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                          ),
-                          Text(
-                            w.getTimeStr(),
-                            style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  if (w.workoutCategories != null && w.workoutCategories!.isNotEmpty)
+                        Text(
+                          w.getTimeStr(),
+                          style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const Padding(padding: EdgeInsets.all(10)),
+                if (w.workoutCategories != null && w.workoutCategories!.isNotEmpty)
+                  Row(children: [
                     Expanded(
                       child: Wrap(
-                        alignment: WrapAlignment.end,
+                        alignment: WrapAlignment.start,
                         children:
                             w.getCategories().map((c) => CommonUi.getPropDisplay(context, c.displayName)).toList(),
                       ),
                     ),
-                ]),
+                  ]),
                 const Divider(thickness: 0.25),
                 getWorkoutOverview(w),
               ],
@@ -224,8 +220,8 @@ class _TodayState extends State<Today> {
         ),
       );
 
-  List<Widget> getWorkoutsOrPlaceholder(List<Workout> workouts) {
-    if (workouts.isEmpty) {
+  List<Widget> getWorkoutsOrPlaceholder(List<Workout>? workouts) {
+    if (workouts == null || workouts.isEmpty) {
       return [
         Padding(
           padding: const EdgeInsets.all(15),
@@ -303,11 +299,11 @@ class _TodayState extends State<Today> {
                         return CommonUi.getPrimaryButton(
                           ButtonDetails(
                             onLongTap: () => CommonFunctions.showDeleteConfirm(
-                            context,
-                            "bodyweight",
-                            () => BodyweightModel.deleteBodyweight(snapshot.data!.id!),
-                            reloadState,
-                          ),
+                              context,
+                              "bodyweight",
+                              () => BodyweightModel.deleteBodyweight(snapshot.data!.id!),
+                              reloadState,
+                            ),
                             text: snapshot.data!.getWeightDisplay(),
                             icon: Icons.monitor_weight_rounded,
                           ),
@@ -326,15 +322,13 @@ class _TodayState extends State<Today> {
               ),
             ),
             const Divider(thickness: 0.25),
-            FutureBuilder<List<Workout>>(
+            Expanded(
+              child: FutureBuilder<List<Workout>>(
                 future: todaysWorkouts,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const SizedBox.shrink(); // loading
-                  }
-
-                  return Expanded(child: Column(children: getWorkoutsOrPlaceholder(snapshot.data!)));
-                }),
+                builder: (context, snapshot) =>
+                    SingleChildScrollView(child: Column(children: getWorkoutsOrPlaceholder(snapshot.data))),
+              ),
+            )
           ],
         ));
   }

@@ -6,10 +6,10 @@ import 'package:gymvision/classes/db/workout_exercise.dart';
 import 'package:gymvision/classes/db/workout_exercise_ordering.dart';
 import 'package:gymvision/models/db_models/workout_exercise_orderings_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
-import 'package:gymvision/pages/common_functions.dart';
+import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/forms/add_category_to_workout_form.dart';
 import 'package:gymvision/pages/forms/add_set_to_workout_form.dart';
-import 'package:gymvision/pages/common_ui.dart';
+import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/pages/workouts/workout_exercise_widget.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:reorderables/reorderables.dart';
@@ -366,7 +366,10 @@ class _WorkoutViewState extends State<WorkoutView> {
                   const Divider(thickness: 0.25),
                   workoutExercises.isEmpty
                       ? const Center(
-                          child: Padding(padding: EdgeInsets.all(15), child: Text('No Exercises added yet...')),
+                          child: Padding(
+                            padding: EdgeInsets.all(15),
+                            child: Text('No Exercises added yet...'),
+                          ),
                         )
                       : Expanded(
                           child: ReorderableColumn(

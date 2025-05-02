@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workout_set.dart';
 import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/globals.dart';
-import 'package:gymvision/pages/common_ui.dart';
+import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/static_data/enums.dart';
 
 class ExerciseRecentUsesView extends StatefulWidget {
@@ -143,17 +143,18 @@ class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
       children: [
         CommonUi.getCard(
           Column(children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Text(
-                    widget.workoutSets[0].getWorkout()!.getDateStr(),
-                    // style: const TextStyle(fontWeight: FontWeight.bold),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                children: [
+                  CommonUi.getCompleteMark(widget.workoutSets.first.workoutExercise?.done ?? false),
+                  const Padding(padding: const EdgeInsets.all(5)),
+                  Text(
+                    widget.workoutSets.first.getWorkout()?.getDateStr() ?? '-',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             const Divider(thickness: 0.25, height: 0),
             ...getWorkoutExerciseWidget(widget.workoutSets),

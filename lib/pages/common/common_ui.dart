@@ -16,7 +16,7 @@ class ButtonDetails {
 
 class CommonUi {
   static Widget getSectionTitle(BuildContext context, String title) => Padding(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.fromLTRB(5, 10, 10, 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -145,5 +145,11 @@ class CommonUi {
         color: color,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         child: child,
+      );
+
+  static Widget getCompleteMark(bool complete) => Icon(
+        complete ? Icons.check_circle_rounded : Icons.circle_outlined,
+        color: complete ? Colors.green : Colors.yellow,
+        size: 22,
       );
 }

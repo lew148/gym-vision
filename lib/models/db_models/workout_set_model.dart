@@ -29,7 +29,6 @@ class WorkoutSetModel {
         workout_sets.updatedAt,
         workout_sets.createdAt,
         workout_sets.workoutExerciseId,
-        workout_sets.done,
         workout_sets.weight,
         workout_sets.reps,
         workout_sets.time,
@@ -38,6 +37,7 @@ class WorkoutSetModel {
         workout_exercises.id AS workoutExerciseId,
         workout_exercises.exerciseIdentifier,
         workout_exercises.workoutId,
+        workout_exercises.done,
         workouts.id AS workoutId,
         workouts.date
       FROM workout_sets
@@ -54,7 +54,6 @@ class WorkoutSetModel {
           updatedAt: tryParseDateTime(map['updatedAt']),
           createdAt: tryParseDateTime(map['createdAt']),
           workoutExerciseId: map['workoutExerciseId'],
-          done: map['done'] == 1,
           weight: map['weight'],
           reps: map['reps'],
           time: tryParseDuration(map['time']),
@@ -64,6 +63,7 @@ class WorkoutSetModel {
             id: map['workoutExerciseId'],
             workoutId: map['workoutId'],
             exerciseIdentifier: map['exerciseIdentifier'],
+            done: map['done'] == 1,
             workout: Workout(
               id: map['workoutId'],
               date: parseDateTime(map['date']),
@@ -155,7 +155,7 @@ class WorkoutSetModel {
           SELECT MAX(workout_sets.weight) AS max_weight
           FROM workout_sets
           LEFT JOIN workout_exercises ON workout_sets.workoutExerciseId = workout_exercises.id
-          WHERE workout_exercises.exerciseIdentifier = "$exerciseIdentifier"
+          WHERE workout_exercises.exerciseIdentifier = "$exerciseIdentifier" AND workout_exercises.done = 1
         ) AS b ON workout_sets.weight = b.max_weight
         WHERE NOT (workout_sets.weight = 0.0 AND workout_sets.reps = 0)
       )
@@ -201,7 +201,6 @@ class WorkoutSetModel {
         workout_sets.updatedAt,
         workout_sets.createdAt,
         workout_sets.workoutExerciseId,
-        workout_sets.done,
         workout_sets.weight,
         workout_sets.reps,
         workout_sets.time,
@@ -209,6 +208,7 @@ class WorkoutSetModel {
         workout_sets.calsBurned,
         workout_exercises.id AS workoutExerciseId,
         workout_exercises.exerciseIdentifier,
+        workout_exercises.done,
         workout_exercises.workoutId,
         workouts.id AS workoutId,
         workouts.date
@@ -226,7 +226,7 @@ class WorkoutSetModel {
       updatedAt: tryParseDateTime(maps.first['updatedAt']),
       createdAt: tryParseDateTime(maps.first['createdAt']),
       workoutExerciseId: maps.first['workoutExerciseId'],
-      done: maps.first['done'] == 1,
+      // done: maps.first['done'] == 1,
       weight: maps.first['weight'],
       reps: maps.first['reps'],
       time: tryParseDuration(maps.first['time']),
@@ -236,6 +236,7 @@ class WorkoutSetModel {
         id: maps.first['workoutExerciseId'],
         workoutId: maps.first['workoutId'],
         exerciseIdentifier: maps.first['exerciseIdentifier'],
+        done: maps.first['done'] == 1,
         workout: Workout(
           id: maps.first['workoutId'],
           date: parseDateTime(maps.first['date']),

@@ -5,7 +5,7 @@ import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';
-import 'package:gymvision/pages/common_ui.dart';
+import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'fields/custom_form_fields.dart';
 import 'fields/exercise_picker.dart';
@@ -36,7 +36,6 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
   final formKey = GlobalKey<FormState>();
   TextEditingController weightController = TextEditingController();
   TextEditingController repsController = TextEditingController();
-  bool single = false;
 
   Duration duration = const Duration();
   TextEditingController distanceController = TextEditingController();
@@ -77,55 +76,55 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
         ),
       ];
 
-  @override
-  Widget build(BuildContext context) {
-    void onSubmit({bool addThree = false, Exercise? quickAddExercise}) async {
-      final subject = quickAddExercise ?? selectedExercise;
-      if (subject == null) return; // todo: show error
+  void onSubmit({bool addThree = false, Exercise? quickAddExercise}) async {
+    final subject = quickAddExercise ?? selectedExercise;
+    if (subject == null) return; // todo: show error
 
-      if (formKey.currentState!.validate()) {
-        Navigator.pop(context);
+    if (formKey.currentState!.validate()) {
+      Navigator.pop(context);
 
-        try {
-          var weId = //get existing or create workoutExercise
-              (await WorkoutExerciseModel.getWorkoutExerciseByWorkoutAndExercise(widget.workoutId, subject.identifier))
-                      ?.id ??
-                  await WorkoutExerciseModel.insertWorkoutExercise(WorkoutExercise(
-                    workoutId: widget.workoutId,
-                    exerciseIdentifier: subject.identifier,
-                  ));
+      try {
+        var weId = //get existing or create workoutExercise
+            (await WorkoutExerciseModel.getWorkoutExerciseByWorkoutAndExercise(widget.workoutId, subject.identifier))
+                    ?.id ??
+                await WorkoutExerciseModel.insertWorkoutExercise(WorkoutExercise(
+                  workoutId: widget.workoutId,
+                  exerciseIdentifier: subject.identifier,
+                ));
 
-          if (quickAddExercise != null) {
-            widget.reloadState();
-            return;
-          }
-
-          for (int i = 0; i < (addThree ? 3 : 1); i++) {
-            await WorkoutSetModel.addSetToWorkout(
-              WorkoutSet(
-                workoutExerciseId: weId,
-                weight: double.parse(getNumberString(weightController.text)),
-                reps: int.parse(getNumberString(repsController.text)),
-                time: duration,
-                distance: double.parse(getNumberString(distanceController.text)),
-                calsBurned: int.parse(getNumberString(calsBurnedController.text)),
-              ),
-            );
-          }
-        } catch (ex) {
-          if (!context.mounted) return;
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add set(s) to workout')));
+        if (quickAddExercise != null) {
+          widget.reloadState();
+          return;
         }
 
-        widget.reloadState();
+        for (int i = 0; i < (addThree ? 3 : 1); i++) {
+          await WorkoutSetModel.addSetToWorkout(
+            WorkoutSet(
+              workoutExerciseId: weId,
+              weight: double.parse(getNumberString(weightController.text)),
+              reps: int.parse(getNumberString(repsController.text)),
+              time: duration,
+              distance: double.parse(getNumberString(distanceController.text)),
+              calsBurned: int.parse(getNumberString(calsBurnedController.text)),
+            ),
+          );
+        }
+      } catch (ex) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add set(s) to workout')));
       }
-    }
 
-    void onQuickAdd(Exercise exercise) async {
-      onSubmit(quickAddExercise: exercise);
-      Navigator.of(context).pop(); // closing picker
+      widget.reloadState();
     }
+  }
 
+  void onQuickAdd(Exercise exercise) async {
+    onSubmit(quickAddExercise: exercise);
+    Navigator.of(context).pop(); // closing picker
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(20),
       child: Form(
@@ -141,9 +140,8 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
               excludedExercises: widget.excludedExercises,
               autoOpen: true,
               onQuickAdd: onQuickAdd,
-              setExercise: (newExercise) => setState(() {
+              setExerciseForParent: (newExercise) => setState(() {
                 selectedExercise = newExercise;
-                single = false;
                 weightController.text = '';
                 repsController.text = '';
               }),

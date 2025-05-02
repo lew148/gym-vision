@@ -6,7 +6,7 @@ import 'package:gymvision/classes/db/workout_set.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/pages/exercises/exercise_recent_uses_view.dart';
-import 'package:gymvision/pages/common_ui.dart';
+import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/pages/workouts/workout_view.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
@@ -165,17 +165,13 @@ class _ExerciseViewState extends State<ExerciseView> {
 
     List<Widget> weWidgets = [];
     setsGroupedByWorkoutExercise.forEach((key, value) {
-      // value.sort(((a, b) => a.createdAt!.compareTo(b.createdAt!)));
+      // value.sort(((a, b) => a.createdAt?.compareTo(b.createdAt ?? DateTime.now()) ?? 1));
       weWidgets.add(
         Padding(
           padding: const EdgeInsets.only(top: 5, bottom: 5),
           child: InkWell(
             onTap: () => Navigator.of(context)
-                .push(
-                  MaterialPageRoute(
-                    builder: (context) => WorkoutView(workoutId: value[0].getWorkout()!.id!),
-                  ),
-                )
+                .push(MaterialPageRoute(builder: (context) => WorkoutView(workoutId: value[0].getWorkout()!.id!)))
                 .then((value) => reloadState()),
             child: ExerciseRecentUsesView(workoutSets: value, exercise: exercise),
           ),

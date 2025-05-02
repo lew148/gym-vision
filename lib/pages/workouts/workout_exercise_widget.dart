@@ -7,11 +7,11 @@ import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';
-import 'package:gymvision/pages/common_functions.dart';
+import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/exercises/exercise_view.dart';
 import 'package:gymvision/pages/forms/add_set_to_workout_form.dart';
 import 'package:gymvision/pages/forms/edit_workout_set_form.dart';
-import 'package:gymvision/pages/common_ui.dart';
+import 'package:gymvision/pages/common/common_ui.dart';
 
 class WorkoutExerciseWidget extends StatefulWidget {
   final WorkoutExercise workoutExercise;
