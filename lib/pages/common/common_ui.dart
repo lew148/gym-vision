@@ -14,7 +14,7 @@ class ButtonDetails {
   });
 }
 
-class CommonUi {
+class CommonUI {
   static Widget getSectionTitle(BuildContext context, String title) => Padding(
         padding: const EdgeInsets.fromLTRB(5, 10, 10, 10),
         child: Row(
@@ -30,6 +30,36 @@ class CommonUi {
             ),
           ],
         ),
+      );
+
+  static Widget getSectionTitleWithCloseButton(
+    BuildContext context,
+    String title, {
+    bool popCaller = false,
+  }) =>
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          getSectionTitle(context, title),
+          CloseButton(
+            onPressed: () {
+              Navigator.pop(context);
+              if (popCaller) Navigator.pop(context);
+            },
+          )
+        ],
+      );
+
+  static Widget getSectionTitleWithAction(BuildContext context, String title, ButtonDetails actionButton) =>
+      getSectionTitleWithActions(context, title, [actionButton]);
+
+  static Widget getSectionTitleWithActions(BuildContext context, String title, List<ButtonDetails> actionButtons) =>
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          getSectionTitle(context, title),
+          Row(children: actionButtons.map((ab) => getPrimaryButton(ab)).toList()),
+        ],
       );
 
   static Widget getPrimaryButton(ButtonDetails actionButton) => TextButton(
@@ -105,18 +135,6 @@ class CommonUi {
         ),
       );
 
-  static Widget getSectionTitleWithAction(BuildContext context, String title, ButtonDetails actionButton) =>
-      getSectionTitleWithActions(context, title, [actionButton]);
-
-  static Widget getSectionTitleWithActions(BuildContext context, String title, List<ButtonDetails> actionButtons) =>
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          getSectionTitle(context, title),
-          Row(children: actionButtons.map((ab) => getPrimaryButton(ab)).toList()),
-        ],
-      );
-
   static Widget getPropDisplay(BuildContext context, String text) => Container(
         margin: const EdgeInsets.all(2.5),
         padding: const EdgeInsets.all(5),
@@ -152,4 +170,6 @@ class CommonUi {
         color: complete ? Colors.green : Colors.yellow,
         size: 22,
       );
+
+  static getDefaultDivider() => const Divider(thickness: 0.25);
 }

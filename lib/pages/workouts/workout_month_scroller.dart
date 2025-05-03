@@ -75,11 +75,14 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
           () => WorkoutModel.deleteWorkout(workout.id!),
           widget.reloadParent,
         ),
-        onTap: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => WorkoutView(
-                  workoutId: workout.id!,
-                  reloadParent: widget.reloadParent,
-                ))),
+        onTap: () => Navigator.of(context)
+            .push(MaterialPageRoute(
+              builder: (context) => WorkoutView(
+                workoutId: workout.id!,
+                reloadParent: widget.reloadParent,
+              ),
+            ))
+            .then((value) => widget.reloadParent()),
         child: Container(
           padding: const EdgeInsets.all(10),
           child: Row(
@@ -89,15 +92,8 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(children: [
-                    if (!workout.isInFuture() && workout.done)
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5),
-                        child: Icon(
-                          Icons.check_box_rounded,
-                          color: Theme.of(context).colorScheme.primary,
-                          size: 18,
-                        ),
-                      ),
+                    CommonUI.getCompleteMark(!workout.isInFuture() && workout.done),
+                    const Padding(padding: EdgeInsets.only(right: 5)),
                     Text(
                       workout.getWorkoutTitle(),
                       style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
@@ -107,18 +103,18 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                     workout.getTimeStr(),
                     style: TextStyle(color: Theme.of(context).colorScheme.shadow),
                   ),
+                  if (workout.workoutCategories != null && workout.workoutCategories!.isNotEmpty)
+                    SizedBox(
+                      width: 250, // hardcoded width to prevent overflow. could break on different screen sizes
+                      child: Wrap(
+                        alignment: WrapAlignment.start,
+                        children: workout.workoutCategories!
+                            .map((wc) => CommonUI.getPropDisplay(context, wc.getCategoryDisplayName()))
+                            .toList(),
+                      ),
+                    ),
                 ],
               ),
-              const Padding(padding: EdgeInsets.only(right: 10)),
-              if (workout.workoutCategories != null && workout.workoutCategories!.isNotEmpty)
-                Expanded(
-                  child: Wrap(
-                    alignment: WrapAlignment.end,
-                    children: workout.workoutCategories!
-                        .map((wc) => CommonUi.getPropDisplay(context, wc.getCategoryDisplayName()))
-                        .toList(),
-                  ),
-                )
             ],
           ),
         ),
@@ -163,7 +159,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
       var workoutsForDay = workouts
           .where((w) => w.date.year == selectedMonth.year && w.date.month == selectedMonth.month && w.date.day == day)
           .toList();
-      workoutsForDay.sort((w1, w2) => w2.date.compareTo(w1.date));
+      workoutsForDay.sort((w1, w2) => w1.date.compareTo(w2.date));
 
       var bwsForDay = bws
           .where((w) => w.date.year == selectedMonth.year && w.date.month == selectedMonth.month && w.date.day == day)
@@ -283,21 +279,22 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
     });
   }
 
+  void rebuildAfterLoad() => WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {});
+      });
+
   @override
   Widget build(BuildContext context) {
-    const speed = 30;
-    void rebuildAfterLoad() => WidgetsBinding.instance.addPostFrameCallback((_) {
-          setState(() {});
-        });
+    const swipeSpeed = 30;
 
     if (animationInMotion) {
-      if (right > speed && left < speed) {
-        right -= speed;
-        left += speed;
+      if (right > swipeSpeed && left < swipeSpeed) {
+        right -= swipeSpeed;
+        left += swipeSpeed;
         rebuildAfterLoad();
-      } else if (right < speed && left > speed) {
-        right += speed;
-        left -= speed;
+      } else if (right < swipeSpeed && left > swipeSpeed) {
+        right += swipeSpeed;
+        left -= swipeSpeed;
         rebuildAfterLoad();
       } else {
         right = 0;
@@ -359,7 +356,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                     size: 40,
                   ),
                 ),
-                CommonUi.getPrimaryButton(ButtonDetails(icon: Icons.today_outlined, onTap: reloadState)),
+                CommonUI.getPrimaryButton(ButtonDetails(icon: Icons.today_outlined, onTap: reloadState)),
               ],
             ),
           ),

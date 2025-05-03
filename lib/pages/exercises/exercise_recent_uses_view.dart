@@ -141,13 +141,13 @@ class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommonUi.getCard(
+        CommonUI.getCard(
           Column(children: [
             Padding(
               padding: const EdgeInsets.all(10),
               child: Row(
                 children: [
-                  CommonUi.getCompleteMark(widget.workoutSets.first.workoutExercise?.done ?? false),
+                  CommonUI.getCompleteMark(widget.workoutSets.first.workoutExercise?.done ?? false),
                   const Padding(padding: const EdgeInsets.all(5)),
                   Text(
                     widget.workoutSets.first.getWorkout()?.getDateStr() ?? '-',

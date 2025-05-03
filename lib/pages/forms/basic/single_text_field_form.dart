@@ -27,44 +27,41 @@ class _SingleTextFieldFormState extends State<SingleTextFieldForm> {
     final formKey = GlobalKey<FormState>();
     final fieldController = TextEditingController(text: widget.initialValue);
 
-    return Container(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          Text(
-            widget.title,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-          ),
-          Form(
-            key: formKey,
-            child: Column(
-              children: [
-                CustomFormFields.stringField(
-                  controller: fieldController,
-                  label: widget.label,
-                  canBeBlank: false,
-                  autofocus: true,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 20.0),
-                      child: CommonUi.getElevatedPrimaryButton(
-                        context,
-                        ButtonDetails(
-                          onTap: () => widget.onSubmit(formKey.currentState!.validate(), fieldController.text),
-                          text: 'Save',
-                        ),
+    return Column(
+      children: [
+        Text(
+          widget.title,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        ),
+        Form(
+          key: formKey,
+          child: Column(
+            children: [
+              CustomFormFields.stringField(
+                controller: fieldController,
+                label: widget.label,
+                canBeBlank: false,
+                autofocus: true,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: CommonUI.getElevatedPrimaryButton(
+                      context,
+                      ButtonDetails(
+                        onTap: () => widget.onSubmit(formKey.currentState!.validate(), fieldController.text),
+                        text: 'Save',
                       ),
                     ),
-                  ],
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        )
+      ],
     );
   }
 }

@@ -179,7 +179,7 @@ class _EditWorkoutSetFormState extends State<EditWorkoutSetForm> {
             'Edit Workout Set',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
-          const Divider(thickness: 0.25),
+          CommonUI.getDefaultDivider(),
           Form(
             key: formKey,
             child: Column(
@@ -199,14 +199,14 @@ class _EditWorkoutSetFormState extends State<EditWorkoutSetForm> {
                         ),
                         onPressed: () => onDeleteButtonTap(widget.workoutSet.id!),
                       ),
-                      CommonUi.getPrimaryButton(
+                      CommonUI.getPrimaryButton(
                         ButtonDetails(
                           icon: Icons.copy_rounded,
                           onTap: () => onCopySetButtonTap(),
                         ),
                       ),
                     ]),
-                    CommonUi.getElevatedPrimaryButton(
+                    CommonUI.getElevatedPrimaryButton(
                       context,
                       ButtonDetails(
                         onTap: onSubmit,

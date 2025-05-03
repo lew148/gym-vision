@@ -531,6 +531,22 @@ Set<Exercise> defaultExercises = {
     categories: {Category.pull, Category.upperBody, Category.arms, Category.biceps},
   ),
   Exercise(
+    identifier: "GXFH9AM6VNV",
+    name: "Bicep Pulldown",
+    type: ExerciseType.strength,
+    primaryMuscleGroup: MuscleGroup.biceps,
+    equipment: Equipment.cable,
+    categories: {Category.pull, Category.upperBody, Category.arms, Category.biceps},
+  ),
+  Exercise(
+    identifier: "PCW2UUSQ753",
+    name: "Bicep Pulldown - Single",
+    type: ExerciseType.strength,
+    primaryMuscleGroup: MuscleGroup.biceps,
+    equipment: Equipment.cable,
+    categories: {Category.pull, Category.upperBody, Category.arms, Category.biceps},
+  ),
+  Exercise(
     identifier: "2Q5VWUGH3TM",
     name: "Bicep Curl - Reverse Grip (Dumbell)",
     type: ExerciseType.strength,

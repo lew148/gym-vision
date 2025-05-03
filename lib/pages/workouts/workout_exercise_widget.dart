@@ -50,23 +50,13 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     isDroppable = workoutSets.isNotEmpty;
   }
 
-  void onEditWorkoutSetTap(WorkoutSet ws) => showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) => Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: EditWorkoutSetForm(
-                workoutSet: ws,
-                reloadState: widget.reloadState,
-                exerciseWithDetails: exercise,
-              ),
-            ),
-          ],
+  void onEditWorkoutSetTap(WorkoutSet ws) => CommonFunctions.showBottomSheet(
+        context,
+        EditWorkoutSetForm(
+          workoutSet: ws,
+          reloadState: widget.reloadState,
+          exerciseWithDetails: exercise,
         ),
-        isScrollControlled: true,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
       );
 
   void onCopySetButtonTap(WorkoutSet ws) async {
@@ -93,26 +83,12 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   }
 
   void onAddSetsButtonTap() {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
-            child: AddSetToWorkoutForm(
-              exerciseIdentifier: exerciseIdentifier,
-              workoutId: workoutId,
-              reloadState: widget.reloadState,
-            ),
-          ),
-        ],
-      ),
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+    CommonFunctions.showBottomSheet(
+      context,
+      AddSetToWorkoutForm(
+        exerciseIdentifier: exerciseIdentifier,
+        workoutId: workoutId,
+        reloadState: widget.reloadState,
       ),
     ).then((value) => widget.reloadState());
   }
@@ -328,166 +304,150 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   }
 
   void showExerciseMenu() {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) => Padding(
-        padding: const EdgeInsets.all(25),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (context) => ExerciseView(identifier: exerciseIdentifier)))
-                      .then((value) => widget.reloadState());
-                },
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.visibility_rounded,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    const Padding(padding: EdgeInsets.all(5)),
-                    const Text(
-                      'View Exercise',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-                    ),
-                  ],
-                ),
+    CommonFunctions.showBottomSheet(
+      context,
+      Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 10, bottom: 10),
+            child: InkWell(
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) => ExerciseView(identifier: exerciseIdentifier)))
+                    .then((value) => widget.reloadState());
+              },
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.visibility_rounded,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  const Padding(padding: EdgeInsets.all(5)),
+                  const Text(
+                    'View Exercise',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                  ),
+                ],
               ),
             ),
-            const Divider(thickness: 0.25),
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                  CommonFunctions.showDeleteConfirm(
-                    context,
-                    "exercise from workout",
-                    () => WorkoutExerciseModel.deleteWorkoutExercise(widget.workoutExercise.id!),
-                    widget.reloadState,
-                  );
-                },
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.delete_rounded,
-                      color: Theme.of(context).colorScheme.tertiary,
-                    ),
-                    const Padding(padding: EdgeInsets.all(5)),
-                    const Text(
-                      'Delete Exercise',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-                    ),
-                  ],
-                ),
+          ),
+          CommonUI.getDefaultDivider(),
+          Padding(
+            padding: const EdgeInsets.only(top: 10, bottom: 10),
+            child: InkWell(
+              onTap: () {
+                Navigator.pop(context);
+                CommonFunctions.showDeleteConfirm(
+                  context,
+                  "exercise from workout",
+                  () => WorkoutExerciseModel.deleteWorkoutExercise(widget.workoutExercise.id!),
+                  widget.reloadState,
+                );
+              },
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.delete_rounded,
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
+                  const Padding(padding: EdgeInsets.all(5)),
+                  const Text(
+                    'Delete Exercise',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+          ),
+        ],
       ),
     );
   }
 
   void showSetMenu(WorkoutSet ws) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) => Padding(
-        padding: const EdgeInsets.all(25),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: InkWell(
-                onTap: () => onCopySetButtonTap(ws),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.content_copy_rounded,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    const Padding(padding: EdgeInsets.all(5)),
-                    const Text(
-                      'Copy Set',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-                    ),
-                  ],
-                ),
+    CommonFunctions.showBottomSheet(
+      context,
+      Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 10, bottom: 10),
+            child: InkWell(
+              onTap: () => onCopySetButtonTap(ws),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.content_copy_rounded,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  const Padding(padding: EdgeInsets.all(5)),
+                  const Text(
+                    'Copy Set',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                  ),
+                ],
               ),
             ),
-            const Divider(thickness: 0.25),
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                  onEditWorkoutSetTap(ws);
-                },
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.edit_rounded,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    const Padding(padding: EdgeInsets.all(5)),
-                    const Text(
-                      'Edit Set',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-                    ),
-                  ],
-                ),
+          ),
+          CommonUI.getDefaultDivider(),
+          Padding(
+            padding: const EdgeInsets.only(top: 10, bottom: 10),
+            child: InkWell(
+              onTap: () {
+                Navigator.pop(context);
+                onEditWorkoutSetTap(ws);
+              },
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.edit_rounded,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  const Padding(padding: EdgeInsets.all(5)),
+                  const Text(
+                    'Edit Set',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                  ),
+                ],
               ),
             ),
-            const Divider(thickness: 0.25),
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                  CommonFunctions.showDeleteConfirm(
-                    context,
-                    "set",
-                    () => WorkoutSetModel.removeSet(ws.id!),
-                    widget.reloadState,
-                  );
-                },
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.delete_rounded,
-                      color: Theme.of(context).colorScheme.tertiary,
-                    ),
-                    const Padding(padding: EdgeInsets.all(5)),
-                    const Text(
-                      'Delete Set',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-                    ),
-                  ],
-                ),
+          ),
+          CommonUI.getDefaultDivider(),
+          Padding(
+            padding: const EdgeInsets.only(top: 10, bottom: 10),
+            child: InkWell(
+              onTap: () {
+                Navigator.pop(context);
+                CommonFunctions.showDeleteConfirm(
+                  context,
+                  "set",
+                  () => WorkoutSetModel.removeSet(ws.id!),
+                  widget.reloadState,
+                );
+              },
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.delete_rounded,
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
+                  const Padding(padding: EdgeInsets.all(5)),
+                  const Text(
+                    'Delete Set',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+          ),
+        ],
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return CommonUi.getCard(
+    return CommonUI.getCard(
       Column(
         children: [
           InkWell(
@@ -520,7 +480,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      CommonUi.getPrimaryButton(
+                      CommonUI.getPrimaryButton(
                         ButtonDetails(
                           icon: Icons.add_rounded,
                           onTap: onAddSetsButtonTap,

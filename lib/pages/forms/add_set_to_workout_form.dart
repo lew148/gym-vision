@@ -125,52 +125,49 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Form(
-        key: formKey,
-        child: Column(
-          children: [
-            CommonUi.getSectionTitle(context, 'Add Set'),
-            const Divider(thickness: 0.25),
-            ExercisePicker(
-              exerciseIdentifier: widget.exerciseIdentifier,
-              exercise: selectedExercise,
-              setCategories: widget.setCategories,
-              excludedExercises: widget.excludedExercises,
-              autoOpen: true,
-              onQuickAdd: onQuickAdd,
-              setExerciseForParent: (newExercise) => setState(() {
-                selectedExercise = newExercise;
-                weightController.text = '';
-                repsController.text = '';
-              }),
-            ),
-            const Padding(padding: EdgeInsets.all(5)),
-            if (selectedExercise != null && selectedExercise!.type == ExerciseType.strength)
-              ...getWeightFields(selectedExercise!),
-            if (selectedExercise != null && selectedExercise!.type == ExerciseType.cardio)
-              ...getCardioFields(selectedExercise!),
-            // if (selectedExercise != null && selectedExercise!.exerciseType == ExerciseType.stretch)
-            //   ...getWeightFields(selectedExercise!),
-            if (selectedExercise != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    selectedExercise?.type != ExerciseType.cardio
-                        ? CommonUi.getElevatedPrimaryButton(
-                            context,
-                            ButtonDetails(onTap: () => onSubmit(addThree: true), text: 'Add 3'),
-                          )
-                        : const SizedBox.shrink(),
-                    CommonUi.getElevatedPrimaryButton(context, ButtonDetails(onTap: onSubmit, text: 'Add')),
-                  ],
-                ),
+    return Form(
+      key: formKey,
+      child: Column(
+        children: [
+          CommonUI.getSectionTitle(context, 'Add Set'),
+          CommonUI.getDefaultDivider(),
+          ExercisePicker(
+            exerciseIdentifier: widget.exerciseIdentifier,
+            exercise: selectedExercise,
+            setCategories: widget.setCategories,
+            excludedExercises: widget.excludedExercises,
+            autoOpen: true,
+            onQuickAdd: onQuickAdd,
+            setExerciseForParent: (newExercise) => setState(() {
+              selectedExercise = newExercise;
+              weightController.text = '';
+              repsController.text = '';
+            }),
+          ),
+          const Padding(padding: EdgeInsets.all(5)),
+          if (selectedExercise != null && selectedExercise!.type == ExerciseType.strength)
+            ...getWeightFields(selectedExercise!),
+          if (selectedExercise != null && selectedExercise!.type == ExerciseType.cardio)
+            ...getCardioFields(selectedExercise!),
+          // if (selectedExercise != null && selectedExercise!.exerciseType == ExerciseType.stretch)
+          //   ...getWeightFields(selectedExercise!),
+          if (selectedExercise != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 20.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  selectedExercise?.type != ExerciseType.cardio
+                      ? CommonUI.getElevatedPrimaryButton(
+                          context,
+                          ButtonDetails(onTap: () => onSubmit(addThree: true), text: 'Add 3'),
+                        )
+                      : const SizedBox.shrink(),
+                  CommonUI.getElevatedPrimaryButton(context, ButtonDetails(onTap: onSubmit, text: 'Add')),
+                ],
               ),
-          ],
-        ),
+            ),
+        ],
       ),
     );
   }

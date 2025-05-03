@@ -52,7 +52,7 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
 
   Widget getCategoryDisplay(Category category) => GestureDetector(
         onTap: () => onCategoryTap(category),
-        child: CommonUi.getCard(
+        child: CommonUI.getCard(
           Container(
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(
@@ -72,39 +72,36 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          CommonUi.getSectionTitle(context, 'Add Categories'),
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(children: [
-              Column(children: [
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  children: SplitHelper.splitCategories.map((c) => getCategoryDisplay(c)).toList(),
-                ),
-                const Divider(thickness: 0.25),
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  children: SplitHelper.split2Categories.map((c) => getCategoryDisplay(c)).toList(),
-                ),
-                const Divider(thickness: 0.25),
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  children: SplitHelper.muscleGroupCategories.map((c) => getCategoryDisplay(c)).toList(),
-                ),
-                const Divider(thickness: 0.25),
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  children: SplitHelper.miscCategories.map((c) => getCategoryDisplay(c)).toList(),
-                ),
-              ])
-            ]),
-          ),
-        ],
-      ),
+    return Column(
+      children: [
+        CommonUI.getSectionTitle(context, 'Add Categories'),
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(children: [
+            Column(children: [
+              Wrap(
+                alignment: WrapAlignment.center,
+                children: SplitHelper.splitCategories.map((c) => getCategoryDisplay(c)).toList(),
+              ),
+              CommonUI.getDefaultDivider(),
+              Wrap(
+                alignment: WrapAlignment.center,
+                children: SplitHelper.split2Categories.map((c) => getCategoryDisplay(c)).toList(),
+              ),
+              CommonUI.getDefaultDivider(),
+              Wrap(
+                alignment: WrapAlignment.center,
+                children: SplitHelper.muscleGroupCategories.map((c) => getCategoryDisplay(c)).toList(),
+              ),
+              CommonUI.getDefaultDivider(),
+              Wrap(
+                alignment: WrapAlignment.center,
+                children: SplitHelper.miscCategories.map((c) => getCategoryDisplay(c)).toList(),
+              ),
+            ])
+          ]),
+        ),
+      ],
     );
   }
 }

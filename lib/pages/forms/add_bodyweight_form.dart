@@ -20,58 +20,55 @@ class _AddBodyWeightFormState extends State<AddBodyWeightForm> {
   final formKey = GlobalKey<FormState>();
   TextEditingController weightController = TextEditingController();
 
-  @override
-  Widget build(BuildContext context) {
-    void onSubmit() async {
-      try {
-        var now = DateTime.now();
-        var weight = double.tryParse(weightController.text);
-        if (weight != null) {
-          await BodyweightModel.insertBodyweight(Bodyweight(date: now, weight: weight, units: 'kg'));
-        }
-      } catch (ex) {
-        if (!context.mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add Bodyweight')));
+  void onSubmit() async {
+    try {
+      var now = DateTime.now();
+      var weight = double.tryParse(weightController.text);
+      if (weight != null) {
+        await BodyweightModel.insertBodyweight(Bodyweight(date: now, weight: weight, units: 'kg'));
       }
-
-      if (!context.mounted) return;
-      Navigator.pop(context);
-      widget.reloadState();
+    } catch (ex) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add Bodyweight')));
     }
 
-    return Container(
-      padding: const EdgeInsets.all(20),
-      child: Form(
-        key: formKey,
-        child: IntrinsicHeight(
-          child: Column(
-            children: [
-              CommonUi.getSectionTitle(context, 'Add Weight'),
-              const Divider(thickness: 0.25),
-              CustomFormFields.doubleField(
-                controller: weightController,
-                label: 'Weight',
-                unit: 'kg',
-                autofocus: true,
-                hideNone: true,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    CommonUi.getElevatedPrimaryButton(
-                      context,
-                      ButtonDetails(
-                        onTap: onSubmit,
-                        text: 'Add',
-                      ),
+    if (!mounted) return;
+    Navigator.pop(context);
+    widget.reloadState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: formKey,
+      child: IntrinsicHeight(
+        child: Column(
+          children: [
+            CommonUI.getSectionTitle(context, 'Add Weight'),
+            CommonUI.getDefaultDivider(),
+            CustomFormFields.doubleField(
+              controller: weightController,
+              label: 'Weight',
+              unit: 'kg',
+              autofocus: true,
+              hideNone: true,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 20.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  CommonUI.getElevatedPrimaryButton(
+                    context,
+                    ButtonDetails(
+                      onTap: onSubmit,
+                      text: 'Add',
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

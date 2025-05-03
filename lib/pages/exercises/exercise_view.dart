@@ -5,6 +5,8 @@ import 'package:gymvision/classes/exercise_details.dart';
 import 'package:gymvision/classes/db/workout_set.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
+import 'package:gymvision/pages/common/common_functions.dart';
+import 'package:gymvision/pages/common/debug_scaffold.dart';
 import 'package:gymvision/pages/exercises/exercise_recent_uses_view.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/pages/workouts/workout_view.dart';
@@ -39,7 +41,7 @@ class _ExerciseViewState extends State<ExerciseView> {
           Expanded(
             child: InkWell(
               onTap: () => openNotesForm(details),
-              child: CommonUi.getCard(
+              child: CommonUI.getCard(
                 Container(
                   height: MediaQuery.of(context).size.height * 0.15,
                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
@@ -62,13 +64,13 @@ class _ExerciseViewState extends State<ExerciseView> {
           alignment: WrapAlignment.center,
           children: [
             Wrap(children: [
-              if (exercise.type != ExerciseType.other) CommonUi.getPropDisplay(context, exercise.type.displayName),
+              if (exercise.type != ExerciseType.other) CommonUI.getPropDisplay(context, exercise.type.displayName),
               if (exercise.primaryMuscleGroup != MuscleGroup.other)
-                CommonUi.getPropDisplay(context, exercise.primaryMuscleGroup.displayName),
+                CommonUI.getPropDisplay(context, exercise.primaryMuscleGroup.displayName),
             ]),
             Wrap(children: [
               if (exercise.equipment != Equipment.other)
-                CommonUi.getPropDisplay(context, exercise.equipment.displayName),
+                CommonUI.getPropDisplay(context, exercise.equipment.displayName),
             ]),
           ],
         ),
@@ -77,75 +79,64 @@ class _ExerciseViewState extends State<ExerciseView> {
   void openNotesForm(ExerciseDetails details) {
     var controller = TextEditingController(text: details.notes);
 
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                child: Column(
+    CommonFunctions.showBottomSheet(
+      context,
+      Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            const Text(
+              'Edit Notes',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
+            Column(
+              children: [
+                TextFormField(
+                  controller: controller,
+                  textInputAction: TextInputAction.go,
+                  autofocus: true,
+                  keyboardType: TextInputType.multiline,
+                  maxLines: 4,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    hintText: 'Add notes here',
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    const Text(
-                      'Edit Notes',
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: CommonUI.getElevatedPrimaryButton(
+                        context,
+                        ButtonDetails(
+                          onTap: () async {
+                            Navigator.pop(context);
+
+                            try {
+                              var newValue = controller.text;
+                              if (details.notes == newValue) return;
+                              details.notes = newValue;
+                              // await UserExerciseDetailsHelper.updateUserExerciseDetails(details);
+                            } catch (ex) {
+                              if (!mounted) return;
+
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(const SnackBar(content: Text('Failed to edit Notes')));
+                            }
+
+                            reloadState();
+                          },
+                          text: 'Save',
+                        ),
+                      ),
                     ),
-                    Column(
-                      children: [
-                        TextFormField(
-                          controller: controller,
-                          textInputAction: TextInputAction.go,
-                          autofocus: true,
-                          keyboardType: TextInputType.multiline,
-                          maxLines: 4,
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Add notes here',
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(top: 20.0),
-                              child: CommonUi.getElevatedPrimaryButton(
-                                context,
-                                ButtonDetails(
-                                  onTap: () async {
-                                    Navigator.pop(context);
-
-                                    try {
-                                      var newValue = controller.text;
-                                      if (details.notes == newValue) return;
-                                      details.notes = newValue;
-                                      // await UserExerciseDetailsHelper.updateUserExerciseDetails(details);
-                                    } catch (ex) {
-                                      if (!mounted) return;
-
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(const SnackBar(content: Text('Failed to edit Notes')));
-                                    }
-
-                                    reloadState();
-                                  },
-                                  text: 'Save',
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    )
                   ],
                 ),
-              )),
-        ],
-      ),
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
@@ -183,8 +174,8 @@ class _ExerciseViewState extends State<ExerciseView> {
   }
 
   List<Widget> getPrSection(WorkoutSet? pr, bool single) => [
-        CommonUi.getSectionTitle(context, single ? 'Single PR' : 'PR'),
-        const Divider(thickness: 0.25),
+        CommonUI.getSectionTitle(context, single ? 'Single PR' : 'PR'),
+        CommonUI.getDefaultDivider(),
         pr == null
             ? const Center(
                 child: Padding(
@@ -194,7 +185,7 @@ class _ExerciseViewState extends State<ExerciseView> {
               )
             : Padding(
                 padding: const EdgeInsets.all(10),
-                child: CommonUi.getCard(
+                child: CommonUI.getCard(
                   InkWell(
                     onTap: () => Navigator.of(context)
                         .push(
@@ -252,10 +243,10 @@ class _ExerciseViewState extends State<ExerciseView> {
   List<Widget> getDetailsSections(Exercise exercise, ExerciseDetails details) => [
         if (exercise.type == ExerciseType.strength) ...getPrSection(details.pr, false),
         // UiHelper.getSectionTitle(context, 'Notes'),
-        // const Divider(thickness: 0.25),
+        // CommonUi.getDefaultDivider(),
         // getNotesDisplay(details),
-        CommonUi.getSectionTitle(context, 'Recent Uses'),
-        const Divider(thickness: 0.25),
+        CommonUI.getSectionTitle(context, 'Recent Uses'),
+        CommonUI.getDefaultDivider(),
         details.recentUses == null || details.recentUses!.isEmpty
             ? const Center(
                 child: Padding(
@@ -280,17 +271,12 @@ class _ExerciseViewState extends State<ExerciseView> {
     return FutureBuilder<Exercise?>(
       future: _exercise,
       builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return Scaffold(
-            appBar: AppBar(),
-            body: const SizedBox.shrink(), // loading
-          );
-        }
+        if (!snapshot.hasData) return const SizedBox.shrink();
 
         var exercise = snapshot.data!;
         var details = exercise.exerciseDetails;
 
-        return Scaffold(
+        return DebugScaffold(
           appBar: AppBar(title: Text(exercise.name)),
           body: Column(
             children: [

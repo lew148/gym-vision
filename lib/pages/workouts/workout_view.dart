@@ -7,6 +7,7 @@ import 'package:gymvision/classes/db/workout_exercise_ordering.dart';
 import 'package:gymvision/models/db_models/workout_exercise_orderings_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/pages/common/common_functions.dart';
+import 'package:gymvision/pages/common/debug_scaffold.dart';
 import 'package:gymvision/pages/forms/add_category_to_workout_form.dart';
 import 'package:gymvision/pages/forms/add_set_to_workout_form.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
@@ -37,25 +38,13 @@ class _WorkoutViewState extends State<WorkoutView> {
         }
       });
 
-  void onAddCategoryClick(List<Category> existingWorkoutCategoryIds) => showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) => Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
-              ),
-              child: AddCategoryToWorkoutForm(
-                workoutId: widget.workoutId,
-                existingCategories: existingWorkoutCategoryIds,
-                reloadState: reloadState,
-              ),
-            ),
-          ],
+  void onAddCategoryClick(List<Category> existingWorkoutCategoryIds) => CommonFunctions.showBottomSheet(
+        context,
+        AddCategoryToWorkoutForm(
+          workoutId: widget.workoutId,
+          existingCategories: existingWorkoutCategoryIds,
+          reloadState: reloadState,
         ),
-        isScrollControlled: true,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
       );
 
   goToMostRecentWorkout(WorkoutCategory wc) async {
@@ -82,7 +71,7 @@ class _WorkoutViewState extends State<WorkoutView> {
               child: Wrap(
                 alignment: WrapAlignment.start,
                 children: workoutCategories //todo: sort
-                    .map((wc) => CommonUi.getTappablePropDisplay(
+                    .map((wc) => CommonUI.getTappablePropDisplay(
                           context,
                           wc.getCategoryDisplayName(),
                           () => goToMostRecentWorkout(wc),
@@ -90,7 +79,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                     .toList(),
               ),
             ),
-            CommonUi.getPrimaryButton(
+            CommonUI.getPrimaryButton(
               ButtonDetails(
                 icon: Icons.edit_rounded,
                 onTap: () => onAddCategoryClick(existingCategories),
@@ -98,7 +87,7 @@ class _WorkoutViewState extends State<WorkoutView> {
             ),
           ],
         ),
-        const Divider(thickness: 0.25),
+        CommonUI.getDefaultDivider(),
       ]);
 
   List<Widget> getWorkoutExercisesWidget(List<WorkoutExercise> workoutExercises, WorkoutExerciseOrdering? ordering) {
@@ -163,87 +152,79 @@ class _WorkoutViewState extends State<WorkoutView> {
   }
 
   void showMoreMenu(Workout workout) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) => Padding(
-        padding: const EdgeInsets.all(25),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                  showEditDate(workout, reloadState);
-                },
-                child: const Row(
-                  children: [
-                    Icon(Icons.calendar_today_rounded),
-                    Padding(padding: EdgeInsets.all(5)),
-                    Text(
-                      'Edit Date',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-                    ),
-                  ],
-                ),
+    CommonFunctions.showBottomSheet(
+      context,
+      Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 10, bottom: 10),
+            child: InkWell(
+              onTap: () {
+                Navigator.pop(context);
+                showEditDate(workout, reloadState);
+              },
+              child: const Row(
+                children: [
+                  Icon(Icons.calendar_today_rounded),
+                  Padding(padding: EdgeInsets.all(5)),
+                  Text(
+                    'Edit Date',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                  ),
+                ],
               ),
             ),
-            const Divider(thickness: 0.25),
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                  showEditTime(workout, reloadState);
-                },
-                child: const Row(
-                  children: [
-                    Icon(Icons.watch_rounded),
-                    Padding(padding: EdgeInsets.all(5)),
-                    Text(
-                      'Edit Time',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-                    ),
-                  ],
-                ),
+          ),
+          CommonUI.getDefaultDivider(),
+          Padding(
+            padding: const EdgeInsets.only(top: 10, bottom: 10),
+            child: InkWell(
+              onTap: () {
+                Navigator.pop(context);
+                showEditTime(workout, reloadState);
+              },
+              child: const Row(
+                children: [
+                  Icon(Icons.watch_rounded),
+                  Padding(padding: EdgeInsets.all(5)),
+                  Text(
+                    'Edit Time',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                  ),
+                ],
               ),
             ),
-            const Divider(thickness: 0.25),
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: InkWell(
-                onTap: () {
-                  Navigator.pop(context);
-                  CommonFunctions.showDeleteConfirm(
-                    context,
-                    "workout",
-                    () => WorkoutModel.deleteWorkout(workout.id!),
-                    widget.reloadParent,
-                    popCaller: true,
-                  );
-                },
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.delete_rounded,
-                      color: Theme.of(context).colorScheme.tertiary,
-                    ),
-                    const Padding(padding: EdgeInsets.all(5)),
-                    const Text(
-                      'Delete Workout',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-                    ),
-                  ],
-                ),
+          ),
+          CommonUI.getDefaultDivider(),
+          Padding(
+            padding: const EdgeInsets.only(top: 10, bottom: 10),
+            child: InkWell(
+              onTap: () {
+                Navigator.pop(context);
+                CommonFunctions.showDeleteConfirm(
+                  context,
+                  "workout",
+                  () => WorkoutModel.deleteWorkout(workout.id!),
+                  widget.reloadParent,
+                  popCaller: true,
+                );
+              },
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.delete_rounded,
+                    color: Theme.of(context).colorScheme.tertiary,
+                  ),
+                  const Padding(padding: EdgeInsets.all(5)),
+                  const Text(
+                    'Delete Workout',
+                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+          ),
+        ],
       ),
     );
   }
@@ -252,7 +233,7 @@ class _WorkoutViewState extends State<WorkoutView> {
       workout.workoutCategories == null || workout.workoutCategories!.isEmpty
           ? Row(children: [
               Expanded(
-                child: CommonUi.getPrimaryButton(
+                child: CommonUI.getPrimaryButton(
                   ButtonDetails(
                     onTap: () => onAddCategoryClick([]),
                     text: 'Add Categories',
@@ -262,6 +243,28 @@ class _WorkoutViewState extends State<WorkoutView> {
               ),
             ])
           : getWorkoutCategoriesWidget(workout.workoutCategories!, existingCategoryIds);
+
+  void onAddExerciseClick(Workout workout, List<Category> setCategories, List<WorkoutExercise> workoutExercises) =>
+      CommonFunctions.showBottomSheet(
+        context,
+        AddSetToWorkoutForm(
+          workoutId: workout.id!,
+          setCategories: setCategories,
+          excludedExercises: workoutExercises.map((we) => we.exerciseIdentifier).toList(),
+          reloadState: reloadState,
+        ),
+      );
+
+  void onWorkoutExerciseReorder(int oldIndex, int newIndex) async {
+    try {
+      HapticFeedback.mediumImpact();
+      await WorkoutExerciseOrderingsModel.reorderPositioning(widget.workoutId, oldIndex, newIndex);
+    } catch (e) {
+      // do nothing
+    }
+
+    reloadState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -289,40 +292,7 @@ class _WorkoutViewState extends State<WorkoutView> {
           setCategories = [];
         }
 
-        void onAddExerciseClick() => showModalBottomSheet(
-              context: context,
-              builder: (BuildContext context) => Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                      bottom: MediaQuery.of(context).viewInsets.bottom,
-                    ),
-                    child: AddSetToWorkoutForm(
-                      workoutId: workout.id!,
-                      setCategories: setCategories,
-                      excludedExercises: workoutExercises.map((we) => we.exerciseIdentifier).toList(),
-                      reloadState: reloadState,
-                    ),
-                  ),
-                ],
-              ),
-              isScrollControlled: true,
-              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
-            );
-
-        void onWorkoutExerciseReorder(int oldIndex, int newIndex) async {
-          try {
-            HapticFeedback.mediumImpact();
-            await WorkoutExerciseOrderingsModel.reorderPositioning(widget.workoutId, oldIndex, newIndex);
-          } catch (e) {
-            // do nothing
-          }
-
-          reloadState();
-        }
-
-        return Scaffold(
+        return DebugScaffold(
           appBar: AppBar(
             title: Row(children: [
               Column(
@@ -355,15 +325,15 @@ class _WorkoutViewState extends State<WorkoutView> {
                 children: [
                   getCategoriesWidget(workout, setCategories),
                   const Padding(padding: EdgeInsets.all(5)),
-                  CommonUi.getSectionTitleWithAction(
+                  CommonUI.getSectionTitleWithAction(
                     context,
                     'Exercises',
                     ButtonDetails(
                       icon: Icons.add,
-                      onTap: onAddExerciseClick,
+                      onTap: () => onAddExerciseClick(workout, setCategories, workoutExercises),
                     ),
                   ),
-                  const Divider(thickness: 0.25),
+                  CommonUI.getDefaultDivider(),
                   workoutExercises.isEmpty
                       ? const Center(
                           child: Padding(

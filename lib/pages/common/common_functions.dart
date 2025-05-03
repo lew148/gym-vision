@@ -52,6 +52,26 @@ class CommonFunctions {
     );
   }
 
+  static Future showBottomSheet(BuildContext context, Widget child) => showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: child,
+              ),
+            ),
+          ],
+        ),
+        isScrollControlled: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+        ),
+      );
+
   static void onAddWorkoutTap(BuildContext context, Function reloadState, {DateTime? date}) async {
     try {
       var now = DateTime.now();

@@ -6,6 +6,7 @@ import 'package:gymvision/models/db_models/flavour_text_schedule_model.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
+import 'package:gymvision/pages/common/debug_scaffold.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'models/db_models/user_settings_model.dart';
 import 'globals.dart';
@@ -23,7 +24,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
     Future<UserSettings> userSettings = UserSettingsModel.getUserSettings();
     late ThemeSetting themeSetting;
 
-    return Scaffold(
+    return DebugScaffold(
       appBar: AppBar(
         title: const Text('Settings'),
       ),
@@ -45,7 +46,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                   alignment: WrapAlignment.spaceBetween,
                   spacing: 5,
                   children: [
-                    CommonUi.getElevatedPrimaryButton(
+                    CommonUI.getElevatedPrimaryButton(
                       context,
                       ButtonDetails(
                         onTap: () async {
@@ -57,7 +58,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                         text: 'Un-Dismiss Flavour Text',
                       ),
                     ),
-                    CommonUi.getElevatedPrimaryButton(
+                    CommonUI.getElevatedPrimaryButton(
                       context,
                       ButtonDetails(
                         onTap: () async {
@@ -100,7 +101,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                     //     text: 'Update DB (keep data)',
                     //   ),
                     // ),
-                    CommonUi.getOutlinedPrimaryButton(
+                    CommonUI.getOutlinedPrimaryButton(
                       context,
                       ButtonDetails(
                         onTap: () => CommonFunctions.showDeleteConfirm(

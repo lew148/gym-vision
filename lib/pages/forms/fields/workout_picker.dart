@@ -58,7 +58,7 @@
 //                         fontSize: 20,
 //                       ),
 //                     ),
-//                     const Divider(thickness: 0.25),
+//                     CommonUi.getDefaultDivider(),
 //                     SizedBox(
 //                       height: 500,
 //                       child: SingleChildScrollView(

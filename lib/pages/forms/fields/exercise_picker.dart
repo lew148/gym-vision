@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
+import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
@@ -71,53 +72,37 @@ class _ExercisePickerState extends State<ExercisePicker> {
 
   Widget getFilterButton() => Row(children: [
         Expanded(
-          child: CommonUi.getElevatedPrimaryButton(
+          child: CommonUI.getElevatedPrimaryButton(
             context,
             ButtonDetails(
               onTap: () {
                 Navigator.pop(context);
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) => Column(
-                    mainAxisSize: MainAxisSize.min,
+                CommonFunctions.showBottomSheet(
+                  context,
+                  Column(
                     children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).viewInsets.bottom,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Column(
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  BackButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                      setState(() {
-                                        filteredExercises = DefaultExercisesModel.getExercises(
-                                            categories: filterCategories,
-                                            excludedExerciseIds: widget.excludedExercises);
-                                      });
-                                    },
-                                  ),
-                                  CommonUi.getSectionTitle(context, 'Exercise Filters'),
-                                ],
-                              ),
-                              const Divider(thickness: 0.25),
-                              SizedBox(
-                                height: MediaQuery.of(context).size.height * 0.5,
-                                child: SingleChildScrollView(child: getFilterChips()),
-                              ),
-                            ],
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          BackButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              setState(() {
+                                filteredExercises = DefaultExercisesModel.getExercises(
+                                    categories: filterCategories, excludedExerciseIds: widget.excludedExercises);
+                              });
+                            },
                           ),
-                        ),
+                          CommonUI.getSectionTitle(context, 'Exercise Filters'),
+                        ],
+                      ),
+                      CommonUI.getDefaultDivider(),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.5,
+                        child: SingleChildScrollView(child: getFilterChips()),
                       ),
                     ],
                   ),
-                  isScrollControlled: true,
-                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
                 );
               },
               text: 'Filters',
@@ -139,7 +124,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
             onSelected: (bool selected) => onFilterSelect(context, e, selected),
           ),
         ),
-        const Divider(thickness: 0.25),
+        CommonUI.getDefaultDivider(),
         ...SplitHelper.muscleGroupCategories.map(
           (e) => FilterChip(
             backgroundColor: Theme.of(context).cardColor,
@@ -149,7 +134,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
             onSelected: (bool selected) => onFilterSelect(context, e, selected),
           ),
         ),
-        // const Divider(thickness: 0.25),
+        // CommonUi.getDefaultDivider(),
         // ...ExerciseType.values.map((e) => e.index == ExerciseType.values.length - 1 ||
         //         e.index == ExerciseType.stretch.index ||
         //         e.index == ExerciseType.weight.index // get rid of other, stretch and weight
@@ -181,19 +166,8 @@ class _ExercisePickerState extends State<ExercisePicker> {
               padding: const EdgeInsets.all(10),
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      CommonUi.getSectionTitle(context, 'Select Exercise'),
-                      CloseButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.pop(context);
-                        },
-                      )
-                    ],
-                  ),
-                  const Divider(thickness: 0.25),
+                  CommonUI.getSectionTitleWithCloseButton(context, 'Select Exercise', popCaller: true),
+                  CommonUI.getDefaultDivider(),
                   getFilterButton(),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * .75,
@@ -249,7 +223,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                         Navigator.pop(context);
                         widget.setExerciseForParent(e);
                       },
-                      child: CommonUi.getCard(
+                      child: CommonUI.getCard(
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: const BorderRadius.all(
@@ -285,7 +259,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                                 ),
                               ),
                               if (addQuickAddButton)
-                                CommonUi.getPrimaryButton(
+                                CommonUI.getPrimaryButton(
                                   ButtonDetails(
                                     icon: Icons.add_rounded,
                                     onTap: () => widget.onQuickAdd!(e),

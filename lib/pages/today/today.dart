@@ -40,19 +40,9 @@ class _TodayState extends State<Today> {
         todaysBodyweight = BodyweightModel.getBodyweightForDay(today);
       });
 
-  void onAddWeightTap() async => showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) => Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: AddBodyWeightForm(reloadState: reloadState),
-            ),
-          ],
-        ),
-        isScrollControlled: true,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+  void onAddWeightTap() async => CommonFunctions.showBottomSheet(
+        context,
+        AddBodyWeightForm(reloadState: reloadState),
       );
 
   Widget getWorkoutOverview(Workout workout) {
@@ -108,7 +98,7 @@ class _TodayState extends State<Today> {
           ],
         ),
       ),
-      if (bestSetName != null) const Divider(thickness: 0.25),
+      if (bestSetName != null) CommonUI.getDefaultDivider(),
       if (bestSetName != null)
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 5),
@@ -173,7 +163,7 @@ class _TodayState extends State<Today> {
               ),
             )
             .then((value) => reloadState()),
-        child: CommonUi.getCard(
+        child: CommonUI.getCard(
           Padding(
             padding: const EdgeInsets.all(15),
             child: Column(
@@ -183,7 +173,7 @@ class _TodayState extends State<Today> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(right: 10),
-                      child: CommonUi.getCompleteMark(w.done),
+                      child: CommonUI.getCompleteMark(w.done),
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -208,11 +198,11 @@ class _TodayState extends State<Today> {
                       child: Wrap(
                         alignment: WrapAlignment.start,
                         children:
-                            w.getCategories().map((c) => CommonUi.getPropDisplay(context, c.displayName)).toList(),
+                            w.getCategories().map((c) => CommonUI.getPropDisplay(context, c.displayName)).toList(),
                       ),
                     ),
                   ]),
-                const Divider(thickness: 0.25),
+                CommonUI.getDefaultDivider(),
                 getWorkoutOverview(w),
               ],
             ),
@@ -287,7 +277,7 @@ class _TodayState extends State<Today> {
                       future: todaysBodyweight,
                       builder: (context, snapshot) {
                         if (!snapshot.hasData) {
-                          return CommonUi.getPrimaryButton(
+                          return CommonUI.getPrimaryButton(
                             ButtonDetails(
                               onTap: onAddWeightTap,
                               text: 'Add Bodyweight',
@@ -296,7 +286,7 @@ class _TodayState extends State<Today> {
                           );
                         }
 
-                        return CommonUi.getPrimaryButton(
+                        return CommonUI.getPrimaryButton(
                           ButtonDetails(
                             onLongTap: () => CommonFunctions.showDeleteConfirm(
                               context,
@@ -313,7 +303,7 @@ class _TodayState extends State<Today> {
               ),
             ),
             const FlavourTextCard(),
-            CommonUi.getSectionTitleWithAction(
+            CommonUI.getSectionTitleWithAction(
               context,
               'Workouts',
               ButtonDetails(
@@ -321,12 +311,13 @@ class _TodayState extends State<Today> {
                 onTap: () => CommonFunctions.onAddWorkoutTap(context, reloadState, date: today),
               ),
             ),
-            const Divider(thickness: 0.25),
+            CommonUI.getDefaultDivider(),
             Expanded(
               child: FutureBuilder<List<Workout>>(
                 future: todaysWorkouts,
-                builder: (context, snapshot) =>
-                    SingleChildScrollView(child: Column(children: getWorkoutsOrPlaceholder(snapshot.data))),
+                builder: (context, snapshot) => SingleChildScrollView(
+                  child: Column(children: getWorkoutsOrPlaceholder(snapshot.data)),
+                ),
               ),
             )
           ],

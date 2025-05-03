@@ -2,6 +2,8 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/pages/common/coming_soon.dart';
+import 'package:gymvision/pages/common/common_functions.dart';
+import 'package:gymvision/pages/common/debug_scaffold.dart';
 import 'package:gymvision/pages/exercises/exercises.dart';
 import 'package:gymvision/pages/today/today.dart';
 import 'package:gymvision/pages/forms/add_bodyweight_form.dart';
@@ -115,19 +117,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void reloadState() => onItemTapped(selectedIndex);
 
-  void onAddWeightTap() async => showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) => Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: AddBodyWeightForm(reloadState: reloadState),
-            ),
-          ],
-        ),
-        isScrollControlled: true,
-        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
+  void onAddWeightTap() async => CommonFunctions.showBottomSheet(
+        context,
+        AddBodyWeightForm(reloadState: reloadState),
       );
 
   List<Widget> widgetPages() => [
@@ -140,7 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return DebugScaffold(
       appBar: AppBar(
         title: const Row(children: [Text('GymVision')]),
         actions: [
@@ -152,7 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
           )
         ],
       ),
-      body: Center(child: widgetPages().elementAt(selectedIndex)),
+      body: widgetPages().elementAt(selectedIndex),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: onItemTapped,
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
