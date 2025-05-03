@@ -141,13 +141,23 @@ class _ExerciseViewState extends State<ExerciseView> {
     );
   }
 
-  List<Widget> getRecentUsesWidget(Exercise exercise, ExerciseDetails details) {
-    final recentUses = details.recentUses!; // checked for null in caller method
+  Widget getNoRecentUsesWidget() => const Center(
+        child: Padding(
+          padding: EdgeInsets.all(10),
+          child: Text('No recent uses of this exercise.'),
+        ),
+      );
 
+  Widget getRecentUsesWidget(Exercise exercise, ExerciseDetails details) {
+    if (details.recentUses == null) return getNoRecentUsesWidget();
+
+    final recentUses = details.recentUses!;
     recentUses.removeWhere((ws) {
       final workout = ws.getWorkout();
       return workout != null && dateIsInFuture(workout.date);
     });
+
+    if (recentUses.isEmpty) return getNoRecentUsesWidget();
 
     recentUses.sort(((a, b) => b.getWorkout()!.date.compareTo(a.getWorkout()!.date)));
 
@@ -170,7 +180,16 @@ class _ExerciseViewState extends State<ExerciseView> {
       );
     });
 
-    return weWidgets;
+    return Expanded(
+      child: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            children: weWidgets,
+          ),
+        ),
+      ),
+    );
   }
 
   List<Widget> getPrSection(WorkoutSet? pr, bool single) => [
@@ -247,23 +266,7 @@ class _ExerciseViewState extends State<ExerciseView> {
         // getNotesDisplay(details),
         CommonUI.getSectionTitle(context, 'Recent Uses'),
         CommonUI.getDefaultDivider(),
-        details.recentUses == null || details.recentUses!.isEmpty
-            ? const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Text('No recent uses of this exercise.'),
-                ),
-              )
-            : Expanded(
-                child: SingleChildScrollView(
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(
-                      children: getRecentUsesWidget(exercise, details),
-                    ),
-                  ),
-                ),
-              ),
+        getRecentUsesWidget(exercise, details),
       ];
 
   @override
@@ -277,7 +280,7 @@ class _ExerciseViewState extends State<ExerciseView> {
         var details = exercise.exerciseDetails;
 
         return DebugScaffold(
-          appBar: AppBar(title: Text(exercise.name)),
+          appBar: AppBar(),
           body: Column(
             children: [
               Row(
@@ -292,6 +295,15 @@ class _ExerciseViewState extends State<ExerciseView> {
                     style: TextStyle(color: Theme.of(context).colorScheme.shadow),
                   ),
                 ],
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Row(children: [
+                  Expanded(
+                    child: Text(exercise.name,
+                        softWrap: true, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                  ),
+                ]),
               ),
               getExerciseViewWidget(exercise),
               if (details != null) ...getDetailsSections(exercise, details),

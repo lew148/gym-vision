@@ -171,55 +171,52 @@ class _EditWorkoutSetFormState extends State<EditWorkoutSetForm> {
   Widget build(BuildContext context) {
     final exercise = widget.exerciseWithDetails;
 
-    return Container(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          const Text(
-            'Edit Workout Set',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-          ),
-          CommonUI.getDefaultDivider(),
-          Form(
-            key: formKey,
-            child: Column(
-              children: [
-                if (exercise != null && exercise.type == ExerciseType.strength) ...getWeightFields(exercise),
-                if (exercise != null && exercise.type == ExerciseType.cardio) ...getCardioFields(exercise),
-                // if (exercise.exerciseType == ExerciseType.stretch) ...getWeightFields(exercise),
-                const Padding(padding: EdgeInsets.only(top: 20.0)),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(children: [
-                      IconButton(
-                        icon: Icon(
-                          Icons.delete_rounded,
-                          color: Theme.of(context).colorScheme.tertiary,
-                        ),
-                        onPressed: () => onDeleteButtonTap(widget.workoutSet.id!),
+    return Column(
+      children: [
+        const Text(
+          'Edit Workout Set',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+        ),
+        CommonUI.getDefaultDivider(),
+        Form(
+          key: formKey,
+          child: Column(
+            children: [
+              if (exercise != null && exercise.type == ExerciseType.strength) ...getWeightFields(exercise),
+              if (exercise != null && exercise.type == ExerciseType.cardio) ...getCardioFields(exercise),
+              // if (exercise.exerciseType == ExerciseType.stretch) ...getWeightFields(exercise),
+              const Padding(padding: EdgeInsets.only(top: 20.0)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.delete_rounded,
+                        color: Theme.of(context).colorScheme.tertiary,
                       ),
-                      CommonUI.getPrimaryButton(
-                        ButtonDetails(
-                          icon: Icons.copy_rounded,
-                          onTap: () => onCopySetButtonTap(),
-                        ),
-                      ),
-                    ]),
-                    CommonUI.getElevatedPrimaryButton(
-                      context,
+                      onPressed: () => onDeleteButtonTap(widget.workoutSet.id!),
+                    ),
+                    CommonUI.getPrimaryButton(
                       ButtonDetails(
-                        onTap: onSubmit,
-                        text: 'Save',
+                        icon: Icons.copy_rounded,
+                        onTap: () => onCopySetButtonTap(),
                       ),
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ]),
+                  CommonUI.getElevatedPrimaryButton(
+                    context,
+                    ButtonDetails(
+                      onTap: onSubmit,
+                      text: 'Save',
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

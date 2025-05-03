@@ -15,6 +15,7 @@ class Workout extends DatabaseObject {
   List<WorkoutCategory>? workoutCategories;
   WorkoutExerciseOrdering? exerciseOrdering;
   List<WorkoutExercise>? workoutExercses;
+  bool? isEmpty;
 
   Workout({
     super.id,
@@ -25,6 +26,7 @@ class Workout extends DatabaseObject {
     this.workoutCategories,
     this.exerciseOrdering,
     this.workoutExercses,
+    this.isEmpty,
   });
 
   @override
@@ -60,4 +62,6 @@ class Workout extends DatabaseObject {
     if (date.hour < 24) return 'Night Workout 🌙';
     return 'Workout';
   }
+
+  bool getIsEmpty() => workoutExercses?.isEmpty ?? isEmpty ?? true;
 }

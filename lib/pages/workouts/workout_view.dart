@@ -62,33 +62,29 @@ class _WorkoutViewState extends State<WorkoutView> {
     );
   }
 
-  getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories, List<Category> existingCategories) =>
-      Column(children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Wrap(
-                alignment: WrapAlignment.start,
-                children: workoutCategories //todo: sort
-                    .map((wc) => CommonUI.getTappablePropDisplay(
-                          context,
-                          wc.getCategoryDisplayName(),
-                          () => goToMostRecentWorkout(wc),
-                        ))
-                    .toList(),
-              ),
+  getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories, List<Category> existingCategories) => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Wrap(
+              alignment: WrapAlignment.start,
+              children: workoutCategories //todo: sort
+                  .map((wc) => CommonUI.getTappablePropDisplay(
+                        context,
+                        wc.getCategoryDisplayName(),
+                        () => goToMostRecentWorkout(wc),
+                      ))
+                  .toList(),
             ),
-            CommonUI.getPrimaryButton(
-              ButtonDetails(
-                icon: Icons.edit_rounded,
-                onTap: () => onAddCategoryClick(existingCategories),
-              ),
+          ),
+          CommonUI.getPrimaryButton(
+            ButtonDetails(
+              icon: Icons.edit_rounded,
+              onTap: () => onAddCategoryClick(existingCategories),
             ),
-          ],
-        ),
-        CommonUI.getDefaultDivider(),
-      ]);
+          ),
+        ],
+      );
 
   List<Widget> getWorkoutExercisesWidget(List<WorkoutExercise> workoutExercises, WorkoutExerciseOrdering? ordering) {
     // if (ordering != null) {
@@ -231,17 +227,18 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   Widget getCategoriesWidget(Workout workout, List<Category> existingCategoryIds) =>
       workout.workoutCategories == null || workout.workoutCategories!.isEmpty
-          ? Row(children: [
-              Expanded(
-                child: CommonUI.getPrimaryButton(
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                CommonUI.getPrimaryButton(
                   ButtonDetails(
                     onTap: () => onAddCategoryClick([]),
                     text: 'Add Categories',
                     icon: Icons.add_rounded,
                   ),
                 ),
-              ),
-            ])
+              ],
+            )
           : getWorkoutCategoriesWidget(workout.workoutCategories!, existingCategoryIds);
 
   void onAddExerciseClick(Workout workout, List<Category> setCategories, List<WorkoutExercise> workoutExercises) =>
@@ -319,12 +316,11 @@ class _WorkoutViewState extends State<WorkoutView> {
             ],
           ),
           body: Container(
-            padding: const EdgeInsets.fromLTRB(5, 5, 5, 20),
+            padding: const EdgeInsets.all(5),
             child: IntrinsicHeight(
               child: Column(
                 children: [
                   getCategoriesWidget(workout, setCategories),
-                  const Padding(padding: EdgeInsets.all(5)),
                   CommonUI.getSectionTitleWithAction(
                     context,
                     'Exercises',
@@ -335,12 +331,14 @@ class _WorkoutViewState extends State<WorkoutView> {
                   ),
                   CommonUI.getDefaultDivider(),
                   workoutExercises.isEmpty
-                      ? const Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(15),
-                            child: Text('No Exercises added yet...'),
-                          ),
-                        )
+                      ? Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Text(
+                            'Tap + to record an Exercise!',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.shadow,
+                            ),
+                          ))
                       : Expanded(
                           child: ReorderableColumn(
                             onReorder: onWorkoutExerciseReorder,

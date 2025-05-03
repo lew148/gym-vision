@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workout.dart';
 import 'package:gymvision/classes/db/workout_category.dart';
+import 'package:gymvision/classes/db/workout_exercise.dart';
 import 'package:gymvision/classes/db/workout_exercise_ordering.dart';
 import 'package:gymvision/db/db.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
@@ -62,9 +63,11 @@ class WorkoutModel {
         workouts.date,
         workout_categories.id AS workoutCategoryId,
         workout_categories.category,
+        workout_exercises.id as weId,
         workout_exercise_orderings.id AS weoId,
         workout_exercise_orderings.positions
       FROM workouts
+      LEFT JOIN workout_exercises ON workouts.id = workout_exercises.workoutId
       LEFT JOIN workout_categories ON workouts.id = workout_categories.workoutId
       LEFT JOIN workout_exercise_orderings ON workouts.id = workout_exercise_orderings.workoutId
       ORDER BY workouts.date DESC;
@@ -86,6 +89,7 @@ class WorkoutModel {
             positions: gm.value.first['positions'],
           ),
           done: await workoutIsDone(workoutId: gm.key, db: db),
+          isEmpty: gm.value.first['weId'] == null,
         ),
       );
     }

@@ -92,8 +92,11 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(children: [
-                    CommonUI.getCompleteMark(!workout.isInFuture() && workout.done),
-                    const Padding(padding: EdgeInsets.only(right: 5)),
+                    if (!workout.getIsEmpty())
+                      Padding(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: CommonUI.getCompleteMark(!workout.isInFuture() && workout.done),
+                      ),
                     Text(
                       workout.getWorkoutTitle(),
                       style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
@@ -181,8 +184,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
         return DateFormat('EEE d').format(dt);
       }
 
-      widgets.insert(
-        0,
+      widgets.add(
         Column(children: [
           Divider(
             key: getKey(),

@@ -167,7 +167,7 @@ class CommonUI {
 
   static Widget getCompleteMark(bool complete) => Icon(
         complete ? Icons.check_circle_rounded : Icons.circle_outlined,
-        color: complete ? Colors.green : Colors.yellow,
+        color: complete ? Colors.green : Colors.grey,
         size: 22,
       );
 

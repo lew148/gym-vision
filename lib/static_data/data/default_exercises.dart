@@ -28,7 +28,15 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "VBRBPGIZUAQ",
-    name: "Overhead Press (Barbell)",
+    name: "Seated Overhead Press (Barbell)",
+    type: ExerciseType.strength,
+    primaryMuscleGroup: MuscleGroup.shoulders,
+    equipment: Equipment.barbell,
+    categories: {Category.push, Category.upperBody, Category.arms, Category.shoulders},
+  ),
+  Exercise(
+    identifier: "YINRYSFHWYH",
+    name: "Standing Overhead Press (Barbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.shoulders,
     equipment: Equipment.barbell,

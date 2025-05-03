@@ -50,7 +50,7 @@ class _TodayState extends State<Today> {
 
     if (sets.isEmpty) {
       return Text(
-        'Tap to record workout sets',
+        'Tap to record workout!',
         style: TextStyle(color: Theme.of(context).colorScheme.shadow),
       );
     }
@@ -71,6 +71,7 @@ class _TodayState extends State<Today> {
     final bestSetName = bestSet.getExercise()?.name;
 
     return Column(children: [
+      CommonUI.getDefaultDivider(),
       Padding(
         padding: const EdgeInsets.all(5),
         child: Row(
@@ -171,10 +172,11 @@ class _TodayState extends State<Today> {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 10),
-                      child: CommonUI.getCompleteMark(w.done),
-                    ),
+                    if (w.workoutExercses?.isNotEmpty ?? false)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: CommonUI.getCompleteMark(w.done),
+                      ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -191,7 +193,7 @@ class _TodayState extends State<Today> {
                     ),
                   ],
                 ),
-                const Padding(padding: EdgeInsets.all(10)),
+                const Padding(padding: EdgeInsets.all(5)),
                 if (w.workoutCategories != null && w.workoutCategories!.isNotEmpty)
                   Row(children: [
                     Expanded(
@@ -202,7 +204,6 @@ class _TodayState extends State<Today> {
                       ),
                     ),
                   ]),
-                CommonUI.getDefaultDivider(),
                 getWorkoutOverview(w),
               ],
             ),
@@ -234,7 +235,7 @@ class _TodayState extends State<Today> {
             const Padding(padding: EdgeInsets.all(5)),
             Row(children: [
               Text(
-                'Tap + to record a new workout',
+                'Tap + to record a new workout!',
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.shadow,
                 ),

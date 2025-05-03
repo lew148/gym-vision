@@ -148,7 +148,7 @@ class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
               child: Row(
                 children: [
                   CommonUI.getCompleteMark(widget.workoutSets.first.workoutExercise?.done ?? false),
-                  const Padding(padding: const EdgeInsets.all(5)),
+                  const Padding(padding: EdgeInsets.all(5)),
                   Text(
                     widget.workoutSets.first.getWorkout()?.getDateStr() ?? '-',
                     style: const TextStyle(fontWeight: FontWeight.bold),

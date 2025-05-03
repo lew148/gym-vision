@@ -2,8 +2,27 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+stringValidator(value, canBeBlank, label) =>
+    !canBeBlank && (value == null || value == '') ? '$label cannot be blank' : null;
+
 class CustomFormFields {
   static stringField({
+    required TextEditingController controller,
+    required String label,
+    bool autofocus = false,
+    bool canBeBlank = false,
+    int? maxLength,
+  }) =>
+      TextFormField(
+        controller: controller,
+        autofocus: autofocus,
+        textCapitalization: TextCapitalization.sentences,
+        decoration: InputDecoration(labelText: label),
+        maxLength: maxLength,
+        validator: (v) => stringValidator(v, canBeBlank, label),
+      );
+
+  static textArea({
     required TextEditingController controller,
     required String label,
     bool autofocus = false,
@@ -11,10 +30,12 @@ class CustomFormFields {
   }) =>
       TextFormField(
         controller: controller,
+        // textInputAction: TextInputAction.go,
         autofocus: autofocus,
-        textCapitalization: TextCapitalization.sentences,
+        keyboardType: TextInputType.multiline,
+        maxLines: 4,
         decoration: InputDecoration(labelText: label),
-        validator: (value) => !canBeBlank && (value == null || value == '') ? '$label cannot be blank' : null,
+        validator: (v) => stringValidator(v, canBeBlank, label),
       );
 
   static doubleField({
