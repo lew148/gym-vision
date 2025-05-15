@@ -47,13 +47,7 @@ class _TodayState extends State<Today> {
 
   Widget getWorkoutOverview(Workout workout) {
     var sets = workout.getSets();
-
-    if (sets.isEmpty) {
-      return Text(
-        'Tap to record workout!',
-        style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-      );
-    }
+    if (sets.isEmpty) return const SizedBox.shrink();
 
     var setsGroupedByWeight = groupBy(sets, (s) => s.weight);
     var heaviestWeight = (setsGroupedByWeight.keys.toList()..sort((a, b) => a! < b! ? 1 : 0))[0];
@@ -68,7 +62,7 @@ class _TodayState extends State<Today> {
       bestSet = sets.firstWhere((s) => s.weight == heaviestWeight);
     }
 
-    final bestSetName = bestSet.getExercise()?.name;
+    final bestSetName = bestSet.getExercise()?.isCardio() ?? false ? null : bestSet.getExercise()?.name;
 
     return Column(children: [
       CommonUI.getDefaultDivider(),
@@ -175,7 +169,7 @@ class _TodayState extends State<Today> {
                     if (w.workoutExercses?.isNotEmpty ?? false)
                       Padding(
                         padding: const EdgeInsets.only(right: 10),
-                        child: CommonUI.getCompleteMark(w.done),
+                        child: CommonUI.getCompleteMark(context, w.done),
                       ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,

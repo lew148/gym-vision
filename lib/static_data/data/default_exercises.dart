@@ -307,6 +307,14 @@ Set<Exercise> defaultExercises = {
     categories: {Category.pull, Category.upperBody, Category.back},
   ),
   Exercise(
+    identifier: "AF5909MWHDF6",
+    name: "Standing T Bar Row",
+    type: ExerciseType.strength,
+    primaryMuscleGroup: MuscleGroup.upperBack,
+    equipment: Equipment.plates,
+    categories: {Category.pull, Category.upperBody, Category.back},
+  ),
+  Exercise(
     identifier: "ENQF3VKD3DQ",
     name: "Bench Row (Dumbell)",
     type: ExerciseType.strength,
@@ -891,19 +899,19 @@ Set<Exercise> defaultExercises = {
     categories: {Category.legs, Category.lowerBody},
   ),
   Exercise(
-    identifier: "233CO7ZZPC5",
-    name: "Romanian Deadlift (Barbell)",
-    type: ExerciseType.strength,
-    primaryMuscleGroup: MuscleGroup.hamstrings,
-    equipment: Equipment.barbell,
-    categories: {Category.legs, Category.lowerBody},
-  ),
-  Exercise(
     identifier: "F1C0NFK1M9X",
     name: "Romanian Deadlift (Dumbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.hamstrings,
     equipment: Equipment.dumbbell,
+    categories: {Category.legs, Category.lowerBody},
+  ),
+  Exercise(
+    identifier: "233CO7ZZPC5",
+    name: "Romanian Deadlift (Barbell)",
+    type: ExerciseType.strength,
+    primaryMuscleGroup: MuscleGroup.hamstrings,
+    equipment: Equipment.barbell,
     categories: {Category.legs, Category.lowerBody},
   ),
   Exercise(
@@ -916,10 +924,18 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "FR0XYGI7X7H",
-    name: "Hip Thrust",
+    name: "Hip Thrust (Barbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.glutes,
     equipment: Equipment.barbell,
+    categories: {Category.legs, Category.lowerBody},
+  ),
+  Exercise(
+    identifier: "FH48593KJGC",
+    name: "Hip Thrust (Machine)",
+    type: ExerciseType.strength,
+    primaryMuscleGroup: MuscleGroup.glutes,
+    equipment: Equipment.machine,
     categories: {Category.legs, Category.lowerBody},
   ),
   Exercise(

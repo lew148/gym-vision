@@ -23,4 +23,6 @@ class Exercise {
     this.categories = const <Category>{Category.other},
     this.exerciseDetails,
   });
+
+  bool isCardio() => categories.contains(Category.cardio);
 }

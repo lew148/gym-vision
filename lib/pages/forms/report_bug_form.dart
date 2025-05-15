@@ -20,15 +20,12 @@ class _ReportBugFormState extends State<ReportBugForm> {
   void onSubmit() async {
     if (!formKey.currentState!.validate()) return;
     Navigator.pop(context);
-    final success = await TodoistService.createTask(
+    await TodoistService.createTask(
       titleController.text,
       descriptionController.text,
       nameController.text,
       isBug,
     );
-    if (!mounted) return;
-    final message = success ? 'Report sent!' : 'Failed to send report';
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -43,7 +40,7 @@ class _ReportBugFormState extends State<ReportBugForm> {
           label: 'Title',
           autofocus: true,
           canBeBlank: false,
-          maxLength: 500,
+          maxLength: 250,
         ),
         CustomFormFields.textArea(
           controller: descriptionController,

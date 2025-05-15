@@ -117,8 +117,8 @@ class _ExercisePickerState extends State<ExercisePicker> {
       children: [
         ...SplitHelper.splitCategories.map(
           (e) => FilterChip(
-            backgroundColor: Theme.of(context).cardColor,
-            selectedColor: Colors.grey[600],
+            side: BorderSide(color: Theme.of(context).colorScheme.shadow),
+            selectedColor: Theme.of(context).colorScheme.primary,
             label: Text(e.displayName),
             selected: filterCategories.contains(e),
             onSelected: (bool selected) => onFilterSelect(context, e, selected),
@@ -127,8 +127,18 @@ class _ExercisePickerState extends State<ExercisePicker> {
         CommonUI.getDefaultDivider(),
         ...SplitHelper.muscleGroupCategories.map(
           (e) => FilterChip(
-            backgroundColor: Theme.of(context).cardColor,
-            selectedColor: Colors.grey[600],
+            side: BorderSide(color: Theme.of(context).colorScheme.shadow),
+            selectedColor: Theme.of(context).colorScheme.primary,
+            label: Text(e.displayName),
+            selected: filterCategories.contains(e),
+            onSelected: (bool selected) => onFilterSelect(context, e, selected),
+          ),
+        ),
+        CommonUI.getDefaultDivider(),
+        ...SplitHelper.miscCategories.map(
+          (e) => FilterChip(
+            side: BorderSide(color: Theme.of(context).colorScheme.shadow),
+            selectedColor: Theme.of(context).colorScheme.primary,
             label: Text(e.displayName),
             selected: filterCategories.contains(e),
             onSelected: (bool selected) => onFilterSelect(context, e, selected),

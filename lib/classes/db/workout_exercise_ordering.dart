@@ -22,7 +22,16 @@ class WorkoutExerciseOrdering extends DatabaseObject {
       };
 
   void setPositions(List<int> workoutExerciseIds) => positions = workoutExerciseIds.map((i) => i.toString()).join(',');
-  List<int> getPositions() => positions == null || positions == '' ? [] : positions!.split(',').map((e) => int.tryParse(e)).whereType<int>().toList();
+  List<int> getPositions() => positions == null || positions == ''
+      ? []
+      : positions!.split(',').map((e) => int.tryParse(e)).whereType<int>().toList();
+
+  void addExerciseToOrdering(int workoutExerciseId) {
+    var positionsIntList = getPositions();
+    if (positionsIntList.contains(workoutExerciseId)) return;
+    positionsIntList.add(workoutExerciseId);
+    setPositions(positionsIntList);
+  }
 
   void removeExerciseFromOrdering(int workoutId, int workoutExerciseId) {
     var positionsIntList = getPositions();

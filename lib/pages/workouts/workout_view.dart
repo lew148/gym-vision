@@ -86,34 +86,19 @@ class _WorkoutViewState extends State<WorkoutView> {
         ],
       );
 
-  List<Widget> getWorkoutExercisesWidget(List<WorkoutExercise> workoutExercises, WorkoutExerciseOrdering? ordering) {
-    // if (ordering != null) {
-    //   final Map<int, List<WorkoutSet>> remainder = groupedWorkoutExercises;
-    //   final Map<int, List<WorkoutSet>> newOrder = {};
-    //   for (var i in ordering.getPositions()) {
-    //     final group = groupedWorkoutExercises[i];
-    //     if (group == null) continue;
-    //     newOrder.addAll({i: group});
-    //     remainder.remove(i);
-    //   }
-
-    //   newOrder.addAll(remainder);
-    //   groupedWorkoutExercises = newOrder;
-    // }
-
-    return workoutExercises
-        .map(
-          (we) => Container(
-            key: Key(we.id.toString()),
-            child: WorkoutExerciseWidget(
-              workoutExercise: we,
-              reloadState: reloadState,
-              dropped: droppedWes.contains(we.id),
+  List<Widget> getWorkoutExercisesWidget(List<WorkoutExercise> workoutExercises, WorkoutExerciseOrdering? ordering) =>
+      workoutExercises
+          .map(
+            (we) => Container(
+              key: Key(we.id.toString()),
+              child: WorkoutExerciseWidget(
+                workoutExercise: we,
+                reloadState: reloadState,
+                dropped: droppedWes.contains(we.id),
+              ),
             ),
-          ),
-        )
-        .toList();
-  }
+          )
+          .toList();
 
   void showEditDate(Workout workout, void Function() reloadState) async {
     final newDate = await showDatePicker(

@@ -95,7 +95,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                     if (!workout.getIsEmpty())
                       Padding(
                         padding: const EdgeInsets.only(right: 5),
-                        child: CommonUI.getCompleteMark(!workout.isInFuture() && workout.done),
+                        child: CommonUI.getCompleteMark(context, !workout.isInFuture() && workout.done),
                       ),
                     Text(
                       workout.getWorkoutTitle(),

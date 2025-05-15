@@ -10,6 +10,7 @@ class DefaultExercisesModel {
     List<String>? excludedExerciseIds,
   }) {
     var exercises = defaultExercises;
+    categories?.add(Category.cardio); // always include cardio exercises
 
     if (categories != null && categories.isNotEmpty) {
       exercises = exercises.where((e) => e.categories.any(categories.contains)).toSet();

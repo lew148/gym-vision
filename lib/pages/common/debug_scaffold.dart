@@ -25,7 +25,10 @@ class _DebugScaffoldState extends State<DebugScaffold> {
       0,
       IconButton(
         icon: const Icon(Icons.bug_report_outlined),
-        onPressed: () => CommonFunctions.showBottomSheet(context, const ReportBugForm()),
+        onPressed: () => CommonFunctions.showBottomSheet(context, const ReportBugForm()).then((value) {
+          if (!context.mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Report sent!')));
+        }),
       ),
     );
 

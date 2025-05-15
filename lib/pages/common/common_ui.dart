@@ -161,13 +161,13 @@ class CommonUI {
 
   static Widget getCard(Widget child, {Color? color}) => Card(
         color: color,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: child,
       );
 
-  static Widget getCompleteMark(bool complete) => Icon(
+  static Widget getCompleteMark(BuildContext context, bool complete) => Icon(
         complete ? Icons.check_circle_rounded : Icons.circle_outlined,
-        color: complete ? Colors.green : Colors.grey,
+        color: complete ? Theme.of(context).colorScheme.primary : Colors.grey,
         size: 22,
       );
 

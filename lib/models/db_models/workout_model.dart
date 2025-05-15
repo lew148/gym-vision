@@ -2,7 +2,6 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workout.dart';
 import 'package:gymvision/classes/db/workout_category.dart';
-import 'package:gymvision/classes/db/workout_exercise.dart';
 import 'package:gymvision/classes/db/workout_exercise_ordering.dart';
 import 'package:gymvision/db/db.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
@@ -237,7 +236,7 @@ class WorkoutModel {
       SELECT workoutId
       FROM workout_categories
       LEFT JOIN workouts ON workouts.id = workout_categories.workoutId
-      WHERE category = ${wc.getCategoryEnumString()} AND workout_categories.id != ${wc.id} AND workouts.date < "${workout.date.toString()}"
+      WHERE category = "${wc.getCategoryEnumString()}" AND workout_categories.id != ${wc.id} AND workouts.date < "${workout.date.toString()}"
       ORDER BY workouts.id DESC
       LIMIT 1;
     '''));

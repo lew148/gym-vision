@@ -96,7 +96,16 @@ class WorkoutExerciseModel {
     final now = DateTime.now();
     we.updatedAt = now;
     we.createdAt = now;
-    return await db.insert('workout_exercises', we.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+    final id = await db.insert('workout_exercises', we.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+
+    final existingOrdering = await WorkoutExerciseOrderingsModel.getWorkoutExerciseOrderingForWorkout(we.workoutId);
+
+    if (existingOrdering != null) {
+      existingOrdering.addExerciseToOrdering(id);
+      await WorkoutExerciseOrderingsModel.updateWorkoutExerciseOrdering(existingOrdering);
+    }
+
+    return id;
   }
 
   static Future updateWorkoutExercise(WorkoutExercise workoutExercise) async {
