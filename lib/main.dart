@@ -8,7 +8,6 @@ import 'package:gymvision/pages/exercises/exercises.dart';
 import 'package:gymvision/pages/today/today.dart';
 import 'package:gymvision/pages/forms/add_bodyweight_form.dart';
 import 'package:gymvision/pages/workouts/workouts.dart';
-import 'package:gymvision/user_settings_view.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 void main() async {
@@ -133,17 +132,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return DebugScaffold(
-      appBar: AppBar(
-        title: const Row(children: [Text('GymVision')]),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings_rounded),
-            onPressed: () => Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => const UserSettingsView()))
-                .then((value) => reloadState()),
-          )
-        ],
-      ),
       body: widgetPages().elementAt(selectedIndex),
       bottomNavigationBar: NavigationBar(
         onDestinationSelected: onItemTapped,

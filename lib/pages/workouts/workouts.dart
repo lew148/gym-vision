@@ -35,45 +35,42 @@ class _WorkoutsState extends State<Workouts> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(5, 10, 5, 5),
-      child: Column(
-        children: [
-          Expanded(
-            child: FutureBuilder<List<Workout>>(
-              future: workouts,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const SizedBox.shrink(); // loading
-                }
+    return Column(
+      children: [
+        Expanded(
+          child: FutureBuilder<List<Workout>>(
+            future: workouts,
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return const SizedBox.shrink(); // loading
+              }
 
-                return FutureBuilder<List<Bodyweight>>(
-                    future: bodyweights,
-                    builder: (context, bwSnapshot) {
-                      if (!bwSnapshot.hasData) {
-                        return const SizedBox.shrink(); // loading
-                      }
+              return FutureBuilder<List<Bodyweight>>(
+                  future: bodyweights,
+                  builder: (context, bwSnapshot) {
+                    if (!bwSnapshot.hasData) {
+                      return const SizedBox.shrink(); // loading
+                    }
 
-                      return FutureBuilder<UserSettings>(
-                          future: userSettings,
-                          builder: (context, usSnapshot) {
-                            if (!usSnapshot.hasData) {
-                              return const SizedBox.shrink(); // loading
-                            }
+                    return FutureBuilder<UserSettings>(
+                        future: userSettings,
+                        builder: (context, usSnapshot) {
+                          if (!usSnapshot.hasData) {
+                            return const SizedBox.shrink(); // loading
+                          }
 
-                            return WorkoutMonthScoller(
-                              workouts: snapshot.data!,
-                              bodyweights: bwSnapshot.data!,
-                              userSettings: usSnapshot.data!,
-                              reloadParent: reloadState,
-                            );
-                          });
-                    });
-              },
-            ),
+                          return WorkoutMonthScoller(
+                            workouts: snapshot.data!,
+                            bodyweights: bwSnapshot.data!,
+                            userSettings: usSnapshot.data!,
+                            reloadParent: reloadState,
+                          );
+                        });
+                  });
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

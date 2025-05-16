@@ -291,64 +291,55 @@ class _WorkoutViewState extends State<WorkoutView> {
         }
 
         return DebugScaffold(
-          appBar: AppBar(
-            title: Row(children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    workout.getDateStr(),
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    workout.getTimeStr(),
-                    style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
-                  ),
-                ],
-              ),
-            ]),
-            actions: [
-              IconButton(
-                icon: const Icon(
-                  Icons.more_vert_rounded,
-                ),
-                onPressed: () => showMoreMenu(workout),
-              ),
-            ],
-          ),
-          body: Container(
-            padding: const EdgeInsets.all(5),
-            child: IntrinsicHeight(
-              child: Column(
-                children: [
-                  getCategoriesWidget(workout, setCategories),
-                  CommonUI.getSectionTitleWithAction(
-                    context,
-                    'Exercises',
-                    ButtonDetails(
-                      icon: Icons.add,
-                      onTap: () => onAddExerciseClick(workout, setCategories, workoutExercises),
+          body: Column(
+            children: [
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      workout.getDateStr(),
+                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
+                    Text(
+                      workout.getTimeStr(),
+                      style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
+                    ),
+                  ],
+                ),
+                IconButton(
+                  icon: const Icon(
+                    Icons.more_vert_rounded,
                   ),
-                  CommonUI.getDefaultDivider(),
-                  workoutExercises.isEmpty
-                      ? Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Text(
-                            'Tap + to record an Exercise!',
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.shadow,
-                            ),
-                          ))
-                      : Expanded(
-                          child: ReorderableColumn(
-                            onReorder: onWorkoutExerciseReorder,
-                            children: getWorkoutExercisesWidget(workoutExercises, workout.exerciseOrdering),
-                          ),
-                        ),
-                ],
+                  onPressed: () => showMoreMenu(workout),
+                ),
+              ]),
+              getCategoriesWidget(workout, setCategories),
+              CommonUI.getSectionTitleWithAction(
+                context,
+                'Exercises',
+                ButtonDetails(
+                  icon: Icons.add,
+                  onTap: () => onAddExerciseClick(workout, setCategories, workoutExercises),
+                ),
               ),
-            ),
+              CommonUI.getDefaultDivider(),
+              workoutExercises.isEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Text(
+                        'Tap + to record an Exercise!',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.shadow,
+                        ),
+                      ))
+                  : Expanded(
+                      child: ReorderableColumn(
+                        onReorder: onWorkoutExerciseReorder,
+                        children: getWorkoutExercisesWidget(workoutExercises, workout.exerciseOrdering),
+                      ),
+                    ),
+            ],
           ),
         );
       },

@@ -14,8 +14,15 @@ void main() {
       if (isDupe) {
         fail("ID: '${exercise.identifier}' is duplicated");
       }
-      
+
       ids.add(exercise.identifier);
+    }
+  });
+
+  test('Test Same-Named Default Exercises are Char Limited', () {
+    for (var exercise in defaultExercises) {
+      if (defaultExercises.where((e) => e.name == exercise.name).length <= 1) return;
+      if (exercise.name.length > 20) fail('Exercises: ${exercise.name} have names too long to append equipment to');
     }
   });
 }

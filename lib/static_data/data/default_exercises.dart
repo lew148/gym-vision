@@ -4,7 +4,7 @@ import 'package:gymvision/static_data/enums.dart';
 Set<Exercise> defaultExercises = {
   Exercise(
     identifier: "7OMW8088N0T",
-    name: "Shoulder Press (Dumbbell)",
+    name: "Shoulder Press", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.shoulders,
     equipment: Equipment.dumbbell,
@@ -12,7 +12,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "T7R4Y7WIF2Y",
-    name: "Shoulder Press (Plates)",
+    name: "Shoulder Press", // (Plates)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.shoulders,
     equipment: Equipment.plates,
@@ -20,7 +20,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "SMNFKJ3KBIY",
-    name: "Shoulder Press (Machine)",
+    name: "Shoulder Press", // (Machine)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.shoulders,
     equipment: Equipment.machine,
@@ -28,7 +28,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "VBRBPGIZUAQ",
-    name: "Seated Overhead Press (Barbell)",
+    name: "Seated Overhead Press", // (Barbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.shoulders,
     equipment: Equipment.barbell,
@@ -36,7 +36,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "YINRYSFHWYH",
-    name: "Standing Overhead Press (Barbell)",
+    name: "Standing Overhead Press", // (Barbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.shoulders,
     equipment: Equipment.barbell,
@@ -44,7 +44,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "5P0GOIT6W73",
-    name: "Lateral Raise (Dumbbell)",
+    name: "Lateral Raise", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.shoulders,
     equipment: Equipment.dumbbell,
@@ -52,7 +52,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "T147IW2MEXM",
-    name: "Lateral Raise (Cable)",
+    name: "Lateral Raise", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.shoulders,
     equipment: Equipment.cable,
@@ -60,7 +60,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "GX59B41I9VE",
-    name: "Lateral Raise (Machine)",
+    name: "Lateral Raise", // (Machine)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.shoulders,
     equipment: Equipment.machine,
@@ -68,7 +68,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "PEK0NIYOOPO",
-    name: "Front Raise (Dumbbell)",
+    name: "Front Raise", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.shoulders,
     equipment: Equipment.dumbbell,
@@ -76,7 +76,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "E9TTVLU6SW3",
-    name: "Front Raise (Cable)",
+    name: "Front Raise", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.shoulders,
     equipment: Equipment.cable,
@@ -84,7 +84,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "TS081AZMXFB",
-    name: "Front Raise (Plates)",
+    name: "Front Raise", // (Plates)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.shoulders,
     equipment: Equipment.plates,
@@ -92,7 +92,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "3G37H0O0DI2",
-    name: "Rear Fly (Dumbbell)",
+    name: "Rear Fly", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.shoulders,
     equipment: Equipment.dumbbell,
@@ -100,7 +100,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "SCW7DYES2FF",
-    name: "Rear Fly (Cable)",
+    name: "Rear Fly", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.shoulders,
     equipment: Equipment.cable,
@@ -108,7 +108,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "LTIHQMY5Y2V",
-    name: "Rear Fly (Machine)",
+    name: "Rear Fly", // (Machine)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.shoulders,
     equipment: Equipment.machine,
@@ -116,7 +116,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "BC6ZFDVVJOE",
-    name: "Face Pull (Cable)",
+    name: "Face Pull", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.shoulders,
     equipment: Equipment.cable,
@@ -124,7 +124,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "GJBS23EQG7H",
-    name: "Bench Press (Barbell)",
+    name: "Bench Press", // (Barbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.chest,
     equipment: Equipment.barbell,
@@ -132,7 +132,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "K7RDSMWPS31",
-    name: "Incline Bench Press (Barbell)",
+    name: "Incline Bench Press", // (Barbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.chest,
     equipment: Equipment.barbell,
@@ -140,7 +140,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "ZL4AYHZDS1Y",
-    name: "Smiths Bench Press (Barbell)",
+    name: "Smiths Bench Press", // (Barbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.chest,
     equipment: Equipment.barbell,
@@ -148,7 +148,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "3SK4Q402XDZ",
-    name: "Incline Smiths Bench Press (Barbell)",
+    name: "Incline Smiths Bench Press", // (Barbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.chest,
     equipment: Equipment.barbell,
@@ -156,7 +156,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "ZMCT0J76OLA",
-    name: "Bench Press (Dumbell)",
+    name: "Bench Press", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.chest,
     equipment: Equipment.dumbbell,
@@ -164,7 +164,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "1KHB7EWEEPF",
-    name: "Incline Bench Press (Dumbell)",
+    name: "Incline Bench Press", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.chest,
     equipment: Equipment.dumbbell,
@@ -172,7 +172,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "68ZEEGTQWSM",
-    name: "Chest Press (Plates)",
+    name: "Chest Press", // (Plates)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.chest,
     equipment: Equipment.plates,
@@ -180,7 +180,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "YTA7AM03RHP",
-    name: "Chest Press (Machine)",
+    name: "Chest Press", // (Machine)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.chest,
     equipment: Equipment.machine,
@@ -188,7 +188,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "4B6I7AGKBA6",
-    name: "Chest Press (Cable)",
+    name: "Chest Press", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.chest,
     equipment: Equipment.cable,
@@ -196,7 +196,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "LCF275L96PP",
-    name: "Low Fly (Cable)",
+    name: "Low Fly", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.chest,
     equipment: Equipment.cable,
@@ -204,7 +204,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "ZN181OSIIHP",
-    name: "Mid Fly (Cable)",
+    name: "Mid Fly", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.chest,
     equipment: Equipment.cable,
@@ -212,7 +212,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "R641M5G9JWU",
-    name: "High Fly (Cable)",
+    name: "High Fly", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.chest,
     equipment: Equipment.cable,
@@ -220,7 +220,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "EHBK0W4B15C",
-    name: "Chest Fly (Dumbell)",
+    name: "Chest Fly", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.chest,
     equipment: Equipment.dumbbell,
@@ -228,7 +228,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "VM3CZIKT2LK",
-    name: "Incline Chest Fly (Dumbell)",
+    name: "Incline Chest Fly", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.chest,
     equipment: Equipment.dumbbell,
@@ -236,7 +236,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "TYII7CZPLZU",
-    name: "Chest Fly (Machine)",
+    name: "Chest Fly", // (Machine)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.chest,
     equipment: Equipment.machine,
@@ -247,12 +247,12 @@ Set<Exercise> defaultExercises = {
     name: "Deficit Push Up",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.chest,
-    equipment: Equipment.bodyWeight,
+    equipment: Equipment.bodyweight,
     categories: {Category.push, Category.upperBody, Category.chest},
   ),
   Exercise(
     identifier: "SIXZLXGV1GT",
-    name: "Seated Row (Cable)",
+    name: "Seated Row", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.upperBack,
     equipment: Equipment.cable,
@@ -260,7 +260,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "HRCJQA3K6OP",
-    name: "Seated Row - Wide Grip (Cable)",
+    name: "Seated Row - Wide Grip", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.upperBack,
     equipment: Equipment.cable,
@@ -268,7 +268,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "EKF3IZFNASK",
-    name: "Seated Row (Machine)",
+    name: "Seated Row", // (Machine)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.upperBack,
     equipment: Equipment.machine,
@@ -276,7 +276,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "6PG6FXBEGJK",
-    name: "Seated Low Row (Machine)",
+    name: "Seated Low Row", // (Machine)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.lats,
     equipment: Equipment.machine,
@@ -284,7 +284,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "LUJYTCMLLWM",
-    name: "Seated Row (Plates)",
+    name: "Seated Row", // (Plates)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.upperBack,
     equipment: Equipment.plates,
@@ -292,7 +292,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "STAK4JSIIY4",
-    name: "Seated Low Row (Plates)",
+    name: "Seated Low Row", // (Plates)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.lats,
     equipment: Equipment.plates,
@@ -316,7 +316,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "ENQF3VKD3DQ",
-    name: "Bench Row (Dumbell)",
+    name: "Bench Row", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.upperBack,
     equipment: Equipment.dumbbell,
@@ -324,7 +324,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "M6UB68C7IRL",
-    name: "Bent-Over Row (Dumbell)",
+    name: "Bent-Over Row", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.upperBack,
     equipment: Equipment.dumbbell,
@@ -332,7 +332,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "8PFU0OS1DNT",
-    name: "Bent-Over Row (Barbell)",
+    name: "Bent-Over Row", // (Barbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.upperBack,
     equipment: Equipment.barbell,
@@ -340,7 +340,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "22G80O86LK7",
-    name: "Kneeling Row (Cable)",
+    name: "Kneeling Row", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.upperBack,
     equipment: Equipment.cable,
@@ -348,7 +348,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "ZVDHP6ET9AK",
-    name: "Lat Pulldown (Cable)",
+    name: "Lat Pulldown", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.lats,
     equipment: Equipment.cable,
@@ -356,7 +356,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "62LKOMOB7N7",
-    name: "Lat Pulldown - Close Grip (Cable)",
+    name: "Lat Pulldown - Close Grip", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.lats,
     equipment: Equipment.cable,
@@ -364,7 +364,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "IAJZ6J0WXK2",
-    name: "Lat Pulldown - Single (Cable)",
+    name: "Lat Pulldown - Single", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.lats,
     equipment: Equipment.cable,
@@ -372,7 +372,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "7LRGI8AYWAN",
-    name: "Lat Pulldown (Machine)",
+    name: "Lat Pulldown", // (Machine)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.lats,
     equipment: Equipment.machine,
@@ -383,7 +383,7 @@ Set<Exercise> defaultExercises = {
     name: "Pull Up",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.lats,
-    equipment: Equipment.bodyWeight,
+    equipment: Equipment.bodyweight,
     categories: {Category.pull, Category.upperBody, Category.back},
   ),
   Exercise(
@@ -396,7 +396,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "ZFWAMO37IR2",
-    name: "Pullover (Cable)",
+    name: "Pullover", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.lats,
     equipment: Equipment.cable,
@@ -404,7 +404,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "O932G0Q0ITU",
-    name: "Shrug (Dumbell)",
+    name: "Shrug", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.upperBack,
     equipment: Equipment.dumbbell,
@@ -412,7 +412,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "9DI64SXXIG3",
-    name: "Shrug (Barbell)",
+    name: "Shrug", // (Barbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.upperBack,
     equipment: Equipment.barbell,
@@ -423,7 +423,7 @@ Set<Exercise> defaultExercises = {
     name: "Lower Back Hyperextension",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.lowerBack,
-    equipment: Equipment.bodyWeight,
+    equipment: Equipment.bodyweight,
     categories: {Category.pull, Category.upperBody, Category.back},
   ),
   Exercise(
@@ -436,7 +436,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "V713RD3D0HR",
-    name: "Bicep Curl (Dumbell)",
+    name: "Bicep Curl", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.biceps,
     equipment: Equipment.dumbbell,
@@ -444,7 +444,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "TGQJNIJIQNU",
-    name: "Bicep Curl (Barbell)",
+    name: "Bicep Curl", // (Barbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.biceps,
     equipment: Equipment.barbell,
@@ -452,7 +452,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "I29QMIBJZMT",
-    name: "Bicep Curl (Cable)",
+    name: "Bicep Curl", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.biceps,
     equipment: Equipment.cable,
@@ -460,7 +460,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "JWIX9ZNWH79",
-    name: "Bicep Curl - Single (Cable)",
+    name: "Bicep Curl - Single", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.biceps,
     equipment: Equipment.cable,
@@ -468,7 +468,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "8VZ7OQLPVRO",
-    name: "Bicep Curl (Machine)",
+    name: "Bicep Curl", // (Machine)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.biceps,
     equipment: Equipment.machine,
@@ -476,7 +476,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "840NOODTU6V",
-    name: "Spider Curl (Dumbell)",
+    name: "Spider Curl", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.biceps,
     equipment: Equipment.dumbbell,
@@ -484,7 +484,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "I8WYY14TM6G",
-    name: "Spider Curl (Barbell)",
+    name: "Spider Curl", // (Barbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.biceps,
     equipment: Equipment.barbell,
@@ -492,7 +492,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "FWBDOW5GYZ0",
-    name: "Seated Bicep Curl (Dumbell)",
+    name: "Seated Bicep Curl", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.biceps,
     equipment: Equipment.dumbbell,
@@ -516,7 +516,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "GL786431BT7",
-    name: "Preacher Curl (Dumbell)",
+    name: "Preacher Curl", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.biceps,
     equipment: Equipment.dumbbell,
@@ -524,7 +524,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "MLCQ8HNVKET",
-    name: "Preacher Curl (Barbell)",
+    name: "Preacher Curl", // (Barbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.biceps,
     equipment: Equipment.barbell,
@@ -535,7 +535,7 @@ Set<Exercise> defaultExercises = {
     name: "Chin Up",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.biceps,
-    equipment: Equipment.bodyWeight,
+    equipment: Equipment.bodyweight,
     categories: {Category.pull, Category.upperBody, Category.arms, Category.biceps},
   ),
   Exercise(
@@ -564,7 +564,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "2Q5VWUGH3TM",
-    name: "Bicep Curl - Reverse Grip (Dumbell)",
+    name: "Bicep Curl - Reverse Grip", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.forearms,
     equipment: Equipment.dumbbell,
@@ -572,7 +572,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "WLFB8SAZWID",
-    name: "Bicep Curl - Reverse Grip (Barbell)",
+    name: "Bicep Curl - Reverse Grip", // (Barbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.forearms,
     equipment: Equipment.barbell,
@@ -580,7 +580,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "J9EAPPBFQI4",
-    name: "Forearm Curl (Dumbell)",
+    name: "Forearm Curl", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.forearms,
     equipment: Equipment.dumbbell,
@@ -588,7 +588,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "2HD9OPOHNRU",
-    name: "Forearm Curl - Reverse (Dumbell)",
+    name: "Forearm Curl - Reverse", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.forearms,
     equipment: Equipment.dumbbell,
@@ -596,7 +596,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "66A8TR2HN7J",
-    name: "Forearm Curl (Barbell)",
+    name: "Forearm Curl", // (Barbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.forearms,
     equipment: Equipment.barbell,
@@ -604,7 +604,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "IGBIOFT9L7Z",
-    name: "Forearm Curl - Reverse (Barbell)",
+    name: "Forearm Curl - Reverse", // (Barbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.forearms,
     equipment: Equipment.barbell,
@@ -612,7 +612,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "ETBRNB1D790",
-    name: "Forearm Curl (Cable)",
+    name: "Forearm Curl", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.forearms,
     equipment: Equipment.cable,
@@ -620,7 +620,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "HV2QMQT2NCN",
-    name: "Forearm Curl - Reverse (Cable)",
+    name: "Forearm Curl - Reverse", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.forearms,
     equipment: Equipment.cable,
@@ -628,7 +628,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "P2RYBQZYCLY",
-    name: "Forearm Curl - Single (Cable)",
+    name: "Forearm Curl - Single", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.forearms,
     equipment: Equipment.cable,
@@ -636,7 +636,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "PNMXT2N6EKJ",
-    name: "Forearm Curl - Single Reverse (Cable)",
+    name: "Forearm Curl - Single Reverse", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.forearms,
     equipment: Equipment.cable,
@@ -660,7 +660,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "N43HFD1128V",
-    name: "Tricep Overhead Extension (Dumbell)",
+    name: "Tricep Extension", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.triceps,
     equipment: Equipment.dumbbell,
@@ -668,7 +668,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "D7XXNTE104K",
-    name: "Tricep Overhead Extension - Single (Dumbell)",
+    name: "Tricep Extension - Single", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.triceps,
     equipment: Equipment.dumbbell,
@@ -676,7 +676,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "B1UDHZNYI7G",
-    name: "Tricep Overhead Extension (Cable)",
+    name: "Tricep Extension", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.triceps,
     equipment: Equipment.cable,
@@ -684,7 +684,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "6NVQ6B8QLVP",
-    name: "Tricep Overhead Extension - Single (Cable)",
+    name: "Tricep Extension - Single", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.triceps,
     equipment: Equipment.cable,
@@ -692,7 +692,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "DWECXHEM2N1",
-    name: "Tricep Overhead Extension (Barbell)",
+    name: "Tricep Extension", // (Barbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.triceps,
     equipment: Equipment.barbell,
@@ -700,7 +700,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "P155T6CJTDL",
-    name: "Tricep Extension (Machine)",
+    name: "Tricep Extension", // (Machine)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.triceps,
     equipment: Equipment.machine,
@@ -708,7 +708,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "KT5BLLVA2V8",
-    name: "Skull Crusher (Dumbell)",
+    name: "Skull Crusher", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.triceps,
     equipment: Equipment.dumbbell,
@@ -716,7 +716,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "XI6KODDES8G",
-    name: "Skull Crusher - Single (Dumbell)",
+    name: "Skull Crusher - Single", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.triceps,
     equipment: Equipment.dumbbell,
@@ -724,7 +724,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "690LQD4YBES",
-    name: "Skull Crusher (Barbell)",
+    name: "Skull Crusher", // (Barbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.triceps,
     equipment: Equipment.barbell,
@@ -732,7 +732,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "YUJURDNOJCG",
-    name: "Tricep Kickback (Dumbell)",
+    name: "Tricep Kickback", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.triceps,
     equipment: Equipment.dumbbell,
@@ -740,7 +740,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "MTTFTS87IN2",
-    name: "Tricep Kickback (Cable)",
+    name: "Tricep Kickback", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.triceps,
     equipment: Equipment.cable,
@@ -759,7 +759,7 @@ Set<Exercise> defaultExercises = {
     name: "Tricep Dip",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.triceps,
-    equipment: Equipment.bodyWeight,
+    equipment: Equipment.bodyweight,
     categories: {Category.push, Category.upperBody, Category.arms, Category.triceps},
   ),
   Exercise(
@@ -775,7 +775,7 @@ Set<Exercise> defaultExercises = {
     name: "Crunch",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.core,
-    equipment: Equipment.bodyWeight,
+    equipment: Equipment.bodyweight,
     categories: {Category.core},
   ),
   Exercise(
@@ -788,7 +788,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "U6QFJFF8BLW",
-    name: "Crunch (Machine)",
+    name: "Crunch", // (Machine)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.core,
     equipment: Equipment.machine,
@@ -796,7 +796,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "F49PWJU7SUC",
-    name: "Crunch (Cable)",
+    name: "Crunch", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.core,
     equipment: Equipment.cable,
@@ -807,7 +807,7 @@ Set<Exercise> defaultExercises = {
     name: "Suspended Leg Lifts",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.core,
-    equipment: Equipment.bodyWeight,
+    equipment: Equipment.bodyweight,
     categories: {Category.core},
   ),
   Exercise(
@@ -823,7 +823,7 @@ Set<Exercise> defaultExercises = {
     name: "Russian Twist",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.core,
-    equipment: Equipment.bodyWeight,
+    equipment: Equipment.bodyweight,
     categories: {Category.core},
   ),
   Exercise(
@@ -836,7 +836,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "MKGOA024N6N",
-    name: "Abductor Leg Raise (Cable)",
+    name: "Abductor Leg Raise", // (Cable)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.abductors,
     equipment: Equipment.cable,
@@ -844,7 +844,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "WTDBA7NMFFS",
-    name: "Abduction (Machine)",
+    name: "Abduction", // (Machine)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.abductors,
     equipment: Equipment.machine,
@@ -852,7 +852,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "LK1VWBHPU9U",
-    name: "Adduction (Machine)",
+    name: "Adduction", // (Machine)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.adductors,
     equipment: Equipment.machine,
@@ -900,7 +900,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "F1C0NFK1M9X",
-    name: "Romanian Deadlift (Dumbell)",
+    name: "Romanian Deadlift", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.hamstrings,
     equipment: Equipment.dumbbell,
@@ -908,7 +908,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "233CO7ZZPC5",
-    name: "Romanian Deadlift (Barbell)",
+    name: "Romanian Deadlift", // (Barbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.hamstrings,
     equipment: Equipment.barbell,
@@ -924,7 +924,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "FR0XYGI7X7H",
-    name: "Hip Thrust (Barbell)",
+    name: "Hip Thrust", // (Barbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.glutes,
     equipment: Equipment.barbell,
@@ -932,7 +932,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "FH48593KJGC",
-    name: "Hip Thrust (Machine)",
+    name: "Hip Thrust", // (Machine)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.glutes,
     equipment: Equipment.machine,
@@ -996,7 +996,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "FHKSZJWAO8B",
-    name: "Lunge (Dumbell)",
+    name: "Lunge", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.quadriceps,
     equipment: Equipment.dumbbell,
@@ -1004,7 +1004,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "SHQCITTZWCA",
-    name: "Lunge (Barbell)",
+    name: "Lunge", // (Barbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.quadriceps,
     equipment: Equipment.dumbbell,
@@ -1012,7 +1012,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "1XRPWAIUBPT",
-    name: "Leg Press (Plates)",
+    name: "Leg Press", // (Plates)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.quadriceps,
     equipment: Equipment.plates,
@@ -1020,7 +1020,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "G702EFN52TN",
-    name: "Leg Press (Machine)",
+    name: "Leg Press", // (Machine)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.quadriceps,
     equipment: Equipment.machine,
@@ -1028,7 +1028,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "LT6JKEDF56H",
-    name: "Calf Press (Plates)",
+    name: "Calf Press", // (Plates)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.calves,
     equipment: Equipment.plates,
@@ -1036,7 +1036,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "FFLLTE1JQFA",
-    name: "Calf Press (Machine)",
+    name: "Calf Press", // (Machine)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.calves,
     equipment: Equipment.machine,
@@ -1044,7 +1044,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "9LVWDWP4Q38",
-    name: "Calf Raise (Dumbell)",
+    name: "Calf Raise", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.calves,
     equipment: Equipment.dumbbell,
@@ -1052,7 +1052,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "967A52ADUXF",
-    name: "Calf Raise (Barbell)",
+    name: "Calf Raise", // (Barbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.calves,
     equipment: Equipment.barbell,
@@ -1060,7 +1060,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "LHVU147VG23",
-    name: "Calf Press - Single (Plates)",
+    name: "Calf Press - Single", // (Plates)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.calves,
     equipment: Equipment.plates,
@@ -1068,7 +1068,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "7NX280X4R5Q",
-    name: "Calf Press - Single (Machine)",
+    name: "Calf Press - Single", // (Machine)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.calves,
     equipment: Equipment.machine,
@@ -1076,7 +1076,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "GK9I0QUDVCS",
-    name: "Calf Raise - Single (Dumbell)",
+    name: "Calf Raise - Single", // (Dumbbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.calves,
     equipment: Equipment.dumbbell,
@@ -1084,7 +1084,7 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "BPSZDOJ2HLH",
-    name: "Calf Raise - Single (Barbell)",
+    name: "Calf Raise - Single", // (Barbell)",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.calves,
     equipment: Equipment.barbell,

@@ -1,6 +1,6 @@
 enum ExerciseType {
-  cardio,
   strength,
+  cardio,
   stretch,
   other,
 }
@@ -22,7 +22,6 @@ enum Category {
   cardio,
   other,
 }
-
 
 enum MuscleGroup {
   abductors,
@@ -47,7 +46,7 @@ enum MuscleGroup {
 enum Equipment {
   none,
   barbell,
-  bodyWeight,
+  bodyweight,
   cable,
   dumbbell,
   kettlebell,

@@ -280,7 +280,6 @@ class _ExerciseViewState extends State<ExerciseView> {
         var details = exercise.exerciseDetails;
 
         return DebugScaffold(
-          appBar: AppBar(),
           body: Column(
             children: [
               Row(
