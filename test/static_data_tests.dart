@@ -9,7 +9,12 @@ void main() {
     for (var exercise in defaultExercises) {
       expect(exercise.identifier, isNotNull);
       expect(exercise.identifier, isNotEmpty);
-      expect(ids.contains(exercise.identifier), isFalse);
+
+      final isDupe = ids.contains(exercise.identifier);
+      if (isDupe) {
+        fail("ID: '${exercise.identifier}' is duplicated");
+      }
+      
       ids.add(exercise.identifier);
     }
   });

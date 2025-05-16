@@ -125,6 +125,16 @@ class _ExercisePickerState extends State<ExercisePicker> {
           ),
         ),
         CommonUI.getDefaultDivider(),
+        ...SplitHelper.split2Categories.map(
+          (e) => FilterChip(
+            side: BorderSide(color: Theme.of(context).colorScheme.shadow),
+            selectedColor: Theme.of(context).colorScheme.primary,
+            label: Text(e.displayName),
+            selected: filterCategories.contains(e),
+            onSelected: (bool selected) => onFilterSelect(context, e, selected),
+          ),
+        ),
+        CommonUI.getDefaultDivider(),
         ...SplitHelper.muscleGroupCategories.map(
           (e) => FilterChip(
             side: BorderSide(color: Theme.of(context).colorScheme.shadow),

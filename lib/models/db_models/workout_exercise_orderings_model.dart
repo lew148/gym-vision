@@ -55,7 +55,6 @@ class WorkoutExerciseOrderingsModel {
 
     final ordering = await getWorkoutExerciseOrderingForWorkout(workoutExerciseId);
     if (ordering == null) return;
-
     var positions = ordering.getPositions();
     if (positions.contains(workoutExerciseId)) {
       positions.remove(workoutExerciseId);
@@ -67,7 +66,6 @@ class WorkoutExerciseOrderingsModel {
   static reorderPositioning(int workoutId, int oldIndex, int newIndex) async {
     var ordering = await getWorkoutExerciseOrderingForWorkout(workoutId);
     if (ordering == null) return;
-
     var positions = ordering.getPositions();
     var workoutExerciseId = positions[oldIndex];
     positions.removeAt(oldIndex);

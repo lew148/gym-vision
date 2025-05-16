@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/workout.dart';
@@ -86,19 +87,34 @@ class _WorkoutViewState extends State<WorkoutView> {
         ],
       );
 
-  List<Widget> getWorkoutExercisesWidget(List<WorkoutExercise> workoutExercises, WorkoutExerciseOrdering? ordering) =>
-      workoutExercises
-          .map(
-            (we) => Container(
-              key: Key(we.id.toString()),
-              child: WorkoutExerciseWidget(
-                workoutExercise: we,
-                reloadState: reloadState,
-                dropped: droppedWes.contains(we.id),
-              ),
+  List<Widget> getWorkoutExercisesWidget(List<WorkoutExercise> workoutExercises, WorkoutExerciseOrdering? ordering) {
+    if (ordering != null) {
+      final List<WorkoutExercise> remainder = workoutExercises;
+      final List<WorkoutExercise> newOrder = [];
+      for (var weId in ordering.getPositions()) {
+        var we = remainder.firstWhereOrNull((we) => we.id == weId);
+        if (we == null) continue;
+        newOrder.add(we);
+        remainder.removeWhere((we) => we.id == weId);
+      }
+
+      newOrder.addAll(remainder);
+      workoutExercises = newOrder;
+    }
+
+    return workoutExercises
+        .map(
+          (we) => Container(
+            key: Key(we.id.toString()),
+            child: WorkoutExerciseWidget(
+              workoutExercise: we,
+              reloadState: reloadState,
+              dropped: droppedWes.contains(we.id),
             ),
-          )
-          .toList();
+          ),
+        )
+        .toList();
+  }
 
   void showEditDate(Workout workout, void Function() reloadState) async {
     final newDate = await showDatePicker(
