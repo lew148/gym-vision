@@ -4,6 +4,7 @@ import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
+import 'package:gymvision/static_data/data/default_exercises.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
@@ -171,7 +172,11 @@ class _ExercisePickerState extends State<ExercisePicker> {
   }
 
   void showExercisePicker(List<Exercise> allExercises, Exercise? selectedExercise) {
-    allExercises.sort((a, b) => a.name.compareTo(b.name));
+    allExercises.sort((a, b) {
+      final aString = '${a.type.index}${a.name}';
+      final bString = '${b.type.index}${b.name}';
+      return aString.compareTo(bString);
+    });
 
     showModalBottomSheet(
       context: context,
@@ -237,60 +242,94 @@ class _ExercisePickerState extends State<ExercisePicker> {
             ),
             content: Column(
               children: value
-                  .map(
-                    (e) => GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                        widget.setExerciseForParent(e);
-                      },
-                      child: CommonUI.getCard(
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(5),
-                            ),
-                            border: Border.all(
-                              width: 2,
-                              color: selectedExercise != null && e.identifier == selectedExercise.identifier
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Colors.transparent,
-                            ),
-                          ),
-                          padding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Flexible(
-                                      child: Text(
-                                        e.name,
-                                        textAlign: TextAlign.start,
-                                        style: const TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
+                  .map((e) => Row(children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.all(5),
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.opaque,
+                                  onTap: () {
+                                    // Navigator.pop(context);
+                                    // widget.setExerciseForParent(e);
+                                    widget.onQuickAdd!(e);
+                                  },
+                                  child: Row(children: [
+                                    const CircleAvatar(
+                                      radius: 20,
+                                      backgroundColor: Colors.transparent,
+                                      backgroundImage: AssetImage("assets/images/logo.png"),
                                     ),
-                                    // UiHelper.getPropDisplay(context, e.equipment.displayName),
-                                  ],
+                                    const Padding(padding: EdgeInsets.all(5)),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          e.getName(),
+                                          style: const TextStyle(fontWeight: FontWeight.w500),
+                                        ),
+                                        if (e.primaryMuscleGroup != MuscleGroup.other)
+                                          Text(e.primaryMuscleGroup.displayNamePlain,
+                                              style: TextStyle(color: Theme.of(context).colorScheme.shadow)),
+                                      ],
+                                    ),
+                                  ]),
                                 ),
                               ),
-                              if (addQuickAddButton)
-                                CommonUI.getPrimaryButton(
-                                  ButtonDetails(
-                                    icon: Icons.add_rounded,
-                                    onTap: () => widget.onQuickAdd!(e),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
+                            ),
+                          ])
+                      // GestureDetector(
+                      //   onTap: () {
+                      //     Navigator.pop(context);
+                      //     widget.setExerciseForParent(e);
+                      //   },
+                      //   child: CommonUI.getCard(
+                      //     Container(
+                      //       decoration: BoxDecoration(
+                      //         borderRadius: const BorderRadius.all(
+                      //           Radius.circular(5),
+                      //         ),
+                      //         border: Border.all(
+                      //           width: 2,
+                      //           color: selectedExercise != null && e.identifier == selectedExercise.identifier
+                      //               ? Theme.of(context).colorScheme.primary
+                      //               : Colors.transparent,
+                      //         ),
+                      //       ),
+                      //       padding: const EdgeInsets.fromLTRB(10, 5, 0, 5),
+                      //       child: Row(
+                      //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //         children: [
+                      //           Expanded(
+                      //             child: Row(
+                      //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //               children: [
+                      //                 Flexible(
+                      //                   child: Text(
+                      //                     e.name,
+                      //                     textAlign: TextAlign.start,
+                      //                     style: const TextStyle(
+                      //                       fontSize: 15,
+                      //                       fontWeight: FontWeight.w400,
+                      //                     ),
+                      //                   ),
+                      //                 ),
+                      //                 // UiHelper.getPropDisplay(context, e.equipment.displayName),
+                      //               ],
+                      //             ),
+                      //           ),
+                      //           if (addQuickAddButton)
+                      //             CommonUI.getPrimaryButton(
+                      //               ButtonDetails(
+                      //                 icon: Icons.add_rounded,
+                      //                 onTap: () => widget.onQuickAdd!(e),
+                      //               ),
+                      //             ),
+                      //         ],
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                      )
                   .toList(),
             ),
           ),
@@ -352,7 +391,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                             Row(
                               children: [
                                 Text(
-                                  exercise == null ? 'Select Exercise' : exercise.name,
+                                  exercise == null ? 'Select Exercise' : exercise.getName(),
                                   style: TextStyle(
                                     fontSize: 17,
                                     fontWeight: FontWeight.w400,

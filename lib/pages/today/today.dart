@@ -62,7 +62,7 @@ class _TodayState extends State<Today> {
       bestSet = sets.firstWhere((s) => s.weight == heaviestWeight);
     }
 
-    final bestSetName = bestSet.getExercise()?.isCardio() ?? false ? null : bestSet.getExercise()?.name;
+    final bestSetName = bestSet.getExercise()?.isCardio() ?? false ? null : bestSet.getExercise()?.getName();
 
     return Column(children: [
       CommonUI.getDefaultDivider(),
@@ -250,51 +250,51 @@ class _TodayState extends State<Today> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 10, top: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    DateFormat('EEEE, MMMM d').format(DateTime.now()),
-                    style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-                  ),
-                  const Text('Today', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
-                ],
-              ),
-              FutureBuilder<Bodyweight?>(
-                  future: todaysBodyweight,
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      DateFormat('EEEE, MMMM d').format(DateTime.now()),
+                      style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                    ),
+                    const Text('Today', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
+                  ],
+                ),
+                FutureBuilder<Bodyweight?>(
+                    future: todaysBodyweight,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return CommonUI.getPrimaryButton(
+                          ButtonDetails(
+                            onTap: onAddWeightTap,
+                            text: 'Add Bodyweight',
+                            icon: Icons.monitor_weight_rounded,
+                          ),
+                        );
+                      }
+
                       return CommonUI.getPrimaryButton(
                         ButtonDetails(
-                          onTap: onAddWeightTap,
-                          text: 'Add Bodyweight',
+                          onLongTap: () => CommonFunctions.showDeleteConfirm(
+                            context,
+                            "bodyweight",
+                            () => BodyweightModel.deleteBodyweight(snapshot.data!.id!),
+                            reloadState,
+                          ),
+                          text: snapshot.data!.getWeightDisplay(),
                           icon: Icons.monitor_weight_rounded,
                         ),
                       );
-                    }
-
-                    return CommonUI.getPrimaryButton(
-                      ButtonDetails(
-                        onLongTap: () => CommonFunctions.showDeleteConfirm(
-                          context,
-                          "bodyweight",
-                          () => BodyweightModel.deleteBodyweight(snapshot.data!.id!),
-                          reloadState,
-                        ),
-                        text: snapshot.data!.getWeightDisplay(),
-                        icon: Icons.monitor_weight_rounded,
-                      ),
-                    );
-                  }),
-            ],
+                    }),
+              ],
+            ),
           ),
-        ),
         const FlavourTextCard(),
         CommonUI.getSectionTitleWithAction(
           context,

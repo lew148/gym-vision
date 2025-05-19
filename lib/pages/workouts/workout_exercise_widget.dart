@@ -15,13 +15,15 @@ import 'package:gymvision/pages/common/common_ui.dart';
 
 class WorkoutExerciseWidget extends StatefulWidget {
   final WorkoutExercise workoutExercise;
-  final Function({int? wexId}) reloadState;
+  final Function() reloadParent;
+  final Function(int wexId) toggleDroppedParent;
   final bool dropped;
 
   const WorkoutExerciseWidget({
     super.key,
     required this.workoutExercise,
-    required this.reloadState,
+    required this.reloadParent,
+    required this.toggleDroppedParent,
     this.dropped = false,
   });
 
@@ -50,11 +52,19 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     isDroppable = workoutSets.isNotEmpty;
   }
 
+  void toggleDropped() {
+    setState(() {
+      dropped = !dropped;
+    });
+
+    widget.toggleDroppedParent(widget.workoutExercise.id!);
+  }
+
   void onEditWorkoutSetTap(WorkoutSet ws) => CommonFunctions.showBottomSheet(
         context,
         EditWorkoutSetForm(
           workoutSet: ws,
-          reloadState: widget.reloadState,
+          reloadState: widget.reloadParent,
           exerciseWithDetails: exercise,
         ),
       );
@@ -79,7 +89,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           .showSnackBar(SnackBar(content: Text('Failed add set to workout: ${ex.toString()}')));
     }
 
-    widget.reloadState();
+    widget.reloadParent();
   }
 
   void onAddSetsButtonTap() {
@@ -88,9 +98,12 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       AddSetToWorkoutForm(
         exerciseIdentifier: exerciseIdentifier,
         workoutId: workoutId,
-        reloadState: widget.reloadState,
+        reloadState: widget.reloadParent,
       ),
-    ).then((value) => widget.reloadState());
+    ).then((value) {
+      toggleDropped();
+      widget.reloadParent();
+    });
   }
 
   List<Widget> getWeightedSetWidgets() {
@@ -105,7 +118,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           context,
           "set",
           () => WorkoutSetModel.removeSet(ws.id!),
-          widget.reloadState,
+          widget.reloadParent,
         ),
         onTap: () => onEditWorkoutSetTap(ws),
         child: Padding(
@@ -195,7 +208,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           context,
           "set",
           () => WorkoutSetModel.removeSet(ws.id!),
-          widget.reloadState,
+          widget.reloadParent,
         ),
         onTap: () => onEditWorkoutSetTap(ws),
         child: Padding(
@@ -300,7 +313,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       // ignore
     }
 
-    widget.reloadState();
+    widget.reloadParent();
   }
 
   void showExerciseMenu() {
@@ -315,7 +328,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                 Navigator.pop(context);
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) => ExerciseView(identifier: exerciseIdentifier)))
-                    .then((value) => widget.reloadState());
+                    .then((value) => widget.reloadParent());
               },
               child: Row(
                 children: [
@@ -342,7 +355,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                   context,
                   "exercise from workout",
                   () => WorkoutExerciseModel.deleteWorkoutExercise(widget.workoutExercise.id!),
-                  widget.reloadState,
+                  widget.reloadParent,
                 );
               },
               child: Row(
@@ -422,7 +435,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                   context,
                   "set",
                   () => WorkoutSetModel.removeSet(ws.id!),
-                  widget.reloadState,
+                  widget.reloadParent,
                 );
               },
               child: Row(
@@ -451,7 +464,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       Column(
         children: [
           InkWell(
-            onTap: () => widget.reloadState(wexId: widget.workoutExercise.id),
+            onTap: toggleDropped,
             child: Padding(
               padding: const EdgeInsets.all(8),
               child: Row(
@@ -469,7 +482,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                     child: Row(children: [
                       Expanded(
                         child: Text(
-                          exercise.name,
+                          exercise.getName(),
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),

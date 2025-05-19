@@ -33,10 +33,8 @@ class WorkoutView extends StatefulWidget {
 class _WorkoutViewState extends State<WorkoutView> {
   List<int> droppedWes = [];
 
-  reloadState({int? wexId}) => setState(() {
-        if (wexId != null) {
-          droppedWes.contains(wexId) ? droppedWes.remove(wexId) : droppedWes.add(wexId);
-        }
+  void reloadState() => setState(() {
+        droppedWes = droppedWes;
       });
 
   void onAddCategoryClick(List<Category> existingWorkoutCategoryIds) => CommonFunctions.showBottomSheet(
@@ -108,7 +106,12 @@ class _WorkoutViewState extends State<WorkoutView> {
             key: Key(we.id.toString()),
             child: WorkoutExerciseWidget(
               workoutExercise: we,
-              reloadState: reloadState,
+              reloadParent: reloadState,
+              toggleDroppedParent: (int? wexId) {
+                if (wexId != null) {
+                  droppedWes.contains(wexId) ? droppedWes.remove(wexId) : droppedWes.add(wexId);
+                }
+              },
               dropped: droppedWes.contains(we.id),
             ),
           ),
@@ -116,7 +119,7 @@ class _WorkoutViewState extends State<WorkoutView> {
         .toList();
   }
 
-  void showEditDate(Workout workout, void Function() reloadState) async {
+  void showEditDate(Workout workout) async {
     final newDate = await showDatePicker(
       context: context,
       initialDate: workout.date,
@@ -133,7 +136,7 @@ class _WorkoutViewState extends State<WorkoutView> {
     reloadState();
   }
 
-  void showEditTime(Workout workout, void Function() reloadState) async {
+  void showEditTime(Workout workout) async {
     final newTime = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(workout.date),
@@ -158,7 +161,7 @@ class _WorkoutViewState extends State<WorkoutView> {
             child: InkWell(
               onTap: () {
                 Navigator.pop(context);
-                showEditDate(workout, reloadState);
+                showEditDate(workout);
               },
               child: const Row(
                 children: [
@@ -178,7 +181,7 @@ class _WorkoutViewState extends State<WorkoutView> {
             child: InkWell(
               onTap: () {
                 Navigator.pop(context);
-                showEditTime(workout, reloadState);
+                showEditTime(workout);
               },
               child: const Row(
                 children: [
@@ -291,29 +294,30 @@ class _WorkoutViewState extends State<WorkoutView> {
         }
 
         return DebugScaffold(
+          customAppBar: AppBar(
+            title: Row(
+              children: [
+                Text(
+                  workout.getDateStr(),
+                  style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  ' @ ${workout.getTimeStr()}',
+                  style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
+                ),
+              ],
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(
+                  Icons.more_vert_rounded,
+                ),
+                onPressed: () => showMoreMenu(workout),
+              ),
+            ],
+          ),
           body: Column(
             children: [
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      workout.getDateStr(),
-                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      workout.getTimeStr(),
-                      style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
-                    ),
-                  ],
-                ),
-                IconButton(
-                  icon: const Icon(
-                    Icons.more_vert_rounded,
-                  ),
-                  onPressed: () => showMoreMenu(workout),
-                ),
-              ]),
               getCategoriesWidget(workout, setCategories),
               CommonUI.getSectionTitleWithAction(
                 context,

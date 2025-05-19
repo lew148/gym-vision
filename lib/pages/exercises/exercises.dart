@@ -77,7 +77,7 @@ class _ExercisesState extends State<Exercises> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${exercise.name} ${defaultExercises.where((e) => e.name == exercise.name).length > 1 ? '(${exercise.equipment.displayName})' : ''}',
+                      exercise.getName(),
                       style: const TextStyle(fontWeight: FontWeight.w500),
                     ),
                     if (exercise.primaryMuscleGroup != MuscleGroup.other)

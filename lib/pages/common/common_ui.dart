@@ -161,7 +161,7 @@ class CommonUI {
 
   static Widget getCard(Widget child, {Color? color}) => Card(
         color: color,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: child,
       );
 

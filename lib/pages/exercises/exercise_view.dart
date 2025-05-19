@@ -299,8 +299,11 @@ class _ExerciseViewState extends State<ExerciseView> {
                 padding: const EdgeInsets.only(left: 10),
                 child: Row(children: [
                   Expanded(
-                    child: Text(exercise.name,
-                        softWrap: true, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                    child: Text(
+                      exercise.getName(),
+                      softWrap: true,
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
                   ),
                 ]),
               ),
