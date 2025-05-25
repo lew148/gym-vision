@@ -77,7 +77,7 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         splashColor: Colors.transparent,
         scaffoldBackgroundColor: darkThemeBackground,
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           surfaceTintColor: Colors.grey[800],
           shadowColor: Colors.grey[400],
           color: Colors.grey[800],
