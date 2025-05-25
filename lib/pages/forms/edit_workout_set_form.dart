@@ -173,10 +173,7 @@ class _EditWorkoutSetFormState extends State<EditWorkoutSetForm> {
 
     return Column(
       children: [
-        const Text(
-          'Edit Workout Set',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-        ),
+        CommonUI.getSectionTitleWithCloseButton(context, 'Edit Set'),
         CommonUI.getDefaultDivider(),
         Form(
           key: formKey,

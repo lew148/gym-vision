@@ -28,6 +28,7 @@ class Exercise {
 
   bool isCardio() => categories.contains(Category.cardio);
 
-  String getName() =>
-      '$name ${defaultExercises.where((e) => e.name == e.name).length > 1 ? '(${equipment.displayName})' : ''}';
+  String getName() => name.length > 20
+      ? name
+      : '$name ${defaultExercises.where((e) => e.name == e.name).length > 1 ? '(${equipment.displayName})' : ''}';
 }

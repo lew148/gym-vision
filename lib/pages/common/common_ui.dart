@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymvision/classes/db/workout_set.dart';
 
 class ButtonDetails {
   Function()? onTap;
@@ -16,7 +17,7 @@ class ButtonDetails {
 
 class CommonUI {
   static Widget getSectionTitle(BuildContext context, String title) => Padding(
-        padding: const EdgeInsets.fromLTRB(5, 10, 10, 10),
+        padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -172,4 +173,47 @@ class CommonUI {
       );
 
   static getDefaultDivider() => const Divider(thickness: 0.25);
+
+  static getInfoWidget(BuildContext context, String title, Widget? info) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              title,
+              style: TextStyle(fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.shadow),
+            ),
+            info ?? getDash()
+          ],
+        ),
+      );
+
+  static getWeightWithIcon(WorkoutSet set) =>
+      getXwithIcon(Icons.fitness_center_rounded, set.hasWeight() ? set.getWeightDisplay() : null);
+
+  static getRepsWithIcon(WorkoutSet set) =>
+      getXwithIcon(Icons.repeat_rounded, set.hasReps() ? set.getRepsDisplay() : null);
+
+  static getTimeWithIcon(WorkoutSet set) =>
+      getXwithIcon(Icons.timer_rounded, set.hasTime() ? set.getTimeDisplay() : null);
+
+  static getDistanceWithIcon(WorkoutSet set) =>
+      getXwithIcon(Icons.timeline_rounded, set.hasDistance() ? set.getDistanceDisplay() : null);
+
+  static getCaloriesWithIcon(WorkoutSet set) =>
+      getXwithIcon(Icons.local_fire_department_rounded, set.hasCalsBurned() ? set.getCalsBurnedDisplay() : null);
+
+  static getXwithIcon(IconData icon, String? str) => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            icon,
+            size: 15,
+          ),
+          const Padding(padding: EdgeInsets.all(1)),
+          str == null ? getDash() : Text(str)
+        ],
+      );
+
+  static getDash() => const Text('-');
 }

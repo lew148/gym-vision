@@ -26,6 +26,7 @@ enum Category {
 enum MuscleGroup {
   abductors,
   adductors,
+  back,
   biceps,
   calves,
   chest,
@@ -33,13 +34,13 @@ enum MuscleGroup {
   forearms,
   glutes,
   hamstrings,
-  lats,
-  lowerBack,
+  // lats,
+  // lowerBack,
   quadriceps,
   shoulders,
   // traps,
   triceps,
-  upperBack,
+  // upperBack,
   other,
 }
 

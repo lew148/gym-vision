@@ -6,13 +6,17 @@ import 'package:gymvision/user_settings_view.dart';
 class DebugScaffold extends StatefulWidget {
   final Widget body;
   final NavigationBar? bottomNavigationBar;
-  final AppBar? customAppBar;
+  final Widget? customAppBarTitle;
+  final List<IconButton>? customAppBarActions;
+  final bool ignoreDefaults;
 
   const DebugScaffold({
     super.key,
     required this.body,
     this.bottomNavigationBar,
-    this.customAppBar,
+    this.customAppBarTitle,
+    this.customAppBarActions,
+    this.ignoreDefaults = false,
   });
 
   @override
@@ -20,27 +24,24 @@ class DebugScaffold extends StatefulWidget {
 }
 
 class _DebugScaffoldState extends State<DebugScaffold> {
-  late AppBar appBar;
+  late List<IconButton> actions;
 
   @override
   void initState() {
     super.initState();
 
-    appBar = widget.customAppBar ??
-        AppBar(
-          title: const Text('Gymvision'),
-          backgroundColor: Colors.transparent,
-          actions: [
+    actions = widget.customAppBarActions ??
+        [
+          if (!widget.ignoreDefaults)
             IconButton(
               icon: const Icon(Icons.settings_rounded),
               onPressed: () => Navigator.of(context)
                   .push(MaterialPageRoute(builder: (context) => const UserSettingsView()))
                   .then((value) => setState(() {})),
             )
-          ],
-        );
+        ];
 
-    appBar.actions?.insert(
+    actions.insert(
       0,
       IconButton(
         icon: const Icon(Icons.bug_report_outlined),
@@ -55,11 +56,15 @@ class _DebugScaffoldState extends State<DebugScaffold> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar,
+      appBar: AppBar(
+        title: widget.customAppBarTitle ?? (widget.ignoreDefaults ? null : const Text('Gymvision')),
+        backgroundColor: Colors.transparent,
+        actions: actions,
+      ),
       bottomNavigationBar: widget.bottomNavigationBar,
       body: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
-        child: Padding(padding: const EdgeInsets.symmetric(horizontal: 5), child: widget.body),
+        child: Padding(padding: const EdgeInsets.symmetric(horizontal: 8), child: widget.body),
       ),
     );
   }

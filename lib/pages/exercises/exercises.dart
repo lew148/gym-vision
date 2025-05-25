@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/pages/exercises/exercise_view.dart';
-import 'package:gymvision/static_data/data/default_exercises.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 
@@ -76,10 +75,7 @@ class _ExercisesState extends State<Exercises> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      exercise.getName(),
-                      style: const TextStyle(fontWeight: FontWeight.w500),
-                    ),
+                    Text(exercise.getName()),
                     if (exercise.primaryMuscleGroup != MuscleGroup.other)
                       Text(exercise.primaryMuscleGroup.displayNamePlain,
                           style: TextStyle(color: Theme.of(context).colorScheme.shadow)),
@@ -111,7 +107,7 @@ class _ExercisesState extends State<Exercises> {
           child: const Text('Cancel'),
         ),
       ]),
-      const Padding(padding: EdgeInsets.all(5)),
+      const Padding(padding: EdgeInsets.all(2)),
       Expanded(
         child: SingleChildScrollView(
           child: Column(children: filteredExercises.map((e) => getExerciseWidget(e)).toList()),

@@ -4,7 +4,7 @@ import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
-import 'package:gymvision/static_data/data/default_exercises.dart';
+import 'package:gymvision/pages/exercises/exercises.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
@@ -172,11 +172,11 @@ class _ExercisePickerState extends State<ExercisePicker> {
   }
 
   void showExercisePicker(List<Exercise> allExercises, Exercise? selectedExercise) {
-    allExercises.sort((a, b) {
-      final aString = '${a.type.index}${a.name}';
-      final bString = '${b.type.index}${b.name}';
-      return aString.compareTo(bString);
-    });
+    // allExercises.sort((a, b) {
+    //   final aString = '${a.type.index}${a.name}';
+    //   final bString = '${b.type.index}${b.name}';
+    //   return aString.compareTo(bString);
+    // });
 
     showModalBottomSheet(
       context: context,
@@ -184,26 +184,16 @@ class _ExercisePickerState extends State<ExercisePicker> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: Column(
                 children: [
-                  CommonUI.getSectionTitleWithCloseButton(context, 'Select Exercise', popCaller: true),
-                  CommonUI.getDefaultDivider(),
+                  CommonUI.getSectionTitleWithCloseButton(context, '', popCaller: true),
                   getFilterButton(),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * .75,
-                    child: filteredExercises.isEmpty && selectedExercise == null
-                        ? Center(
-                            child: Text(
-                              'No exercises found',
-                              style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-                            ),
-                          )
-                        : getPickerContent(allExercises, selectedExercise),
+                    height: MediaQuery.of(context).size.height * .8,
+                    child: getPickerContent(allExercises, selectedExercise)//const Exercises(),
                   ),
                 ],
               ),

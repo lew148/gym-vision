@@ -49,6 +49,14 @@ class Workout extends DatabaseObject {
   String getDateStr() =>
       date.year != DateTime.now().year ? DateFormat(dmyFormat).format(date) : DateFormat(dmFormat).format(date);
 
+  String getDateOrDayStr() {
+    final now = DateTime.now();
+    if (isToday(date, now: now)) return 'Today';
+    if (isTomorrow(date, now: now)) return 'Tomorrow';
+    if (isYesterday(date, now: now)) return 'Yesterday';
+    return getDateStr();
+  }
+
   List<Category> getCategories() => workoutCategories?.map((wc) => wc.category).toList() ?? [];
   List<WorkoutExercise> getWorkoutExercises() => workoutExercses ?? [];
   List<WorkoutSet> getSets() =>

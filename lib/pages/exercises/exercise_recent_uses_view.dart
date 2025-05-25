@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workout_set.dart';
 import 'package:gymvision/classes/exercise.dart';
-import 'package:gymvision/globals.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/static_data/enums.dart';
 
@@ -47,89 +46,25 @@ class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
                         ),
                         Expanded(
                           flex: 4,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: set.hasWeight()
-                                ? [
-                                    const Expanded(
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: [
-                                          Icon(
-                                            Icons.fitness_center_rounded,
-                                            size: 15,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const Padding(padding: EdgeInsets.all(5)),
-                                    Expanded(child: Text(set.getWeightDisplay())),
-                                  ]
-                                : [dashIcon()],
-                          ),
+                          child: CommonUI.getWeightWithIcon(set),
                         ),
                         Expanded(
                           flex: 4,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.repeat_rounded,
-                                size: 15,
-                              ),
-                              const Padding(padding: EdgeInsets.all(5)),
-                              Text(set.getRepsDisplay()),
-                            ],
-                          ),
+                          child: CommonUI.getRepsWithIcon(set),
                         ),
                       ]
                     : [
                         Expanded(
-                            flex: 3,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: set.hasTime()
-                                  ? [
-                                      const Icon(
-                                        Icons.timer_rounded,
-                                        size: 15,
-                                      ),
-                                      const Padding(padding: EdgeInsets.all(5)),
-                                      Text(set.getTimeDisplay()),
-                                    ]
-                                  : [dashIcon()],
-                            )),
-                        Expanded(
                           flex: 3,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: set.hasDistance()
-                                ? [
-                                    const Icon(
-                                      Icons.timeline_rounded,
-                                      size: 15,
-                                    ),
-                                    const Padding(padding: EdgeInsets.all(5)),
-                                    Text(set.getDistanceDisplay()),
-                                  ]
-                                : [dashIcon()],
-                          ),
+                          child: CommonUI.getTimeWithIcon(set),
                         ),
                         Expanded(
                           flex: 3,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: set.hasCalsBurned()
-                                ? [
-                                    const Icon(
-                                      Icons.local_fire_department_rounded,
-                                      size: 15,
-                                    ),
-                                    const Padding(padding: EdgeInsets.all(5)),
-                                    Text(set.getCalsBurnedDisplay()),
-                                  ]
-                                : [dashIcon()],
-                          ),
+                          child: CommonUI.getDistanceWithIcon(set),
+                        ),
+                        Expanded(
+                          flex: 3,
+                          child: CommonUI.getCaloriesWithIcon(set),
                         ),
                       ],
               ),

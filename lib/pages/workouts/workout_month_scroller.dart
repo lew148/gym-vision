@@ -232,7 +232,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                                   children: dateXIsAfterDateY(widget.userSettings.createdAt!, currentDate) ||
                                           dateIsInFuture(currentDate) ||
                                           isToday
-                                      ? [dashIcon()]
+                                      ? [CommonUI.getDash()]
                                       : [
                                           Icon(
                                             Icons.hotel_rounded,

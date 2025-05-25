@@ -4,7 +4,6 @@ import 'package:gymvision/classes/db/bodyweight.dart';
 import 'package:gymvision/classes/db/workout.dart';
 import 'package:gymvision/classes/db/workout_set.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
-import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/workouts/flavour_text_card.dart';
@@ -111,33 +110,9 @@ class _TodayState extends State<Today> {
                   ),
                   const Padding(padding: EdgeInsets.all(2.5)),
                   Row(children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: bestSet.hasWeight()
-                          ? [
-                              const Icon(
-                                Icons.fitness_center_rounded,
-                                size: 15,
-                              ),
-                              const Padding(padding: EdgeInsets.all(5)),
-                              Text(bestSet.getWeightDisplay()),
-                            ]
-                          : [dashIcon()],
-                    ),
+                    CommonUI.getWeightWithIcon(bestSet),
                     const Padding(padding: EdgeInsets.symmetric(horizontal: 15)),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: bestSet.reps != null && bestSet.reps! > 0
-                          ? [
-                              const Icon(
-                                Icons.repeat_rounded,
-                                size: 15,
-                              ),
-                              const Padding(padding: EdgeInsets.all(5)),
-                              Text(bestSet.getRepsDisplay()),
-                            ]
-                          : [dashIcon()],
-                    ),
+                    CommonUI.getRepsWithIcon(bestSet)
                   ]),
                 ],
               ),
@@ -250,51 +225,51 @@ class _TodayState extends State<Today> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      DateFormat('EEEE, MMMM d').format(DateTime.now()),
-                      style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-                    ),
-                    const Text('Today', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
-                  ],
-                ),
-                FutureBuilder<Bodyweight?>(
-                    future: todaysBodyweight,
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return CommonUI.getPrimaryButton(
-                          ButtonDetails(
-                            onTap: onAddWeightTap,
-                            text: 'Add Bodyweight',
-                            icon: Icons.monitor_weight_rounded,
-                          ),
-                        );
-                      }
-
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    DateFormat('EEEE, MMMM d').format(DateTime.now()),
+                    style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                  ),
+                  const Text('Today', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
+                ],
+              ),
+              FutureBuilder<Bodyweight?>(
+                  future: todaysBodyweight,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
                       return CommonUI.getPrimaryButton(
                         ButtonDetails(
-                          onLongTap: () => CommonFunctions.showDeleteConfirm(
-                            context,
-                            "bodyweight",
-                            () => BodyweightModel.deleteBodyweight(snapshot.data!.id!),
-                            reloadState,
-                          ),
-                          text: snapshot.data!.getWeightDisplay(),
+                          onTap: onAddWeightTap,
+                          text: 'Add Bodyweight',
                           icon: Icons.monitor_weight_rounded,
                         ),
                       );
-                    }),
-              ],
-            ),
+                    }
+
+                    return CommonUI.getPrimaryButton(
+                      ButtonDetails(
+                        onLongTap: () => CommonFunctions.showDeleteConfirm(
+                          context,
+                          "bodyweight",
+                          () => BodyweightModel.deleteBodyweight(snapshot.data!.id!),
+                          reloadState,
+                        ),
+                        text: snapshot.data!.getWeightDisplay(),
+                        icon: Icons.monitor_weight_rounded,
+                      ),
+                    );
+                  }),
+            ],
           ),
+        ),
         const FlavourTextCard(),
         CommonUI.getSectionTitleWithAction(
           context,

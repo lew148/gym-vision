@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 const String appVersion = '1.0.3+38';
@@ -14,9 +13,20 @@ String truncateDouble(double? d) {
   return d % 1 == 0 ? d.toStringAsFixed(0) : d.toStringAsFixed(2);
 }
 
-bool isToday(DateTime dt) {
-  final now = DateTime.now();
+bool isToday(DateTime dt, {DateTime? now}) {
+  now ??= DateTime.now();
   return dt.day == now.day && dt.month == now.month && dt.year == now.year;
+}
+
+bool isTomorrow(DateTime dt, {DateTime? now}) {
+  now ??= DateTime.now();
+  return dt.day == now.day + 1 && dt.month == now.month && dt.year == now.year;
+}
+
+bool isYesterday(DateTime dt, {DateTime? now}) {
+  now ??= DateTime.now();
+
+  return dt.day == now.day - 1 && dt.month == now.month && dt.year == now.year;
 }
 
 String getMonthOrDayString(int num) => num < 10 ? '0$num' : num.toString();
@@ -49,16 +59,6 @@ Duration? tryParseDuration(String? s) {
 }
 
 List<int> distinctIntList(Iterable<int> i) => i.toSet().toList();
-
-Widget dashIcon() => const Center(
-      child: Text(
-        '-',
-        style: TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
 
 String? enumToString(Enum e) {
   try {

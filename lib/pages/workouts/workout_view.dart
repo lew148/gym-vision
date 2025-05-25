@@ -294,28 +294,27 @@ class _WorkoutViewState extends State<WorkoutView> {
         }
 
         return DebugScaffold(
-          customAppBar: AppBar(
-            title: Row(
-              children: [
-                Text(
-                  workout.getDateStr(),
-                  style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  ' @ ${workout.getTimeStr()}',
-                  style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
-                ),
-              ],
-            ),
-            actions: [
-              IconButton(
-                icon: const Icon(
-                  Icons.more_vert_rounded,
-                ),
-                onPressed: () => showMoreMenu(workout),
+          customAppBarTitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                workout.getDateOrDayStr(),
+                style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                workout.getTimeStr(),
+                style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
               ),
             ],
           ),
+          customAppBarActions: [
+            IconButton(
+              icon: const Icon(
+                Icons.more_vert_rounded,
+              ),
+              onPressed: () => showMoreMenu(workout),
+            )
+          ],
           body: Column(
             children: [
               getCategoriesWidget(workout, setCategories),

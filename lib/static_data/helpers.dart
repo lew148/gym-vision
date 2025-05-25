@@ -18,12 +18,14 @@ extension ExerciseTypeHelper on ExerciseType {
 }
 
 extension MuscleGroupHelper on MuscleGroup {
-    String get displayNamePlain {
+  String get displayNamePlain {
     switch (this) {
       case MuscleGroup.abductors:
         return 'Abductors';
       case MuscleGroup.adductors:
         return 'Adductors';
+      case MuscleGroup.back:
+        return 'Back';
       case MuscleGroup.biceps:
         return 'Biceps';
       case MuscleGroup.calves:
@@ -38,18 +40,18 @@ extension MuscleGroupHelper on MuscleGroup {
         return 'Glutes';
       case MuscleGroup.hamstrings:
         return 'Hamstrings';
-      case MuscleGroup.lats:
-        return 'Lats';
-      case MuscleGroup.lowerBack:
-        return 'Lower Back';
+      // case MuscleGroup.lats:
+      //   return 'Lats';
+      // case MuscleGroup.lowerBack:
+      //   return 'Lower Back';
       case MuscleGroup.quadriceps:
         return 'Quads';
       case MuscleGroup.shoulders:
         return 'Shoulders';
       case MuscleGroup.triceps:
         return 'Triceps';
-      case MuscleGroup.upperBack:
-        return 'Upper Back';
+      // case MuscleGroup.upperBack:
+      //   return 'Upper Back';
       case MuscleGroup.other:
         return otherDisplayName;
     }
@@ -61,6 +63,8 @@ extension MuscleGroupHelper on MuscleGroup {
         return 'Abductors';
       case MuscleGroup.adductors:
         return 'Adductors';
+      case MuscleGroup.back:
+        return '🎄 Back';
       case MuscleGroup.biceps:
         return '💪 Biceps';
       case MuscleGroup.calves:
@@ -75,10 +79,10 @@ extension MuscleGroupHelper on MuscleGroup {
         return '🍑 Glutes';
       case MuscleGroup.hamstrings:
         return '🦵 Hamstrings';
-      case MuscleGroup.lats:
-        return '⌛ Lats';
-      case MuscleGroup.lowerBack:
-        return '🎄 Lower Back';
+      // case MuscleGroup.lats:
+      //   return '⌛ Lats';
+      // case MuscleGroup.lowerBack:
+      //   return '🎄 Lower Back';
       case MuscleGroup.quadriceps:
         return '🦵 Quads';
       case MuscleGroup.shoulders:
@@ -87,8 +91,8 @@ extension MuscleGroupHelper on MuscleGroup {
       //   return 'Traps';
       case MuscleGroup.triceps:
         return '🔱 Triceps';
-      case MuscleGroup.upperBack:
-        return '🎒 Upper Back';
+      // case MuscleGroup.upperBack:
+      //   return '🎒 Upper Back';
       case MuscleGroup.other:
         return otherDisplayName;
     }
@@ -113,7 +117,7 @@ extension CategoryHelper on Category {
       case Category.arms:
         return '💪 Arms';
       case Category.back:
-        return '🎒 Back';
+        return '🎄 Back';
       case Category.biceps:
         return '💪 Biceps';
       case Category.triceps:

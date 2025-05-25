@@ -148,8 +148,8 @@ class _ExerciseViewState extends State<ExerciseView> {
         ),
       );
 
-  Widget getRecentUsesWidget(Exercise exercise, ExerciseDetails details) {
-    if (details.recentUses == null) return getNoRecentUsesWidget();
+  Widget getRecentUsesWidget(Exercise exercise, ExerciseDetails? details) {
+    if (details == null || (details.recentUses?.isEmpty ?? true)) return getNoRecentUsesWidget();
 
     final recentUses = details.recentUses!;
     recentUses.removeWhere((ws) {
@@ -192,82 +192,23 @@ class _ExerciseViewState extends State<ExerciseView> {
     );
   }
 
-  List<Widget> getPrSection(WorkoutSet? pr, bool single) => [
-        CommonUI.getSectionTitle(context, single ? 'Single PR' : 'PR'),
-        CommonUI.getDefaultDivider(),
-        pr == null
-            ? const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Text('No PR set.'),
+  Widget getPrSection(ExerciseDetails? details) => Column(children: [
+        CommonUI.getInfoWidget(
+          context,
+          'PR',
+          details == null || details.pr == null
+              ? null
+              : Row(
+                  children: [
+                    // Text(details.pr!.getWorkout()!.getDateStr()),
+                    CommonUI.getWeightWithIcon(details.pr!),
+                    const Padding(padding: EdgeInsets.all(10)),
+                    CommonUI.getRepsWithIcon(details.pr!),
+                  ],
                 ),
-              )
-            : Padding(
-                padding: const EdgeInsets.all(10),
-                child: CommonUI.getCard(
-                  InkWell(
-                    onTap: () => Navigator.of(context)
-                        .push(
-                          MaterialPageRoute(
-                            builder: (context) => WorkoutView(workoutId: pr.getWorkout()!.id!),
-                          ),
-                        )
-                        .then((value) => reloadState()),
-                    child: Padding(
-                      padding: const EdgeInsets.all(15),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: Text(pr.getWorkout()!.getDateStr()),
-                          ),
-                          Expanded(
-                              flex: 3,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(
-                                    Icons.fitness_center_rounded,
-                                    size: 15,
-                                  ),
-                                  const Padding(padding: EdgeInsets.all(5)),
-                                  Text(
-                                    pr.getWeightDisplay(),
-                                    style: const TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              )),
-                          Expanded(
-                            flex: 3,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.repeat_rounded,
-                                  size: 15,
-                                ),
-                                const Padding(padding: EdgeInsets.all(5)),
-                                Text(pr.getRepsDisplay()),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-      ];
-
-  List<Widget> getDetailsSections(Exercise exercise, ExerciseDetails details) => [
-        if (exercise.type == ExerciseType.strength) ...getPrSection(details.pr, false),
-        // UiHelper.getSectionTitle(context, 'Notes'),
-        // CommonUi.getDefaultDivider(),
-        // getNotesDisplay(details),
-        CommonUI.getSectionTitle(context, 'Recent Uses'),
+        ),
         CommonUI.getDefaultDivider(),
-        getRecentUsesWidget(exercise, details),
-      ];
+      ]);
 
   @override
   Widget build(BuildContext context) {
@@ -280,35 +221,34 @@ class _ExerciseViewState extends State<ExerciseView> {
         var details = exercise.exerciseDetails;
 
         return DebugScaffold(
+          ignoreDefaults: true,
           body: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                    'ID: ',
-                    style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-                  ),
+              Row( children: [
+                Text(
+                  exercise.getName(),
+                  softWrap: true,
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+              ]),
+              const Padding(padding: EdgeInsets.all(5)),
+              // if (god)
+              CommonUI.getInfoWidget(
+                  context,
+                  'ID',
                   SelectableText(
                     exercise.identifier,
                     style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: Row(children: [
-                  Expanded(
-                    child: Text(
-                      exercise.getName(),
-                      softWrap: true,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    ),
-                  ),
-                ]),
-              ),
-              getExerciseViewWidget(exercise),
-              if (details != null) ...getDetailsSections(exercise, details),
+                  )),
+              CommonUI.getInfoWidget(context, 'Type', Text(exercise.type.displayName)),
+              CommonUI.getInfoWidget(context, 'Primary Muscle', Text(exercise.primaryMuscleGroup.displayName)),
+              CommonUI.getInfoWidget(context, 'Equipment', Text(exercise.equipment.displayName)),
+              CommonUI.getDefaultDivider(),
+              // getExerciseViewWidget(exercise),
+              if (exercise.type == ExerciseType.strength) getPrSection(details),
+              CommonUI.getSectionTitle(context, 'Recent Uses'),
+              CommonUI.getDefaultDivider(),
+              getRecentUsesWidget(exercise, details),
             ],
           ),
         );

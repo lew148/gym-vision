@@ -4,7 +4,6 @@ import 'package:gymvision/classes/db/workout.dart';
 import 'package:gymvision/classes/db/workout_exercise.dart';
 import 'package:gymvision/classes/db/workout_set.dart';
 import 'package:gymvision/classes/exercise.dart';
-import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';
 import 'package:gymvision/pages/common/common_functions.dart';
@@ -144,35 +143,12 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                 ),
               ),
               Expanded(
-                  flex: 4,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: ws.hasWeight()
-                        ? [
-                            const Icon(
-                              Icons.fitness_center_rounded,
-                              size: 15,
-                            ),
-                            const Padding(padding: EdgeInsets.all(2.5)),
-                            Text(ws.getWeightDisplay()),
-                          ]
-                        : [dashIcon()],
-                  )),
+                flex: 4,
+                child: CommonUI.getWeightWithIcon(ws),
+              ),
               Expanded(
                 flex: 4,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: ws.reps != null && ws.reps! > 0
-                      ? [
-                          const Icon(
-                            Icons.repeat_rounded,
-                            size: 15,
-                          ),
-                          const Padding(padding: EdgeInsets.all(2.5)),
-                          Text(ws.getRepsDisplay()),
-                        ]
-                      : [dashIcon()],
-                ),
+                child: CommonUI.getRepsWithIcon(ws),
               ),
               Expanded(
                 flex: 1,
@@ -234,51 +210,16 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                 ),
               ),
               Expanded(
-                  flex: 3,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: ws.hasTime()
-                        ? [
-                            const Icon(
-                              Icons.timer_rounded,
-                              size: 15,
-                            ),
-                            const Padding(padding: EdgeInsets.all(2.5)),
-                            Text(ws.getTimeDisplay()),
-                          ]
-                        : [dashIcon()],
-                  )),
-              Expanded(
                 flex: 3,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: ws.hasDistance()
-                      ? [
-                          const Icon(
-                            Icons.timeline_rounded,
-                            size: 15,
-                          ),
-                          const Padding(padding: EdgeInsets.all(2.5)),
-                          Text(ws.getDistanceDisplay()),
-                        ]
-                      : [dashIcon()],
-                ),
+                child: CommonUI.getTimeWithIcon(ws),
               ),
               Expanded(
                 flex: 3,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: ws.hasCalsBurned()
-                      ? [
-                          const Icon(
-                            Icons.local_fire_department_rounded,
-                            size: 15,
-                          ),
-                          const Padding(padding: EdgeInsets.all(2.5)),
-                          Text(ws.getCalsBurnedDisplay()),
-                        ]
-                      : [dashIcon()],
-                ),
+                child: CommonUI.getDistanceWithIcon(ws),
+              ),
+              Expanded(
+                flex: 3,
+                child: CommonUI.getCaloriesWithIcon(ws),
               ),
             ],
           ),
