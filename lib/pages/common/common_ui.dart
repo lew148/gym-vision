@@ -77,11 +77,7 @@ class CommonUI {
               ),
             if (actionButton.icon != null && actionButton.text != null)
               const Padding(padding: EdgeInsets.only(left: 5)),
-            if (actionButton.text != null)
-              Text(
-                actionButton.text!,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-              ),
+            if (actionButton.text != null) Text(actionButton.text!),
           ],
         ),
       );
@@ -101,11 +97,7 @@ class CommonUI {
               ),
             if (actionButton.icon != null && actionButton.text != null)
               const Padding(padding: EdgeInsets.only(left: 5)),
-            if (actionButton.text != null)
-              Text(
-                actionButton.text!,
-                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-              ),
+            if (actionButton.text != null) Text(actionButton.text!),
           ],
         ),
       );
@@ -127,11 +119,7 @@ class CommonUI {
               ),
             if (actionButton.icon != null && actionButton.text != null)
               const Padding(padding: EdgeInsets.only(left: 5)),
-            if (actionButton.text != null)
-              Text(
-                actionButton.text!,
-                style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 15),
-              ),
+            if (actionButton.text != null) Text(actionButton.text!, style: const TextStyle(color: Colors.black)),
           ],
         ),
       );
