@@ -172,12 +172,6 @@ class _ExercisePickerState extends State<ExercisePicker> {
   }
 
   void showExercisePicker(List<Exercise> allExercises, Exercise? selectedExercise) {
-    // allExercises.sort((a, b) {
-    //   final aString = '${a.type.index}${a.name}';
-    //   final bString = '${b.type.index}${b.name}';
-    //   return aString.compareTo(bString);
-    // });
-
     showModalBottomSheet(
       context: context,
       builder: (context) => Column(
@@ -193,7 +187,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                   getFilterButton(),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * .8,
-                    child: getPickerContent(allExercises, selectedExercise)//const Exercises(),
+                    child: const Exercises(),
                   ),
                 ],
               ),

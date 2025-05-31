@@ -5,13 +5,14 @@ import 'package:gymvision/classes/db/workout.dart';
 import 'package:gymvision/classes/db/workout_category.dart';
 import 'package:gymvision/classes/db/workout_exercise.dart';
 import 'package:gymvision/classes/db/workout_exercise_ordering.dart';
+import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workout_exercise_orderings_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/common/debug_scaffold.dart';
 import 'package:gymvision/pages/forms/add_category_to_workout_form.dart';
-import 'package:gymvision/pages/forms/add_set_to_workout_form.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
+import 'package:gymvision/pages/workouts/add_exercises_to_workout.dart';
 import 'package:gymvision/pages/workouts/workout_exercise_widget.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:reorderables/reorderables.dart';
@@ -37,14 +38,22 @@ class _WorkoutViewState extends State<WorkoutView> {
         droppedWes = droppedWes;
       });
 
+  onCategoriesChange(List<Category> newCategories) async {
+    try {
+      await WorkoutCategoryModel.setWorkoutCategories(widget.workoutId, newCategories);
+    } catch (ex) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add Categories to workout')));
+    }
+  }
+
   void onAddCategoryClick(List<Category> existingWorkoutCategoryIds) => CommonFunctions.showBottomSheet(
         context,
-        AddCategoryToWorkoutForm(
-          workoutId: widget.workoutId,
-          existingCategories: existingWorkoutCategoryIds,
-          reloadState: reloadState,
+        CateogryPickerModal(
+          selectedCategories: existingWorkoutCategoryIds,
+          onChange: onCategoriesChange,
         ),
-      );
+      ).then((x) => reloadState());
 
   goToMostRecentWorkout(WorkoutCategory wc) async {
     var id = await WorkoutModel.getMostRecentWorkoutIdForCategory(wc);
@@ -246,15 +255,13 @@ class _WorkoutViewState extends State<WorkoutView> {
           : getWorkoutCategoriesWidget(workout.workoutCategories!, existingCategoryIds);
 
   void onAddExerciseClick(Workout workout, List<Category> setCategories, List<WorkoutExercise> workoutExercises) =>
-      CommonFunctions.showBottomSheet(
-        context,
-        AddSetToWorkoutForm(
-          workoutId: workout.id!,
-          setCategories: setCategories,
-          excludedExercises: workoutExercises.map((we) => we.exerciseIdentifier).toList(),
-          reloadState: reloadState,
-        ),
-      );
+      Navigator.of(context)
+          .push(MaterialPageRoute(
+              builder: (context) => AddExercisesToWorkout(
+                    workoutId: workout.id!,
+                    setCategories: setCategories,
+                  )))
+          .then((x) => reloadState());
 
   void onWorkoutExerciseReorder(int oldIndex, int newIndex) async {
     try {

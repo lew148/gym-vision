@@ -1,63 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 
-class AddCategoryToWorkoutForm extends StatefulWidget {
-  final int workoutId;
-  final List<Category> existingCategories;
-  final void Function() reloadState;
+class CateogryPickerModal extends StatefulWidget {
+  final List<Category> selectedCategories;
+  final void Function(List<Category> c) onChange;
 
-  const AddCategoryToWorkoutForm({
+  const CateogryPickerModal({
     super.key,
-    required this.workoutId,
-    required this.existingCategories,
-    required this.reloadState,
+    required this.selectedCategories,
+    required this.onChange,
   });
 
   @override
-  State<AddCategoryToWorkoutForm> createState() => _AddCategoryToWorkoutFormState();
+  State<CateogryPickerModal> createState() => _CateogryPickerModalState();
 }
 
-class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
+class _CateogryPickerModalState extends State<CateogryPickerModal> {
   late List<Category> selectedCategories;
 
   @override
   void initState() {
     super.initState();
-    selectedCategories = widget.existingCategories;
-  }
-
-  onSubmit() async {
-    Navigator.pop(context);
-
-    try {
-      await WorkoutCategoryModel.setWorkoutCategories(widget.workoutId, selectedCategories);
-    } catch (ex) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add Category to workout')));
-    }
-
-    widget.reloadState();
-  }
-
-  void onCategoryTap(Category category) async {
-    setState(() {
-      selectedCategories.contains(category) ? selectedCategories.remove(category) : selectedCategories.add(category);
-    });
-
-    await onSubmit();
+    selectedCategories = widget.selectedCategories;
   }
 
   Widget getCategoryDisplay(Category category) => GestureDetector(
-        onTap: () => onCategoryTap(category),
+        onTap: () => setState(() {
+          selectedCategories.contains(category)
+              ? selectedCategories.remove(category)
+              : selectedCategories.add(category);
+        }),
         child: CommonUI.getCard(
           Container(
             decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(
-                Radius.circular(5),
-              ),
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
               border: Border.all(
                 width: 2,
                 color:
@@ -74,7 +52,7 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommonUI.getSectionTitle(context, 'Add Categories'),
+        CommonUI.getSectionTitleWithCloseButton(context, 'Categories'),
         Padding(
           padding: const EdgeInsets.all(10),
           child: Column(children: [
@@ -98,7 +76,26 @@ class _AddCategoryToWorkoutFormState extends State<AddCategoryToWorkoutForm> {
                 alignment: WrapAlignment.center,
                 children: SplitHelper.miscCategories.map((c) => getCategoryDisplay(c)).toList(),
               ),
-            ])
+            ]),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CommonUI.getPrimaryButton(ButtonDetails(
+                  text: 'Clear',
+                  onTap: () {
+                    Navigator.pop(context);
+                    widget.onChange([]);
+                  },
+                )),
+                CommonUI.getPrimaryButton(ButtonDetails(
+                  text: 'Save',
+                  onTap: () {
+                    Navigator.pop(context);
+                    widget.onChange(selectedCategories);
+                  },
+                )),
+              ],
+            ),
           ]),
         ),
       ],

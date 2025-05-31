@@ -51,8 +51,8 @@ class CommonUI {
         ],
       );
 
-  static Widget getSectionTitleWithAction(BuildContext context, String title, ButtonDetails actionButton) =>
-      getSectionTitleWithActions(context, title, [actionButton]);
+  static Widget getSectionTitleWithAction(BuildContext context, String title, ButtonDetails buttonDetails) =>
+      getSectionTitleWithActions(context, title, [buttonDetails]);
 
   static Widget getSectionTitleWithActions(BuildContext context, String title, List<ButtonDetails> actionButtons) =>
       Row(
@@ -63,47 +63,47 @@ class CommonUI {
         ],
       );
 
-  static Widget getPrimaryButton(ButtonDetails actionButton) => TextButton(
-        onPressed: actionButton.onTap,
-        onLongPress: actionButton.onLongTap,
+  static Widget getPrimaryButton(ButtonDetails buttonDetails) => TextButton(
+        onPressed: buttonDetails.onTap,
+        onLongPress: buttonDetails.onLongTap,
         style: TextButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (actionButton.icon != null)
+            if (buttonDetails.icon != null)
               Icon(
-                actionButton.icon,
+                buttonDetails.icon,
                 size: 25,
               ),
-            if (actionButton.icon != null && actionButton.text != null)
+            if (buttonDetails.icon != null && buttonDetails.text != null)
               const Padding(padding: EdgeInsets.only(left: 5)),
-            if (actionButton.text != null) Text(actionButton.text!),
+            if (buttonDetails.text != null) Text(buttonDetails.text!),
           ],
         ),
       );
 
-  static Widget getOutlinedPrimaryButton(BuildContext context, ButtonDetails actionButton) => OutlinedButton(
-        onPressed: actionButton.onTap,
+  static Widget getOutlinedPrimaryButton(BuildContext context, ButtonDetails buttonDetails) => OutlinedButton(
+        onPressed: buttonDetails.onTap,
         style: OutlinedButton.styleFrom(
             side: BorderSide(color: Theme.of(context).colorScheme.shadow),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (actionButton.icon != null)
+            if (buttonDetails.icon != null)
               Icon(
-                actionButton.icon,
+                buttonDetails.icon,
                 size: 25,
               ),
-            if (actionButton.icon != null && actionButton.text != null)
+            if (buttonDetails.icon != null && buttonDetails.text != null)
               const Padding(padding: EdgeInsets.only(left: 5)),
-            if (actionButton.text != null) Text(actionButton.text!),
+            if (buttonDetails.text != null) Text(buttonDetails.text!),
           ],
         ),
       );
 
-  static Widget getElevatedPrimaryButton(BuildContext context, ButtonDetails actionButton) => ElevatedButton(
-        onPressed: actionButton.onTap,
+  static Widget getElevatedPrimaryButton(BuildContext context, ButtonDetails buttonDetails) => ElevatedButton(
+        onPressed: buttonDetails.onTap,
         style: ElevatedButton.styleFrom(
           backgroundColor: Theme.of(context).colorScheme.primary,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -111,15 +111,15 @@ class CommonUI {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (actionButton.icon != null)
+            if (buttonDetails.icon != null)
               Icon(
-                actionButton.icon,
+                buttonDetails.icon,
                 size: 25,
                 color: Colors.black,
               ),
-            if (actionButton.icon != null && actionButton.text != null)
+            if (buttonDetails.icon != null && buttonDetails.text != null)
               const Padding(padding: EdgeInsets.only(left: 5)),
-            if (actionButton.text != null) Text(actionButton.text!, style: const TextStyle(color: Colors.black)),
+            if (buttonDetails.text != null) Text(buttonDetails.text!, style: const TextStyle(color: Colors.black)),
           ],
         ),
       );

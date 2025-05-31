@@ -222,16 +222,13 @@ class _ExerciseViewState extends State<ExerciseView> {
 
         return DebugScaffold(
           ignoreDefaults: true,
+          customAppBarTitle: Text(
+            exercise.getName(),
+            softWrap: true,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          ),
           body: Column(
             children: [
-              Row( children: [
-                Text(
-                  exercise.getName(),
-                  softWrap: true,
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-              ]),
-              const Padding(padding: EdgeInsets.all(5)),
               // if (god)
               CommonUI.getInfoWidget(
                   context,

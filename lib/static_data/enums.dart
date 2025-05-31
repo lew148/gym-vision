@@ -24,24 +24,24 @@ enum Category {
 }
 
 enum MuscleGroup {
-  abductors,
-  adductors,
   back,
-  biceps,
-  calves,
   chest,
+  shoulders,
+  biceps,
+  triceps,
+  quadriceps,
+  hamstrings,
+  glutes,
   core,
   forearms,
-  glutes,
-  hamstrings,
+  calves,
+  abductors,
+  adductors,
+  other,
   // lats,
   // lowerBack,
-  quadriceps,
-  shoulders,
   // traps,
-  triceps,
   // upperBack,
-  other,
 }
 
 enum Equipment {
