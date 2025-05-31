@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:intl/intl.dart';
 
-const String appVersion = '1.0.3+38';
+const String appVersion = '1.0.4+39';
 
 const String dmyFormat = 'd MMMM yyyy';
 const String dmFormat = 'd MMMM';
