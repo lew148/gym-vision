@@ -467,6 +467,14 @@ Set<Exercise> defaultExercises = {
     categories: {Category.pull, Category.upperBody, Category.arms, Category.biceps},
   ),
   Exercise(
+    identifier: "LAFH47WHQXL",
+    name: "Facing Away Bicep Curl",
+    type: ExerciseType.strength,
+    primaryMuscleGroup: MuscleGroup.back,
+    equipment: Equipment.cable,
+    categories: {Category.pull, Category.upperBody, Category.biceps},
+  ),
+  Exercise(
     identifier: "8VZ7OQLPVRO",
     name: "Bicep Curl", // (Machine)",
     type: ExerciseType.strength,

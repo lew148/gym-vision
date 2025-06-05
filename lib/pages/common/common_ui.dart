@@ -47,26 +47,32 @@ class CommonUI {
               Navigator.pop(context);
               if (popCaller) Navigator.pop(context);
             },
-          )
+          ),
         ],
       );
 
   static Widget getSectionTitleWithAction(BuildContext context, String title, ButtonDetails buttonDetails) =>
       getSectionTitleWithActions(context, title, [buttonDetails]);
 
-  static Widget getSectionTitleWithActions(BuildContext context, String title, List<ButtonDetails> actionButtons) =>
+  static Widget getSectionTitleWithActions(BuildContext context, String title, List<ButtonDetails> buttonDetails) =>
+      getSectionWidgetWithActions(context, getSectionTitle(context, title), buttonDetails);
+
+  static Widget getSectionWidgetWithAction(BuildContext context, Widget widget, ButtonDetails buttonDetail) =>
+      getSectionWidgetWithActions(context, widget, [buttonDetail]);
+
+  static Widget getSectionWidgetWithActions(BuildContext context, Widget widget, List<ButtonDetails> buttonDetails) =>
       Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          getSectionTitle(context, title),
-          Row(children: actionButtons.map((ab) => getPrimaryButton(ab)).toList()),
+          widget,
+          Row(children: buttonDetails.map((ab) => getPrimaryButton(ab)).toList()),
         ],
       );
 
   static Widget getPrimaryButton(ButtonDetails buttonDetails) => TextButton(
         onPressed: buttonDetails.onTap,
         onLongPress: buttonDetails.onLongTap,
-        style: TextButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -84,8 +90,9 @@ class CommonUI {
 
   static Widget getOutlinedPrimaryButton(BuildContext context, ButtonDetails buttonDetails) => OutlinedButton(
         onPressed: buttonDetails.onTap,
+        onLongPress: buttonDetails.onLongTap,
         style: OutlinedButton.styleFrom(
-            side: BorderSide(color: Theme.of(context).colorScheme.shadow),
+            side: BorderSide(color: Theme.of(context).colorScheme.shadow, width: 1),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -104,6 +111,7 @@ class CommonUI {
 
   static Widget getElevatedPrimaryButton(BuildContext context, ButtonDetails buttonDetails) => ElevatedButton(
         onPressed: buttonDetails.onTap,
+        onLongPress: buttonDetails.onLongTap,
         style: ElevatedButton.styleFrom(
           backgroundColor: Theme.of(context).colorScheme.primary,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -121,6 +129,15 @@ class CommonUI {
               const Padding(padding: EdgeInsets.only(left: 5)),
             if (buttonDetails.text != null) Text(buttonDetails.text!, style: const TextStyle(color: Colors.black)),
           ],
+        ),
+      );
+
+  static getDeleteButton(void Function() onTap) => TextButton(
+        onPressed: onTap,
+        child: const Icon(
+          Icons.delete_rounded,
+          color: Colors.red,
+          size: 25,
         ),
       );
 
@@ -204,4 +221,29 @@ class CommonUI {
       );
 
   static getDash() => const Text('-');
+
+  static getModalMenu(BuildContext context, List<ButtonDetails> options) {
+    final List<Widget> items = [getSectionTitleWithCloseButton(context, 'Options')];
+
+    for (int i = 0; i < options.length; i++) {
+      if (i != 0) items.add(getDefaultDivider());
+      items.add(
+        Padding(
+          padding: const EdgeInsets.all(5),
+          child: InkWell(
+            onTap: options[i].onTap,
+            child: Row(
+              children: [
+                Icon(options[i].icon),
+                const Padding(padding: EdgeInsets.all(5)),
+                Text(options[i].text!),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Column(children: items);
+  }
 }

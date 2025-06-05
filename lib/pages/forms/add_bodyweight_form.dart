@@ -5,12 +5,7 @@ import 'package:gymvision/pages/common/common_ui.dart';
 import 'fields/custom_form_fields.dart';
 
 class AddBodyWeightForm extends StatefulWidget {
-  final Function reloadState;
-
-  const AddBodyWeightForm({
-    super.key,
-    required this.reloadState,
-  });
+  const AddBodyWeightForm({super.key});
 
   @override
   State<AddBodyWeightForm> createState() => _AddBodyWeightFormState();
@@ -34,7 +29,6 @@ class _AddBodyWeightFormState extends State<AddBodyWeightForm> {
 
     if (!mounted) return;
     Navigator.pop(context);
-    widget.reloadState();
   }
 
   @override

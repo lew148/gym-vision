@@ -28,7 +28,6 @@ class _ExercisesState extends State<Exercises> {
   late List<Category> filterCategories;
   late List<Exercise> filteredExercises;
   late TextEditingController searchTextController;
-  String searchValue = '';
 
   @override
   void initState() {
@@ -79,10 +78,20 @@ class _ExercisesState extends State<Exercises> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(exercise.getName()),
-                    if (exercise.primaryMuscleGroup != MuscleGroup.other)
-                      Text(exercise.primaryMuscleGroup.displayNamePlain,
-                          style: TextStyle(color: Theme.of(context).colorScheme.shadow)),
+                    Text(
+                      exercise.name,
+                      style: const TextStyle(fontWeight: FontWeight.w500),
+                    ),
+                    Row(children: [
+                      if (exercise.equipment != Equipment.other)
+                        Text(exercise.equipment.displayName,
+                            style: TextStyle(color: Theme.of(context).colorScheme.shadow)),
+                      // if (exercise.primaryMuscleGroup != MuscleGroup.other && exercise.equipment != Equipment.other)
+                      //   const Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: 5), child: Text('-')),
+                      // if (exercise.primaryMuscleGroup != MuscleGroup.other)
+                      //   Text(exercise.primaryMuscleGroup.displayNamePlain,
+                      //       style: TextStyle(color: Theme.of(context).colorScheme.shadow)),
+                    ]),
                   ],
                 ),
               ]),
@@ -120,6 +129,13 @@ class _ExercisesState extends State<Exercises> {
     final List<Widget> sections = [];
     final Map<int, List<Exercise>> groups =
         groupBy<Exercise, int>(filteredExercises, (e) => e.primaryMuscleGroup.index);
+
+    if (groups.isEmpty) {
+      return Column(children: [
+        Text('No results for: ${searchTextController.text}'),
+        Text('Create the Extercise: -> Coming Soon!', style: TextStyle(color: Theme.of(context).colorScheme.shadow)),
+      ]);
+    }
 
     final sortedKeys = groups.keys.toList()..sort();
     for (int i = 0; i < sortedKeys.length; i++) {
@@ -162,7 +178,7 @@ class _ExercisesState extends State<Exercises> {
         Expanded(
           child: CupertinoSearchTextField(
             controller: searchTextController,
-            placeholder: 'Search',
+            placeholder: 'Search for exercise...',
             style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
             onChanged: (s) => setSearchValue(s),
           ),

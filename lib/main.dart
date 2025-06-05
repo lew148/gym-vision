@@ -2,11 +2,9 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/pages/common/coming_soon.dart';
-import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/common/debug_scaffold.dart';
 import 'package:gymvision/pages/exercises/exercises.dart';
 import 'package:gymvision/pages/today/today.dart';
-import 'package:gymvision/pages/forms/add_bodyweight_form.dart';
 import 'package:gymvision/pages/workouts/workouts.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -115,11 +113,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void reloadState() => onItemTapped(selectedIndex);
-
-  void onAddWeightTap() async => CommonFunctions.showBottomSheet(
-        context,
-        AddBodyWeightForm(reloadState: reloadState),
-      );
 
   List<Widget> widgetPages() => [
         const Today(),

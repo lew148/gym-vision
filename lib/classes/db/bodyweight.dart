@@ -27,5 +27,5 @@ class Bodyweight extends DatabaseObject {
       };
 
   String getTimeString() => DateFormat('Hm').format(date);
-  String getWeightDisplay() => '${truncateDouble(weight)} $units';
+  String getWeightDisplay() => '${truncateDouble(weight)}$units';
 }

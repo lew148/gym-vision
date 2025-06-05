@@ -41,8 +41,8 @@ class _TodayState extends State<Today> {
 
   void onAddWeightTap() async => CommonFunctions.showBottomSheet(
         context,
-        AddBodyWeightForm(reloadState: reloadState),
-      );
+        const AddBodyWeightForm(),
+      ).then((x) => reloadState());
 
   Widget getWorkoutOverview(Workout workout) {
     var sets = workout.getSets();
@@ -138,30 +138,27 @@ class _TodayState extends State<Today> {
             padding: const EdgeInsets.all(15),
             child: Column(
               children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    if (w.workoutExercses?.isNotEmpty ?? false)
-                      Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: CommonUI.getCompleteMark(context, w.done),
-                      ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          w.getWorkoutTitle(),
-                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                        ),
-                        Text(
-                          w.getTimeStr(),
-                          style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-                        ),
-                      ],
+                Row(children: [
+                  if (w.workoutExercses?.isNotEmpty ?? false)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 15),
+                      child: CommonUI.getCompleteMark(context, w.done),
                     ),
-                  ],
-                ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        w.getWorkoutTitle(),
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                      ),
+                      Text(
+                        '@ ${w.getTimeStr()}',
+                        style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                      ),
+                    ],
+                  ),
+                ]),
                 const Padding(padding: EdgeInsets.all(5)),
                 if (w.workoutCategories != null && w.workoutCategories!.isNotEmpty)
                   Row(children: [
@@ -180,112 +177,108 @@ class _TodayState extends State<Today> {
         ),
       );
 
-  List<Widget> getWorkoutsOrPlaceholder(List<Workout>? workouts) {
+  Widget getWorkoutsOrPlaceholder(List<Workout>? workouts) {
     if (workouts == null || workouts.isEmpty) {
-      return [
-        Padding(
-          padding: const EdgeInsets.all(15),
-          child: Column(children: [
-            Row(children: [
-              Icon(
-                Icons.hotel_rounded,
-                color: Theme.of(context).colorScheme.shadow,
-                size: 25,
-              ),
-              const Padding(padding: EdgeInsets.all(5)),
-              Text(
-                'Resting...',
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.shadow,
-                  fontSize: 20,
-                ),
-              ),
-            ]),
-            const Padding(padding: EdgeInsets.all(5)),
-            Row(children: [
-              Text(
-                'Tap + to record a new workout!',
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.shadow,
-                ),
-              ),
-            ]),
+      return Padding(
+        padding: const EdgeInsetsGeometry.all(5),
+        child: Column(children: [
+          Text(
+            'Tap + to get started!',
+            style: TextStyle(
+              fontSize: 15,
+              color: Theme.of(context).colorScheme.shadow,
+            ),
+          )
 
-            // todo: add suggested workout button here?
-          ]),
-        ),
-      ];
+          // todo: add suggested workout button here?
+        ]),
+      );
     }
 
     workouts.sort((a, b) => a.date.compareTo(b.date)); // sort by date asc
-    return workouts.map((w) => getWorkoutDisplay(w)).toList();
+    return SingleChildScrollView(child: Column(children: workouts.map((w) => getWorkoutDisplay(w)).toList()));
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    DateFormat('EEEE, MMMM d').format(DateTime.now()),
-                    style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-                  ),
-                  const Text('Today', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
-                ],
-              ),
-              FutureBuilder<Bodyweight?>(
-                  future: todaysBodyweight,
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return CommonUI.getPrimaryButton(
-                        ButtonDetails(
-                          onTap: onAddWeightTap,
-                          text: 'Add Bodyweight',
-                          icon: Icons.monitor_weight_rounded,
-                        ),
-                      );
-                    }
-
-                    return CommonUI.getPrimaryButton(
-                      ButtonDetails(
-                        onLongTap: () => CommonFunctions.showDeleteConfirm(
-                          context,
-                          "bodyweight",
-                          () => BodyweightModel.deleteBodyweight(snapshot.data!.id!),
-                          reloadState,
-                        ),
-                        text: snapshot.data!.getWeightDisplay(),
-                        icon: Icons.monitor_weight_rounded,
-                      ),
-                    );
-                  }),
-            ],
-          ),
-        ),
-        const FlavourTextCard(),
-        CommonUI.getSectionTitleWithAction(
+        CommonUI.getSectionWidgetWithAction(
           context,
-          'Workouts',
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  DateFormat('EEEE, MMMM d').format(DateTime.now()),
+                  style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                ),
+                const Text('Today', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
+              ],
+            ),
+          ),
           ButtonDetails(
-            icon: Icons.add,
+            icon: Icons.add_rounded,
             onTap: () => CommonFunctions.onAddWorkoutTap(context, reloadState, date: today),
           ),
         ),
-        CommonUI.getDefaultDivider(),
+        const FlavourTextCard(),
         Expanded(
           child: FutureBuilder<List<Workout>>(
             future: todaysWorkouts,
-            builder: (context, snapshot) => SingleChildScrollView(
-              child: Column(children: getWorkoutsOrPlaceholder(snapshot.data)),
-            ),
+            builder: (context, snapshot) => FutureBuilder<Bodyweight?>(
+                future: todaysBodyweight,
+                builder: (context, bwsnapshot) {
+                  return Column(
+                    children: [
+                      CommonUI.getCard(
+                        bwsnapshot.hasData
+                            ? Padding(
+                                padding: const EdgeInsetsGeometry.only(left: 10),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(children: [
+                                      const Icon(Icons.monitor_weight_rounded),
+                                      const Padding(padding: EdgeInsetsGeometry.all(2.5)),
+                                      Text(
+                                        bwsnapshot.data!.getWeightDisplay(),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                      const Padding(padding: EdgeInsetsGeometry.all(2.5)),
+                                      Text(
+                                        '@ ${bwsnapshot.data!.getTimeString()}',
+                                        style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                                      ),
+                                    ]),
+                                    Row(children: [
+                                      // todo: add edit and view all
+                                      CommonUI.getDeleteButton(
+                                        () => CommonFunctions.showDeleteConfirm(
+                                          context,
+                                          "bodyweight",
+                                          () => BodyweightModel.deleteBodyweight(bwsnapshot.data!.id!),
+                                          reloadState,
+                                        ),
+                                      ),
+                                    ]),
+                                  ],
+                                ))
+                            : CommonUI.getPrimaryButton(ButtonDetails(
+                                onTap: onAddWeightTap,
+                                text: 'Record Bodyweight',
+                                icon: Icons.monitor_weight_rounded,
+                              )),
+                      ),
+                      const Padding(padding: EdgeInsetsGeometry.all(2.5)),
+                      Expanded(child: getWorkoutsOrPlaceholder(snapshot.data)),
+                    ],
+                  );
+                }),
           ),
         )
       ],

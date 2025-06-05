@@ -187,13 +187,7 @@ class _EditWorkoutSetFormState extends State<EditWorkoutSetForm> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.delete_rounded,
-                        color: Theme.of(context).colorScheme.tertiary,
-                      ),
-                      onPressed: () => onDeleteButtonTap(widget.workoutSet.id!),
-                    ),
+                    CommonUI.getDeleteButton(() => onDeleteButtonTap(widget.workoutSet.id!)),
                     CommonUI.getPrimaryButton(
                       ButtonDetails(
                         icon: Icons.copy_rounded,

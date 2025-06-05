@@ -205,7 +205,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
     final Map<int, List<Exercise>> exercisesGroupedByMuscleGroup =
         groupBy<Exercise, int>(allExercises, (e) => e.primaryMuscleGroup.index);
     final List<Widget> sections = [];
-    final addQuickAddButton = widget.onQuickAdd != null;
+    // final addQuickAddButton = widget.onQuickAdd != null;
 
     exercisesGroupedByMuscleGroup.forEach((key, value) => sections.add(
           StickyHeader(

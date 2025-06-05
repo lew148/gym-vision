@@ -163,78 +163,38 @@ class _WorkoutViewState extends State<WorkoutView> {
   void showMoreMenu(Workout workout) {
     CommonFunctions.showBottomSheet(
       context,
-      Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 10),
-            child: InkWell(
-              onTap: () {
-                Navigator.pop(context);
-                showEditDate(workout);
-              },
-              child: const Row(
-                children: [
-                  Icon(Icons.calendar_today_rounded),
-                  Padding(padding: EdgeInsets.all(5)),
-                  Text(
-                    'Edit Date',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          CommonUI.getDefaultDivider(),
-          Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 10),
-            child: InkWell(
-              onTap: () {
-                Navigator.pop(context);
-                showEditTime(workout);
-              },
-              child: const Row(
-                children: [
-                  Icon(Icons.watch_rounded),
-                  Padding(padding: EdgeInsets.all(5)),
-                  Text(
-                    'Edit Time',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          CommonUI.getDefaultDivider(),
-          Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 10),
-            child: InkWell(
-              onTap: () {
-                Navigator.pop(context);
-                CommonFunctions.showDeleteConfirm(
-                  context,
-                  "workout",
-                  () => WorkoutModel.deleteWorkout(workout.id!),
-                  widget.reloadParent,
-                  popCaller: true,
-                );
-              },
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.delete_rounded,
-                    color: Theme.of(context).colorScheme.tertiary,
-                  ),
-                  const Padding(padding: EdgeInsets.all(5)),
-                  const Text(
-                    'Delete Workout',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
+      CommonUI.getModalMenu(context, [
+        ButtonDetails(
+          onTap: () {
+            Navigator.pop(context);
+            showEditDate(workout);
+          },
+          icon: Icons.calendar_today_rounded,
+          text: 'Edit Date',
+        ),
+        ButtonDetails(
+          onTap: () {
+            Navigator.pop(context);
+            showEditTime(workout);
+          },
+          icon: Icons.watch_rounded,
+          text: 'Edit Time',
+        ),
+        ButtonDetails(
+          onTap: () {
+            Navigator.pop(context);
+            CommonFunctions.showDeleteConfirm(
+              context,
+              "workout",
+              () => WorkoutModel.deleteWorkout(workout.id!),
+              widget.reloadParent,
+              popCaller: true,
+            );
+          },
+          icon: Icons.delete_rounded,
+          text: 'Delete Workout',
+        ),
+      ]),
     );
   }
 

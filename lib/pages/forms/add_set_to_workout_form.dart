@@ -129,7 +129,7 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
       key: formKey,
       child: Column(
         children: [
-          CommonUI.getSectionTitle(context, 'Add Set'),
+          CommonUI.getSectionTitleWithCloseButton(context, 'Add Set'),
           CommonUI.getDefaultDivider(),
           ExercisePicker(
             exerciseIdentifier: widget.exerciseIdentifier,
