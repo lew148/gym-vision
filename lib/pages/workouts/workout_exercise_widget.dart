@@ -11,6 +11,8 @@ import 'package:gymvision/pages/exercises/exercise_view.dart';
 import 'package:gymvision/pages/forms/add_set_to_workout_form.dart';
 import 'package:gymvision/pages/forms/edit_workout_set_form.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
+import 'package:gymvision/static_data/enums.dart';
+import 'package:gymvision/static_data/helpers.dart';
 
 class WorkoutExerciseWidget extends StatefulWidget {
   final WorkoutExercise workoutExercise;
@@ -107,11 +109,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
 
   List<Widget> getWeightedSetWidgets() {
     final List<Widget> widgets = [];
-    final filteredSets = workoutSets.where((ws) => ws.hasWeight() || ws.hasReps()).toList();
-    // filteredSets.sort(((a, b) => a.createdAt!.compareTo(b.createdAt!)));
-
-    for (int i = 0; i < filteredSets.length; i++) {
-      final ws = filteredSets[i];
+    for (int i = 0; i < workoutSets.length; i++) {
+      final ws = workoutSets[i];
       widgets.add(InkWell(
         onLongPress: () => CommonFunctions.showDeleteConfirm(
           context,
@@ -422,9 +421,19 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                   Expanded(
                     child: Row(children: [
                       Expanded(
-                        child: Text(
-                          exercise.getName(),
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              exercise.name,
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Row(children: [
+                              if (exercise.equipment != Equipment.other)
+                                Text(exercise.equipment.displayName,
+                                    style: TextStyle(color: Theme.of(context).colorScheme.shadow)),
+                            ]),
+                          ],
                         ),
                       ),
                       if (isDroppable)

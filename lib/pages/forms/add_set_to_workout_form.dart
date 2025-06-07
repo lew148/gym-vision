@@ -78,44 +78,42 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
 
   void onSubmit({bool addThree = false, Exercise? quickAddExercise}) async {
     final subject = quickAddExercise ?? selectedExercise;
-    if (subject == null) return; // todo: show error
+    if (subject == null || !formKey.currentState!.validate() || repsController.text == '' || repsController.text == '0') return; // todo: show error
 
-    if (formKey.currentState!.validate()) {
-      Navigator.pop(context);
+    Navigator.pop(context);
 
-      try {
-        var weId = //get existing or create workoutExercise
-            (await WorkoutExerciseModel.getWorkoutExerciseByWorkoutAndExercise(widget.workoutId, subject.identifier))
-                    ?.id ??
-                await WorkoutExerciseModel.insertWorkoutExercise(WorkoutExercise(
-                  workoutId: widget.workoutId,
-                  exerciseIdentifier: subject.identifier,
-                ));
+    try {
+      var weId = //get existing or create workoutExercise
+          (await WorkoutExerciseModel.getWorkoutExerciseByWorkoutAndExercise(widget.workoutId, subject.identifier))
+                  ?.id ??
+              await WorkoutExerciseModel.insertWorkoutExercise(WorkoutExercise(
+                workoutId: widget.workoutId,
+                exerciseIdentifier: subject.identifier,
+              ));
 
-        if (quickAddExercise != null) {
-          widget.reloadState();
-          return;
-        }
-
-        for (int i = 0; i < (addThree ? 3 : 1); i++) {
-          await WorkoutSetModel.addSetToWorkout(
-            WorkoutSet(
-              workoutExerciseId: weId,
-              weight: double.parse(getNumberString(weightController.text)),
-              reps: int.parse(getNumberString(repsController.text)),
-              time: duration,
-              distance: double.parse(getNumberString(distanceController.text)),
-              calsBurned: int.parse(getNumberString(calsBurnedController.text)),
-            ),
-          );
-        }
-      } catch (ex) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add set(s) to workout')));
+      if (quickAddExercise != null) {
+        widget.reloadState();
+        return;
       }
 
-      widget.reloadState();
+      for (int i = 0; i < (addThree ? 3 : 1); i++) {
+        await WorkoutSetModel.addSetToWorkout(
+          WorkoutSet(
+            workoutExerciseId: weId,
+            weight: double.parse(getNumberString(weightController.text)),
+            reps: int.parse(getNumberString(repsController.text)),
+            time: duration,
+            distance: double.parse(getNumberString(distanceController.text)),
+            calsBurned: int.parse(getNumberString(calsBurnedController.text)),
+          ),
+        );
+      }
+    } catch (ex) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add set(s) to workout')));
     }
+
+    widget.reloadState();
   }
 
   void onQuickAdd(Exercise exercise) async {

@@ -1,5 +1,4 @@
 import 'package:gymvision/classes/exercise_details.dart';
-import 'package:gymvision/static_data/data/default_exercises.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 
@@ -28,7 +27,5 @@ class Exercise {
 
   bool isCardio() => categories.contains(Category.cardio);
 
-  String getName() => name.length > 15
-      ? name
-      : '$name ${defaultExercises.where((e) => e.name == e.name).length > 1 ? '(${equipment.displayName})' : ''}';
+  String getFullName() => '$name (${equipment.displayName})';
 }

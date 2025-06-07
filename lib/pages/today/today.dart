@@ -61,7 +61,7 @@ class _TodayState extends State<Today> {
       bestSet = sets.firstWhere((s) => s.weight == heaviestWeight);
     }
 
-    final bestSetName = bestSet.getExercise()?.isCardio() ?? false ? null : bestSet.getExercise()?.getName();
+    final bestSetName = bestSet.getExercise()?.isCardio() ?? false ? null : bestSet.getExercise()?.getFullName();
 
     return Column(children: [
       CommonUI.getDefaultDivider(),

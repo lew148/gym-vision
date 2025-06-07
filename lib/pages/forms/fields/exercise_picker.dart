@@ -248,7 +248,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          e.getName(),
+                                          e.getFullName(),
                                           style: const TextStyle(fontWeight: FontWeight.w500),
                                         ),
                                         if (e.primaryMuscleGroup != MuscleGroup.other)
@@ -375,7 +375,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                             Row(
                               children: [
                                 Text(
-                                  exercise == null ? 'Select Exercise' : exercise.getName(),
+                                  exercise == null ? 'Select Exercise' : exercise.getFullName(),
                                   style: TextStyle(
                                     fontSize: 17,
                                     fontWeight: FontWeight.w400,

@@ -223,7 +223,7 @@ class _ExerciseViewState extends State<ExerciseView> {
         return DebugScaffold(
           ignoreDefaults: true,
           customAppBarTitle: Text(
-            exercise.getName(),
+            exercise.name,
             softWrap: true,
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
