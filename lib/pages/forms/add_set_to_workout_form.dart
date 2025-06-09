@@ -78,7 +78,7 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
 
   void onSubmit({bool addThree = false, Exercise? quickAddExercise}) async {
     final subject = quickAddExercise ?? selectedExercise;
-    if (subject == null || !formKey.currentState!.validate() || repsController.text == '' || repsController.text == '0') return; // todo: show error
+    if (subject == null || !formKey.currentState!.validate() || (!subject.isCardio() && repsController.text == '' || repsController.text == '0')) return; // todo: show error
 
     Navigator.pop(context);
 

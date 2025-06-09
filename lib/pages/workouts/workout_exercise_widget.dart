@@ -109,6 +109,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
 
   List<Widget> getWeightedSetWidgets() {
     final List<Widget> widgets = [];
+
     for (int i = 0; i < workoutSets.length; i++) {
       final ws = workoutSets[i];
       widgets.add(InkWell(
@@ -171,13 +172,9 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
 
   List<Widget> getCardioSetWidgets() {
     final List<Widget> widgets = [];
-    final filteredSets = workoutSets.where((ws) => ws.hasTime() || ws.hasDistance() || ws.hasCalsBurned()).toList();
 
-    if (filteredSets.isNotEmpty) widgets.add(const Padding(padding: EdgeInsets.all(2)));
-
-    for (int i = 0; i < filteredSets.length; i++) {
-      final ws = filteredSets[i];
-
+    for (int i = 0; i < workoutSets.length; i++) {
+      final ws = workoutSets[i];
       widgets.add(InkWell(
         onLongPress: () => CommonFunctions.showDeleteConfirm(
           context,
@@ -241,9 +238,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       HapticFeedback.heavyImpact();
 
       if (workout?.isInFuture() ?? false) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Cannot mark future sets done!'),
-        ));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Cannot mark future sets done!')));
         return;
       }
 
