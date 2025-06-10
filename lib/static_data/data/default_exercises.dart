@@ -1004,15 +1004,15 @@ Set<Exercise> defaultExercises = {
   ),
   Exercise(
     identifier: "FHKSZJWAO8B",
-    name: "Lunge", // (Dumbbell)",
+    name: "Lunge",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.quadriceps,
-    equipment: Equipment.dumbbell,
+    equipment: Equipment.barbell,
     categories: {Category.legs, Category.lowerBody},
   ),
   Exercise(
     identifier: "SHQCITTZWCA",
-    name: "Lunge", // (Barbell)",
+    name: "Lunge",
     type: ExerciseType.strength,
     primaryMuscleGroup: MuscleGroup.quadriceps,
     equipment: Equipment.dumbbell,

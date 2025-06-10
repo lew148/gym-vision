@@ -139,7 +139,7 @@ class _TodayState extends State<Today> {
             child: Column(
               children: [
                 Row(children: [
-                  if (w.workoutExercses?.isNotEmpty ?? false)
+                  if (w.workoutExercises?.isNotEmpty ?? false)
                     Padding(
                       padding: const EdgeInsets.only(right: 15),
                       child: CommonUI.getCompleteMark(context, w.done),

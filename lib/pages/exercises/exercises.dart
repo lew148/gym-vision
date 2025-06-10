@@ -12,11 +12,13 @@ import 'package:gymvision/static_data/helpers.dart';
 
 class Exercises extends StatefulWidget {
   final List<Category>? filterCategories;
+  final List<String>? excludedExerciseIdentifiers;
   final Function(String identifier)? onAddTap;
 
   const Exercises({
     super.key,
     this.filterCategories,
+    this.excludedExerciseIdentifiers,
     this.onAddTap,
   });
 
@@ -34,27 +36,31 @@ class _ExercisesState extends State<Exercises> {
     super.initState();
     searchTextController = TextEditingController();
     filterCategories = widget.filterCategories ?? [];
-    filteredExercises = DefaultExercisesModel.getExercises(categories: widget.filterCategories);
+    filteredExercises = getFilteredExercises();
   }
+
+  List<Exercise> getFilteredExercises() => DefaultExercisesModel.getExercises(
+        categories: filterCategories,
+        excludedExerciseIds: widget.excludedExerciseIdentifiers,
+      );
 
   setSearchValue(String? string) => setState(() {
         if (string == null) {
-          filteredExercises = DefaultExercisesModel.getExercises();
+          filteredExercises = getFilteredExercises();
           return;
         }
 
-        filteredExercises = DefaultExercisesModel.getExercises()
-            .where((e) => e.name.contains(RegExp(string, caseSensitive: false)))
-            .toList();
+        filteredExercises =
+            getFilteredExercises().where((e) => e.name.contains(RegExp(string, caseSensitive: false))).toList();
 
         if (filteredExercises.isEmpty) {
-          filteredExercises = DefaultExercisesModel.getExercises()
+          filteredExercises = getFilteredExercises()
               .where((e) => e.primaryMuscleGroup.displayName.contains(RegExp(string, caseSensitive: false)))
               .toList();
         }
 
         if (filteredExercises.isEmpty) {
-          filteredExercises = DefaultExercisesModel.getExercises()
+          filteredExercises = getFilteredExercises()
               .where((e) => e.equipment.displayName.contains(RegExp(string, caseSensitive: false)))
               .toList();
         }
@@ -102,10 +108,7 @@ class _ExercisesState extends State<Exercises> {
           CommonUI.getPrimaryButton(
             ButtonDetails(
               icon: Icons.add_rounded,
-              onTap: () {
-                Navigator.pop(context);
-                widget.onAddTap!(exercise.identifier);
-              },
+              onTap: () => widget.onAddTap!(exercise.identifier),
             ),
           ),
       ]);
@@ -113,7 +116,7 @@ class _ExercisesState extends State<Exercises> {
   void onCategoriesChange(List<Category> newCategories) {
     setState(() {
       filterCategories = newCategories;
-      filteredExercises = DefaultExercisesModel.getExercises(categories: filterCategories);
+      filteredExercises = getFilteredExercises();
     });
   }
 

@@ -14,7 +14,7 @@ class Workout extends DatabaseObject {
   bool done;
   List<WorkoutCategory>? workoutCategories;
   WorkoutExerciseOrdering? exerciseOrdering;
-  List<WorkoutExercise>? workoutExercses;
+  List<WorkoutExercise>? workoutExercises;
   bool? isEmpty;
 
   Workout({
@@ -25,7 +25,7 @@ class Workout extends DatabaseObject {
     this.done = false,
     this.workoutCategories,
     this.exerciseOrdering,
-    this.workoutExercses,
+    this.workoutExercises,
     this.isEmpty,
   });
 
@@ -36,13 +36,6 @@ class Workout extends DatabaseObject {
         'createdAt': createdAt.toString(),
         'date': date.toString(),
       };
-
-  Workout fromMap(Map<String, dynamic> map) => Workout(
-        id: map['id'],
-        updatedAt: DateTime.parse(map['updatedAt']),
-        createdAt: DateTime.parse(map['createdAt']),
-        date: DateTime.parse(map['date']),
-      );
 
   String getTimeStr() => DateFormat('Hm').format(date);
   bool isInFuture() => dateIsInFuture(date);
@@ -58,9 +51,9 @@ class Workout extends DatabaseObject {
   }
 
   List<Category> getCategories() => workoutCategories?.map((wc) => wc.category).toList() ?? [];
-  List<WorkoutExercise> getWorkoutExercises() => workoutExercses ?? [];
+  List<WorkoutExercise> getWorkoutExercises() => workoutExercises ?? [];
   List<WorkoutSet> getSets() =>
-      workoutExercses?.where((we) => we.workoutSets != null).expand((we) => we.workoutSets!).toList() ?? [];
+      workoutExercises?.where((we) => we.workoutSets != null).expand((we) => we.workoutSets!).toList() ?? [];
 
   String getWorkoutTitle() {
     if (isInFuture()) return 'Planned Workout 📍';
@@ -71,5 +64,5 @@ class Workout extends DatabaseObject {
     return 'Workout';
   }
 
-  bool getIsEmpty() => workoutExercses?.isEmpty ?? isEmpty ?? true;
+  bool getIsEmpty() => workoutExercises?.isEmpty ?? isEmpty ?? true;
 }

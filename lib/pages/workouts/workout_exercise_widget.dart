@@ -142,14 +142,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                   ),
                 ),
               ),
-              Expanded(
-                flex: 4,
-                child: CommonUI.getWeightWithIcon(ws),
-              ),
-              Expanded(
-                flex: 4,
-                child: CommonUI.getRepsWithIcon(ws),
-              ),
+              Expanded(flex: 4, child: CommonUI.getWeightWithIcon(ws)),
+              Expanded(flex: 4, child: CommonUI.getRepsWithIcon(ws)),
               Expanded(
                 flex: 1,
                 child: GestureDetector(

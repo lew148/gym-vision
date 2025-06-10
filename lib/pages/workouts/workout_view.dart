@@ -32,18 +32,34 @@ class WorkoutView extends StatefulWidget {
 }
 
 class _WorkoutViewState extends State<WorkoutView> {
+  late Future<Workout?> workoutFuture;
   List<int> droppedWes = [];
 
+  @override
+  void initState() {
+    super.initState();
+    workoutFuture = WorkoutModel.getWorkout(
+      workoutId: widget.workoutId,
+      includeCategories: true,
+      includeWorkoutExercises: true,
+    );
+  }
+
   void reloadState() => setState(() {
-        droppedWes = droppedWes;
+        workoutFuture = WorkoutModel.getWorkout(
+          workoutId: widget.workoutId,
+          includeCategories: true,
+          includeWorkoutExercises: true,
+        );
       });
 
-  onCategoriesChange(List<Category> newCategories) async {
+  void onCategoriesChange(List<Category> newCategories) async {
     try {
       await WorkoutCategoryModel.setWorkoutCategories(widget.workoutId, newCategories);
+      reloadState();
     } catch (ex) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add Categories to workout')));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add Categories to workout.')));
     }
   }
 
@@ -53,7 +69,7 @@ class _WorkoutViewState extends State<WorkoutView> {
           selectedCategories: existingWorkoutCategoryIds,
           onChange: onCategoriesChange,
         ),
-      ).then((x) => reloadState());
+      );
 
   goToMostRecentWorkout(WorkoutCategory wc) async {
     var id = await WorkoutModel.getMostRecentWorkoutIdForCategory(wc);
@@ -214,14 +230,11 @@ class _WorkoutViewState extends State<WorkoutView> {
             )
           : getWorkoutCategoriesWidget(workout.workoutCategories!, existingCategoryIds);
 
-  void onAddExerciseClick(Workout workout, List<Category> setCategories, List<WorkoutExercise> workoutExercises) =>
-      Navigator.of(context)
-          .push(MaterialPageRoute(
-              builder: (context) => AddExercisesToWorkout(
-                    workoutId: workout.id!,
-                    setCategories: setCategories,
-                  )))
-          .then((x) => reloadState());
+  void onAddExerciseClick(int workoutId) => Navigator.of(context)
+      .push(MaterialPageRoute(
+        builder: (context) => AddExercisesToWorkout(workoutId: workoutId),
+      ))
+      .then((x) => reloadState());
 
   void onWorkoutExerciseReorder(int oldIndex, int newIndex) async {
     try {
@@ -236,29 +249,20 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   @override
   Widget build(BuildContext context) {
-    Future<Workout?> workout = WorkoutModel.getWorkout(
-      workoutId: widget.workoutId,
-      includeCategories: true,
-      includeWorkoutExercises: true,
-    );
-
-    List<Category> setCategories = [];
-
     return FutureBuilder<Workout?>(
-      future: workout,
+      future: workoutFuture,
       builder: (context, snapshot) {
-        if (!snapshot.hasData) {
-          return const SizedBox.shrink(); // loading
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (!snapshot.hasData || snapshot.data == null) {
+          return const Center(child: Text("Failed to load workout."));
         }
 
         final workout = snapshot.data!;
+        final categories = workout.getCategories();
         final workoutExercises = workout.getWorkoutExercises();
-
-        if (workout.workoutCategories != null && workout.workoutCategories!.isNotEmpty) {
-          setCategories = workout.workoutCategories!.map((wc) => wc.category).toList();
-        } else {
-          setCategories = [];
-        }
 
         return DebugScaffold(
           customAppBarTitle: Column(
@@ -284,13 +288,13 @@ class _WorkoutViewState extends State<WorkoutView> {
           ],
           body: Column(
             children: [
-              getCategoriesWidget(workout, setCategories),
+              getCategoriesWidget(workout, categories),
               CommonUI.getSectionTitleWithAction(
                 context,
                 'Exercises',
                 ButtonDetails(
                   icon: Icons.add,
-                  onTap: () => onAddExerciseClick(workout, setCategories, workoutExercises),
+                  onTap: () => onAddExerciseClick(workout.id!),
                 ),
               ),
               CommonUI.getDefaultDivider(),

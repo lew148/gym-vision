@@ -46,7 +46,7 @@ class WorkoutModel {
             positions: gm.value.first['positions'],
           ),
           done: await workoutIsDone(workoutId: gm.key, db: db),
-          workoutExercses: await WorkoutExerciseModel.getWorkoutExercisesForWorkout(gm.key, db: db),
+          workoutExercises: await WorkoutExerciseModel.getWorkoutExercisesForWorkout(gm.key, db: db),
         ),
       );
     }
@@ -146,7 +146,7 @@ class WorkoutModel {
         date: DateTime.parse(maps.first['date']),
         workoutCategories:
             includeCategories ? await WorkoutCategoryModel.getWorkoutCategoriesForWorkout(workoutId) : null,
-        workoutExercses:
+        workoutExercises:
             includeWorkoutExercises ? await WorkoutExerciseModel.getWorkoutExercisesForWorkout(workoutId) : null,
         exerciseOrdering: includeWorkoutExercises
             ? await WorkoutExerciseOrderingsModel.getWorkoutExerciseOrderingForWorkout(workoutId)
