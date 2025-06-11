@@ -132,22 +132,7 @@ class WorkoutSetModel {
     final db = await DatabaseHelper.getDb(existingDb: existingDb);
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
       WITH max_table AS (
-        SELECT
-          workout_sets.id,
-          workout_sets.updatedAt,
-          workout_sets.createdAt,
-          workout_sets.workoutExerciseId,
-          workout_sets.done,
-          workout_sets.weight,
-          workout_sets.reps,
-          workout_sets.time,
-          workout_sets.distance,
-          workout_sets.calsBurned,
-          workout_exercises.id AS workoutExerciseId,
-          workout_exercises.exerciseIdentifier,
-          workout_exercises.workoutId,
-          workouts.id AS workoutId,
-          workouts.date
+        SELECT *
         FROM workout_sets
         LEFT JOIN workout_exercises ON workout_sets.workoutExerciseId = workout_exercises.id
         LEFT JOIN workouts ON workout_exercises.workoutId = workouts.id
@@ -155,9 +140,9 @@ class WorkoutSetModel {
           SELECT MAX(workout_sets.weight) AS max_weight
           FROM workout_sets
           LEFT JOIN workout_exercises ON workout_sets.workoutExerciseId = workout_exercises.id
-          WHERE workout_exercises.exerciseIdentifier = "$exerciseIdentifier" AND workout_exercises.done = 1
+          WHERE workout_exercises.exerciseIdentifier = "$exerciseIdentifier" AND workout_exercises.done = 1 AND NOT (workout_sets.weight = 0.0 AND workout_sets.reps = 0)
         ) AS b ON workout_sets.weight = b.max_weight
-        WHERE NOT (workout_sets.weight = 0.0 AND workout_sets.reps = 0)
+        WHERE workout_exercises.exerciseIdentifier = "$exerciseIdentifier" AND workout_exercises.done = 1 AND NOT (workout_sets.weight = 0.0 AND workout_sets.reps = 0)
       )
 
       SELECT *

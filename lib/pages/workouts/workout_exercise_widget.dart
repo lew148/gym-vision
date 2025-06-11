@@ -10,6 +10,7 @@ import 'package:gymvision/pages/exercises/exercise_view.dart';
 import 'package:gymvision/pages/forms/add_set_to_workout_form.dart';
 import 'package:gymvision/pages/forms/edit_workout_set_form.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
+import 'package:gymvision/pages/forms/fields/custom_form_fields.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 
@@ -405,13 +406,10 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Checkbox(
-                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    checkColor: Colors.white,
-                    activeColor: Theme.of(context).colorScheme.primary,
-                    value: isDone,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                    onChanged: (bool? value) => onWorkoutExerciseDoneTap(value!),
+                  CustomFormFields.checkbox(
+                    context,
+                    isDone,
+                    (bool? value) => onWorkoutExerciseDoneTap(value!),
                   ),
                   Expanded(
                     child: Row(children: [

@@ -47,7 +47,7 @@ class _ReportBugFormState extends State<ReportBugForm> {
           label: 'Description',
           canBeBlank: true,
         ),
-        CustomFormFields.checkbox(
+        CustomFormFields.checkboxWithLabel(
           context,
           'Is a bug?',
           isBug,

@@ -170,6 +170,21 @@ class CustomFormFields {
 
   static checkbox(
     BuildContext context,
+    bool value,
+    Function(bool?) onChange,
+  ) =>
+      Checkbox(
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        checkColor: Theme.of(context).colorScheme.surface,
+        activeColor: Theme.of(context).colorScheme.primary,
+        side: BorderSide(color: Theme.of(context).colorScheme.shadow, width: 1.5),
+        value: value,
+        shape: const CircleBorder(),
+        onChanged: onChange,
+      );
+
+  static checkboxWithLabel(
+    BuildContext context,
     String label,
     bool value,
     Function(bool?) onChange,
@@ -180,8 +195,10 @@ class CustomFormFields {
           title: Text(label),
           value: value,
           onChanged: onChange,
+          side: BorderSide(color: Theme.of(context).colorScheme.shadow, width: 1.5),
           activeColor: Theme.of(context).colorScheme.primary,
-          checkboxShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          checkColor: Theme.of(context).colorScheme.surface,
+          checkboxShape: const CircleBorder(),
         ),
       );
 

@@ -178,35 +178,26 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
         return GlobalKey();
       }
 
-      String getDateDisplay(DateTime dt) {
-        if (isToday) return "Today";
-        // if (currentIsRealMonth && day == realDate.day + 1) return "Tomorrow";
-        // if (currentIsRealMonth && day == realDate.day - 1) return "Yesterday";
-        // if (selectedMonth.year != trueDate.year) return DateFormat('EEE d MMM yyyy').format(dt);
-        // if (!selectedMonthIsTrueMonth) return DateFormat('EEE d MMM').format(dt);
-        return DateFormat('EEE d').format(dt);
-      }
+      String getDateDisplay(DateTime dt) => isToday ? "Today" : DateFormat('EEE d').format(dt);
 
       widgets.add(
         Column(children: [
-          if (isToday || selectedMonthIsTrueMonth && trueDate.day == day + 1)
-            const Padding(padding: EdgeInsets.all(2.5)),
           IntrinsicHeight(
             child: Row(
               children: [
                 Expanded(
+                  flex: 1,
                   child: Text(
                     getDateDisplay(currentDate),
                     textAlign: TextAlign.end,
-                    style: isToday
-                        ? TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                          )
-                        : null,
+                    style: TextStyle(
+                      color: isToday ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.shadow,
+                      fontWeight: isToday ? FontWeight.bold : FontWeight.w400,
+                    ),
                   ),
                 ),
                 VerticalDivider(
-                  thickness: isToday ? 3 : 0.5,
+                  thickness: isToday ? 5 : 0.5,
                   color: isToday ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.shadow,
                 ),
                 Expanded(
@@ -215,37 +206,28 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                     children: workoutsForDay.isNotEmpty || bwsForDay.isNotEmpty
                         ? [
                             ...workoutsForDay.map<Widget>((workout) => getWorkoutDisplay(workout)),
-                            ...bwsForDay.map<Widget>((bw) => getBodyweightDisplay(bw))
                           ]
                         : [
-                            GestureDetector(
-                              behavior: HitTestBehavior.translucent,
-                              onTap: () =>
-                                  CommonFunctions.onAddWorkoutTap(context, widget.reloadParent, date: currentDate),
-                              child: Padding(
-                                padding: const EdgeInsets.all(15),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: dateXIsAfterDateY(widget.userSettings.createdAt!, currentDate) ||
-                                          dateIsInFuture(currentDate) ||
-                                          isToday
-                                      ? [CommonUI.getDash()]
-                                      : [
-                                          Icon(
-                                            Icons.hotel_rounded,
-                                            color: Theme.of(context).colorScheme.shadow,
-                                            size: 20,
-                                          ),
-                                          const Padding(padding: EdgeInsets.all(5)),
-                                          Text(
-                                            'Rest',
-                                            style: TextStyle(
-                                              color: Theme.of(context).colorScheme.shadow,
-                                            ),
-                                          ),
-                                        ],
-                                ),
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: dateXIsAfterDateY(widget.userSettings.createdAt!, currentDate) ||
+                                      dateIsInFuture(currentDate) ||
+                                      isToday
+                                  ? []
+                                  : [
+                                      Icon(
+                                        Icons.hotel_rounded,
+                                        color: Theme.of(context).colorScheme.shadow,
+                                        size: 20,
+                                      ),
+                                      const Padding(padding: EdgeInsets.all(5)),
+                                      Text(
+                                        'Rest Day',
+                                        style: TextStyle(
+                                          color: Theme.of(context).colorScheme.shadow,
+                                        ),
+                                      ),
+                                    ],
                             ),
                           ],
                   ),
@@ -253,13 +235,9 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
               ],
             ),
           ),
-          if (isToday || selectedMonthIsTrueMonth && trueDate.day == day - 1)
-            const Padding(padding: EdgeInsets.all(2.5)),
-          Divider(
+          Padding(
             key: getKey(),
-            thickness: 0.1,
-            height: 0,
-            color: Theme.of(context).colorScheme.shadow,
+            padding: const EdgeInsetsGeometry.all(5),
           ),
         ]),
       );
