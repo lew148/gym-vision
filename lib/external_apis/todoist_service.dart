@@ -20,8 +20,9 @@ class TodoistService {
         'Authorization': 'Bearer $apiToken',
         'Content-Type': 'application/x-www-form-urlencoded',
       });
+
       request.body =
-          'commands=[{"type": "item_add","uuid": "${requestUuid.toString()}","temp_id": "${tempId.toString()}","args": {"project_id": "6M54c44jm5c5P8p9","section_id": "6Xv7m8gpVG6CW24h","content": "$title","description": ${jsonEncode(description) == '' ? '""' : '"$name: $description"'},"labels": ${isBug ? '["bug"]' : '[]'}}}]';
+          'commands=[{"type": "item_add","uuid": "${requestUuid.toString()}","temp_id": "${tempId.toString()}","args": {"project_id": "6M54c44jm5c5P8p9","section_id": "6Xv7m8gpVG6CW24h","content": "$title","description": ${jsonEncode(description)},"labels": ${isBug ? '["bug"]' : '[]'}}}]';
 
       final response = await request.send();
       return response.statusCode == 200;

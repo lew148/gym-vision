@@ -40,10 +40,13 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
   var left = 0.0;
   var animationInMotion = false;
 
+  void ensureTodayVisible() => Scrollable.ensureVisible(todayKey.currentContext!,
+      alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd);
+
   void reloadState() => setState(() {
         selectedMonth = trueDate;
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          Scrollable.ensureVisible(todayKey.currentContext!);
+          ensureTodayVisible();
         });
       });
 
@@ -64,7 +67,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
     timer = Timer.periodic(timeToNextMin, (Timer t) => timerReload());
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Scrollable.ensureVisible(todayKey.currentContext!);
+      ensureTodayVisible();
     });
   }
 
@@ -186,12 +189,6 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
 
       widgets.add(
         Column(children: [
-          Divider(
-            key: getKey(),
-            thickness: 0.1,
-            height: 0,
-            color: Theme.of(context).colorScheme.shadow,
-          ),
           if (isToday || selectedMonthIsTrueMonth && trueDate.day == day + 1)
             const Padding(padding: EdgeInsets.all(2.5)),
           IntrinsicHeight(
@@ -258,6 +255,12 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
           ),
           if (isToday || selectedMonthIsTrueMonth && trueDate.day == day - 1)
             const Padding(padding: EdgeInsets.all(2.5)),
+          Divider(
+            key: getKey(),
+            thickness: 0.1,
+            height: 0,
+            color: Theme.of(context).colorScheme.shadow,
+          ),
         ]),
       );
     }
@@ -273,7 +276,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
       selectedMonth = DateTime(selectedMonth.year, selectedMonth.month + i);
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (todayKey.currentContext != null) {
-          Scrollable.ensureVisible(todayKey.currentContext!);
+          ensureTodayVisible();
         } else if (lastDayInMonthKey.currentContext != null) {
           Scrollable.ensureVisible(lastDayInMonthKey.currentContext!);
         }

@@ -33,7 +33,7 @@ class CustomFormFields {
         // textInputAction: TextInputAction.go,
         autofocus: autofocus,
         keyboardType: TextInputType.multiline,
-        maxLines: 4,
+        maxLines: 2,
         decoration: InputDecoration(labelText: label),
         validator: (v) => stringValidator(v, canBeBlank, label),
       );

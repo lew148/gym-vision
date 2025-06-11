@@ -47,14 +47,9 @@ class _ReportBugFormState extends State<ReportBugForm> {
           label: 'Description',
           canBeBlank: true,
         ),
-        CustomFormFields.stringField(
-          controller: nameController,
-          label: 'Your Name',
-          canBeBlank: true,
-        ),
         CustomFormFields.checkbox(
           context,
-          'Is Bug',
+          'Is a bug?',
           isBug,
           (v) => setState(() {
             isBug = !isBug;

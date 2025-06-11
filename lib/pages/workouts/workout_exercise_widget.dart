@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gymvision/classes/db/workout.dart';
 import 'package:gymvision/classes/db/workout_exercise.dart';
 import 'package:gymvision/classes/db/workout_set.dart';
 import 'package:gymvision/classes/exercise.dart';
@@ -19,6 +18,7 @@ class WorkoutExerciseWidget extends StatefulWidget {
   final Function() reloadParent;
   final Function(int wexId) toggleDroppedParent;
   final bool dropped;
+  final bool isInFuture;
 
   const WorkoutExerciseWidget({
     super.key,
@@ -26,6 +26,7 @@ class WorkoutExerciseWidget extends StatefulWidget {
     required this.reloadParent,
     required this.toggleDroppedParent,
     this.dropped = false,
+    this.isInFuture = false,
   });
 
   @override
@@ -34,23 +35,23 @@ class WorkoutExerciseWidget extends StatefulWidget {
 
 class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   late int workoutId;
-  late Workout? workout;
   late String exerciseIdentifier;
   late Exercise exercise;
   late List<WorkoutSet> workoutSets;
   late bool dropped;
   late bool isDroppable;
+  late bool isDone;
 
   @override
   void initState() {
     super.initState();
     workoutId = widget.workoutExercise.workoutId;
-    workout = widget.workoutExercise.workout;
     exerciseIdentifier = widget.workoutExercise.exerciseIdentifier;
     exercise = widget.workoutExercise.exercise!;
     workoutSets = widget.workoutExercise.workoutSets ?? [];
     dropped = widget.dropped;
     isDroppable = workoutSets.isNotEmpty;
+    isDone = widget.workoutExercise.done;
   }
 
   void toggleDropped() {
@@ -102,7 +103,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         reloadState: widget.reloadParent,
       ),
     ).then((value) {
-      toggleDropped();
+      if (!dropped) toggleDropped();
       widget.reloadParent();
     });
   }
@@ -231,18 +232,22 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     try {
       HapticFeedback.heavyImpact();
 
-      if (workout?.isInFuture() ?? false) {
+      if (widget.isInFuture && done) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Cannot mark future sets done!')));
         return;
       }
 
       widget.workoutExercise.done = done;
       await WorkoutExerciseModel.updateWorkoutExercise(widget.workoutExercise);
+
+      setState(() {
+        isDone = done;
+      });
     } catch (ex) {
       // ignore
     }
 
-    widget.reloadParent();
+    // widget.reloadParent();
   }
 
   void showExerciseMenu() {
@@ -392,8 +397,9 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     return CommonUI.getCard(
       Column(
         children: [
-          InkWell(
+          GestureDetector(
             onTap: toggleDropped,
+            behavior: HitTestBehavior.translucent,
             child: Padding(
               padding: const EdgeInsets.all(8),
               child: Row(
@@ -403,7 +409,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     checkColor: Colors.white,
                     activeColor: Theme.of(context).colorScheme.primary,
-                    value: widget.workoutExercise.done,
+                    value: isDone,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
                     onChanged: (bool? value) => onWorkoutExerciseDoneTap(value!),
                   ),
@@ -438,7 +444,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                           onTap: onAddSetsButtonTap,
                         ),
                       ),
-                      InkWell(
+                      GestureDetector(
                         onTap: showExerciseMenu,
                         child: const Icon(
                           Icons.more_vert_rounded,

@@ -20,82 +20,77 @@ class ExerciseRecentUsesView extends StatefulWidget {
 
 class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
   List<Widget> getWorkoutExerciseWidget(List<WorkoutSet> sets) => sets
-      .map((set) => Column(children: [
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Row(
-                children: widget.exercise.type == ExerciseType.strength
-                    ? [
-                        Expanded(
-                          flex: 2,
-                          child: Container(
-                            padding: const EdgeInsets.all(3),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.shadow,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(
-                              (sets.indexOf(set) + 1).toString(),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Theme.of(context).colorScheme.onPrimary,
-                              ),
-                            ),
+      .map(
+        (set) => Padding(
+          padding: const EdgeInsets.all(10),
+          child: Row(
+            children: widget.exercise.type == ExerciseType.strength
+                ? [
+                    Expanded(
+                      flex: 2,
+                      child: Container(
+                        padding: const EdgeInsets.all(3),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.shadow,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          (sets.indexOf(set) + 1).toString(),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onPrimary,
                           ),
                         ),
-                        Expanded(
-                          flex: 4,
-                          child: CommonUI.getWeightWithIcon(set),
-                        ),
-                        Expanded(
-                          flex: 4,
-                          child: CommonUI.getRepsWithIcon(set),
-                        ),
-                      ]
-                    : [
-                        Expanded(
-                          flex: 3,
-                          child: CommonUI.getTimeWithIcon(set),
-                        ),
-                        Expanded(
-                          flex: 3,
-                          child: CommonUI.getDistanceWithIcon(set),
-                        ),
-                        Expanded(
-                          flex: 3,
-                          child: CommonUI.getCaloriesWithIcon(set),
-                        ),
-                      ],
-              ),
-            ),
-          ]))
+                      ),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: CommonUI.getWeightWithIcon(set),
+                    ),
+                    Expanded(
+                      flex: 4,
+                      child: CommonUI.getRepsWithIcon(set),
+                    ),
+                  ]
+                : [
+                    Expanded(
+                      flex: 3,
+                      child: CommonUI.getTimeWithIcon(set),
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: CommonUI.getDistanceWithIcon(set),
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: CommonUI.getCaloriesWithIcon(set),
+                    ),
+                  ],
+          ),
+        ),
+      )
       .toList();
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        CommonUI.getCard(
-          Column(children: [
-            Padding(
-              padding: const EdgeInsets.all(10),
-              child: Row(
-                children: [
-                  CommonUI.getCompleteMark(context, widget.workoutSets.first.workoutExercise?.done ?? false),
-                  const Padding(padding: EdgeInsets.all(5)),
-                  Text(
-                    widget.workoutSets.first.getWorkout()?.getDateStr() ?? '-',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ],
+    return CommonUI.getCard(
+      Column(children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
+          child: Row(
+            children: [
+              CommonUI.getCompleteMark(context, widget.workoutSets.first.workoutExercise?.done ?? false),
+              const Padding(padding: EdgeInsets.all(5)),
+              Text(
+                widget.workoutSets.first.getWorkout()?.getDateStr() ?? '-',
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
-            ),
-            const Divider(thickness: 0.25, height: 0),
-            ...getWorkoutExerciseWidget(widget.workoutSets),
-          ]),
+            ],
+          ),
         ),
-      ],
+        ...getWorkoutExerciseWidget(widget.workoutSets),
+      ]),
     );
   }
 }

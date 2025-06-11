@@ -227,58 +227,56 @@ class _TodayState extends State<Today> {
         Expanded(
           child: FutureBuilder<List<Workout>>(
             future: todaysWorkouts,
-            builder: (context, snapshot) => FutureBuilder<Bodyweight?>(
-                future: todaysBodyweight,
-                builder: (context, bwsnapshot) {
-                  return Column(
-                    children: [
-                      CommonUI.getCard(
-                        bwsnapshot.hasData
-                            ? Padding(
-                                padding: const EdgeInsetsGeometry.only(left: 10),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(children: [
-                                      const Icon(Icons.monitor_weight_rounded),
-                                      const Padding(padding: EdgeInsetsGeometry.all(2.5)),
-                                      Text(
-                                        bwsnapshot.data!.getWeightDisplay(),
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                      const Padding(padding: EdgeInsetsGeometry.all(2.5)),
-                                      Text(
-                                        '@ ${bwsnapshot.data!.getTimeString()}',
-                                        style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-                                      ),
-                                    ]),
-                                    Row(children: [
-                                      // todo: add edit and view all
-                                      CommonUI.getDeleteButton(
-                                        () => CommonFunctions.showDeleteConfirm(
-                                          context,
-                                          "bodyweight",
-                                          () => BodyweightModel.deleteBodyweight(bwsnapshot.data!.id!),
-                                          reloadState,
-                                        ),
-                                      ),
-                                    ]),
-                                  ],
-                                ))
-                            : CommonUI.getPrimaryButton(ButtonDetails(
-                                onTap: onAddWeightTap,
-                                text: 'Record Bodyweight',
-                                icon: Icons.monitor_weight_rounded,
-                              )),
-                      ),
-                      const Padding(padding: EdgeInsetsGeometry.all(2.5)),
-                      Expanded(child: getWorkoutsOrPlaceholder(snapshot.data)),
-                    ],
-                  );
-                }),
+            builder: (context, snapshot) => Column(
+              children: [
+                CommonUI.getCard(
+                  FutureBuilder<Bodyweight?>(
+                      future: todaysBodyweight,
+                      builder: (context, bwsnapshot) {
+                        if (!bwsnapshot.hasData) {
+                          return CommonUI.getPrimaryButton(ButtonDetails(
+                            onTap: onAddWeightTap,
+                            text: 'Record Bodyweight',
+                            icon: Icons.monitor_weight_rounded,
+                          ));
+                        }
+
+                        return InkWell(
+                          onTap: () => CommonFunctions.showDeleteConfirm(
+                            context,
+                            "bodyweight",
+                            () => BodyweightModel.deleteBodyweight(bwsnapshot.data!.id!),
+                            reloadState,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsetsGeometry.all(10),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(children: [
+                                  const Icon(Icons.monitor_weight_rounded),
+                                  Text(
+                                    ' @ ${bwsnapshot.data!.getTimeString()}',
+                                    style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                                  ),
+                                ]),
+                                Text(
+                                  bwsnapshot.data!.getWeightDisplay(),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+                ),
+                const Padding(padding: EdgeInsetsGeometry.all(2.5)),
+                Expanded(child: getWorkoutsOrPlaceholder(snapshot.data)),
+              ],
+            ),
           ),
         )
       ],

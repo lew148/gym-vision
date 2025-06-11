@@ -166,6 +166,7 @@ class CommonUI {
       ));
 
   static Widget getCard(Widget child, {Color? color}) => Card(
+        margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
         color: color,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         child: child,

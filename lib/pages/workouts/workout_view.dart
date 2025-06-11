@@ -110,7 +110,8 @@ class _WorkoutViewState extends State<WorkoutView> {
         ],
       );
 
-  List<Widget> getWorkoutExercisesWidget(List<WorkoutExercise> workoutExercises, WorkoutExerciseOrdering? ordering) {
+  List<Widget> getWorkoutExercisesWidget(
+      Workout workout, List<WorkoutExercise> workoutExercises, WorkoutExerciseOrdering? ordering) {
     if (ordering != null) {
       final List<WorkoutExercise> remainder = workoutExercises;
       final List<WorkoutExercise> newOrder = [];
@@ -126,21 +127,20 @@ class _WorkoutViewState extends State<WorkoutView> {
     }
 
     return workoutExercises
-        .map(
-          (we) => Container(
-            key: Key(we.id.toString()),
-            child: WorkoutExerciseWidget(
-              workoutExercise: we,
-              reloadParent: reloadState,
-              toggleDroppedParent: (int? wexId) {
-                if (wexId != null) {
-                  droppedWes.contains(wexId) ? droppedWes.remove(wexId) : droppedWes.add(wexId);
-                }
-              },
-              dropped: droppedWes.contains(we.id),
-            ),
-          ),
-        )
+        .map((we) => Container(
+              key: Key(we.id.toString()),
+              child: WorkoutExerciseWidget(
+                workoutExercise: we,
+                reloadParent: reloadState,
+                toggleDroppedParent: (int? wexId) {
+                  if (wexId != null) {
+                    droppedWes.contains(wexId) ? droppedWes.remove(wexId) : droppedWes.add(wexId);
+                  }
+                },
+                dropped: droppedWes.contains(we.id),
+                isInFuture: workout.isInFuture(),
+              ),
+            ))
         .toList();
   }
 
@@ -310,9 +310,10 @@ class _WorkoutViewState extends State<WorkoutView> {
                   : Expanded(
                       child: ReorderableColumn(
                         onReorder: onWorkoutExerciseReorder,
-                        children: getWorkoutExercisesWidget(workoutExercises, workout.exerciseOrdering),
+                        children: getWorkoutExercisesWidget(workout, workoutExercises, workout.exerciseOrdering),
                       ),
                     ),
+              const Padding(padding: EdgeInsetsGeometry.only(bottom: 10)),
             ],
           ),
         );
