@@ -206,6 +206,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                     children: workoutsForDay.isNotEmpty || bwsForDay.isNotEmpty
                         ? [
                             ...workoutsForDay.map<Widget>((workout) => getWorkoutDisplay(workout)),
+                            if (bwsForDay.isNotEmpty) getBodyweightDisplay(bwsForDay.first),
                           ]
                         : [
                             Row(

@@ -199,6 +199,30 @@ class _TodayState extends State<Today> {
     return SingleChildScrollView(child: Column(children: workouts.map((w) => getWorkoutDisplay(w)).toList()));
   }
 
+  String getTodayTotalCalsString(List<Workout> workouts) {
+    var totalCals = 0;
+
+    // todo: make this more performant
+
+    for (int i = 0; i < workouts.length; i++) {
+      final workout = workouts[i];
+      if (workout.workoutExercises == null) continue;
+
+      for (int j = 0; j < workout.workoutExercises!.length; j++) {
+        final we = workout.workoutExercises![j];
+        if (we.workoutSets == null) continue;
+
+        for (int k = 0; k < we.workoutSets!.length; k++) {
+          final set = we.workoutSets![k];
+          if (!set.hasCalsBurned()) continue;
+          totalCals += set.calsBurned!;
+        }
+      }
+    }
+
+    return totalCals.toString();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -226,58 +250,102 @@ class _TodayState extends State<Today> {
         const FlavourTextCard(),
         Expanded(
           child: FutureBuilder<List<Workout>>(
-            future: todaysWorkouts,
-            builder: (context, snapshot) => Column(
-              children: [
-                CommonUI.getCard(
-                  FutureBuilder<Bodyweight?>(
-                      future: todaysBodyweight,
-                      builder: (context, bwsnapshot) {
-                        if (!bwsnapshot.hasData) {
-                          return CommonUI.getPrimaryButton(ButtonDetails(
-                            onTap: onAddWeightTap,
-                            text: 'Record Bodyweight',
-                            icon: Icons.monitor_weight_rounded,
-                          ));
-                        }
+              future: todaysWorkouts,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) return const SizedBox.shrink();
 
-                        return InkWell(
-                          onTap: () => CommonFunctions.showDeleteConfirm(
-                            context,
-                            "bodyweight",
-                            () => BodyweightModel.deleteBodyweight(bwsnapshot.data!.id!),
-                            reloadState,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsetsGeometry.all(10),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(children: [
-                                  const Icon(Icons.monitor_weight_rounded),
+                return Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          flex: 6,
+                          child: CommonUI.getCard(
+                            Padding(
+                              padding: const EdgeInsetsGeometry.all(15),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Icon(Icons.local_fire_department_rounded),
+                                      Text(
+                                        getTodayTotalCalsString(snapshot.data!),
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                   Text(
-                                    ' @ ${bwsnapshot.data!.getTimeString()}',
+                                    'Total Burned',
                                     style: TextStyle(color: Theme.of(context).colorScheme.shadow),
                                   ),
-                                ]),
-                                Text(
-                                  bwsnapshot.data!.getWeightDisplay(),
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 20,
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
-                        );
-                      }),
-                ),
-                const Padding(padding: EdgeInsetsGeometry.all(2.5)),
-                Expanded(child: getWorkoutsOrPlaceholder(snapshot.data)),
-              ],
-            ),
-          ),
+                        ),
+                        Expanded(
+                          flex: 6,
+                          child: CommonUI.getCard(
+                            Padding(
+                              padding: const EdgeInsetsGeometry.all(15),
+                              child: FutureBuilder<Bodyweight?>(
+                                  future: todaysBodyweight,
+                                  builder: (context, bwsnapshot) {
+                                    if (!bwsnapshot.hasData) {
+                                      return CommonUI.getPrimaryButton(ButtonDetails(
+                                        onTap: onAddWeightTap,
+                                        text: 'Bodyweight',
+                                        icon: Icons.monitor_weight_rounded,
+                                      ));
+                                    }
+
+                                    return GestureDetector(
+                                      onTap: () => CommonFunctions.showDeleteConfirm(
+                                        context,
+                                        "bodyweight",
+                                        () => BodyweightModel.deleteBodyweight(bwsnapshot.data!.id!),
+                                        reloadState,
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              const Icon(Icons.monitor_weight_rounded),
+                                              const Padding(padding: EdgeInsetsGeometry.all(2.5)),
+                                              Text(
+                                                bwsnapshot.data!.getWeightDisplay(),
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Text(
+                                            ' @ ${bwsnapshot.data!.getTimeString()}',
+                                            style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Expanded(child: getWorkoutsOrPlaceholder(snapshot.data)),
+                  ],
+                );
+              }),
         )
       ],
     );

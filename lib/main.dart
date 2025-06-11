@@ -64,12 +64,12 @@ class MyApp extends StatelessWidget {
       title: 'Gym Vision',
       theme: ThemeData(
         splashColor: Colors.transparent,
-        scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        scaffoldBackgroundColor: const Color(0xFFF8F8F8),
         colorScheme: ColorScheme.light(
           primary: Colors.lightBlue[400]!,
           secondary: const Color.fromARGB(255, 216, 160, 233),
           tertiary: const Color.fromARGB(255, 235, 156, 140),
-          shadow: Colors.grey[600],
+          shadow: Colors.grey[700],
         ),
       ),
       darkTheme: ThemeData(
@@ -85,7 +85,7 @@ class MyApp extends StatelessWidget {
           primary: Colors.lightBlue[400]!,
           secondary: const Color.fromARGB(255, 216, 160, 233),
           tertiary: const Color.fromARGB(255, 255, 101, 101),
-          shadow: Colors.grey[400],
+          shadow: Colors.grey[500],
           surface: Colors.grey[800]!,
           surfaceTint: Colors.grey[800],
         ),

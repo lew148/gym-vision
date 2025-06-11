@@ -50,7 +50,7 @@ class _FlavourTextCardState extends State<FlavourTextCard> {
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w400,
-                              color: Theme.of(context).colorScheme.onSecondary,
+                              color: Theme.of(context).colorScheme.onPrimary,
                             ),
                           ),
                         ),
@@ -59,7 +59,7 @@ class _FlavourTextCardState extends State<FlavourTextCard> {
                           child: Icon(
                             Icons.close_rounded,
                             size: 18,
-                            color: Theme.of(context).colorScheme.onSecondary,
+                            color: Theme.of(context).colorScheme.onPrimary,
                           ),
                         ),
                       ],

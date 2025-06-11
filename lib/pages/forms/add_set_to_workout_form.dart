@@ -147,7 +147,7 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
             ...getWeightFields(selectedExercise!),
           if (selectedExercise != null && selectedExercise!.type == ExerciseType.cardio)
             ...getCardioFields(selectedExercise!),
-          // if (selectedExercise != null && selectedExercise!.exerciseType == ExerciseType.stretch)
+          // if (selectedExercise != null && selectedpExercise!.exerciseType == ExerciseType.stretch)
           //   ...getWeightFields(selectedExercise!),
           if (selectedExercise != null)
             Padding(
