@@ -11,26 +11,6 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // needed for calling async methods in main()
 
-  // final userSettings = await UserSettingsHelper.getUserSettings();
-
-  // ThemeMode getThemeModeFromSetting() {
-  //   ThemeMode themeMode;
-  //   switch (userSettings.theme) {
-  //     case ThemeSetting.light:
-  //       themeMode = ThemeMode.light;
-  //       break;
-  //     case ThemeSetting.dark:
-  //       themeMode = ThemeMode.dark;
-  //       break;
-  //     case ThemeSetting.system:
-  //       themeMode = ThemeMode.system;
-  //       break;
-  //   }
-  //   return themeMode;
-  // }
-
-  // todo: need to get this from shared prefs as sqflite is not setup yet
-
   await SentryFlutter.init(
     (options) {
       options.dsn = 'https://2b42d972537c900eabae2739a88e994b@o4507913067823104.ingest.de.sentry.io/4507913074770000';
@@ -65,16 +45,18 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         splashColor: Colors.transparent,
         scaffoldBackgroundColor: const Color(0xFFF8F8F8),
+        appBarTheme: const AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.dark),
         colorScheme: ColorScheme.light(
           primary: Colors.lightBlue[400]!,
           secondary: const Color.fromARGB(255, 216, 160, 233),
           tertiary: const Color.fromARGB(255, 235, 156, 140),
-          shadow: Colors.grey[700],
+          shadow: Colors.grey[500],
         ),
       ),
       darkTheme: ThemeData(
         splashColor: Colors.transparent,
         scaffoldBackgroundColor: darkThemeBackground,
+        appBarTheme: const AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.light),
         cardTheme: CardThemeData(
           surfaceTintColor: Colors.grey[800],
           shadowColor: Colors.grey[400],
@@ -86,8 +68,8 @@ class MyApp extends StatelessWidget {
           secondary: const Color.fromARGB(255, 216, 160, 233),
           tertiary: const Color.fromARGB(255, 255, 101, 101),
           shadow: Colors.grey[500],
-          surface: Colors.grey[800]!,
-          surfaceTint: Colors.grey[800],
+          // surface: Colors.grey[800]!,
+          // surfaceTint: Colors.grey[800],
         ),
       ),
       themeMode: EasyDynamicTheme.of(context).themeMode,

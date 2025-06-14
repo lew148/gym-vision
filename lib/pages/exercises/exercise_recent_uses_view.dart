@@ -31,16 +31,13 @@ class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
                       child: Container(
                         padding: const EdgeInsets.all(3),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.shadow,
+                          border: BoxBorder.all(color: Theme.of(context).colorScheme.shadow),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
                           (sets.indexOf(set) + 1).toString(),
                           textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.onPrimary,
-                          ),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),

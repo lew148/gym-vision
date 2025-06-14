@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/forms/report_bug_form.dart';
 import 'package:gymvision/user_settings_view.dart';
@@ -45,10 +46,12 @@ class _DebugScaffoldState extends State<DebugScaffold> {
       0,
       IconButton(
         icon: const Icon(Icons.bug_report_outlined),
-        onPressed: () => CommonFunctions.showBottomSheet(context, const ReportBugForm()).then((value) {
+        onPressed: () => CommonFunctions.showBottomSheet(context, ReportBugForm(onReportSent: (success) {
           if (!mounted) return;
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Report sent!')));
-        }),
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(success ? 'Report sent!' : 'Failed to send report!'),
+          ));
+        })),
       ),
     );
   }

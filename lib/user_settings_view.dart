@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/user_setting.dart';
 import 'package:gymvision/db/db.dart';
 import 'package:gymvision/models/db_models/flavour_text_schedule_model.dart';
-import 'package:gymvision/enums.dart';
 import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/pages/common/debug_scaffold.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'models/db_models/user_settings_model.dart';
 import 'globals.dart';
+
+const String system = 'system';
+const String dark = 'dark';
+const String light = 'light';
 
 class UserSettingsView extends StatefulWidget {
   const UserSettingsView({super.key});
@@ -19,11 +22,10 @@ class UserSettingsView extends StatefulWidget {
 }
 
 class _UserSettingsViewState extends State<UserSettingsView> {
+  Future<UserSettings> userSettings = UserSettingsModel.getUserSettings();
+
   @override
   Widget build(BuildContext context) {
-    Future<UserSettings> userSettings = UserSettingsModel.getUserSettings();
-    late ThemeSetting themeSetting;
-
     return DebugScaffold(
       body: FutureBuilder(
         future: userSettings,
@@ -31,8 +33,6 @@ class _UserSettingsViewState extends State<UserSettingsView> {
           if (!snapshot.hasData) {
             return const SizedBox.shrink(); // loading
           }
-
-          themeSetting = snapshot.data!.theme;
 
           return Column(
             children: [
@@ -74,28 +74,6 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                     ),
                   ),
                   const Divider(),
-                  // UiHelper.getElevatedPrimaryButton(
-                  //   context,
-                  //   ActionButton(
-                  //     onTap: () async {
-                  //       try {
-                  //         await DatabaseHelper.restartDbWhilePersistingData();
-                  //         if (!context.mounted) return;
-                  //         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Success')));
-                  //       } catch (ex, stack) {
-                  //         await Sentry.captureException(
-                  //           ex,
-                  //           stackTrace: stack,
-                  //         );
-
-                  //         if (!context.mounted) return;
-                  //         ScaffoldMessenger.of(context)
-                  //             .showSnackBar(SnackBar(content: Text('Failed to persist data: ${ex.toString()}')));
-                  //       }
-                  //     },
-                  //     text: 'Update DB (keep data)',
-                  //   ),
-                  // ),
                   CommonUI.getOutlinedPrimaryButton(
                     context,
                     ButtonDetails(
@@ -127,36 +105,30 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                     ),
                   ),
                   DropdownButton<String>(
-                    value: themeSetting.name,
+                    value: system,
                     onChanged: (String? value) async {
-                      final newTheme = stringToEnum(value!, ThemeSetting.values)!;
-                      await UserSettingsModel.setTheme(newTheme);
-                      setState(() {
-                        themeSetting = newTheme;
-
-                        switch (newTheme) {
-                          case ThemeSetting.light:
-                            EasyDynamicTheme.of(context).changeTheme(dark: false, dynamic: false);
-                            break;
-                          case ThemeSetting.dark:
-                            EasyDynamicTheme.of(context).changeTheme(dark: true, dynamic: false);
-                            break;
-                          case ThemeSetting.system:
-                            EasyDynamicTheme.of(context).changeTheme(dynamic: true);
-                            break;
-                        }
-                      });
+                      switch (value) {
+                        case light:
+                          EasyDynamicTheme.of(context).changeTheme(dark: false, dynamic: false);
+                          break;
+                        case dark:
+                          EasyDynamicTheme.of(context).changeTheme(dark: true, dynamic: false);
+                          break;
+                        case system:
+                          EasyDynamicTheme.of(context).changeTheme(dynamic: true);
+                          break;
+                      }
                     },
                     items: const [
-                      DropdownMenuItem<String>(value: 'light', child: Text('Light')),
-                      DropdownMenuItem<String>(value: 'dark', child: Text('Dark')),
-                      DropdownMenuItem<String>(value: 'system', child: Text('System'))
+                      DropdownMenuItem<String>(value: system, child: Text('System')),
+                      DropdownMenuItem<String>(value: light, child: Text('Light')),
+                      DropdownMenuItem<String>(value: dark, child: Text('Dark')),
                     ],
                   ),
                 ],
               ),
               const Padding(padding: EdgeInsets.all(20)),
-              const Center(child: Text('Ver: $appVersion')),
+              const Center(child: Text('Version: $appVersion')),
             ],
           );
         },

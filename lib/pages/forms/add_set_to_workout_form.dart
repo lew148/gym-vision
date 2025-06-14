@@ -16,6 +16,7 @@ class AddSetToWorkoutForm extends StatefulWidget {
   final List<Category>? setCategories;
   final List<String>? excludedExercises;
   final Function reloadState;
+  final Function? onSuccess;
 
   const AddSetToWorkoutForm({
     super.key,
@@ -24,6 +25,7 @@ class AddSetToWorkoutForm extends StatefulWidget {
     this.setCategories,
     this.excludedExercises,
     required this.reloadState,
+    this.onSuccess,
   });
 
   @override
@@ -78,7 +80,9 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
 
   void onSubmit({bool addThree = false, Exercise? quickAddExercise}) async {
     final subject = quickAddExercise ?? selectedExercise;
-    if (subject == null || !formKey.currentState!.validate() || (!subject.isCardio() && repsController.text == '' || repsController.text == '0')) return; // todo: show error
+    if (subject == null ||
+        !formKey.currentState!.validate() ||
+        (!subject.isCardio() && repsController.text == '' || repsController.text == '0')) return; // todo: show error
 
     Navigator.pop(context);
 
@@ -108,12 +112,13 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
           ),
         );
       }
+
+      if (widget.onSuccess != null) widget.onSuccess!();
+      widget.reloadState();
     } catch (ex) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add set(s) to workout')));
     }
-
-    widget.reloadState();
   }
 
   void onQuickAdd(Exercise exercise) async {

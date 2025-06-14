@@ -4,7 +4,12 @@ import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/pages/forms/fields/custom_form_fields.dart';
 
 class ReportBugForm extends StatefulWidget {
-  const ReportBugForm({super.key});
+  final Function(bool)? onReportSent;
+
+  const ReportBugForm({
+    super.key,
+    this.onReportSent,
+  });
 
   @override
   State<ReportBugForm> createState() => _ReportBugFormState();
@@ -20,12 +25,14 @@ class _ReportBugFormState extends State<ReportBugForm> {
   void onSubmit() async {
     if (!formKey.currentState!.validate()) return;
     Navigator.pop(context);
-    await TodoistService.createTask(
+    var success = await TodoistService.createTask(
       titleController.text,
       descriptionController.text,
       nameController.text,
       isBug,
     );
+
+    if (widget.onReportSent != null) widget.onReportSent!(success);
   }
 
   @override
@@ -41,6 +48,12 @@ class _ReportBugFormState extends State<ReportBugForm> {
           autofocus: true,
           canBeBlank: false,
           maxLength: 250,
+        ),
+        CustomFormFields.stringField(
+          controller: nameController,
+          label: 'Name',
+          canBeBlank: true,
+          maxLength: 15,
         ),
         CustomFormFields.textArea(
           controller: descriptionController,

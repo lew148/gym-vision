@@ -252,13 +252,8 @@ class _WorkoutViewState extends State<WorkoutView> {
     return FutureBuilder<Workout?>(
       future: workoutFuture,
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (!snapshot.hasData || snapshot.data == null) {
-          return const Center(child: Text("Failed to load workout."));
-        }
+        if (snapshot.connectionState == ConnectionState.waiting) return const SizedBox.shrink();
+        if (!snapshot.hasData || snapshot.data == null) return const Center(child: Text("Failed to load workout."));
 
         final workout = snapshot.data!;
         final categories = workout.getCategories();

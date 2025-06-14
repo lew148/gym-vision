@@ -102,11 +102,9 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         exerciseIdentifier: exerciseIdentifier,
         workoutId: workoutId,
         reloadState: widget.reloadParent,
+        onSuccess: () => dropped ? null : toggleDropped(),
       ),
-    ).then((value) {
-      if (!dropped) toggleDropped();
-      widget.reloadParent();
-    });
+    );
   }
 
   List<Widget> getWeightedSetWidgets() {
@@ -131,16 +129,13 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                 child: Container(
                   padding: const EdgeInsets.all(3),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.shadow,
+                    border: BoxBorder.all(color: Theme.of(context).colorScheme.shadow),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
                     (i + 1).toString(),
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -188,16 +183,13 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                 child: Container(
                   padding: const EdgeInsets.all(3),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.shadow,
+                    border: BoxBorder.all(color: Theme.of(context).colorScheme.shadow),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(
                     (i + 1).toString(),
                     textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
