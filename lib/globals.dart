@@ -82,3 +82,5 @@ DateTime? tryParseDateTime(String? s) {
   if (s == null || s == '' || s == 'null') return null;
   return DateTime.tryParse(s);
 }
+
+double? stringToDouble(String s) => double.tryParse(getNumberString(s).replaceAll(',', '.'));

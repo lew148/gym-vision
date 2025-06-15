@@ -55,6 +55,7 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
           controller: repsController,
           label: 'Reps',
           selectableValues: [1, 8, 10, 12],
+          canBeBlank: false,
         ),
       ];
 
@@ -82,7 +83,9 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
     final subject = quickAddExercise ?? selectedExercise;
     if (subject == null ||
         !formKey.currentState!.validate() ||
-        (!subject.isCardio() && repsController.text == '' || repsController.text == '0')) return; // todo: show error
+        (!subject.isCardio() && repsController.text == '' || repsController.text == '0')) {
+      return; // todo: show error
+    }
 
     Navigator.pop(context);
 
@@ -104,10 +107,10 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
         await WorkoutSetModel.addSetToWorkout(
           WorkoutSet(
             workoutExerciseId: weId,
-            weight: double.parse(getNumberString(weightController.text)),
+            weight: stringToDouble(weightController.text),
             reps: int.parse(getNumberString(repsController.text)),
             time: duration,
-            distance: double.parse(getNumberString(distanceController.text)),
+            distance: stringToDouble(distanceController.text),
             calsBurned: int.parse(getNumberString(calsBurnedController.text)),
           ),
         );

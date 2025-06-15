@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gymvision/globals.dart';
 
 stringValidator(value, canBeBlank, label) =>
     !canBeBlank && (value == null || value == '') ? '$label cannot be blank' : null;
@@ -58,7 +59,7 @@ class CustomFormFields {
               suffix: Text(unit),
             ),
             validator: (value) =>
-                value != null && value != '' && double.tryParse(value) == null ? 'Please enter a valid weight' : null,
+                value != null && value != '' && stringToDouble(value) == null ? 'Please enter a valid weight' : null,
           ),
         ),
         Row(children: [
@@ -120,6 +121,7 @@ class CustomFormFields {
     bool autofocus = false,
     List<int>? selectableValues,
     bool showNone = false,
+    bool canBeBlank = true,
   }) {
     onSelectableValueButtonClick(int num) {
       String newValue = num.toString();
@@ -160,6 +162,7 @@ class CustomFormFields {
             labelText: label,
             suffix: Text(unit),
           ),
+          validator: (value) => !canBeBlank && (value == null || value == '') ? '' : null,
           inputFormatters: [FilteringTextInputFormatter.digitsOnly],
         ),
       ),

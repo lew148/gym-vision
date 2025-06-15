@@ -49,9 +49,9 @@ class _EditWorkoutSetFormState extends State<EditWorkoutSetForm> {
       Navigator.pop(context);
       bool hasChanges = false;
 
-      final newWeight = double.parse(getNumberString(weightController.text));
+      final newWeight = stringToDouble(weightController.text);
       final newReps = int.parse(getNumberString(repsController.text));
-      final newDistance = double.parse(getNumberString(distanceController.text));
+      final newDistance = stringToDouble(distanceController.text);
       final newCalsBurned = int.parse(getNumberString(calsBurnedController.text));
       final newDuration = duration;
 
@@ -121,6 +121,7 @@ class _EditWorkoutSetFormState extends State<EditWorkoutSetForm> {
           controller: repsController,
           label: 'Reps',
           selectableValues: [1, 8, 10, 12],
+          canBeBlank: false,
         ),
       ];
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:gymvision/classes/db/workout_set.dart';
 
 class ButtonDetails {
@@ -165,7 +166,7 @@ class CommonUI {
         ),
       ));
 
-  static Widget getCard(Widget child, {Color? color}) => Card(
+  static Widget getCard(Widget child, {Color? color}) => Card.filled(
         margin: const EdgeInsets.symmetric(horizontal: 2.5, vertical: 5),
         color: color,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
