@@ -1,5 +1,5 @@
+import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:gymvision/classes/db/workout_set.dart';
 
 class ButtonDetails {
@@ -166,12 +166,20 @@ class CommonUI {
         ),
       ));
 
-  static Widget getCard(Widget child, {Color? color}) => Card.filled(
-        margin: const EdgeInsets.symmetric(horizontal: 2.5, vertical: 5),
-        color: color,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        child: child,
-      );
+  static Widget getCard(BuildContext context, Widget child, {Color? color}) =>
+      EasyDynamicTheme.of(context).themeMode == ThemeMode.dark
+          ? Card.filled(
+              margin: const EdgeInsets.symmetric(horizontal: 2.5, vertical: 5),
+              color: color,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              child: child,
+            )
+          : Card(
+              margin: const EdgeInsets.symmetric(horizontal: 2.5, vertical: 5),
+              color: color,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              child: child,
+            );
 
   static Widget getCompleteMark(BuildContext context, bool complete) => Icon(
         complete ? Icons.check_circle_rounded : Icons.circle_outlined,

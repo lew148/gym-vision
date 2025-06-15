@@ -46,6 +46,7 @@ class MyApp extends StatelessWidget {
         splashColor: Colors.transparent,
         scaffoldBackgroundColor: const Color(0xFFF8F8F8),
         appBarTheme: const AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.dark),
+        cardTheme: CardThemeData(shape: Border.all(color: Colors.grey[500]!)),
         colorScheme: ColorScheme.light(
           primary: Colors.lightBlue[400]!,
           secondary: const Color.fromARGB(255, 216, 160, 233),

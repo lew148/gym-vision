@@ -72,6 +72,7 @@ class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
   @override
   Widget build(BuildContext context) {
     return CommonUI.getCard(
+      context,
       Column(children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),

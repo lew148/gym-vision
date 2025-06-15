@@ -388,6 +388,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   @override
   Widget build(BuildContext context) {
     return CommonUI.getCard(
+      context,
       Column(
         children: [
           GestureDetector(

@@ -33,6 +33,7 @@ class _CateogryPickerModalState extends State<CateogryPickerModal> {
               : selectedCategories.add(category);
         }),
         child: CommonUI.getCard(
+          context,
           Container(
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.all(Radius.circular(10)),

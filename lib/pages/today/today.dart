@@ -134,6 +134,7 @@ class _TodayState extends State<Today> {
             )
             .then((value) => reloadState()),
         child: CommonUI.getCard(
+          context,
           Padding(
             padding: const EdgeInsets.all(15),
             child: Column(
@@ -229,6 +230,7 @@ class _TodayState extends State<Today> {
           Expanded(
             flex: 6,
             child: CommonUI.getCard(
+              context,
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -264,6 +266,7 @@ class _TodayState extends State<Today> {
           Expanded(
             flex: 6,
             child: CommonUI.getCard(
+              context,
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

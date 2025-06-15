@@ -44,6 +44,7 @@ class _ExerciseViewState extends State<ExerciseView> {
       children: [
         Expanded(
           child: CommonUI.getCard(
+            context,
             Padding(
               padding: const EdgeInsetsGeometry.symmetric(horizontal: 5),
               child: TextFormField(
@@ -127,6 +128,7 @@ class _ExerciseViewState extends State<ExerciseView> {
   Widget getPrSection(ExerciseDetails? details) => details == null || details.pr == null
       // todo: set pr manually here?
       ? CommonUI.getCard(
+          context,
           Padding(
             padding: const EdgeInsetsGeometry.all(10),
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
