@@ -72,7 +72,7 @@ class CommonFunctions {
         ),
       );
 
-  static void onAddWorkoutTap(BuildContext context, Function reloadState, {DateTime? date}) async {
+  static Future onAddWorkoutTap(BuildContext context, Function reloadState, {DateTime? date}) async {
     try {
       var now = DateTime.now();
 

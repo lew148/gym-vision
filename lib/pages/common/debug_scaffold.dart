@@ -60,7 +60,8 @@ class _DebugScaffoldState extends State<DebugScaffold> {
     return Scaffold(
       appBar: AppBar(
         title: widget.customAppBarTitle ?? (widget.ignoreDefaults ? null : const Text('Gymvision')),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        surfaceTintColor: Colors.transparent,
         actions: actions,
       ),
       bottomNavigationBar: widget.bottomNavigationBar,

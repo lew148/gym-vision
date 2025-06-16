@@ -71,7 +71,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
     });
   }
 
-  Widget getWorkoutDisplay(Workout workout) => InkWell(
+  Widget getWorkoutDisplay(Workout workout) => GestureDetector(
         onLongPress: () => CommonFunctions.showDeleteConfirm(
           context,
           "workout",
@@ -182,58 +182,63 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
 
       widgets.add(
         Column(children: [
-          IntrinsicHeight(
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    getDateDisplay(currentDate),
-                    textAlign: TextAlign.end,
-                    style: TextStyle(
-                      color: isToday ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.shadow,
-                      fontWeight: isToday ? FontWeight.bold : FontWeight.w400,
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => CommonFunctions.onAddWorkoutTap(context, reloadState, date: currentDate)
+                .then((x) => widget.reloadParent()),
+            child: IntrinsicHeight(
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                    child: Text(
+                      getDateDisplay(currentDate),
+                      textAlign: TextAlign.end,
+                      style: TextStyle(
+                        color: isToday ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.shadow,
+                        fontWeight: isToday ? FontWeight.bold : FontWeight.w400,
+                      ),
                     ),
                   ),
-                ),
-                VerticalDivider(
-                  thickness: isToday ? 5 : 0.5,
-                  color: isToday ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.shadow,
-                ),
-                Expanded(
-                  flex: 5,
-                  child: Column(
-                    children: workoutsForDay.isNotEmpty || bwsForDay.isNotEmpty
-                        ? [
-                            ...workoutsForDay.map<Widget>((workout) => getWorkoutDisplay(workout)),
-                            if (bwsForDay.isNotEmpty) getBodyweightDisplay(bwsForDay.first),
-                          ]
-                        : [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: dateXIsAfterDateY(widget.userSettings.createdAt!, currentDate) ||
-                                      dateIsInFuture(currentDate) ||
-                                      isToday
-                                  ? []
-                                  : [
-                                      Icon(
-                                        Icons.hotel_rounded,
-                                        color: Theme.of(context).colorScheme.shadow,
-                                        size: 20,
-                                      ),
-                                      const Padding(padding: EdgeInsets.all(5)),
-                                      Text(
-                                        'Rest Day',
-                                        style: TextStyle(
-                                          color: Theme.of(context).colorScheme.shadow,
-                                        ),
-                                      ),
-                                    ],
-                            ),
-                          ],
+                  VerticalDivider(
+                    thickness: isToday ? 5 : 0.5,
+                    color: isToday ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.shadow,
                   ),
-                ),
-              ],
+                  Expanded(
+                    flex: 5,
+                    child: Column(
+                      children: workoutsForDay.isNotEmpty || bwsForDay.isNotEmpty
+                          ? [
+                              ...workoutsForDay.map<Widget>((workout) => getWorkoutDisplay(workout)),
+                              if (bwsForDay.isNotEmpty) getBodyweightDisplay(bwsForDay.first),
+                            ]
+                          : [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: dateXIsAfterDateY(widget.userSettings.createdAt!, currentDate) ||
+                                        dateIsInFuture(currentDate) ||
+                                        isToday
+                                    ? []
+                                    : [
+                                        Icon(
+                                          Icons.hotel_rounded,
+                                          color: Theme.of(context).colorScheme.shadow,
+                                          size: 20,
+                                        ),
+                                        const Padding(padding: EdgeInsets.all(5)),
+                                        Text(
+                                          'Rest Day',
+                                          style: TextStyle(
+                                            color: Theme.of(context).colorScheme.shadow,
+                                          ),
+                                        ),
+                                      ],
+                              ),
+                            ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           Padding(

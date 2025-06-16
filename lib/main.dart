@@ -58,11 +58,6 @@ class MyApp extends StatelessWidget {
         splashColor: Colors.transparent,
         scaffoldBackgroundColor: darkThemeBackground,
         appBarTheme: const AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.light),
-        // cardTheme: CardThemeData(
-        //   surfaceTintColor: Colors.grey[800],
-        //   shadowColor: Colors.grey[400],
-        //   color: Colors.grey[800],
-        // ),
         bottomSheetTheme: BottomSheetThemeData(backgroundColor: darkThemeBackground),
         colorScheme: ColorScheme.dark(
           primary: Colors.lightBlue[400]!,
@@ -105,6 +100,12 @@ class _MyHomePageState extends State<MyHomePage> {
         const ComingSoon(),
       ];
 
+  NavigationDestination getNavItem(String name, IconData icon) => NavigationDestination(
+        icon: Icon(icon),
+        selectedIcon: Icon(icon, color: Theme.of(context).colorScheme.primary),
+        label: name,
+      );
+
   @override
   Widget build(BuildContext context) {
     return DebugScaffold(
@@ -115,46 +116,11 @@ class _MyHomePageState extends State<MyHomePage> {
         indicatorColor: Colors.transparent,
         selectedIndex: selectedIndex,
         destinations: [
-          NavigationDestination(
-            icon: const Icon(Icons.today_rounded),
-            selectedIcon: Icon(
-              Icons.today_rounded,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            label: 'Today',
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.format_list_bulleted_rounded),
-            selectedIcon: Icon(
-              Icons.format_list_bulleted_rounded,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            label: 'Workouts',
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.fitness_center_rounded),
-            selectedIcon: Icon(
-              Icons.fitness_center_rounded,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            label: 'Exercises',
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.timeline_rounded),
-            selectedIcon: Icon(
-              Icons.timeline_rounded,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            label: 'Progress',
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.person_rounded),
-            selectedIcon: Icon(
-              Icons.person_rounded,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-            label: 'Profile',
-          ),
+          getNavItem('Today', Icons.today_rounded),
+          getNavItem('Workouts', Icons.format_list_bulleted_rounded),
+          getNavItem('Exercises', Icons.fitness_center_rounded),
+          getNavItem('Progress', Icons.timeline_rounded),
+          getNavItem('Profile', Icons.person_rounded),
         ],
       ),
     );
