@@ -126,7 +126,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
         ),
       );
 
-  Widget getBodyweightDisplay(Bodyweight bw) => InkWell(
+  Widget getBodyweightDisplay(Bodyweight bw) => GestureDetector(
         onLongPress: () => CommonFunctions.showDeleteConfirm(
           context,
           "bodyweight",
@@ -182,43 +182,43 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
 
       widgets.add(
         Column(children: [
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () => CommonFunctions.onAddWorkoutTap(context, reloadState, date: currentDate)
-                .then((x) => widget.reloadParent()),
-            child: IntrinsicHeight(
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 1,
-                    child: Text(
-                      getDateDisplay(currentDate),
-                      textAlign: TextAlign.end,
-                      style: TextStyle(
-                        color: isToday ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.shadow,
-                        fontWeight: isToday ? FontWeight.bold : FontWeight.w400,
-                      ),
+          IntrinsicHeight(
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Text(
+                    getDateDisplay(currentDate),
+                    textAlign: TextAlign.end,
+                    style: TextStyle(
+                      color: isToday ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.shadow,
+                      fontWeight: isToday ? FontWeight.bold : FontWeight.w400,
                     ),
                   ),
-                  VerticalDivider(
-                    thickness: isToday ? 5 : 0.5,
-                    color: isToday ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.shadow,
-                  ),
-                  Expanded(
-                    flex: 5,
-                    child: Column(
-                      children: workoutsForDay.isNotEmpty || bwsForDay.isNotEmpty
-                          ? [
-                              ...workoutsForDay.map<Widget>((workout) => getWorkoutDisplay(workout)),
-                              if (bwsForDay.isNotEmpty) getBodyweightDisplay(bwsForDay.first),
-                            ]
-                          : [
-                              Row(
+                ),
+                VerticalDivider(
+                  thickness: isToday ? 5 : 0.5,
+                  color: isToday ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.shadow,
+                ),
+                Expanded(
+                  flex: 5,
+                  child: Column(
+                    children: workoutsForDay.isNotEmpty || bwsForDay.isNotEmpty
+                        ? [
+                            ...workoutsForDay.map<Widget>((workout) => getWorkoutDisplay(workout)),
+                            if (bwsForDay.isNotEmpty) getBodyweightDisplay(bwsForDay.first),
+                          ]
+                        : [
+                            GestureDetector(
+                              behavior: HitTestBehavior.translucent,
+                              onTap: () => CommonFunctions.onAddWorkoutTap(context, reloadState, date: currentDate)
+                                  .then((x) => widget.reloadParent()),
+                              child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: dateXIsAfterDateY(widget.userSettings.createdAt!, currentDate) ||
                                         dateIsInFuture(currentDate) ||
                                         isToday
-                                    ? []
+                                    ? [CommonUI.getDash()]
                                     : [
                                         Icon(
                                           Icons.hotel_rounded,
@@ -234,11 +234,11 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                                         ),
                                       ],
                               ),
-                            ],
-                    ),
+                            ),
+                          ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           Padding(
