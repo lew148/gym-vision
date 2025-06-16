@@ -68,7 +68,7 @@ class _ReportBugFormState extends State<ReportBugForm> {
             isBug = !isBug;
           }),
         ),
-        CommonUI.getElevatedPrimaryButton(context, ButtonDetails(text: 'Report', onTap: onSubmit))
+        CommonUI.getTextButton(ButtonDetails(text: 'Report', onTap: onSubmit))
       ]),
     );
   }

@@ -8,6 +8,7 @@ class DefaultExercisesModel {
   static List<Exercise> getExercises({
     List<Category>? categories,
     List<String>? excludedExerciseIds,
+    bool includeCardio = true,
   }) {
     var exercises = defaultExercises;
 
@@ -17,6 +18,10 @@ class DefaultExercisesModel {
 
     if (excludedExerciseIds != null && excludedExerciseIds.isNotEmpty) {
       exercises = exercises.where((e) => !excludedExerciseIds.contains(e.identifier)).toSet();
+    }
+
+    if (!includeCardio) {
+      exercises = exercises.where((e) => !e.categories.contains(Category.cardio)).toSet();
     }
 
     var list = exercises.toList();

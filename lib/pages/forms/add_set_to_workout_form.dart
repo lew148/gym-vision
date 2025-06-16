@@ -6,9 +6,9 @@ import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
+import 'package:gymvision/pages/forms/fields/exercise_picker.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'fields/custom_form_fields.dart';
-import 'fields/exercise_picker.dart';
 
 class AddSetToWorkoutForm extends StatefulWidget {
   final int workoutId;
@@ -164,12 +164,9 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   selectedExercise?.type != ExerciseType.cardio
-                      ? CommonUI.getElevatedPrimaryButton(
-                          context,
-                          ButtonDetails(onTap: () => onSubmit(addThree: true), text: 'Add 3'),
-                        )
+                      ? CommonUI.getTextButton(ButtonDetails(onTap: () => onSubmit(addThree: true), text: 'Add 3'))
                       : const SizedBox.shrink(),
-                  CommonUI.getElevatedPrimaryButton(context, ButtonDetails(onTap: onSubmit, text: 'Add')),
+                  CommonUI.getTextButton(ButtonDetails(onTap: onSubmit, text: 'Add')),
                 ],
               ),
             ),

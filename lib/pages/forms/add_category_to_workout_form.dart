@@ -6,11 +6,13 @@ import 'package:gymvision/static_data/helpers.dart';
 class CateogryPickerModal extends StatefulWidget {
   final List<Category> selectedCategories;
   final void Function(List<Category> c) onChange;
+  final bool includeMiscCategories;
 
   const CateogryPickerModal({
     super.key,
     required this.selectedCategories,
     required this.onChange,
+    this.includeMiscCategories = true,
   });
 
   @override
@@ -72,23 +74,25 @@ class _CateogryPickerModalState extends State<CateogryPickerModal> {
                 alignment: WrapAlignment.center,
                 children: SplitHelper.muscleGroupCategories.map((c) => getCategoryDisplay(c)).toList(),
               ),
-              CommonUI.getDefaultDivider(),
-              Wrap(
-                alignment: WrapAlignment.center,
-                children: SplitHelper.miscCategories.map((c) => getCategoryDisplay(c)).toList(),
-              ),
+              if (widget.includeMiscCategories) ...[
+                CommonUI.getDefaultDivider(),
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  children: SplitHelper.miscCategories.map((c) => getCategoryDisplay(c)).toList(),
+                ),
+              ],
             ]),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CommonUI.getPrimaryButton(ButtonDetails(
+                CommonUI.getTextButton(ButtonDetails(
                   text: 'Clear',
                   onTap: () {
                     Navigator.pop(context);
                     widget.onChange([]);
                   },
                 )),
-                CommonUI.getPrimaryButton(ButtonDetails(
+                CommonUI.getTextButton(ButtonDetails(
                   text: 'Save',
                   onTap: () {
                     Navigator.pop(context);

@@ -93,15 +93,15 @@ class _WorkoutViewState extends State<WorkoutView> {
             child: Wrap(
               alignment: WrapAlignment.start,
               children: workoutCategories //todo: sort
-                  .map((wc) => CommonUI.getTappablePropDisplay(
+                  .map((wc) => CommonUI.getPropDisplay(
                         context,
                         wc.getCategoryDisplayName(),
-                        () => goToMostRecentWorkout(wc),
+                        onTap: () => goToMostRecentWorkout(wc),
                       ))
                   .toList(),
             ),
           ),
-          CommonUI.getPrimaryButton(
+          CommonUI.getTextButton(
             ButtonDetails(
               icon: Icons.edit_rounded,
               onTap: () => onAddCategoryClick(existingCategories),
@@ -176,50 +176,49 @@ class _WorkoutViewState extends State<WorkoutView> {
     reloadState();
   }
 
-  void showMoreMenu(Workout workout) {
-    CommonFunctions.showBottomSheet(
-      context,
-      CommonUI.getModalMenu(context, [
-        ButtonDetails(
-          onTap: () {
-            Navigator.pop(context);
-            showEditDate(workout);
-          },
-          icon: Icons.calendar_today_rounded,
-          text: 'Edit Date',
-        ),
-        ButtonDetails(
-          onTap: () {
-            Navigator.pop(context);
-            showEditTime(workout);
-          },
-          icon: Icons.watch_rounded,
-          text: 'Edit Time',
-        ),
-        ButtonDetails(
-          onTap: () {
-            Navigator.pop(context);
-            CommonFunctions.showDeleteConfirm(
-              context,
-              "workout",
-              () => WorkoutModel.deleteWorkout(workout.id!),
-              widget.reloadParent,
-              popCaller: true,
-            );
-          },
-          icon: Icons.delete_rounded,
-          text: 'Delete Workout',
-        ),
-      ]),
-    );
-  }
+  void showMoreMenu(Workout workout) => CommonFunctions.showOptionsMenu(
+        context,
+        [
+          ButtonDetails(
+            onTap: () {
+              Navigator.pop(context);
+              showEditDate(workout);
+            },
+            icon: Icons.calendar_today_rounded,
+            text: 'Edit Date',
+          ),
+          ButtonDetails(
+            onTap: () {
+              Navigator.pop(context);
+              showEditTime(workout);
+            },
+            icon: Icons.watch_rounded,
+            text: 'Edit Time',
+          ),
+          ButtonDetails(
+            onTap: () {
+              Navigator.pop(context);
+              CommonFunctions.showDeleteConfirm(
+                context,
+                "workout",
+                () => WorkoutModel.deleteWorkout(workout.id!),
+                widget.reloadParent,
+                popCaller: true,
+              );
+            },
+            icon: Icons.delete_rounded,
+            text: 'Delete Workout',
+            style: ButtonDetailsStyle(iconColor: Colors.red),
+          ),
+        ],
+      );
 
   Widget getCategoriesWidget(Workout workout, List<Category> existingCategoryIds) =>
       workout.workoutCategories == null || workout.workoutCategories!.isEmpty
           ? Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                CommonUI.getPrimaryButton(
+                CommonUI.getTextButton(
                   ButtonDetails(
                     onTap: () => onAddCategoryClick([]),
                     text: 'Add Categories',

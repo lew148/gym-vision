@@ -27,7 +27,7 @@ class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
             children: widget.exercise.type == ExerciseType.strength
                 ? [
                     Expanded(
-                      flex: 2,
+                      flex: 3,
                       child: Container(
                         padding: const EdgeInsets.all(3),
                         decoration: BoxDecoration(
@@ -42,11 +42,11 @@ class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
                       ),
                     ),
                     Expanded(
-                      flex: 4,
+                      flex: 5,
                       child: CommonUI.getWeightWithIcon(set),
                     ),
                     Expanded(
-                      flex: 4,
+                      flex: 5,
                       child: CommonUI.getRepsWithIcon(set),
                     ),
                   ]

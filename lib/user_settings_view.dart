@@ -42,7 +42,6 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                 spacing: 5,
                 children: [
                   CommonUI.getElevatedPrimaryButton(
-                    context,
                     ButtonDetails(
                       onTap: () async {
                         await FlavourTextScheduleModel.setRecentFlavourTextScheduleNotDismissed();
@@ -54,7 +53,6 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                     ),
                   ),
                   CommonUI.getElevatedPrimaryButton(
-                    context,
                     ButtonDetails(
                       onTap: () async {
                         try {
@@ -74,8 +72,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                     ),
                   ),
                   const Divider(),
-                  CommonUI.getOutlinedPrimaryButton(
-                    context,
+                  CommonUI.getElevatedPrimaryButton(
                     ButtonDetails(
                       onTap: () => CommonFunctions.showDeleteConfirm(
                         context,

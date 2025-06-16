@@ -121,11 +121,11 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         ),
         onTap: () => onEditWorkoutSetTap(ws),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+          padding: const EdgeInsets.all(10),
           child: Row(
             children: [
               Expanded(
-                flex: 2,
+                flex: 3,
                 child: Container(
                   padding: const EdgeInsets.all(3),
                   decoration: BoxDecoration(
@@ -139,19 +139,19 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                   ),
                 ),
               ),
-              Expanded(flex: 4, child: CommonUI.getWeightWithIcon(ws)),
-              Expanded(flex: 4, child: CommonUI.getRepsWithIcon(ws)),
-              Expanded(
-                flex: 1,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8),
-                    child: Icon(Icons.more_vert_rounded),
-                  ),
-                  onTap: () => showSetMenu(ws),
-                ),
-              ),
+              Expanded(flex: 5, child: CommonUI.getWeightWithIcon(ws)),
+              Expanded(flex: 5, child: CommonUI.getRepsWithIcon(ws)),
+              // Expanded(
+              //   flex: 1,
+              //   child: GestureDetector(
+              //     behavior: HitTestBehavior.translucent,
+              //     child: const Padding(
+              //       padding: EdgeInsets.symmetric(horizontal: 8),
+              //       child: Icon(Icons.more_vert_rounded),
+              //     ),
+              //     onTap: () => showSetMenu(ws),
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -429,7 +429,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      CommonUI.getPrimaryButton(
+                      CommonUI.getTextButton(
                         ButtonDetails(
                           icon: Icons.add_rounded,
                           onTap: onAddSetsButtonTap,
@@ -440,7 +440,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                         child: const Icon(
                           Icons.more_vert_rounded,
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ],

@@ -46,7 +46,15 @@ class _TodayState extends State<Today> {
 
   Widget getWorkoutOverview(Workout workout) {
     var sets = workout.getSets();
-    if (sets.isEmpty) return const SizedBox.shrink();
+    if (sets.isEmpty) {
+      return Padding(
+        padding: const EdgeInsetsGeometry.only(top: 10),
+        child: Text(
+          'Tap to record workout!',
+          style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+        ),
+      );
+    }
 
     var setsGroupedByWeight = groupBy(sets, (s) => s.weight);
     var heaviestWeight = (setsGroupedByWeight.keys.toList()..sort((a, b) => a! < b! ? 1 : 0))[0];
@@ -122,7 +130,8 @@ class _TodayState extends State<Today> {
     ]);
   }
 
-  Widget getWorkoutDisplay(Workout w) => InkWell(
+  Widget getWorkoutDisplay(Workout w) => GestureDetector(
+        behavior: HitTestBehavior.translucent,
         onTap: () => Navigator.of(context)
             .push(
               MaterialPageRoute(
@@ -139,27 +148,53 @@ class _TodayState extends State<Today> {
             padding: const EdgeInsets.all(15),
             child: Column(
               children: [
-                Row(children: [
-                  if (w.workoutExercises?.isNotEmpty ?? false)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 15),
-                      child: CommonUI.getCompleteMark(context, w.done),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(children: [
+                      if (w.workoutExercises?.isNotEmpty ?? false)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 15),
+                          child: CommonUI.getCompleteMark(context, w.done),
+                        ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            w.getWorkoutTitle(),
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                          ),
+                          Text(
+                            '@ ${w.getTimeStr()}',
+                            style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                          ),
+                        ],
+                      ),
+                    ]),
+                    GestureDetector(
+                      onTap: () => CommonFunctions.showOptionsMenu(context, [
+                        ButtonDetails(
+                          onTap: () {
+                            Navigator.pop(context);
+                            CommonFunctions.showDeleteConfirm(
+                              context,
+                              "workout",
+                              () => WorkoutModel.deleteWorkout(w.id!),
+                              reloadState,
+                            );
+                          },
+                          icon: Icons.delete_rounded,
+                          text: 'Delete Workout',
+                          style: ButtonDetailsStyle(iconColor: Colors.red),
+                        )
+                      ]),
+                      child: const Icon(
+                        Icons.more_vert_rounded,
+                      ),
                     ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        w.getWorkoutTitle(),
-                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                      ),
-                      Text(
-                        '@ ${w.getTimeStr()}',
-                        style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-                      ),
-                    ],
-                  ),
-                ]),
+                  ],
+                ),
                 const Padding(padding: EdgeInsets.all(5)),
                 if (w.workoutCategories != null && w.workoutCategories!.isNotEmpty)
                   Row(children: [
@@ -181,7 +216,7 @@ class _TodayState extends State<Today> {
   Widget getWorkoutsOrPlaceholder(List<Workout>? workouts) {
     if (workouts == null || workouts.isEmpty) {
       return Padding(
-        padding: const EdgeInsetsGeometry.all(5),
+        padding: const EdgeInsetsGeometry.all(10),
         child: Column(children: [
           Text(
             'Tap + to get started!',
@@ -276,7 +311,7 @@ class _TodayState extends State<Today> {
                         future: todaysBodyweight,
                         builder: (context, bwsnapshot) {
                           if (!bwsnapshot.hasData) {
-                            return CommonUI.getPrimaryButton(ButtonDetails(
+                            return CommonUI.getTextButton(ButtonDetails(
                               onTap: onAddWeightTap,
                               text: 'Bodyweight',
                               icon: Icons.monitor_weight_rounded,

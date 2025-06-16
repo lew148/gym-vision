@@ -189,15 +189,14 @@ class _EditWorkoutSetFormState extends State<EditWorkoutSetForm> {
                 children: [
                   Row(children: [
                     CommonUI.getDeleteButton(() => onDeleteButtonTap(widget.workoutSet.id!)),
-                    CommonUI.getPrimaryButton(
+                    CommonUI.getTextButton(
                       ButtonDetails(
                         icon: Icons.copy_rounded,
                         onTap: () => onCopySetButtonTap(),
                       ),
                     ),
                   ]),
-                  CommonUI.getElevatedPrimaryButton(
-                    context,
+                  CommonUI.getTextButton(
                     ButtonDetails(
                       onTap: onSubmit,
                       text: 'Save',

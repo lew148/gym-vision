@@ -52,8 +52,7 @@ class _AddBodyWeightFormState extends State<AddBodyWeightForm> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  CommonUI.getElevatedPrimaryButton(
-                    context,
+                  CommonUI.getTextButton(
                     ButtonDetails(
                       onTap: onSubmit,
                       text: 'Add',

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/workout.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
+import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/pages/workouts/workout_view.dart';
 
 class CommonFunctions {
@@ -71,6 +72,9 @@ class CommonFunctions {
           borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
         ),
       );
+
+  static Future showOptionsMenu(BuildContext context, List<ButtonDetails> list) =>
+      showBottomSheet(context, CommonUI.getModalMenu(context, list));
 
   static Future onAddWorkoutTap(BuildContext context, Function reloadState, {DateTime? date}) async {
     try {

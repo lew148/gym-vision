@@ -30,6 +30,7 @@ class _ExercisesState extends State<Exercises> {
   late List<Category> filterCategories;
   late List<Exercise> filteredExercises;
   late TextEditingController searchTextController;
+  ExerciseType selectedType = ExerciseType.strength;
 
   @override
   void initState() {
@@ -37,14 +38,28 @@ class _ExercisesState extends State<Exercises> {
     searchTextController = TextEditingController();
     filterCategories = widget.filterCategories ?? [];
     filteredExercises = getFilteredExercises();
+
+    if (filterCategories.length == 1 && filterCategories[0] == Category.cardio) {
+      selectedType = ExerciseType.cardio;
+      filterCategories = [];
+      filteredExercises = getCardioExercises();
+    }
   }
 
   List<Exercise> getFilteredExercises() => DefaultExercisesModel.getExercises(
         categories: filterCategories,
         excludedExerciseIds: widget.excludedExerciseIdentifiers,
+        includeCardio: false,
+      );
+
+  List<Exercise> getCardioExercises() => DefaultExercisesModel.getExercises(
+        categories: [Category.cardio],
+        excludedExerciseIds: widget.excludedExerciseIdentifiers,
       );
 
   setSearchValue(String? string) => setState(() {
+        selectedType = ExerciseType.strength;
+
         if (string == null) {
           filteredExercises = getFilteredExercises();
           return;
@@ -63,6 +78,12 @@ class _ExercisesState extends State<Exercises> {
           filteredExercises = getFilteredExercises()
               .where((e) => e.equipment.displayName.contains(RegExp(string, caseSensitive: false)))
               .toList();
+        }
+
+        if (filteredExercises.isEmpty) {
+          filteredExercises =
+              getCardioExercises().where((e) => e.name.contains(RegExp(string, caseSensitive: false))).toList();
+          selectedType = ExerciseType.cardio;
         }
       });
 
@@ -105,7 +126,7 @@ class _ExercisesState extends State<Exercises> {
           ),
         ),
         if (widget.onAddTap != null)
-          CommonUI.getPrimaryButton(
+          CommonUI.getTextButton(
             ButtonDetails(
               icon: Icons.add_rounded,
               onTap: () => widget.onAddTap!(exercise.identifier),
@@ -117,6 +138,7 @@ class _ExercisesState extends State<Exercises> {
     setState(() {
       filterCategories = newCategories;
       filteredExercises = getFilteredExercises();
+      selectedType = ExerciseType.strength;
     });
   }
 
@@ -125,6 +147,7 @@ class _ExercisesState extends State<Exercises> {
         CateogryPickerModal(
           selectedCategories: filterCategories,
           onChange: onCategoriesChange,
+          includeMiscCategories: false,
         ),
       );
 
@@ -134,10 +157,13 @@ class _ExercisesState extends State<Exercises> {
         groupBy<Exercise, int>(filteredExercises, (e) => e.primaryMuscleGroup.index);
 
     if (groups.isEmpty) {
-      return Column(children: [
-        Text('No results for: ${searchTextController.text}'),
-        Text('Create the Extercise: -> Coming Soon!', style: TextStyle(color: Theme.of(context).colorScheme.shadow)),
-      ]);
+      return Padding(
+        padding: const EdgeInsetsGeometry.all(10),
+        child: Column(children: [
+          Text('No results for: ${searchTextController.text}'),
+          Text('Create the Extercise: -> Coming Soon!', style: TextStyle(color: Theme.of(context).colorScheme.shadow)),
+        ]),
+      );
     }
 
     final sortedKeys = groups.keys.toList()..sort();
@@ -177,6 +203,29 @@ class _ExercisesState extends State<Exercises> {
   @override
   Widget build(BuildContext context) {
     return Column(children: [
+      CupertinoSlidingSegmentedControl<ExerciseType>(
+        groupValue: selectedType,
+        onValueChanged: (ExerciseType? value) {
+          if (value != null) {
+            setState(() {
+              selectedType = value;
+              filteredExercises = selectedType == ExerciseType.cardio ? getCardioExercises() : getFilteredExercises();
+            });
+          }
+        },
+        children: const <ExerciseType, Widget>{
+          ExerciseType.strength: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Text('Exercises'),
+          ),
+          ExerciseType.cardio: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Text('Cardio'),
+          ),
+          // todo: add stretches
+        },
+      ),
+      const Padding(padding: EdgeInsetsGeometry.all(5)),
       Row(children: [
         Expanded(
           child: CupertinoSearchTextField(
@@ -195,7 +244,8 @@ class _ExercisesState extends State<Exercises> {
         //     child: const Text('Cancel'),
         //   ),
       ]),
-      CommonUI.getPrimaryButton(ButtonDetails(text: 'Categories', onTap: showCategories)),
+      if (selectedType != ExerciseType.cardio)
+        CommonUI.getTextButton(ButtonDetails(text: 'Categories', onTap: showCategories)),
       Expanded(child: getExercisesScrollView()),
     ]);
   }

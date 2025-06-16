@@ -2,17 +2,29 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workout_set.dart';
 
+class ButtonDetailsStyle {
+  MaterialColor? iconColor;
+  MaterialColor? textColor;
+
+  ButtonDetailsStyle({
+    this.iconColor,
+    this.textColor,
+  });
+}
+
 class ButtonDetails {
   Function()? onTap;
   Function()? onLongTap;
   IconData? icon;
   String? text;
+  ButtonDetailsStyle? style;
 
   ButtonDetails({
     this.onTap,
     this.onLongTap,
     this.icon,
     this.text,
+    this.style,
   });
 }
 
@@ -67,11 +79,11 @@ class CommonUI {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           widget,
-          Row(children: buttonDetails.map((ab) => getPrimaryButton(ab)).toList()),
+          Row(children: buttonDetails.map((ab) => getTextButton(ab)).toList()),
         ],
       );
 
-  static Widget getPrimaryButton(ButtonDetails buttonDetails) => TextButton(
+  static Widget getTextButton(ButtonDetails buttonDetails) => TextButton(
         onPressed: buttonDetails.onTap,
         onLongPress: buttonDetails.onLongTap,
         child: Row(
@@ -81,54 +93,33 @@ class CommonUI {
               Icon(
                 buttonDetails.icon,
                 size: 25,
+                color: buttonDetails.style?.iconColor,
               ),
             if (buttonDetails.icon != null && buttonDetails.text != null)
               const Padding(padding: EdgeInsets.only(left: 5)),
-            if (buttonDetails.text != null) Text(buttonDetails.text!),
+            if (buttonDetails.text != null)
+              Text(buttonDetails.text!, style: TextStyle(color: buttonDetails.style?.textColor)),
           ],
         ),
       );
 
-  static Widget getOutlinedPrimaryButton(BuildContext context, ButtonDetails buttonDetails) => OutlinedButton(
+  static Widget getElevatedPrimaryButton(ButtonDetails buttonDetails) => ElevatedButton(
         onPressed: buttonDetails.onTap,
         onLongPress: buttonDetails.onLongTap,
-        style: OutlinedButton.styleFrom(
-            side: BorderSide(color: Theme.of(context).colorScheme.shadow, width: 1),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
+        style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (buttonDetails.icon != null)
               Icon(
                 buttonDetails.icon,
+                color: buttonDetails.style?.iconColor,
                 size: 25,
               ),
             if (buttonDetails.icon != null && buttonDetails.text != null)
               const Padding(padding: EdgeInsets.only(left: 5)),
-            if (buttonDetails.text != null) Text(buttonDetails.text!),
-          ],
-        ),
-      );
-
-  static Widget getElevatedPrimaryButton(BuildContext context, ButtonDetails buttonDetails) => ElevatedButton(
-        onPressed: buttonDetails.onTap,
-        onLongPress: buttonDetails.onLongTap,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (buttonDetails.icon != null)
-              Icon(
-                buttonDetails.icon,
-                size: 25,
-                color: Colors.black,
-              ),
-            if (buttonDetails.icon != null && buttonDetails.text != null)
-              const Padding(padding: EdgeInsets.only(left: 5)),
-            if (buttonDetails.text != null) Text(buttonDetails.text!, style: const TextStyle(color: Colors.black)),
+            if (buttonDetails.text != null)
+              Text(buttonDetails.text!, style: TextStyle(color: buttonDetails.style?.textColor)),
           ],
         ),
       );
@@ -142,29 +133,17 @@ class CommonUI {
         ),
       );
 
-  static Widget getPropDisplay(BuildContext context, String text) => Container(
-        margin: const EdgeInsets.all(2.5),
-        padding: const EdgeInsets.all(5),
-        decoration: BoxDecoration(
-          border: Border.all(color: Theme.of(context).colorScheme.shadow),
-          borderRadius: BorderRadius.circular(5),
+  static Widget getPropDisplay(BuildContext context, String text, {Function()? onTap}) => CommonUI.getCard(
+        context,
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10))),
+            padding: const EdgeInsets.all(10),
+            child: Text(text),
+          ),
         ),
-        child: Text(text, textAlign: TextAlign.center),
       );
-
-  static Widget getTappablePropDisplay(BuildContext context, String text, Function() onTap) => Container(
-      margin: const EdgeInsets.all(2.5),
-      decoration: BoxDecoration(
-        border: Border.all(color: Theme.of(context).colorScheme.shadow),
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(5),
-          child: Text(text, textAlign: TextAlign.center),
-        ),
-      ));
 
   static Widget getCard(BuildContext context, Widget child, {Color? color}) =>
       EasyDynamicTheme.of(context).themeMode == ThemeMode.dark
@@ -244,9 +223,9 @@ class CommonUI {
             onTap: options[i].onTap,
             child: Row(
               children: [
-                Icon(options[i].icon),
+                Icon(options[i].icon, color: options[i].style?.iconColor),
                 const Padding(padding: EdgeInsets.all(5)),
-                Text(options[i].text!),
+                Text(options[i].text!, style: TextStyle(color: options[i].style?.textColor)),
               ],
             ),
           ),

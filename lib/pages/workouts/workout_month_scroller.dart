@@ -345,7 +345,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                     size: 40,
                   ),
                 ),
-                CommonUI.getPrimaryButton(ButtonDetails(icon: Icons.today_outlined, onTap: reloadState)),
+                CommonUI.getTextButton(ButtonDetails(icon: Icons.today_outlined, onTap: reloadState)),
               ],
             ),
           ),

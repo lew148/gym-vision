@@ -73,8 +73,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
 
   Widget getFilterButton() => Row(children: [
         Expanded(
-          child: CommonUI.getElevatedPrimaryButton(
-            context,
+          child: CommonUI.getTextButton(
             ButtonDetails(
               onTap: () {
                 Navigator.pop(context);
