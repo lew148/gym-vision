@@ -140,7 +140,12 @@ class CommonUI {
           child: Container(
             decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10))),
             padding: const EdgeInsets.all(10),
-            child: Text(text),
+            child: onTap == null
+                ? Text(text)
+                : Row(mainAxisSize: MainAxisSize.min, children: [
+                    Text(text),
+                    const Icon(Icons.chevron_right_rounded),
+                  ]),
           ),
         ),
       );
@@ -213,6 +218,7 @@ class CommonUI {
 
   static getModalMenu(BuildContext context, List<ButtonDetails> options) {
     final List<Widget> items = [getSectionTitleWithCloseButton(context, 'Options')];
+    items.add(const Padding(padding: EdgeInsets.all(5)));
 
     for (int i = 0; i < options.length; i++) {
       if (i != 0) items.add(getDefaultDivider());
@@ -233,6 +239,7 @@ class CommonUI {
       );
     }
 
+    items.add(const Padding(padding: EdgeInsets.all(5)));
     return Column(children: items);
   }
 }

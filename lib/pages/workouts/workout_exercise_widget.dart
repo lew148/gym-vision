@@ -113,12 +113,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     for (int i = 0; i < workoutSets.length; i++) {
       final ws = workoutSets[i];
       widgets.add(InkWell(
-        onLongPress: () => CommonFunctions.showDeleteConfirm(
-          context,
-          "set",
-          () => WorkoutSetModel.removeSet(ws.id!),
-          widget.reloadParent,
-        ),
+        onLongPress: () => showSetMenu(ws),
         onTap: () => onEditWorkoutSetTap(ws),
         child: Padding(
           padding: const EdgeInsets.all(10),
@@ -167,12 +162,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     for (int i = 0; i < workoutSets.length; i++) {
       final ws = workoutSets[i];
       widgets.add(InkWell(
-        onLongPress: () => CommonFunctions.showDeleteConfirm(
-          context,
-          "set",
-          () => WorkoutSetModel.removeSet(ws.id!),
-          widget.reloadParent,
-        ),
+        onLongPress: () => showSetMenu(ws),
         onTap: () => onEditWorkoutSetTap(ws),
         child: Padding(
           padding: const EdgeInsets.all(10),
@@ -306,82 +296,35 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   }
 
   void showSetMenu(WorkoutSet ws) {
-    CommonFunctions.showBottomSheet(
+    CommonFunctions.showOptionsMenu(
       context,
-      Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 10),
-            child: InkWell(
-              onTap: () => onCopySetButtonTap(ws),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.content_copy_rounded,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  const Padding(padding: EdgeInsets.all(5)),
-                  const Text(
-                    'Copy Set',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-                  ),
-                ],
-              ),
-            ),
+      [
+        ButtonDetails(
+          text: 'Copy Set',
+          icon: Icons.content_copy_rounded,
+          onTap: () => onCopySetButtonTap(ws),
+        ),
+        ButtonDetails(
+          text: 'Edit Set',
+          icon: Icons.edit_rounded,
+          onTap: () {
+            Navigator.pop(context);
+            onEditWorkoutSetTap(ws);
+          },
+        ),
+        ButtonDetails(
+          text: 'Delete Set',
+          icon: Icons.delete_rounded,
+          style: ButtonDetailsStyle(iconColor: Colors.red),
+          onTap: () => CommonFunctions.showDeleteConfirm(
+            context,
+            "set",
+            () => WorkoutSetModel.removeSet(ws.id!),
+            widget.reloadParent,
+            popCaller: true,
           ),
-          CommonUI.getDefaultDivider(),
-          Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 10),
-            child: InkWell(
-              onTap: () {
-                Navigator.pop(context);
-                onEditWorkoutSetTap(ws);
-              },
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.edit_rounded,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  const Padding(padding: EdgeInsets.all(5)),
-                  const Text(
-                    'Edit Set',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          CommonUI.getDefaultDivider(),
-          Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 10),
-            child: InkWell(
-              onTap: () {
-                Navigator.pop(context);
-                CommonFunctions.showDeleteConfirm(
-                  context,
-                  "set",
-                  () => WorkoutSetModel.removeSet(ws.id!),
-                  widget.reloadParent,
-                );
-              },
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.delete_rounded,
-                    color: Theme.of(context).colorScheme.tertiary,
-                  ),
-                  const Padding(padding: EdgeInsets.all(5)),
-                  const Text(
-                    'Delete Set',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
