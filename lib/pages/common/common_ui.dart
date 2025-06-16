@@ -133,7 +133,7 @@ class CommonUI {
         ),
       );
 
-  static Widget getPropDisplay(BuildContext context, String text, {Function()? onTap}) => CommonUI.getCard(
+  static Widget getPropDisplay(BuildContext context, String text, {Function()? onTap}) => getCard(
         context,
         GestureDetector(
           onTap: onTap,
@@ -146,7 +146,7 @@ class CommonUI {
       );
 
   static Widget getCard(BuildContext context, Widget child, {Color? color}) =>
-      EasyDynamicTheme.of(context).themeMode == ThemeMode.dark
+      Theme.of(context).brightness == Brightness.dark
           ? Card.filled(
               margin: const EdgeInsets.symmetric(horizontal: 2.5, vertical: 5),
               color: color,
