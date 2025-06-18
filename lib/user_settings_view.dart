@@ -78,6 +78,25 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                         context,
                         "DATABASE",
                         () async {
+                          DatabaseHelper.resetWhilePersistingData().then((s) {
+                            if (!context.mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                content: Text(s
+                                    ? 'Successfully reset DB, while persisting data'
+                                    : 'Failed to reset DB, while persisting data')));
+                          });
+                        },
+                        () => null,
+                      ),
+                      text: 'RESET DB (WHILE KEEPING DATA)',
+                    ),
+                  ),
+                  CommonUI.getElevatedPrimaryButton(
+                    ButtonDetails(
+                      onTap: () => CommonFunctions.showDeleteConfirm(
+                        context,
+                        "DATABASE",
+                        () async {
                           await DatabaseHelper.deleteDb();
                           await DatabaseHelper.openDb();
                           if (!context.mounted) return;
@@ -86,7 +105,8 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                         },
                         () => null,
                       ),
-                      text: 'RESET DB',
+                      text: 'DELETE DB',
+                      style: ButtonDetailsStyle(textColor: Colors.red),
                     ),
                   ),
                 ],

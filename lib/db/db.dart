@@ -5,7 +5,10 @@ import 'package:path/path.dart';
 class DatabaseHelper {
   static Future<Database>? database;
 
-  static deleteDb() async => await deleteDatabase('gymvision.db');
+  static deleteDb() async {
+    await deleteDatabase('gymvision.db');
+    database = null;
+  }
 
   static openDb() async {
     int amountOfMigrations = migrationScripts.length;
@@ -45,6 +48,8 @@ class DatabaseHelper {
   }
 
   static void initialDbCreate(Batch batch) {
+    // keep to one SQL function per batch.execute()
+
     batch.execute('''
       CREATE TABLE workouts(
         id INTEGER PRIMARY KEY,
@@ -133,5 +138,61 @@ class DatabaseHelper {
 
     final now = DateTime.now().toString();
     batch.execute('INSERT INTO user_settings(id, updatedAt, createdAt, theme) VALUES (1, "$now", "$now", "system");');
+  }
+
+  static Future<bool> resetWhilePersistingData() async {
+    try {
+      var prevDb = await getDb();
+
+      // in order of initialDbCreate()
+      var workouts = await prevDb.query('workouts');
+      var workoutExerciseOrderings = await prevDb.query('workout_exercise_orderings');
+      var workoutCategories = await prevDb.query('workout_categories');
+      var workoutExercises = await prevDb.query('workout_exercises');
+      var workoutSets = await prevDb.query('workout_sets');
+      var flavourTextSchedules = await prevDb.query('flavour_text_schedules');
+      var bodyweights = await prevDb.query('bodyweights');
+      var userSettings = await prevDb.query('user_settings');
+
+      await deleteDb();
+      var newDb = await getDb();
+
+      for (var w in workouts) {
+        await newDb.insert('workouts', w);
+      }
+
+      for (var weo in workoutExerciseOrderings) {
+        await newDb.insert('workout_exercise_orderings', weo);
+      }
+
+      for (var wc in workoutCategories) {
+        await newDb.insert('workout_categories', wc);
+      }
+
+      for (var we in workoutExercises) {
+        await newDb.insert('workout_exercises', we);
+      }
+
+      for (var ws in workoutSets) {
+        await newDb.insert('workout_sets', ws);
+      }
+
+      for (var fts in flavourTextSchedules) {
+        await newDb.insert('flavour_text_schedules', fts);
+      }
+
+      for (var bw in bodyweights) {
+        await newDb.insert('bodyweights', bw);
+      }
+
+      for (var us in userSettings) {
+        // new record is made in initialDbCreate()
+        await newDb.update('user_settings', us);
+      }
+
+      return true;
+    } catch (ex) {
+      return false;
+    }
   }
 }
