@@ -28,48 +28,40 @@ class _FlavourTextCardState extends State<FlavourTextCard> {
     return FutureBuilder<FlavourTextSchedule>(
       future: flavourTextSchedule,
       builder: (context, snapshot) {
-        if (!snapshot.hasData || snapshot.data!.dismissed) {
-          return const SizedBox.shrink();
-        }
+        if (!snapshot.hasData || snapshot.data!.dismissed) return const SizedBox.shrink();
 
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 5),
-          child: Row(
-            children: [
-              Expanded(
-                child: CommonUI.getCard(
-                  context,
-                  color: Theme.of(context).colorScheme.primary,
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            snapshot.data!.flavourText!.message,
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w400,
-                              color: Theme.of(context).colorScheme.onPrimary,
-                            ),
-                          ),
+        return Row(
+          children: [
+            Expanded(
+              child: CommonUI.getCard(
+                context,
+                color: Theme.of(context).colorScheme.primary,
+                Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          snapshot.data!.flavourText!.message,
+                          style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
                         ),
-                        InkWell(
-                          onTap: () => onDismissTap(snapshot.data!),
-                          child: Icon(
-                            Icons.close_rounded,
-                            size: 18,
-                            color: Theme.of(context).colorScheme.onPrimary,
-                          ),
+                      ),
+                      const Padding(padding: EdgeInsetsGeometry.all(5)),
+                      InkWell(
+                        onTap: () => onDismissTap(snapshot.data!),
+                        child: Icon(
+                          Icons.close_rounded,
+                          size: 20,
+                          color: Theme.of(context).colorScheme.onPrimary,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         );
       },
     );

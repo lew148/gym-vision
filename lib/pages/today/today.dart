@@ -269,30 +269,27 @@ class _TodayState extends State<Today> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: const EdgeInsetsGeometry.all(15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.local_fire_department_rounded),
-                            Text(
-                              getTodayTotalCalsString(workouts ?? []),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                              ),
-                            )
-                          ],
-                        ),
-                        Text(
-                          'Total Burned',
-                          style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-                        ),
-                      ],
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.local_fire_department_rounded, color: Colors.red[300]!),
+                          Text(
+                            '~${getTodayTotalCalsString(workouts ?? [])}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          )
+                        ],
+                      ),
+                      Text(
+                        'Total Burned',
+                        style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                      ),
+                    ],
                   ),
                 ],
               ),
