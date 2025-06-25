@@ -1,8 +1,8 @@
 import 'package:gymvision/classes/db/database_object.dart';
-import 'package:gymvision/classes/db/workout_category.dart';
-import 'package:gymvision/classes/db/workout_exercise.dart';
-import 'package:gymvision/classes/db/workout_exercise_ordering.dart';
-import 'package:gymvision/classes/db/workout_set.dart';
+import 'package:gymvision/classes/db/workouts/workout_category.dart';
+import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
+import 'package:gymvision/classes/db/workouts/workout_exercise_ordering.dart';
+import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:intl/intl.dart';

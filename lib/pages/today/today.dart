@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/bodyweight.dart';
-import 'package:gymvision/classes/db/workout.dart';
-import 'package:gymvision/classes/db/workout_set.dart';
+import 'package:gymvision/classes/db/workouts/workout.dart';
+import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/pages/common/common_functions.dart';

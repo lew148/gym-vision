@@ -1,10 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gymvision/classes/db/workout.dart';
-import 'package:gymvision/classes/db/workout_category.dart';
-import 'package:gymvision/classes/db/workout_exercise.dart';
-import 'package:gymvision/classes/db/workout_exercise_ordering.dart';
+import 'package:gymvision/classes/db/workouts/workout.dart';
+import 'package:gymvision/classes/db/workouts/workout_category.dart';
+import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
+import 'package:gymvision/classes/db/workouts/workout_exercise_ordering.dart';
 import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workout_exercise_orderings_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
@@ -287,7 +287,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                 context,
                 'Exercises',
                 ButtonDetails(
-                  icon: Icons.add,
+                  icon: Icons.add_rounded,
                   onTap: () => onAddExerciseClick(workout.id!),
                 ),
               ),

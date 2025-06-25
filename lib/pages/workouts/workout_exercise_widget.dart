@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gymvision/classes/db/workout_exercise.dart';
-import 'package:gymvision/classes/db/workout_set.dart';
+import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
+import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';
@@ -384,9 +384,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                       ),
                       GestureDetector(
                         onTap: showExerciseMenu,
-                        child: const Icon(
-                          Icons.more_vert_rounded,
-                        ),
+                        child: const Icon(Icons.more_vert_rounded),
                       ),
                     ],
                   ),

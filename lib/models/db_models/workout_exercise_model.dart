@@ -1,4 +1,4 @@
-import 'package:gymvision/classes/db/workout_exercise.dart';
+import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/db/db.dart';
 import 'package:gymvision/models/db_models/workout_exercise_orderings_model.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';

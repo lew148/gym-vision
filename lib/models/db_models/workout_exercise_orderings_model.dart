@@ -1,4 +1,4 @@
-import 'package:gymvision/classes/db/workout_exercise_ordering.dart';
+import 'package:gymvision/classes/db/workouts/workout_exercise_ordering.dart';
 import 'package:gymvision/db/db.dart';
 import 'package:gymvision/globals.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';

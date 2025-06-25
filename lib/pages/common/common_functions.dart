@@ -1,6 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gymvision/classes/db/workout.dart';
+import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/pages/workouts/workout_view.dart';
@@ -16,20 +17,20 @@ class CommonFunctions {
     HapticFeedback.heavyImpact();
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text("Remove $objectName?"),
-        content: Text("Are you sure you would like to remove this $objectName?"),
-        backgroundColor: Theme.of(context).cardColor,
+      builder: (context) => CupertinoAlertDialog(
+        title: Text("Delete $objectName?"),
+        content: Text("Are you sure you would like to delete this $objectName?"),
+        // backgroundColor: Theme.of(context).cardColor,
         actions: [
-          TextButton(
+          CupertinoDialogAction(
             child: const Text("No"),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
-          TextButton(
+          CupertinoDialogAction(
             child: const Text(
-              "Yes",
+              "Delete",
               style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
             ),
             onPressed: () async {
@@ -42,7 +43,7 @@ class CommonFunctions {
               } catch (ex) {
                 if (!context.mounted) return;
                 ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text('Failed to remove $objectName: ${ex.toString()}')));
+                    .showSnackBar(SnackBar(content: Text('Failed to delete $objectName: ${ex.toString()}')));
               }
 
               if (reloadState != null) reloadState();
@@ -73,8 +74,8 @@ class CommonFunctions {
         ),
       );
 
-  static Future showOptionsMenu(BuildContext context, List<ButtonDetails> list) =>
-      showBottomSheet(context, CommonUI.getModalMenu(context, list));
+  static Future showOptionsMenu(BuildContext context, List<ButtonDetails> list, {String? menuName}) =>
+      showBottomSheet(context, CommonUI.getModalMenu(context, list, modalName: menuName));
 
   static Future onAddWorkoutTap(BuildContext context, Function reloadState, {DateTime? date}) async {
     try {

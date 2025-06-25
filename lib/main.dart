@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:gymvision/pages/common/coming_soon.dart';
 import 'package:gymvision/pages/common/debug_scaffold.dart';
 import 'package:gymvision/pages/exercises/exercises.dart';
+import 'package:gymvision/pages/progress/progress.dart';
 import 'package:gymvision/pages/today/today.dart';
 import 'package:gymvision/pages/workouts/workouts.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -96,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
         const Today(),
         const Workouts(),
         const Exercises(),
-        const ComingSoon(),
+        const Progress(),
         const ComingSoon(),
       ];
 

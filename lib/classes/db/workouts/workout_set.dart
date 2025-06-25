@@ -1,6 +1,6 @@
 import 'package:gymvision/classes/db/database_object.dart';
-import 'package:gymvision/classes/db/workout.dart';
-import 'package:gymvision/classes/db/workout_exercise.dart';
+import 'package:gymvision/classes/db/workouts/workout.dart';
+import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
