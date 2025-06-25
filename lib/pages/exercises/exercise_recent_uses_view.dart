@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gymvision/classes/db/workout_set.dart';
+import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/static_data/enums.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gymvision/classes/db/workout_set.dart';
+import 'package:gymvision/classes/db/workouts/workout_set.dart';
 
 class ButtonDetailsStyle {
   Color? iconColor;
@@ -215,8 +215,8 @@ class CommonUI {
 
   static getDash() => const Text('-');
 
-  static getModalMenu(BuildContext context, List<ButtonDetails> options) {
-    final List<Widget> items = [getSectionTitleWithCloseButton(context, 'Options')];
+  static getModalMenu(BuildContext context, List<ButtonDetails> options, {String? modalName}) {
+    final List<Widget> items = [getSectionTitleWithCloseButton(context, modalName ?? 'Options')];
     items.add(const Padding(padding: EdgeInsets.all(5)));
 
     for (int i = 0; i < options.length; i++) {
