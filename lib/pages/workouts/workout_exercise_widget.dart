@@ -113,7 +113,11 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     for (int i = 0; i < workoutSets.length; i++) {
       final ws = workoutSets[i];
       widgets.add(InkWell(
-        onLongPress: () => showSetMenu(ws),
+        enableFeedback: false,
+        onLongPress: () {
+          HapticFeedback.heavyImpact();
+          showSetMenu(ws);
+        },
         onTap: () => onEditWorkoutSetTap(ws),
         child: Padding(
           padding: const EdgeInsets.all(10),

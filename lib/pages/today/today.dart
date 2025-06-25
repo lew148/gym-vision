@@ -286,7 +286,7 @@ class _TodayState extends State<Today> {
                         ],
                       ),
                       Text(
-                        'Total Burned',
+                        'Total Burned (kcals)',
                         style: TextStyle(color: Theme.of(context).colorScheme.shadow),
                       ),
                     ],
@@ -311,7 +311,7 @@ class _TodayState extends State<Today> {
                             return CommonUI.getTextButton(ButtonDetails(
                               onTap: onAddWeightTap,
                               text: 'Bodyweight',
-                              icon: Icons.monitor_weight_rounded,
+                              icon: Icons.add_rounded,
                             ));
                           }
 
@@ -328,7 +328,7 @@ class _TodayState extends State<Today> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    const Icon(Icons.monitor_weight_rounded),
+                                    Icon(Icons.monitor_weight_rounded, color: Theme.of(context).colorScheme.primary),
                                     const Padding(padding: EdgeInsetsGeometry.all(2.5)),
                                     Text(
                                       bwsnapshot.data!.getWeightDisplay(),
@@ -340,7 +340,7 @@ class _TodayState extends State<Today> {
                                   ],
                                 ),
                                 Text(
-                                  ' @ ${bwsnapshot.data!.getTimeString()}',
+                                  '@ ${bwsnapshot.data!.getTimeString()}',
                                   style: TextStyle(color: Theme.of(context).colorScheme.shadow),
                                 ),
                               ],
