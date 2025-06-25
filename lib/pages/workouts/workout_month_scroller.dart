@@ -72,6 +72,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
   }
 
   Widget getWorkoutDisplay(Workout workout) => GestureDetector(
+        behavior: HitTestBehavior.translucent,
         onLongPress: () => CommonFunctions.showDeleteConfirm(
           context,
           "workout",
