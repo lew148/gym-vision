@@ -214,27 +214,11 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                               behavior: HitTestBehavior.translucent,
                               onTap: () => CommonFunctions.onAddWorkoutTap(context, reloadState, date: currentDate)
                                   .then((x) => widget.reloadParent()),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: dateXIsAfterDateY(widget.userSettings.createdAt!, currentDate) ||
-                                        dateIsInFuture(currentDate) ||
-                                        isToday
-                                    ? [CommonUI.getDash()]
-                                    : [
-                                        Icon(
-                                          Icons.hotel_rounded,
-                                          color: Theme.of(context).colorScheme.shadow,
-                                          size: 20,
-                                        ),
-                                        const Padding(padding: EdgeInsets.all(5)),
-                                        Text(
-                                          'Rest Day',
-                                          style: TextStyle(
-                                            color: Theme.of(context).colorScheme.shadow,
-                                          ),
-                                        ),
-                                      ],
-                              ),
+                              child: dateXIsAfterDateY(widget.userSettings.createdAt!, currentDate) ||
+                                      dateIsInFuture(currentDate) ||
+                                      isToday
+                                  ? Row(mainAxisAlignment: MainAxisAlignment.start, children: [CommonUI.getDash()])
+                                  : CommonUI.getRestWidget(color: Theme.of(context).colorScheme.shadow),
                             ),
                           ],
                   ),

@@ -17,6 +17,8 @@ class _AddBodyWeightFormState extends State<AddBodyWeightForm> {
 
   void onSubmit() async {
     try {
+      if (!formKey.currentState!.validate()) return;
+
       var now = DateTime.now();
       var weight = double.tryParse(weightController.text);
       if (weight != null) {
@@ -35,34 +37,23 @@ class _AddBodyWeightFormState extends State<AddBodyWeightForm> {
   Widget build(BuildContext context) {
     return Form(
       key: formKey,
-      child: IntrinsicHeight(
-        child: Column(
-          children: [
-            CommonUI.getSectionTitle(context, 'Add Weight'),
-            CommonUI.getDefaultDivider(),
-            CustomFormFields.doubleField(
-              controller: weightController,
-              label: 'Weight',
-              unit: 'kg',
-              autofocus: true,
-              hideNone: true,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  CommonUI.getTextButton(
-                    ButtonDetails(
-                      onTap: onSubmit,
-                      text: 'Add',
-                    ),
-                  ),
-                ],
+      child: Column(
+        children: [
+          CommonUI.getSectionTitle(context, 'Add Weight'),
+          CommonUI.getDivider(),
+          Row(children: [
+            Expanded(
+              child: CustomFormFields.doubleField(
+                controller: weightController,
+                label: 'Weight',
+                unit: 'kg',
+                autofocus: true,
+                hideNone: true,
               ),
             ),
-          ],
-        ),
+            CommonUI.getDoneButton(onSubmit),
+          ]),
+        ],
       ),
     );
   }

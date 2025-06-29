@@ -96,7 +96,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                           CommonUI.getSectionTitle(context, 'Exercise Filters'),
                         ],
                       ),
-                      CommonUI.getDefaultDivider(),
+                      CommonUI.getDivider(),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.5,
                         child: SingleChildScrollView(child: getFilterChips()),
@@ -124,7 +124,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
             onSelected: (bool selected) => onFilterSelect(context, e, selected),
           ),
         ),
-        CommonUI.getDefaultDivider(),
+        CommonUI.getDivider(),
         ...SplitHelper.split2Categories.map(
           (e) => FilterChip(
             side: BorderSide(color: Theme.of(context).colorScheme.shadow),
@@ -134,7 +134,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
             onSelected: (bool selected) => onFilterSelect(context, e, selected),
           ),
         ),
-        CommonUI.getDefaultDivider(),
+        CommonUI.getDivider(),
         ...SplitHelper.muscleGroupCategories.map(
           (e) => FilterChip(
             side: BorderSide(color: Theme.of(context).colorScheme.shadow),
@@ -144,7 +144,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
             onSelected: (bool selected) => onFilterSelect(context, e, selected),
           ),
         ),
-        CommonUI.getDefaultDivider(),
+        CommonUI.getDivider(),
         ...SplitHelper.miscCategories.map(
           (e) => FilterChip(
             side: BorderSide(color: Theme.of(context).colorScheme.shadow),

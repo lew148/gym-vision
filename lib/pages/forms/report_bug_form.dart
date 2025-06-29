@@ -41,7 +41,7 @@ class _ReportBugFormState extends State<ReportBugForm> {
       key: formKey,
       child: Column(children: [
         CommonUI.getSectionTitleWithCloseButton(context, 'Bug/Feature Report'),
-        CommonUI.getDefaultDivider(),
+        CommonUI.getDivider(),
         CustomFormFields.stringField(
           controller: titleController,
           label: 'Title',

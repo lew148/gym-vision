@@ -106,6 +106,37 @@ class DatabaseHelper {
     ''');
 
     batch.execute('''
+      CREATE TABLE schedules(
+        id INTEGER PRIMARY KEY,
+        updatedAt TEXT NOT NULL,
+        createdAt TEXT NOT NULL,
+        name TEXT NOT NULL,
+        type TEXT NOT NULL,
+        active INTEGER DEFAULT 0
+      );
+    ''');
+
+    batch.execute('''
+      CREATE TABLE schedule_items(
+        id INTEGER PRIMARY KEY,
+        updatedAt TEXT NOT NULL,
+        createdAt TEXT NOT NULL,
+        scheduleId INTEGER NOT NULL,
+        itemOrder INTEGER NOT NULL
+      );
+    ''');
+
+    batch.execute('''
+      CREATE TABLE schedule_categories(
+        id INTEGER PRIMARY KEY,
+        updatedAt TEXT NOT NULL,
+        createdAt TEXT NOT NULL,
+        scheduleItemId INTEGER NOT NULL,
+        category TEXT NOT NULL
+      );
+    ''');
+
+    batch.execute('''
       CREATE TABLE flavour_text_schedules(
         id INTEGER PRIMARY KEY,
         updatedAt TEXT NOT NULL,
@@ -140,20 +171,60 @@ class DatabaseHelper {
     batch.execute('INSERT INTO user_settings(id, updatedAt, createdAt, theme) VALUES (1, "$now", "$now", "system");');
   }
 
+  static Future<bool> tableExists(String table, {Database? db}) async {
+    db ??= await DatabaseHelper.getDb();
+    var maps = await db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='$table';");
+    return maps.isNotEmpty;
+  }
+
   static Future<bool> resetWhilePersistingData() async {
+    var workouts = [];
+    var workoutExerciseOrderings = [];
+    var workoutCategories = [];
+    var workoutExercises = [];
+    var workoutSets = [];
+    var schedules = [];
+    var scheduleItems = [];
+    var scheduleCategories = [];
+    var flavourTextSchedules = [];
+    var bodyweights = [];
+    var userSettings = [];
+
     try {
       var prevDb = await getDb();
 
       // in order of initialDbCreate()
-      var workouts = await prevDb.query('workouts');
-      var workoutExerciseOrderings = await prevDb.query('workout_exercise_orderings');
-      var workoutCategories = await prevDb.query('workout_categories');
-      var workoutExercises = await prevDb.query('workout_exercises');
-      var workoutSets = await prevDb.query('workout_sets');
-      var flavourTextSchedules = await prevDb.query('flavour_text_schedules');
-      var bodyweights = await prevDb.query('bodyweights');
-      var userSettings = await prevDb.query('user_settings');
+      if (await tableExists('workouts', db: prevDb)) workouts = await prevDb.query('workouts');
+      if (await tableExists('workout_exercise_orderings', db: prevDb)) {
+        workoutExerciseOrderings = await prevDb.query('workout_exercise_orderings');
+      }
 
+      if (await tableExists('workout_categories', db: prevDb)) {
+        workoutCategories = await prevDb.query('workout_categories');
+      }
+
+      if (await tableExists('workout_exercises', db: prevDb)) {
+        workoutExercises = await prevDb.query('workout_exercises');
+      }
+
+      if (await tableExists('workout_sets', db: prevDb)) workoutSets = await prevDb.query('workout_sets');
+      if (await tableExists('schedules', db: prevDb)) schedules = await prevDb.query('schedules');
+      if (await tableExists('schedule_items', db: prevDb)) scheduleItems = await prevDb.query('schedule_items');
+      if (await tableExists('schedule_categories', db: prevDb)) {
+        scheduleCategories = await prevDb.query('schedule_categories');
+      }
+
+      if (await tableExists('flavour_text_schedules', db: prevDb)) {
+        flavourTextSchedules = await prevDb.query('flavour_text_schedules');
+      }
+
+      if (await tableExists('bodyweights', db: prevDb)) bodyweights = await prevDb.query('bodyweights');
+      if (await tableExists('user_settings', db: prevDb)) userSettings = await prevDb.query('user_settings');
+    } catch (ex) {
+      return false;
+    }
+
+    try {
       await deleteDb();
       var newDb = await getDb();
 
@@ -241,6 +312,37 @@ class DatabaseHelper {
           'updatedAt': us['updatedAt'],
           'createdAt': us['createdAt'],
           'theme': us['theme'],
+        });
+      }
+
+      for (var s in schedules) {
+        await newDb.insert('schedules', {
+          'id': s['id'],
+          'updatedAt': s['updatedAt'],
+          'createdAt': s['createdAt'],
+          'name': s['name'],
+          'type': s['type'],
+          'active': s['active'],
+        });
+      }
+
+      for (var si in scheduleItems) {
+        await newDb.insert('schedule_items', {
+          'id': si['id'],
+          'updatedAt': si['updatedAt'],
+          'createdAt': si['createdAt'],
+          'scheduleId': si['scheduleId'],
+          'itemOrder': si['itemOrder'],
+        });
+      }
+
+      for (var sc in scheduleCategories) {
+        await newDb.insert('schedule_categories', {
+          'id': sc['id'],
+          'updatedAt': sc['updatedAt'],
+          'createdAt': sc['createdAt'],
+          'scheduleItemId': sc['scheduleItemId'],
+          'category': sc['category'],
         });
       }
 

@@ -175,7 +175,7 @@ class _EditWorkoutSetFormState extends State<EditWorkoutSetForm> {
     return Column(
       children: [
         CommonUI.getSectionTitleWithCloseButton(context, 'Edit Set'),
-        CommonUI.getDefaultDivider(),
+        CommonUI.getDivider(),
         Form(
           key: formKey,
           child: Column(

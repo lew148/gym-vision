@@ -9,6 +9,15 @@ class ButtonDetailsStyle {
     this.iconColor,
     this.textColor,
   });
+
+  static ButtonDetailsStyle primaryIcon(BuildContext context) =>
+      ButtonDetailsStyle(iconColor: Theme.of(context).colorScheme.primary);
+
+  static ButtonDetailsStyle primaryIconAndText(BuildContext context) => ButtonDetailsStyle(
+      iconColor: Theme.of(context).colorScheme.primary, textColor: Theme.of(context).colorScheme.primary);
+
+  static ButtonDetailsStyle redIcon = ButtonDetailsStyle(iconColor: Colors.red);
+  static ButtonDetailsStyle redIconAndText = ButtonDetailsStyle(iconColor: Colors.red, textColor: Colors.red);
 }
 
 class ButtonDetails {
@@ -17,6 +26,7 @@ class ButtonDetails {
   IconData? icon;
   String? text;
   ButtonDetailsStyle? style;
+  bool disabled;
 
   ButtonDetails({
     this.onTap,
@@ -24,6 +34,7 @@ class ButtonDetails {
     this.icon,
     this.text,
     this.style,
+    this.disabled = false,
   });
 }
 
@@ -78,57 +89,63 @@ class CommonUI {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           widget,
-          Row(children: buttonDetails.map((ab) => getTextButton(ab)).toList()),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: buttonDetails.map((ab) => getTextButton(ab)).toList(),
+          ),
         ],
       );
 
-  static Widget getTextButton(ButtonDetails buttonDetails) => TextButton(
-        onPressed: buttonDetails.onTap,
-        onLongPress: buttonDetails.onLongTap,
+  static Widget getTextButton(ButtonDetails bd) => TextButton(
+        onPressed: bd.disabled ? null : bd.onTap,
+        onLongPress: bd.disabled ? null : bd.onLongTap,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (buttonDetails.icon != null)
+            if (bd.icon != null)
               Icon(
-                buttonDetails.icon,
+                bd.icon,
                 size: 25,
-                color: buttonDetails.style?.iconColor,
+                color: bd.style?.iconColor,
               ),
-            if (buttonDetails.icon != null && buttonDetails.text != null)
-              const Padding(padding: EdgeInsets.only(left: 5)),
-            if (buttonDetails.text != null)
-              Text(buttonDetails.text!, style: TextStyle(color: buttonDetails.style?.textColor)),
+            if (bd.icon != null && bd.text != null) const Padding(padding: EdgeInsets.only(left: 5)),
+            if (bd.text != null) Text(bd.text!, style: TextStyle(color: bd.style?.textColor)),
           ],
         ),
       );
 
-  static Widget getElevatedPrimaryButton(ButtonDetails buttonDetails) => ElevatedButton(
-        onPressed: buttonDetails.onTap,
-        onLongPress: buttonDetails.onLongTap,
+  static Widget getElevatedPrimaryButton(ButtonDetails bd) => ElevatedButton(
+        onPressed: bd.disabled ? null : bd.onTap,
+        onLongPress: bd.disabled ? null : bd.onLongTap,
         style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (buttonDetails.icon != null)
+            if (bd.icon != null)
               Icon(
-                buttonDetails.icon,
-                color: buttonDetails.style?.iconColor,
+                bd.icon,
+                color: bd.style?.iconColor,
                 size: 25,
               ),
-            if (buttonDetails.icon != null && buttonDetails.text != null)
-              const Padding(padding: EdgeInsets.only(left: 5)),
-            if (buttonDetails.text != null)
-              Text(buttonDetails.text!, style: TextStyle(color: buttonDetails.style?.textColor)),
+            if (bd.icon != null && bd.text != null) const Padding(padding: EdgeInsets.only(left: 5)),
+            if (bd.text != null) Text(bd.text!, style: TextStyle(color: bd.style?.textColor)),
           ],
         ),
       );
 
-  static getDeleteButton(void Function() onTap) => TextButton(
-        onPressed: onTap,
-        child: const Icon(
-          Icons.delete_rounded,
-          color: Colors.red,
-          size: 25,
+  static getDeleteButton(Function() onTap) => getTextButton(getDeleteButtonDetails(onTap));
+
+  static getDeleteButtonDetails(Function() onTap, {String? text}) => ButtonDetails(
+        onTap: onTap,
+        icon: Icons.delete_rounded,
+        text: text,
+        style: ButtonDetailsStyle(iconColor: Colors.red),
+      );
+
+  static getDoneButton(Function() onSubmit) => CommonUI.getTextButton(
+        ButtonDetails(
+          onTap: onSubmit,
+          text: 'Done',
         ),
       );
 
@@ -170,7 +187,7 @@ class CommonUI {
         size: 22,
       );
 
-  static getDefaultDivider() => const Divider(thickness: 0.25);
+  static getDivider({double? height}) => Divider(thickness: 0.25, height: height);
 
   static getInfoWidget(BuildContext context, String title, Widget? info) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 5),
@@ -220,7 +237,7 @@ class CommonUI {
     items.add(const Padding(padding: EdgeInsets.all(5)));
 
     for (int i = 0; i < options.length; i++) {
-      if (i != 0) items.add(getDefaultDivider());
+      if (i != 0) items.add(getDivider());
       items.add(
         Padding(
           padding: const EdgeInsets.all(5),
@@ -241,4 +258,10 @@ class CommonUI {
     items.add(const Padding(padding: EdgeInsets.all(5)));
     return Column(children: items);
   }
+
+  static getRestWidget({Color? color}) => Row(children: [
+        Icon(Icons.hotel_rounded, size: 20, color: color),
+        const Padding(padding: EdgeInsets.all(2.5)),
+        Text('Rest', style: TextStyle(color: color)),
+      ]);
 }
