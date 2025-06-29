@@ -6,6 +6,7 @@ import 'package:gymvision/enums.dart';
 import 'package:gymvision/models/db_models/schedule_model.dart';
 import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
+import 'package:gymvision/pages/forms/schedule_form.dart';
 import 'package:gymvision/static_data/helpers.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -17,24 +18,27 @@ class SchedulesWidget extends StatefulWidget {
 }
 
 class _SchedulesWidgetState extends State<SchedulesWidget> {
-  late Future<Schedule?> activeSchedule = ScheduleModel.getActiveSchedule();
-  late Future<List<Schedule>?> schedules = ScheduleModel.getSchedules();
+  late Future<Schedule?> activeSchedule = ScheduleModel.getActiveSchedule(shallow: false);
+  late Future<List<Schedule>> schedules = ScheduleModel.getSchedules();
 
   final biweeklyPageController = PageController(viewportFraction: 0.8, keepPage: true);
 
-  @override
-  void initState() {
-    super.initState();
-  }
+  void reloadState() => setState(() {
+        activeSchedule = ScheduleModel.getActiveSchedule(shallow: false);
+        schedules = ScheduleModel.getSchedules();
+      });
 
-  Widget getNoActiveScheduleWidget() => CommonUI.getCard(
+  Widget getTextDisplayWidget(String text) => CommonUI.getCard(
         context,
-        const Padding(
-          padding: EdgeInsetsGeometry.all(10),
+        Padding(
+          padding: const EdgeInsetsGeometry.all(10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('No active schedule set'),
+              Text(
+                text,
+                style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+              ),
             ],
           ),
         ),
@@ -49,14 +53,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
             children: [
               Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
               si?.scheduleCategories == null || si!.scheduleCategories!.isEmpty
-                  ? const Row(children: [
-                      Icon(
-                        Icons.hotel_rounded,
-                        size: 20,
-                      ),
-                      Padding(padding: EdgeInsets.all(5)),
-                      Text('Rest Day'),
-                    ])
+                  ? CommonUI.getRestWidget()
                   : Expanded(
                       child: Wrap(
                         alignment: WrapAlignment.end,
@@ -76,13 +73,13 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
   Widget getWeeklyScheduleWidget(List<ScheduleItem> items) {
     return Column(
       children: [
-        getScheduleItemWidget('Monday', items.firstWhereOrNull((si) => si.order == 1)),
-        getScheduleItemWidget('Tuesday', items.firstWhereOrNull((si) => si.order == 2)),
-        getScheduleItemWidget('Wednesday', items.firstWhereOrNull((si) => si.order == 3)),
-        getScheduleItemWidget('Thursday', items.firstWhereOrNull((si) => si.order == 4)),
-        getScheduleItemWidget('Friday', items.firstWhereOrNull((si) => si.order == 5)),
-        getScheduleItemWidget('Saturday', items.firstWhereOrNull((si) => si.order == 6)),
-        getScheduleItemWidget('Sunday', items.firstWhereOrNull((si) => si.order == 7)),
+        getScheduleItemWidget('Monday', items.firstWhereOrNull((si) => si.itemOrder == 1)),
+        getScheduleItemWidget('Tuesday', items.firstWhereOrNull((si) => si.itemOrder == 2)),
+        getScheduleItemWidget('Wednesday', items.firstWhereOrNull((si) => si.itemOrder == 3)),
+        getScheduleItemWidget('Thursday', items.firstWhereOrNull((si) => si.itemOrder == 4)),
+        getScheduleItemWidget('Friday', items.firstWhereOrNull((si) => si.itemOrder == 5)),
+        getScheduleItemWidget('Saturday', items.firstWhereOrNull((si) => si.itemOrder == 6)),
+        getScheduleItemWidget('Sunday', items.firstWhereOrNull((si) => si.itemOrder == 7)),
       ],
     );
   }
@@ -94,26 +91,26 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [Text('Week 1', style: TextStyle(fontWeight: FontWeight.w600))],
         ),
-        getScheduleItemWidget('Monday', items.firstWhereOrNull((si) => si.order == 1)),
-        getScheduleItemWidget('Tuesday', items.firstWhereOrNull((si) => si.order == 2)),
-        getScheduleItemWidget('Wednesday', items.firstWhereOrNull((si) => si.order == 3)),
-        getScheduleItemWidget('Thursday', items.firstWhereOrNull((si) => si.order == 4)),
-        getScheduleItemWidget('Friday', items.firstWhereOrNull((si) => si.order == 5)),
-        getScheduleItemWidget('Saturday', items.firstWhereOrNull((si) => si.order == 6)),
-        getScheduleItemWidget('Sunday', items.firstWhereOrNull((si) => si.order == 7)),
+        getScheduleItemWidget('Monday', items.firstWhereOrNull((si) => si.itemOrder == 1)),
+        getScheduleItemWidget('Tuesday', items.firstWhereOrNull((si) => si.itemOrder == 2)),
+        getScheduleItemWidget('Wednesday', items.firstWhereOrNull((si) => si.itemOrder == 3)),
+        getScheduleItemWidget('Thursday', items.firstWhereOrNull((si) => si.itemOrder == 4)),
+        getScheduleItemWidget('Friday', items.firstWhereOrNull((si) => si.itemOrder == 5)),
+        getScheduleItemWidget('Saturday', items.firstWhereOrNull((si) => si.itemOrder == 6)),
+        getScheduleItemWidget('Sunday', items.firstWhereOrNull((si) => si.itemOrder == 7)),
       ]),
       Column(children: [
         const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [Text('Week 2', style: TextStyle(fontWeight: FontWeight.w600))],
         ),
-        getScheduleItemWidget('Monday', items.firstWhereOrNull((si) => si.order == 8)),
-        getScheduleItemWidget('Tuesday', items.firstWhereOrNull((si) => si.order == 9)),
-        getScheduleItemWidget('Wednesday', items.firstWhereOrNull((si) => si.order == 10)),
-        getScheduleItemWidget('Thursday', items.firstWhereOrNull((si) => si.order == 11)),
-        getScheduleItemWidget('Friday', items.firstWhereOrNull((si) => si.order == 12)),
-        getScheduleItemWidget('Saturday', items.firstWhereOrNull((si) => si.order == 13)),
-        getScheduleItemWidget('Sunday', items.firstWhereOrNull((si) => si.order == 14)),
+        getScheduleItemWidget('Monday', items.firstWhereOrNull((si) => si.itemOrder == 8)),
+        getScheduleItemWidget('Tuesday', items.firstWhereOrNull((si) => si.itemOrder == 9)),
+        getScheduleItemWidget('Wednesday', items.firstWhereOrNull((si) => si.itemOrder == 10)),
+        getScheduleItemWidget('Thursday', items.firstWhereOrNull((si) => si.itemOrder == 11)),
+        getScheduleItemWidget('Friday', items.firstWhereOrNull((si) => si.itemOrder == 12)),
+        getScheduleItemWidget('Saturday', items.firstWhereOrNull((si) => si.itemOrder == 13)),
+        getScheduleItemWidget('Sunday', items.firstWhereOrNull((si) => si.itemOrder == 14)),
       ]),
     ];
 
@@ -148,7 +145,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
     var widgets = <Widget>[];
 
     for (int i = 1; i <= items.length; i++) {
-      widgets.add(getScheduleItemWidget('Day $i', items.firstWhereOrNull((si) => si.order == i)));
+      widgets.add(getScheduleItemWidget('Day $i', items.firstWhereOrNull((si) => si.itemOrder == i)));
     }
 
     return Column(children: widgets);
@@ -157,12 +154,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
   Widget getScheduleDsiplay(Schedule schedule) {
     Widget? widget;
 
-    if (schedule.items == null || schedule.items!.isEmpty) {
-      return Text(
-        'This sechedule is not finished.',
-        style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-      );
-    }
+    if (schedule.items == null || schedule.items!.isEmpty) return getTextDisplayWidget('This sechedule is empty');
 
     switch (schedule.type) {
       case ScheduleType.weekly:
@@ -179,12 +171,49 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
     return Row(children: [Expanded(child: widget)]);
   }
 
-  void addSchedule() {}
+  void addSchedule() {
+    Navigator.pop(context);
+    CommonFunctions.showBottomSheet(context, ScheduleForm(reloadParent: reloadState));
+  }
 
-  void setActiveSchedule(int? newActiveScheduleId, int? activeScheduleId) {
-    if (newActiveScheduleId == activeScheduleId) return;
+  void editSchedule(Schedule schedule) {
+    Navigator.pop(context);
+    CommonFunctions.showBottomSheet(context, ScheduleForm(reloadParent: reloadState, schedule: schedule));
+  }
 
-    return;
+  void setActiveSchedule(int newActiveScheduleId, int? currentActiveScheduleId) async {
+    Navigator.pop(context);
+    if (newActiveScheduleId == currentActiveScheduleId) return;
+
+    try {
+      await ScheduleModel.setActiveSchedule(newActiveScheduleId);
+    } catch (ex) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to set active Schedule')));
+    }
+
+    reloadState();
+  }
+
+  void showMoreMenu(Schedule activeSchedule) {
+    CommonFunctions.showOptionsMenu(context, [
+      ButtonDetails(
+        icon: Icons.edit_rounded,
+        text: 'Edit Schedule',
+        style: ButtonDetailsStyle(iconColor: Theme.of(context).colorScheme.primary),
+        onTap: () => editSchedule(activeSchedule),
+      ),
+      CommonUI.getDeleteButtonDetails(
+        () => CommonFunctions.showDeleteConfirm(
+          context,
+          'Schedule',
+          () async => await ScheduleModel.deleteSchedule(activeSchedule.id!),
+          reloadState,
+          popCaller: true,
+        ),
+        text: 'Delete Schedule',
+      ),
+    ]);
   }
 
   @override
@@ -197,33 +226,43 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
             builder: (context, schedulesSnapshot) {
               return Column(
                 children: [
-                  CommonUI.getSectionTitleWithAction(
+                  CommonUI.getSectionTitleWithActions(
                     context,
                     activeScheduleSnapshot.hasData ? activeScheduleSnapshot.data!.name : 'Schedule',
-                    ButtonDetails(
-                      icon: Icons.format_list_bulleted_rounded,
-                      onTap: () => CommonFunctions.showOptionsMenu(
-                          context,
-                          [
-                            ButtonDetails(text: 'Add Schedule', icon: Icons.add_rounded, onTap: addSchedule),
-                            if (schedulesSnapshot.hasData && schedulesSnapshot.data!.isNotEmpty)
-                              ...schedulesSnapshot.data!.map(
-                                (s) => ButtonDetails(
+                    [
+                      ButtonDetails(
+                        icon: Icons.format_list_bulleted_rounded,
+                        onTap: () => CommonFunctions.showOptionsMenu(
+                            context,
+                            [
+                              ButtonDetails(
+                                text: 'Add Schedule',
+                                icon: Icons.add_rounded,
+                                onTap: addSchedule,
+                                style: ButtonDetailsStyle.primaryIconAndText(context),
+                              ),
+                              if (schedulesSnapshot.hasData && schedulesSnapshot.data!.isNotEmpty)
+                                ...schedulesSnapshot.data!.map(
+                                  (s) => ButtonDetails(
                                     text: s.name,
                                     icon: s.active ? Icons.chevron_right_rounded : null,
-                                    onTap: () => setActiveSchedule(s.id, activeScheduleSnapshot.data?.id),
-                                    style: ButtonDetailsStyle(
-                                      iconColor: s.active ? Theme.of(context).colorScheme.primary : null,
-                                      textColor: s.active ? Theme.of(context).colorScheme.primary : null,
-                                    )),
-                              ),
-                          ],
-                          menuName: 'Schedules'),
-                    ),
+                                    onTap: () => setActiveSchedule(s.id!, activeScheduleSnapshot.data?.id),
+                                    style: s.active ? ButtonDetailsStyle.primaryIcon(context) : null,
+                                  ),
+                                ),
+                            ],
+                            menuName: 'Schedules'),
+                      ),
+                      if (activeScheduleSnapshot.hasData)
+                        ButtonDetails(
+                          onTap: () => showMoreMenu(activeScheduleSnapshot.data!),
+                          icon: Icons.more_vert_rounded,
+                        ),
+                    ],
                   ),
                   activeScheduleSnapshot.hasData
                       ? getScheduleDsiplay(activeScheduleSnapshot.data!)
-                      : getNoActiveScheduleWidget(),
+                      : getTextDisplayWidget('No active schedule set'),
                 ],
               );
             });

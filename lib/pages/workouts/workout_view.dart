@@ -12,7 +12,7 @@ import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/common/debug_scaffold.dart';
 import 'package:gymvision/pages/forms/add_category_to_workout_form.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
-import 'package:gymvision/pages/workouts/add_exercises_to_workout.dart';
+import 'package:gymvision/pages/forms/add_exercises_to_workout.dart';
 import 'package:gymvision/pages/workouts/workout_exercise_widget.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:reorderables/reorderables.dart';
@@ -208,7 +208,7 @@ class _WorkoutViewState extends State<WorkoutView> {
             },
             icon: Icons.delete_rounded,
             text: 'Delete Workout',
-            style: ButtonDetailsStyle(iconColor: Colors.red),
+            style: ButtonDetailsStyle.redIcon,
           ),
         ],
       );
@@ -291,7 +291,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                   onTap: () => onAddExerciseClick(workout.id!),
                 ),
               ),
-              CommonUI.getDefaultDivider(),
+              CommonUI.getDivider(),
               workoutExercises.isEmpty
                   ? Padding(
                       padding: const EdgeInsets.all(10),

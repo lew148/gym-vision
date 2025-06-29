@@ -3,7 +3,7 @@ import 'package:gymvision/classes/db/schedules/schedule_category.dart';
 
 class ScheduleItem extends DatabaseObject {
   int scheduleId;
-  int order;
+  int itemOrder;
 
   // non-db props
   List<ScheduleCategory>? scheduleCategories;
@@ -13,7 +13,7 @@ class ScheduleItem extends DatabaseObject {
     super.updatedAt,
     super.createdAt,
     required this.scheduleId,
-    required this.order,
+    required this.itemOrder,
     this.scheduleCategories,
   });
 
@@ -23,7 +23,7 @@ class ScheduleItem extends DatabaseObject {
         'updatedAt': DateTime.now().toString(),
         'createdAt': createdAt.toString(),
         'scheduleId': scheduleId,
-        'order': order,
+        'itemOrder': itemOrder,
       };
 
   bool isRest() => scheduleCategories == null || scheduleCategories!.isEmpty;

@@ -96,4 +96,6 @@ class CommonFunctions {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add workout')));
     }
   }
+
+  static void closeKeyboard() => FocusManager.instance.primaryFocus?.unfocus();
 }

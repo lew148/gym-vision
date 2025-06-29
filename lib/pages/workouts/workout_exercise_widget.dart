@@ -266,7 +266,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
               ),
             ),
           ),
-          CommonUI.getDefaultDivider(),
+          CommonUI.getDivider(),
           Padding(
             padding: const EdgeInsets.only(top: 10, bottom: 10),
             child: InkWell(
@@ -319,7 +319,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         ButtonDetails(
           text: 'Delete Set',
           icon: Icons.delete_rounded,
-          style: ButtonDetailsStyle(iconColor: Colors.red),
+          style: ButtonDetailsStyle.redIcon,
           onTap: () => CommonFunctions.showDeleteConfirm(
             context,
             "set",

@@ -106,7 +106,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                         () => null,
                       ),
                       text: 'DELETE DB',
-                      style: ButtonDetailsStyle(textColor: Colors.red),
+                      style: ButtonDetailsStyle.redIconAndText,
                     ),
                   ),
                 ],

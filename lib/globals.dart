@@ -5,6 +5,7 @@ const String appVersion = '1.0.5+40';
 
 const String dmyFormat = 'd MMMM yyyy';
 const String dmFormat = 'd MMMM';
+const dayFormat = 'EEEE';
 
 String getNumberString(String value) => value == '' ? '0' : value;
 
@@ -35,6 +36,11 @@ String getMonthAndYear(DateTime dt) => DateFormat(dt.year == DateTime.now().year
 int getDaysInMonth(int year, int month) => DateTime(year, month + 1, 0).day;
 bool dateIsInFuture(DateTime dt) => DateTime.now().compareTo(dt) < 0;
 bool dateXIsAfterDateY(DateTime x, DateTime y) => y.compareTo(x) < 0;
+
+String getDayStringFromInt(int day) {
+  final now = DateTime.now();
+  return DateFormat(dayFormat).format(DateTime(now.year, now.month, day));
+}
 
 Duration? tryParseDuration(String? s) {
   // format = ##:##:##.######

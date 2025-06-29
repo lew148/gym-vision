@@ -4,13 +4,13 @@ import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 
 class CateogryPickerModal extends StatefulWidget {
-  final List<Category> selectedCategories;
+  final List<Category>? selectedCategories;
   final void Function(List<Category> c) onChange;
   final bool includeMiscCategories;
 
   const CateogryPickerModal({
     super.key,
-    required this.selectedCategories,
+    this.selectedCategories = const [],
     required this.onChange,
     this.includeMiscCategories = true,
   });
@@ -25,7 +25,7 @@ class _CateogryPickerModalState extends State<CateogryPickerModal> {
   @override
   void initState() {
     super.initState();
-    selectedCategories = widget.selectedCategories;
+    selectedCategories = widget.selectedCategories ?? [];
   }
 
   Widget getCategoryDisplay(Category category) => GestureDetector(
@@ -64,18 +64,18 @@ class _CateogryPickerModalState extends State<CateogryPickerModal> {
                 alignment: WrapAlignment.center,
                 children: SplitHelper.splitCategories.map((c) => getCategoryDisplay(c)).toList(),
               ),
-              CommonUI.getDefaultDivider(),
+              CommonUI.getDivider(),
               Wrap(
                 alignment: WrapAlignment.center,
                 children: SplitHelper.split2Categories.map((c) => getCategoryDisplay(c)).toList(),
               ),
-              CommonUI.getDefaultDivider(),
+              CommonUI.getDivider(),
               Wrap(
                 alignment: WrapAlignment.center,
                 children: SplitHelper.muscleGroupCategories.map((c) => getCategoryDisplay(c)).toList(),
               ),
               if (widget.includeMiscCategories) ...[
-                CommonUI.getDefaultDivider(),
+                CommonUI.getDivider(),
                 Wrap(
                   alignment: WrapAlignment.center,
                   children: SplitHelper.miscCategories.map((c) => getCategoryDisplay(c)).toList(),

@@ -192,7 +192,7 @@ class _ExerciseViewState extends State<ExerciseView> {
               CommonUI.getInfoWidget(context, 'Equipment', Text(exercise.equipment.displayName)),
               if (exercise.type == ExerciseType.strength) getPrSection(details),
               // getNotesDisplay(details),
-              CommonUI.getDefaultDivider(),
+              CommonUI.getDivider(),
               CommonUI.getSectionTitle(context, 'History'),
               getRecentUsesWidget(exercise, details),
             ],

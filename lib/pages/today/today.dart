@@ -72,7 +72,7 @@ class _TodayState extends State<Today> {
     final bestSetName = bestSet.getExercise()?.isCardio() ?? false ? null : bestSet.getExercise()?.getFullName();
 
     return Column(children: [
-      CommonUI.getDefaultDivider(),
+      CommonUI.getDivider(),
       Padding(
         padding: const EdgeInsets.all(5),
         child: Row(
@@ -100,7 +100,7 @@ class _TodayState extends State<Today> {
           ],
         ),
       ),
-      if (bestSetName != null) CommonUI.getDefaultDivider(),
+      if (bestSetName != null) CommonUI.getDivider(),
       if (bestSetName != null)
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 5),
@@ -186,7 +186,7 @@ class _TodayState extends State<Today> {
                           },
                           icon: Icons.delete_rounded,
                           text: 'Delete Workout',
-                          style: ButtonDetailsStyle(iconColor: Colors.red),
+                          style: ButtonDetailsStyle.redIcon,
                         )
                       ]),
                       child: const Icon(
