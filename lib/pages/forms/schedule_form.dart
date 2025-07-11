@@ -210,7 +210,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
           children: [
             CommonUI.getSectionTitle(context, 'Add Schedule'),
             CommonUI.getDivider(),
-            CustomFormFields.stringField(controller: nameController, label: 'Name', autofocus: true, maxLength: 25),
+            CustomFormFields.stringField(controller: nameController, label: 'Name', autofocus: !isEdit, maxLength: 25),
             const Padding(padding: EdgeInsetsGeometry.all(5)),
             selectedType == null
                 ? SizedBox(

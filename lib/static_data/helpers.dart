@@ -117,7 +117,7 @@ extension CategoryHelper on Category {
       case Category.arms:
         return '💪 Arms';
       case Category.back:
-        return '🎄 Back';
+        return '🎒 Back';
       case Category.biceps:
         return '💪 Biceps';
       case Category.triceps:

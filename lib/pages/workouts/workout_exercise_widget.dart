@@ -107,7 +107,18 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     );
   }
 
-  List<Widget> getWeightedSetWidgets() {
+  List<Widget> getWeightedSetContents(WorkoutSet ws) => [
+        Expanded(flex: 5, child: CommonUI.getWeightWithIcon(ws)),
+        Expanded(flex: 5, child: CommonUI.getRepsWithIcon(ws)),
+      ];
+
+  List<Widget> getCardioSetContents(WorkoutSet ws) => [
+        Expanded(flex: 4, child: CommonUI.getTimeWithIcon(ws)),
+        Expanded(flex: 3, child: CommonUI.getDistanceWithIcon(ws)),
+        Expanded(flex: 3, child: CommonUI.getCaloriesWithIcon(ws)),
+      ];
+
+  List<Widget> getSetWidgets() {
     final List<Widget> widgets = [];
 
     for (int i = 0; i < workoutSets.length; i++) {
@@ -124,58 +135,9 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           child: Row(
             children: [
               Expanded(
-                flex: 3,
-                child: Container(
-                  padding: const EdgeInsets.all(3),
-                  decoration: BoxDecoration(
-                    border: BoxBorder.all(color: Theme.of(context).colorScheme.shadow),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    (i + 1).toString(),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              Expanded(flex: 5, child: CommonUI.getWeightWithIcon(ws)),
-              Expanded(flex: 5, child: CommonUI.getRepsWithIcon(ws)),
-              // Expanded(
-              //   flex: 1,
-              //   child: GestureDetector(
-              //     behavior: HitTestBehavior.translucent,
-              //     child: const Padding(
-              //       padding: EdgeInsets.symmetric(horizontal: 8),
-              //       child: Icon(Icons.more_vert_rounded),
-              //     ),
-              //     onTap: () => showSetMenu(ws),
-              //   ),
-              // ),
-            ],
-          ),
-        ),
-      ));
-    }
-
-    return widgets;
-  }
-
-  List<Widget> getCardioSetWidgets() {
-    final List<Widget> widgets = [];
-
-    for (int i = 0; i < workoutSets.length; i++) {
-      final ws = workoutSets[i];
-      widgets.add(InkWell(
-        onLongPress: () => showSetMenu(ws),
-        onTap: () => onEditWorkoutSetTap(ws),
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Row(
-            children: [
-              Expanded(
                 flex: 2,
                 child: Container(
-                  padding: const EdgeInsets.all(3),
+                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
                   decoration: BoxDecoration(
                     border: BoxBorder.all(color: Theme.of(context).colorScheme.shadow),
                     borderRadius: BorderRadius.circular(10),
@@ -187,31 +149,13 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                   ),
                 ),
               ),
-              Expanded(
-                flex: 3,
-                child: CommonUI.getTimeWithIcon(ws),
-              ),
-              Expanded(
-                flex: 3,
-                child: CommonUI.getDistanceWithIcon(ws),
-              ),
-              Expanded(
-                flex: 3,
-                child: CommonUI.getCaloriesWithIcon(ws),
-              ),
+              ...(widget.workoutExercise.isCardio() ? getCardioSetContents(ws) : getWeightedSetContents(ws))
             ],
           ),
         ),
       ));
     }
 
-    return widgets;
-  }
-
-  List<Widget> getWorkoutExerciseWidget() {
-    final List<Widget> widgets = [const Divider(height: 0, thickness: 0.25)];
-    var setWidgets = widget.workoutExercise.isCardio() ? getCardioSetWidgets() : getWeightedSetWidgets();
-    widgets.addAll(setWidgets);
     return widgets;
   }
 
@@ -392,7 +336,10 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
               ),
             ),
           ),
-          if (isDroppable && dropped) ...getWorkoutExerciseWidget(),
+          if (isDroppable && dropped) ...[
+            CommonUI.getDivider(height: 0),
+            ...getSetWidgets(),
+          ],
         ],
       ),
     );
