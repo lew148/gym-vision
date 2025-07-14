@@ -66,12 +66,6 @@ class _ScheduleFormState extends State<ScheduleForm> {
         return;
       }
 
-      if (isEdit) {
-        //todo: do edit
-
-        return;
-      }
-
       if (selectedType == ScheduleType.weekly) {
         final sundayEntry = categoriesByDay.entries.first;
         categoriesByDay.remove(sundayEntry.key);
@@ -80,15 +74,27 @@ class _ScheduleFormState extends State<ScheduleForm> {
         // todo swap both sundays
       }
 
+      int? scheduleId;
       var activeSchedule = await ScheduleModel.getActiveSchedule();
 
-      var scheduleId = await ScheduleModel.insertSchedule(Schedule(
-        name: nameController.text,
-        type: selectedType!,
-        active: activeSchedule == null,
-      ));
+      if (isEdit && activeSchedule != null) {
+        if (activeSchedule.name != nameController.text) {
+          activeSchedule.name = nameController.text;
+          await ScheduleModel.updateSchedule(activeSchedule);
+        }
 
-      if (scheduleId == null) throw Exception('Failed to insert Schedule');
+        scheduleId = activeSchedule.id!;
+        var success = await ScheduleModel.deleteScheduleItemsAndCategories(scheduleId);
+        if (!success) return;
+      } else {
+        scheduleId = await ScheduleModel.insertSchedule(Schedule(
+          name: nameController.text,
+          type: selectedType!,
+          active: activeSchedule == null,
+        ));
+      }
+
+      if (scheduleId == null) throw Exception('Failed to add or edit Schedule');
 
       for (int order = 1; order <= categoriesByDay.length; order++) {
         var itemId = await ScheduleModel.insertScheduleItem(ScheduleItem(scheduleId: scheduleId, itemOrder: order));

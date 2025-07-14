@@ -26,6 +26,9 @@ class WorkoutExerciseOrderingsModel {
   static insertWorkoutExerciseOrdering(WorkoutExerciseOrdering weo) async {
     try {
       final db = await DatabaseHelper.getDb();
+      final now = DateTime.now();
+      weo.createdAt = now;
+      weo.updatedAt = now;
       return await db.insert(
         'workout_exercise_orderings',
         weo.toMap(),
@@ -39,6 +42,7 @@ class WorkoutExerciseOrderingsModel {
   static updateWorkoutExerciseOrdering(WorkoutExerciseOrdering weo) async {
     try {
       final db = await DatabaseHelper.getDb();
+      weo.updatedAt = DateTime.now();
       await db.update(
         'workout_exercise_orderings',
         weo.toMap(),

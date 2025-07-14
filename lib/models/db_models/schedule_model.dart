@@ -170,7 +170,6 @@ class ScheduleModel {
       final now = DateTime.now();
       schedule.createdAt = now;
       schedule.updatedAt = now;
-
       return await db.insert(
         'schedules',
         schedule.toMap(),
@@ -185,7 +184,6 @@ class ScheduleModel {
     try {
       final db = await DatabaseHelper.getDb();
       schedule.updatedAt = DateTime.now();
-
       await db.update(
         'schedules',
         schedule.toMap(),
@@ -226,11 +224,9 @@ class ScheduleModel {
   static Future<int?> insertScheduleItem(ScheduleItem scheduleItem) async {
     try {
       final db = await DatabaseHelper.getDb();
-
       final now = DateTime.now();
       scheduleItem.createdAt = now;
       scheduleItem.updatedAt = now;
-
       return await db.insert(
         'schedule_items',
         scheduleItem.toMap(),
@@ -241,9 +237,23 @@ class ScheduleModel {
     }
   }
 
-  static Future<bool?> deleteSchedule(int scheduleId) async {
+  static Future<bool> deleteSchedule(int scheduleId) async {
     try {
       final db = await DatabaseHelper.getDb();
+      var success = await deleteScheduleItemsAndCategories(scheduleId, db: db);
+      if (!success) return false;
+
+      await db.delete('schedules', where: 'id = ?', whereArgs: [scheduleId]);
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  static Future<bool> deleteScheduleItemsAndCategories(int scheduleId, {Database? db}) async {
+    try {
+      db ??= await DatabaseHelper.getDb();
 
       var categories = [];
       var items = await getScheduleItems(scheduleId);
@@ -251,8 +261,6 @@ class ScheduleModel {
       for (var i in items) {
         categories.addAll(await getScheduleCategories(i.id!));
       }
-
-      await db.delete('schedules', where: 'id = ?', whereArgs: [scheduleId]);
 
       for (var i in items) {
         await db.delete('schedule_items', where: 'id = ?', whereArgs: [i.id]);

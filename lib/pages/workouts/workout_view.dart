@@ -111,7 +111,10 @@ class _WorkoutViewState extends State<WorkoutView> {
       );
 
   List<Widget> getWorkoutExercisesWidget(
-      Workout workout, List<WorkoutExercise> workoutExercises, WorkoutExerciseOrdering? ordering) {
+    Workout workout,
+    List<WorkoutExercise> workoutExercises,
+    WorkoutExerciseOrdering? ordering,
+  ) {
     if (ordering != null) {
       final List<WorkoutExercise> remainder = workoutExercises;
       final List<WorkoutExercise> newOrder = [];
