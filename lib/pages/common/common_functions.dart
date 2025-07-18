@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart' hide Category;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
+import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/pages/workouts/workout_view.dart';
+import 'package:gymvision/static_data/enums.dart';
 
 class CommonFunctions {
   static void showDeleteConfirm(
@@ -77,7 +80,12 @@ class CommonFunctions {
   static Future showOptionsMenu(BuildContext context, List<ButtonDetails> list, {String? menuName}) =>
       showBottomSheet(context, CommonUI.getModalMenu(context, list, modalName: menuName));
 
-  static Future onAddWorkoutTap(BuildContext context, Function reloadState, {DateTime? date}) async {
+  static Future onAddWorkoutTap(
+    BuildContext context,
+    Function reloadState, {
+    DateTime? date,
+    List<Category>? categories,
+  }) async {
     try {
       var now = DateTime.now();
 
@@ -86,6 +94,10 @@ class CommonFunctions {
       }
 
       final newWorkoutId = await WorkoutModel.insertWorkout(Workout(date: date ?? now));
+      if (categories != null && categories.isNotEmpty) {
+        await WorkoutCategoryModel.setWorkoutCategories(newWorkoutId, categories);
+      }
+
       if (!context.mounted) return;
 
       Navigator.of(context)

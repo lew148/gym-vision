@@ -2,6 +2,7 @@ import 'package:gymvision/classes/db/database_object.dart';
 import 'package:gymvision/classes/db/schedules/schedule_item.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/globals.dart';
+import 'package:gymvision/static_data/enums.dart';
 
 class Schedule extends DatabaseObject {
   String name;
@@ -50,5 +51,25 @@ class Schedule extends DatabaseObject {
     }
 
     return index;
+  }
+
+  List<Category> getCategoriesForDay(DateTime dt) {
+    if (items == null || items!.isEmpty) return [];
+
+    ScheduleItem? todaysItem;
+
+    switch (type) {
+      case ScheduleType.split:
+        todaysItem = items![indexOfTodaysScheduleItem()];
+        break;
+      case ScheduleType.weekly:
+        final weekday = DateTime.now().weekday;
+        todaysItem = items!.firstWhere((i) => i.itemOrder == weekday);
+        break;
+      case ScheduleType.biweekly:
+        throw UnimplementedError();
+    }
+
+    return todaysItem.scheduleCategories?.map((sc) => sc.category).toList() ?? [];
   }
 }
