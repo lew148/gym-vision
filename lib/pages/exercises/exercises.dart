@@ -6,7 +6,7 @@ import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/pages/exercises/exercise_view.dart';
-import 'package:gymvision/pages/forms/add_category_to_workout_form.dart';
+import 'package:gymvision/pages/forms/category_picker.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 
@@ -144,7 +144,7 @@ class _ExercisesState extends State<Exercises> {
 
   void showCategories() => CommonFunctions.showBottomSheet(
         context,
-        CateogryPickerModal(
+        CateogryPicker(
           selectedCategories: filterCategories,
           onChange: onCategoriesChange,
           includeMiscCategories: false,

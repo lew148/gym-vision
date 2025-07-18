@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/schedules/schedule.dart';
 import 'package:gymvision/classes/db/schedules/schedule_item.dart';
 import 'package:gymvision/enums.dart';
+import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/db_models/schedule_model.dart';
 import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
@@ -44,10 +45,10 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
         ),
       );
 
-  Widget getScheduleItemWidget(String title, ScheduleItem? si) => CommonUI.getCard(
+  Widget getScheduleItemWidget(String title, ScheduleItem? si, {bool active = false}) => CommonUI.getCard(
         context,
-        Padding(
-          padding: const EdgeInsetsGeometry.all(10),
+        CommonUI.getSelectedContainer(
+          context,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -67,24 +68,28 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
                     ),
             ],
           ),
+          selected: active,
         ),
       );
 
-  Widget getWeeklyScheduleWidget(List<ScheduleItem> items) {
+  Widget getWeeklyScheduleWidget(Schedule schedule) {
+    final items = schedule.items!;
+    final weekday = DateTime.now().weekday;
     return Column(
       children: [
-        getScheduleItemWidget('Monday', items.firstWhereOrNull((si) => si.itemOrder == 1)),
-        getScheduleItemWidget('Tuesday', items.firstWhereOrNull((si) => si.itemOrder == 2)),
-        getScheduleItemWidget('Wednesday', items.firstWhereOrNull((si) => si.itemOrder == 3)),
-        getScheduleItemWidget('Thursday', items.firstWhereOrNull((si) => si.itemOrder == 4)),
-        getScheduleItemWidget('Friday', items.firstWhereOrNull((si) => si.itemOrder == 5)),
-        getScheduleItemWidget('Saturday', items.firstWhereOrNull((si) => si.itemOrder == 6)),
-        getScheduleItemWidget('Sunday', items.firstWhereOrNull((si) => si.itemOrder == 7)),
+        getScheduleItemWidget('Monday', items.firstWhereOrNull((si) => si.itemOrder == 1), active: weekday == 1),
+        getScheduleItemWidget('Tuesday', items.firstWhereOrNull((si) => si.itemOrder == 2), active: weekday == 2),
+        getScheduleItemWidget('Wednesday', items.firstWhereOrNull((si) => si.itemOrder == 3), active: weekday == 3),
+        getScheduleItemWidget('Thursday', items.firstWhereOrNull((si) => si.itemOrder == 4), active: weekday == 4),
+        getScheduleItemWidget('Friday', items.firstWhereOrNull((si) => si.itemOrder == 5), active: weekday == 5),
+        getScheduleItemWidget('Saturday', items.firstWhereOrNull((si) => si.itemOrder == 6), active: weekday == 6),
+        getScheduleItemWidget('Sunday', items.firstWhereOrNull((si) => si.itemOrder == 7), active: weekday == 7),
       ],
     );
   }
 
-  Widget getBiWeeklyScheduleWidget(List<ScheduleItem> items) {
+  Widget getBiWeeklyScheduleWidget(Schedule schedule) {
+    final items = schedule.items!;
     final pages = [
       Column(children: [
         const Row(
@@ -141,30 +146,36 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
     );
   }
 
-  Widget getSplitScheduleWidget(List<ScheduleItem> items) {
+  Widget getSplitScheduleWidget(Schedule schedule) {
     var widgets = <Widget>[];
+    final items = schedule.items!;
+    final todaysItemIndex = schedule.indexOfTodaysScheduleItem();
 
     for (int i = 1; i <= items.length; i++) {
-      widgets.add(getScheduleItemWidget('Day $i', items.firstWhereOrNull((si) => si.itemOrder == i)));
+      widgets.add(getScheduleItemWidget(
+        'Day $i',
+        items.firstWhereOrNull((si) => si.itemOrder == i),
+        active: i - 1 == todaysItemIndex,
+      ));
     }
 
     return Column(children: widgets);
   }
 
-  Widget getScheduleDsiplay(Schedule schedule) {
+  Widget getScheduleDisplay(Schedule schedule) {
     Widget? widget;
 
     if (schedule.items == null || schedule.items!.isEmpty) return getTextDisplayWidget('This sechedule is empty');
 
     switch (schedule.type) {
       case ScheduleType.weekly:
-        widget = getWeeklyScheduleWidget(schedule.items!);
+        widget = getWeeklyScheduleWidget(schedule);
         break;
       case ScheduleType.biweekly:
-        widget = getBiWeeklyScheduleWidget(schedule.items!);
+        widget = getBiWeeklyScheduleWidget(schedule);
         break;
       case ScheduleType.split:
-        widget = getSplitScheduleWidget(schedule.items!);
+        widget = getSplitScheduleWidget(schedule);
         break;
     }
 
@@ -226,9 +237,26 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
             builder: (context, schedulesSnapshot) {
               return Column(
                 children: [
-                  CommonUI.getSectionTitleWithActions(
+                  CommonUI.getSectionWidgetWithActions(
                     context,
-                    activeScheduleSnapshot.hasData ? activeScheduleSnapshot.data!.name : 'Schedule',
+                    activeScheduleSnapshot.hasData
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                activeScheduleSnapshot.data!.name,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
+                              Text(
+                                'Started ${getDateOrDayStr(activeScheduleSnapshot.data!.startDate)}',
+                                style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                              ),
+                            ],
+                          )
+                        : const Text('Schedule'),
                     [
                       ButtonDetails(
                         icon: Icons.format_list_bulleted_rounded,
@@ -261,7 +289,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
                     ],
                   ),
                   activeScheduleSnapshot.hasData
-                      ? getScheduleDsiplay(activeScheduleSnapshot.data!)
+                      ? getScheduleDisplay(activeScheduleSnapshot.data!)
                       : getTextDisplayWidget('No active schedule set'),
                 ],
               );

@@ -146,7 +146,7 @@ class _ExerciseViewState extends State<ExerciseView> {
             padding: const EdgeInsetsGeometry.symmetric(vertical: 5),
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               Text(
-                'PR (${details.pr!.getWorkout()!.getDateStr()})',
+                'PR (${getDateStr(details.pr!.getWorkout()!.date)})',
                 style: TextStyle(color: Theme.of(context).colorScheme.shadow),
               ),
               Row(

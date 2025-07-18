@@ -7,6 +7,7 @@ class Schedule extends DatabaseObject {
   String name;
   ScheduleType type;
   bool active;
+  DateTime startDate;
 
   List<ScheduleItem>? items;
 
@@ -17,6 +18,7 @@ class Schedule extends DatabaseObject {
     required this.name,
     required this.type,
     required this.active,
+    required this.startDate,
     this.items,
   });
 
@@ -28,5 +30,25 @@ class Schedule extends DatabaseObject {
         'name': name,
         'type': enumToString(type),
         'active': active ? 1 : 0,
+        'startDate': startDate.toString(),
       };
+
+  int indexOfTodaysScheduleItem() {
+    final daysSinceStart = daysBetween(startDate, DateTime.now());
+    if (daysSinceStart == 0 || items == null) return 0;
+
+    int p = 0, index = 0;
+
+    while (p < daysSinceStart) {
+      if (index == items!.length - 1) {
+        index = 0;
+      } else {
+        index++;
+      }
+
+      p++;
+    }
+
+    return index;
+  }
 }

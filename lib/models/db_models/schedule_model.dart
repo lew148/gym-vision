@@ -7,44 +7,6 @@ import 'package:gymvision/globals.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:sqflite/sqflite.dart';
 
-var test = Schedule(
-  active: true,
-  name: 'Big Boy Split',
-  type: ScheduleType.split,
-  items: [
-    ScheduleItem(
-      scheduleId: 1,
-      itemOrder: 1,
-      scheduleCategories: [ScheduleCategory(scheduleItemId: 1, category: Category.chest)],
-    ),
-    ScheduleItem(
-      scheduleId: 1,
-      itemOrder: 2,
-      scheduleCategories: [ScheduleCategory(scheduleItemId: 1, category: Category.back)],
-    ),
-    ScheduleItem(
-      scheduleId: 1,
-      itemOrder: 3,
-      scheduleCategories: [ScheduleCategory(scheduleItemId: 1, category: Category.arms)],
-    ),
-    ScheduleItem(
-      scheduleId: 1,
-      itemOrder: 4,
-      scheduleCategories: [
-        ScheduleCategory(scheduleItemId: 1, category: Category.shoulders),
-        ScheduleCategory(scheduleItemId: 1, category: Category.core),
-      ],
-    ),
-    ScheduleItem(
-      scheduleId: 1,
-      itemOrder: 5,
-      scheduleCategories: [
-        ScheduleCategory(scheduleItemId: 1, category: Category.legs),
-      ],
-    ),
-  ],
-);
-
 class ScheduleModel {
   static Future<List<Schedule>> getSchedules() async {
     final db = await DatabaseHelper.getDb();
@@ -61,6 +23,7 @@ class ScheduleModel {
         name: map['name'],
         type: stringToEnum(map['type'], ScheduleType.values)!,
         active: map['active'] == 1,
+        startDate: DateTime.parse(map['startDate']),
       ));
     }
 
@@ -82,6 +45,7 @@ class ScheduleModel {
       type: stringToEnum<ScheduleType>(scheduleMap['type'], ScheduleType.values)!,
       active: scheduleMap['active'] == 1,
       items: shallow ? null : await getScheduleItems(scheduleMap['id'], shallow: shallow),
+      startDate: DateTime.parse(scheduleMap['startDate']),
     );
   }
 
@@ -100,6 +64,7 @@ class ScheduleModel {
       type: stringToEnum<ScheduleType>(activeScheduleMap['type'], ScheduleType.values)!,
       active: activeScheduleMap['active'] == 1,
       items: shallow ? null : await getScheduleItems(activeScheduleMap['id'], shallow: shallow),
+      startDate: DateTime.parse(activeScheduleMap['startDate']),
     );
   }
 
@@ -147,6 +112,7 @@ class ScheduleModel {
 
   static Future<bool> setActiveSchedule(int newActiveScheduleId) async {
     try {
+      final now = DateTime.now();
       final existingActiveSchedule = await getActiveSchedule(shallow: true);
 
       if (existingActiveSchedule != null) {
@@ -158,6 +124,7 @@ class ScheduleModel {
       var newActiveSchedule = await getSchedule(newActiveScheduleId);
       if (newActiveSchedule == null) return false;
       newActiveSchedule.active = true;
+      newActiveSchedule.startDate = now;
       return await updateSchedule(newActiveSchedule);
     } catch (e) {
       return false;
@@ -242,9 +209,7 @@ class ScheduleModel {
       final db = await DatabaseHelper.getDb();
       var success = await deleteScheduleItemsAndCategories(scheduleId, db: db);
       if (!success) return false;
-
       await db.delete('schedules', where: 'id = ?', whereArgs: [scheduleId]);
-
       return true;
     } catch (e) {
       return false;

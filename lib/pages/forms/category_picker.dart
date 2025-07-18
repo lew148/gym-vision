@@ -3,12 +3,12 @@ import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 
-class CateogryPickerModal extends StatefulWidget {
+class CateogryPicker extends StatefulWidget {
   final List<Category>? selectedCategories;
   final void Function(List<Category> c) onChange;
   final bool includeMiscCategories;
 
-  const CateogryPickerModal({
+  const CateogryPicker({
     super.key,
     this.selectedCategories = const [],
     required this.onChange,
@@ -16,10 +16,10 @@ class CateogryPickerModal extends StatefulWidget {
   });
 
   @override
-  State<CateogryPickerModal> createState() => _CateogryPickerModalState();
+  State<CateogryPicker> createState() => _CateogryPickerState();
 }
 
-class _CateogryPickerModalState extends State<CateogryPickerModal> {
+class _CateogryPickerState extends State<CateogryPicker> {
   late List<Category> selectedCategories;
 
   @override
@@ -36,17 +36,10 @@ class _CateogryPickerModalState extends State<CateogryPickerModal> {
         }),
         child: CommonUI.getCard(
           context,
-          Container(
-            decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              border: Border.all(
-                width: 2,
-                color:
-                    selectedCategories.contains(category) ? Theme.of(context).colorScheme.primary : Colors.transparent,
-              ),
-            ),
-            padding: const EdgeInsets.all(10),
+          CommonUI.getSelectedContainer(
+            context,
             child: Text(category.displayName),
+            selected: selectedCategories.contains(category),
           ),
         ),
       );

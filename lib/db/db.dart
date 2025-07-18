@@ -112,7 +112,8 @@ class DatabaseHelper {
         createdAt TEXT NOT NULL,
         name TEXT NOT NULL,
         type TEXT NOT NULL,
-        active INTEGER DEFAULT 0
+        active INTEGER DEFAULT 0,
+        startDate TEXT NOT NULL
       );
     ''');
 
@@ -323,6 +324,7 @@ class DatabaseHelper {
           'name': s['name'],
           'type': s['type'],
           'active': s['active'],
+          'startDate': s['startDate'] ?? DateTime.now().toString(),
         });
       }
 
