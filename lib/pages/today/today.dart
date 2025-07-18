@@ -1,9 +1,11 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/bodyweight.dart';
+import 'package:gymvision/classes/db/schedules/schedule.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
+import 'package:gymvision/models/db_models/schedule_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/workouts/flavour_text_card.dart';
@@ -24,6 +26,7 @@ class _TodayState extends State<Today> {
   late DateTime today;
   late Future<List<Workout>> todaysWorkouts;
   late Future<Bodyweight?> todaysBodyweight;
+  late Future<Schedule?> schedule;
 
   @override
   void initState() {
@@ -31,6 +34,7 @@ class _TodayState extends State<Today> {
     today = DateTime.now();
     todaysWorkouts = WorkoutModel.getWorkoutsForDay(today);
     todaysBodyweight = BodyweightModel.getBodyweightForDay(today);
+    schedule = ScheduleModel.getActiveSchedule(shallow: false);
   }
 
   reloadState() => setState(() {
@@ -47,13 +51,15 @@ class _TodayState extends State<Today> {
   Widget getWorkoutOverview(Workout workout) {
     var sets = workout.getSets();
     if (sets.isEmpty) {
-      return Padding(
-        padding: const EdgeInsetsGeometry.only(top: 10),
-        child: Text(
-          'Tap to record workout!',
-          style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+      return Row(children: [
+        Padding(
+          padding: const EdgeInsetsGeometry.only(top: 20),
+          child: Text(
+            'Tap to record workout!',
+            style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+          ),
         ),
-      );
+      ]);
     }
 
     var setsGroupedByWeight = groupBy(sets, (s) => s.weight);
@@ -130,22 +136,22 @@ class _TodayState extends State<Today> {
     ]);
   }
 
-  Widget getWorkoutDisplay(Workout w) => GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onTap: () => Navigator.of(context)
-            .push(
-              MaterialPageRoute(
-                builder: (context) => WorkoutView(
-                  workoutId: w.id!,
-                  reloadParent: reloadState,
-                ),
-              ),
-            )
-            .then((value) => reloadState()),
-        child: CommonUI.getCard(
-          context,
-          Padding(
-            padding: const EdgeInsets.all(15),
+  Widget getWorkoutDisplay(Workout w) => CommonUI.getCard(
+        context,
+        Padding(
+          padding: const EdgeInsets.all(15),
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () => Navigator.of(context)
+                .push(
+                  MaterialPageRoute(
+                    builder: (context) => WorkoutView(
+                      workoutId: w.id!,
+                      reloadParent: reloadState,
+                    ),
+                  ),
+                )
+                .then((value) => reloadState()),
             child: Column(
               children: [
                 Row(
@@ -215,24 +221,70 @@ class _TodayState extends State<Today> {
 
   Widget getWorkoutsOrPlaceholder(List<Workout>? workouts) {
     if (workouts == null || workouts.isEmpty) {
-      return Padding(
-        padding: const EdgeInsetsGeometry.all(10),
-        child: Column(children: [
-          Text(
-            'Tap + to get started!',
-            style: TextStyle(
-              fontSize: 15,
-              color: Theme.of(context).colorScheme.shadow,
-            ),
-          )
+      return FutureBuilder(
+          future: schedule,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Text(
+                'Tap + to get started!',
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Theme.of(context).colorScheme.shadow,
+                ),
+              );
+            }
 
-          // todo: add suggested workout button here?
-        ]),
-      );
+            final schedule = snapshot.data!;
+            final todayCategories = schedule.getCategoriesForDay(today);
+            return todayCategories.isEmpty
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.hotel_rounded, size: 30),
+                      Text(
+                        'Relax! Today is a scheduled Rest Day.',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Theme.of(context).colorScheme.shadow,
+                        ),
+                      ),
+                    ],
+                  )
+                : Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Scheduled for Today',
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                          ),
+                          CommonUI.getTextButton(ButtonDetails(
+                            icon: Icons.add_rounded,
+                            onTap: () => CommonFunctions.onAddWorkoutTap(context, reloadState,
+                                date: today, categories: todayCategories),
+                          )),
+                        ],
+                      ),
+                      Row(children: [
+                        Expanded(
+                          child: Wrap(
+                            alignment: WrapAlignment.start,
+                            children:
+                                todayCategories.map((c) => CommonUI.getPropDisplay(context, c.displayName)).toList(),
+                          ),
+                        ),
+                      ]),
+                    ]),
+                  );
+          });
     }
 
     workouts.sort((a, b) => a.date.compareTo(b.date)); // sort by date asc
-    return SingleChildScrollView(child: Column(children: workouts.map((w) => getWorkoutDisplay(w)).toList()));
+    return workouts.length == 1
+        ? getWorkoutDisplay(workouts.first)
+        : SingleChildScrollView(child: Column(children: workouts.map((w) => getWorkoutDisplay(w)).toList()));
   }
 
   String getTodayTotalCalsString(List<Workout> workouts) {
@@ -359,24 +411,24 @@ class _TodayState extends State<Today> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommonUI.getSectionWidgetWithAction(
-          context,
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: CommonUI.getSectionWidgetWithAction(
+            context,
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  DateFormat('EEEE, MMMM d').format(DateTime.now()),
+                  DateFormat('EEEE, MMMM d').format(today),
                   style: TextStyle(color: Theme.of(context).colorScheme.shadow),
                 ),
                 const Text('Today', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
               ],
             ),
-          ),
-          ButtonDetails(
-            icon: Icons.add_rounded,
-            onTap: () => CommonFunctions.onAddWorkoutTap(context, reloadState, date: today),
+            ButtonDetails(
+              icon: Icons.add_rounded,
+              onTap: () => CommonFunctions.onAddWorkoutTap(context, reloadState, date: today),
+            ),
           ),
         ),
         const FlavourTextCard(),
@@ -388,11 +440,9 @@ class _TodayState extends State<Today> {
 
                 return Column(
                   children: [
-                    SizedBox(
-                      height: 100,
-                      child: getCalsAndBodyweightRow(snapshot.data),
-                    ),
+                    SizedBox(height: 100, child: getCalsAndBodyweightRow(snapshot.data)),
                     Expanded(child: getWorkoutsOrPlaceholder(snapshot.data)),
+                    const Padding(padding: EdgeInsetsGeometry.all(5)),
                   ],
                 );
               }),
