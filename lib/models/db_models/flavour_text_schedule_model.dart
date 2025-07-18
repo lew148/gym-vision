@@ -64,6 +64,7 @@ class FlavourTextScheduleModel {
   static setFlavourTextScheduleDismissed(FlavourTextSchedule fts) async {
     final db = await DatabaseHelper.getDb();
     fts.dismissed = true;
+    fts.updatedAt = DateTime.now();
     await db.update(
       'flavour_text_schedules',
       fts.toMap(),
@@ -76,6 +77,7 @@ class FlavourTextScheduleModel {
     final db = await DatabaseHelper.getDb();
     final FlavourTextSchedule mostRecentFTS = (await getRecentFlavourTextSchedules(db)).first;
     mostRecentFTS.dismissed = false;
+    mostRecentFTS.updatedAt = DateTime.now();
     await db.update(
       'flavour_text_schedules',
       mostRecentFTS.toMap(),

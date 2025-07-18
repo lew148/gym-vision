@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/classes/exercise.dart';
+import 'package:gymvision/globals.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/static_data/enums.dart';
 
@@ -71,6 +72,7 @@ class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
 
   @override
   Widget build(BuildContext context) {
+    final workout = widget.workoutSets.first.getWorkout();
     return CommonUI.getCard(
       context,
       Column(children: [
@@ -81,7 +83,7 @@ class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
               CommonUI.getCompleteMark(context, widget.workoutSets.first.workoutExercise?.done ?? false),
               const Padding(padding: EdgeInsets.all(5)),
               Text(
-                widget.workoutSets.first.getWorkout()?.getDateStr() ?? '-',
+                workout != null ? getDateStr(workout.date) : '-',
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ],

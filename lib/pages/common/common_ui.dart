@@ -264,4 +264,16 @@ class CommonUI {
         const Padding(padding: EdgeInsets.all(2.5)),
         Text('Rest', style: TextStyle(color: color)),
       ]);
+
+  static Widget getSelectedContainer(BuildContext context, {required Widget child, bool selected = false}) => Container(
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
+          border: Border.all(
+            width: 2,
+            color: selected ? Theme.of(context).colorScheme.primary : Colors.transparent,
+          ),
+        ),
+        padding: const EdgeInsets.all(10),
+        child: child,
+      );
 }

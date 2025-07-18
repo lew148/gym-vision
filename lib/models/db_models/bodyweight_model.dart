@@ -45,11 +45,9 @@ class BodyweightModel {
 
   static insertBodyweight(Bodyweight bodyweight) async {
     final db = await DatabaseHelper.getDb();
-    
     final now = DateTime.now();
     bodyweight.createdAt = now;
     bodyweight.updatedAt = now;
-
     await db.insert(
       'bodyweights',
       bodyweight.toMap(),

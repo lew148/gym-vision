@@ -5,12 +5,13 @@ import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_category.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise_ordering.dart';
+import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workout_exercise_orderings_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/common/debug_scaffold.dart';
-import 'package:gymvision/pages/forms/add_category_to_workout_form.dart';
+import 'package:gymvision/pages/forms/category_picker.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/pages/forms/add_exercises_to_workout.dart';
 import 'package:gymvision/pages/workouts/workout_exercise_widget.dart';
@@ -65,7 +66,7 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   void onAddCategoryClick(List<Category> existingWorkoutCategoryIds) => CommonFunctions.showBottomSheet(
         context,
-        CateogryPickerModal(
+        CateogryPicker(
           selectedCategories: existingWorkoutCategoryIds,
           onChange: onCategoriesChange,
         ),
@@ -111,7 +112,10 @@ class _WorkoutViewState extends State<WorkoutView> {
       );
 
   List<Widget> getWorkoutExercisesWidget(
-      Workout workout, List<WorkoutExercise> workoutExercises, WorkoutExerciseOrdering? ordering) {
+    Workout workout,
+    List<WorkoutExercise> workoutExercises,
+    WorkoutExerciseOrdering? ordering,
+  ) {
     if (ordering != null) {
       final List<WorkoutExercise> remainder = workoutExercises;
       final List<WorkoutExercise> newOrder = [];
@@ -263,7 +267,7 @@ class _WorkoutViewState extends State<WorkoutView> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                workout.getDateOrDayStr(),
+                getDateOrDayStr(workout.date),
                 style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
               ),
               Text(

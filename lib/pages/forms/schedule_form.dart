@@ -6,7 +6,7 @@ import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/db_models/schedule_model.dart';
 import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
-import 'package:gymvision/pages/forms/add_category_to_workout_form.dart';
+import 'package:gymvision/pages/forms/category_picker.dart';
 import 'package:gymvision/pages/forms/fields/custom_form_fields.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
@@ -66,29 +66,28 @@ class _ScheduleFormState extends State<ScheduleForm> {
         return;
       }
 
-      if (isEdit) {
-        //todo: do edit
-
-        return;
-      }
-
-      if (selectedType == ScheduleType.weekly) {
-        final sundayEntry = categoriesByDay.entries.first;
-        categoriesByDay.remove(sundayEntry.key);
-        categoriesByDay[sundayEntry.key] = sundayEntry.value;
-      } else if (selectedType == ScheduleType.biweekly) {
-        // todo swap both sundays
-      }
-
+      int? scheduleId;
       var activeSchedule = await ScheduleModel.getActiveSchedule();
 
-      var scheduleId = await ScheduleModel.insertSchedule(Schedule(
-        name: nameController.text,
-        type: selectedType!,
-        active: activeSchedule == null,
-      ));
+      if (isEdit && activeSchedule != null) {
+        if (activeSchedule.name != nameController.text) {
+          activeSchedule.name = nameController.text;
+          await ScheduleModel.updateSchedule(activeSchedule);
+        }
 
-      if (scheduleId == null) throw Exception('Failed to insert Schedule');
+        scheduleId = activeSchedule.id!;
+        var success = await ScheduleModel.deleteScheduleItemsAndCategories(scheduleId);
+        if (!success) return;
+      } else {
+        scheduleId = await ScheduleModel.insertSchedule(Schedule(
+          name: nameController.text,
+          type: selectedType!,
+          active: activeSchedule == null,
+          startDate: DateTime.now(),
+        ));
+      }
+
+      if (scheduleId == null) throw Exception('Failed to add or edit Schedule');
 
       for (int order = 1; order <= categoriesByDay.length; order++) {
         var itemId = await ScheduleModel.insertScheduleItem(ScheduleItem(scheduleId: scheduleId, itemOrder: order));
@@ -141,7 +140,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
         behavior: HitTestBehavior.translucent,
         onTap: () => CommonFunctions.showBottomSheet(
           context,
-          CateogryPickerModal(
+          CateogryPicker(
             selectedCategories: categoriesForDay,
             onChange: (c) {
               setState(() {
@@ -156,7 +155,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(selectedType == ScheduleType.split ? 'Day $day' : getDayStringFromInt(day)),
+                Text(selectedType == ScheduleType.split ? 'Day $day' : dayStrings[day - 1]),
                 categoriesForDay == null || categoriesForDay.isEmpty
                     ? CommonUI.getRestWidget()
                     : Expanded(
@@ -189,18 +188,6 @@ class _ScheduleFormState extends State<ScheduleForm> {
     }
   }
 
-  Widget getWeeklyForm() {
-    final fields = getFieldsScheduleItemFields().toList();
-
-    // move sunday (day 1) to end of list
-    final sunday = fields.first;
-    fields.removeAt(0);
-    fields.add(sunday);
-    return Column(children: fields);
-  }
-
-  Widget getSplitForm() => Column(children: getFieldsScheduleItemFields().toList());
-
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -208,7 +195,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
       child: IntrinsicHeight(
         child: Column(
           children: [
-            CommonUI.getSectionTitle(context, 'Add Schedule'),
+            CommonUI.getSectionTitleWithCloseButton(context, 'Add Schedule'),
             CommonUI.getDivider(),
             CustomFormFields.stringField(controller: nameController, label: 'Name', autofocus: !isEdit, maxLength: 25),
             const Padding(padding: EdgeInsetsGeometry.all(5)),
@@ -259,11 +246,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
                     ]),
                   )
                 : Column(children: [
-                    switch (selectedType!) {
-                      ScheduleType.weekly => getWeeklyForm(),
-                      ScheduleType.split => getSplitForm(),
-                      ScheduleType.biweekly => throw UnimplementedError(),
-                    },
+                    Column(children: getFieldsScheduleItemFields().toList()),
                     Row(
                       mainAxisAlignment:
                           selectedType == ScheduleType.split ? MainAxisAlignment.spaceBetween : MainAxisAlignment.end,

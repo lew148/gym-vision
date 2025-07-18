@@ -164,7 +164,6 @@ class WorkoutModel {
     final now = DateTime.now();
     workout.createdAt = now;
     workout.updatedAt = now;
-
     final workoutId = await db.insert(
       'workouts',
       workout.toMap(),

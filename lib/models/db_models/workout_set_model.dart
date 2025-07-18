@@ -83,6 +83,9 @@ class WorkoutSetModel {
       if (we == null) return;
       final ordering = await WorkoutExerciseOrderingsModel.getWorkoutExerciseOrderingForWorkout(we.workoutId);
 
+      var now = DateTime.now();
+      ws.updatedAt = now;
+      ws.createdAt = now;
       await db.insert(
         'workout_sets',
         ws.toMap(),
@@ -109,13 +112,15 @@ class WorkoutSetModel {
     );
   }
 
-  static Future updateWorkoutSet(WorkoutSet workoutSet) async {
+  static Future updateWorkoutSet(WorkoutSet ws) async {
     final db = await DatabaseHelper.getDb();
+
+    ws.updatedAt = DateTime.now();
     await db.update(
       'workout_sets',
-      workoutSet.toMap(),
+      ws.toMap(),
       where: 'id = ?',
-      whereArgs: [workoutSet.id],
+      whereArgs: [ws.id],
     );
   }
 

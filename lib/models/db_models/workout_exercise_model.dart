@@ -96,10 +96,13 @@ class WorkoutExerciseModel {
     final now = DateTime.now();
     we.updatedAt = now;
     we.createdAt = now;
-    final id = await db.insert('workout_exercises', we.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
+    final id = await db.insert(
+      'workout_exercises',
+      we.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
 
     final existingOrdering = await WorkoutExerciseOrderingsModel.getWorkoutExerciseOrderingForWorkout(we.workoutId);
-
     if (existingOrdering != null) {
       existingOrdering.addExerciseToOrdering(id);
       await WorkoutExerciseOrderingsModel.updateWorkoutExerciseOrdering(existingOrdering);
@@ -110,6 +113,7 @@ class WorkoutExerciseModel {
 
   static Future updateWorkoutExercise(WorkoutExercise workoutExercise) async {
     final db = await DatabaseHelper.getDb();
+    workoutExercise.updatedAt = DateTime.now();
     await db.update(
       'workout_exercises',
       workoutExercise.toMap(),

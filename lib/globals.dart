@@ -7,6 +7,27 @@ const String dmyFormat = 'd MMMM yyyy';
 const String dmFormat = 'd MMMM';
 const dayFormat = 'EEEE';
 
+const dayStrings = [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday',
+];
+
+String getDateStr(DateTime dt) =>
+    dt.year != DateTime.now().year ? DateFormat(dmyFormat).format(dt) : DateFormat(dmFormat).format(dt);
+
+String getDateOrDayStr(DateTime dt) {
+  final now = DateTime.now();
+  if (isToday(dt, now: now)) return 'Today';
+  if (isTomorrow(dt, now: now)) return 'Tomorrow';
+  if (isYesterday(dt, now: now)) return 'Yesterday';
+  return getDateStr(dt);
+}
+
 String getNumberString(String value) => value == '' ? '0' : value;
 
 String truncateDouble(double? d) {
@@ -26,7 +47,6 @@ bool isTomorrow(DateTime dt, {DateTime? now}) {
 
 bool isYesterday(DateTime dt, {DateTime? now}) {
   now ??= DateTime.now();
-
   return dt.day == now.day - 1 && dt.month == now.month && dt.year == now.year;
 }
 
@@ -37,10 +57,7 @@ int getDaysInMonth(int year, int month) => DateTime(year, month + 1, 0).day;
 bool dateIsInFuture(DateTime dt) => DateTime.now().compareTo(dt) < 0;
 bool dateXIsAfterDateY(DateTime x, DateTime y) => y.compareTo(x) < 0;
 
-String getDayStringFromInt(int day) {
-  final now = DateTime.now();
-  return DateFormat(dayFormat).format(DateTime(now.year, now.month, day));
-}
+int daysBetween(DateTime past, DateTime future) => future.difference(past).inDays.abs();
 
 Duration? tryParseDuration(String? s) {
   // format = ##:##:##.######
