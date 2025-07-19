@@ -288,6 +288,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
                         ),
                     ],
                   ),
+                  const Padding(padding: EdgeInsets.all(5)),
                   activeScheduleSnapshot.hasData
                       ? getScheduleDisplay(activeScheduleSnapshot.data!)
                       : getTextDisplayWidget('No active schedule set'),

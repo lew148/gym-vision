@@ -221,64 +221,63 @@ class _TodayState extends State<Today> {
 
   Widget getWorkoutsOrPlaceholder(List<Workout>? workouts) {
     if (workouts == null || workouts.isEmpty) {
-      return FutureBuilder(
-          future: schedule,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Text(
-                'Tap + to get started!',
-                style: TextStyle(
-                  fontSize: 15,
-                  color: Theme.of(context).colorScheme.shadow,
-                ),
-              );
-            }
-
-            final schedule = snapshot.data!;
-            final todayCategories = schedule.getCategoriesForDay(today);
-            return todayCategories.isEmpty
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.hotel_rounded, size: 30),
-                      Text(
-                        'Relax! Today is a scheduled Rest Day.',
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Theme.of(context).colorScheme.shadow,
-                        ),
-                      ),
-                    ],
-                  )
-                : Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Column(children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Scheduled for Today',
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                          ),
-                          CommonUI.getTextButton(ButtonDetails(
-                            icon: Icons.add_rounded,
-                            onTap: () => CommonFunctions.onAddWorkoutTap(context, reloadState,
-                                date: today, categories: todayCategories),
-                          )),
-                        ],
-                      ),
-                      Row(children: [
-                        Expanded(
-                          child: Wrap(
-                            alignment: WrapAlignment.start,
-                            children:
-                                todayCategories.map((c) => CommonUI.getPropDisplay(context, c.displayName)).toList(),
-                          ),
-                        ),
-                      ]),
-                    ]),
+      return Padding(
+          padding: const EdgeInsets.all(10),
+          child: FutureBuilder(
+              future: schedule,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return Text(
+                    'Tap + to get started!',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Theme.of(context).colorScheme.shadow,
+                    ),
                   );
-          });
+                }
+
+                final schedule = snapshot.data!;
+                final todayCategories = schedule.getCategoriesForDay(today);
+                return todayCategories.isEmpty
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.hotel_rounded, size: 30),
+                          Text(
+                            'Relax! Today is a scheduled Rest Day.',
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Theme.of(context).colorScheme.shadow,
+                            ),
+                          ),
+                        ],
+                      )
+                    : Column(children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Scheduled for Today',
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                            ),
+                            CommonUI.getTextButton(ButtonDetails(
+                              icon: Icons.add_rounded,
+                              onTap: () => CommonFunctions.onAddWorkoutTap(context, reloadState,
+                                  date: today, categories: todayCategories),
+                            )),
+                          ],
+                        ),
+                        Row(children: [
+                          Expanded(
+                            child: Wrap(
+                              alignment: WrapAlignment.start,
+                              children:
+                                  todayCategories.map((c) => CommonUI.getPropDisplay(context, c.displayName)).toList(),
+                            ),
+                          ),
+                        ]),
+                      ]);
+              }));
     }
 
     workouts.sort((a, b) => a.date.compareTo(b.date)); // sort by date asc

@@ -57,7 +57,11 @@ int getDaysInMonth(int year, int month) => DateTime(year, month + 1, 0).day;
 bool dateIsInFuture(DateTime dt) => DateTime.now().compareTo(dt) < 0;
 bool dateXIsAfterDateY(DateTime x, DateTime y) => y.compareTo(x) < 0;
 
-int daysBetween(DateTime past, DateTime future) => future.difference(past).inDays.abs();
+int daysBetween(DateTime from, DateTime to) {
+  from = DateTime(from.year, from.month, from.day);
+  to = DateTime(to.year, to.month, to.day);
+  return to.difference(from).inDays;
+}
 
 Duration? tryParseDuration(String? s) {
   // format = ##:##:##.######
