@@ -4,6 +4,7 @@ import 'package:gymvision/classes/db/bodyweight.dart';
 import 'package:gymvision/classes/db/schedules/schedule.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
+import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/models/db_models/schedule_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
@@ -50,17 +51,7 @@ class _TodayState extends State<Today> {
 
   Widget getWorkoutOverview(Workout workout) {
     var sets = workout.getSets();
-    if (sets.isEmpty) {
-      return Row(children: [
-        Padding(
-          padding: const EdgeInsetsGeometry.only(top: 20),
-          child: Text(
-            'Tap to record workout!',
-            style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-          ),
-        ),
-      ]);
-    }
+    if (sets.isEmpty) return const SizedBox.shrink();
 
     var setsGroupedByWeight = groupBy(sets, (s) => s.weight);
     var heaviestWeight = (setsGroupedByWeight.keys.toList()..sort((a, b) => a! < b! ? 1 : 0))[0];
@@ -79,29 +70,26 @@ class _TodayState extends State<Today> {
 
     return Column(children: [
       CommonUI.getDivider(),
-      Padding(
+      Container(
         padding: const EdgeInsets.all(5),
+        height: 30,
         child: Row(
           children: [
             Expanded(
-              flex: 6,
-              child: Column(children: [
-                Text(workout.getWorkoutExercises().length.toString()),
-                const Text(
-                  'Exercises',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ]),
+              flex: 4,
+              child: Center(
+                  child: Text(
+                      '${workout.getWorkoutExercises().length.toString()} exercise${workout.getWorkoutExercises().length == 1 ? '' : 's'}')),
             ),
+            CommonUI.getVerticalDivider(context),
             Expanded(
-              flex: 6,
-              child: Column(children: [
-                Text(sets.length.toString()),
-                const Text(
-                  'Sets',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ]),
+              flex: 4,
+              child: Center(child: Text('${sets.length.toString()} sets')),
+            ),
+            CommonUI.getVerticalDivider(context),
+            Expanded(
+              flex: 4,
+              child: Center(child: Text('${sets.map((s) => s.reps ?? 0).reduce((a, b) => a + b)} reps')),
             ),
           ],
         ),
@@ -109,29 +97,31 @@ class _TodayState extends State<Today> {
       if (bestSetName != null) CommonUI.getDivider(),
       if (bestSetName != null)
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Icon(Icons.emoji_events_rounded),
-              const Padding(padding: EdgeInsets.all(5)),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: Row(children: [
+            Column(children: [
+              Row(
                 children: [
-                  Text(
-                    bestSetName,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  Icon(Icons.emoji_events_rounded, color: Colors.amber[300]),
+                  const Padding(padding: EdgeInsets.all(5)),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        bestSetName,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
-                  const Padding(padding: EdgeInsets.all(2.5)),
-                  Row(children: [
-                    CommonUI.getWeightWithIcon(bestSet),
-                    const Padding(padding: EdgeInsets.symmetric(horizontal: 15)),
-                    CommonUI.getRepsWithIcon(bestSet)
-                  ]),
                 ],
               ),
-            ],
-          ),
+              Row(children: [
+                CommonUI.getWeightWithIcon(bestSet),
+                const Padding(padding: EdgeInsets.symmetric(horizontal: 15)),
+                CommonUI.getRepsWithIcon(bestSet)
+              ]),
+            ]),
+          ]),
         ),
     ]);
   }
@@ -195,24 +185,42 @@ class _TodayState extends State<Today> {
                           style: ButtonDetailsStyle.redIcon,
                         )
                       ]),
-                      child: const Icon(
-                        Icons.more_vert_rounded,
-                      ),
+                      child: const Icon(Icons.more_vert_rounded),
                     ),
                   ],
                 ),
-                const Padding(padding: EdgeInsets.all(5)),
+                const Padding(padding: EdgeInsets.all(2.5)),
                 if (w.workoutCategories != null && w.workoutCategories!.isNotEmpty)
                   Row(children: [
                     Expanded(
                       child: Wrap(
-                        alignment: WrapAlignment.start,
-                        children:
-                            w.getCategories().map((c) => CommonUI.getPropDisplay(context, c.displayName)).toList(),
+                        children: w
+                            .getCategories()
+                            .map((c) => CommonUI.getPropDisplay(
+                                  context,
+                                  c.displayName,
+                                  color: propOnCardColor,
+                                ))
+                            .toList(),
                       ),
                     ),
                   ]),
                 getWorkoutOverview(w),
+                Row(children: [
+                  CommonUI.getTextButton(ButtonDetails(
+                    text: 'Add Notes',
+                    icon: Icons.add_rounded,
+                    style: ButtonDetailsStyle(iconSize: 20),
+                    onTap: () => null,
+                  )),
+                  const Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: 5)),
+                  CommonUI.getTextButton(ButtonDetails(
+                    text: 'Add Progress Pic',
+                    icon: Icons.add_rounded,
+                    style: ButtonDetailsStyle(iconSize: 20),
+                    onTap: () => null,
+                  )),
+                ]),
               ],
             ),
           ),
@@ -221,69 +229,81 @@ class _TodayState extends State<Today> {
 
   Widget getWorkoutsOrPlaceholder(List<Workout>? workouts) {
     if (workouts == null || workouts.isEmpty) {
-      return Padding(
-          padding: const EdgeInsets.all(10),
-          child: FutureBuilder(
-              future: schedule,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return Text(
-                    'Tap + to get started!',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Theme.of(context).colorScheme.shadow,
-                    ),
-                  );
-                }
+      return FutureBuilder(
+          future: schedule,
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Text(
+                'Tap + to get started!',
+                style: TextStyle(
+                  fontSize: 15,
+                  color: Theme.of(context).colorScheme.shadow,
+                ),
+              );
+            }
 
-                final schedule = snapshot.data!;
-                final todayCategories = schedule.getCategoriesForDay(today);
-                return todayCategories.isEmpty
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.hotel_rounded, size: 30),
-                          Text(
-                            'Relax! Today is a scheduled Rest Day.',
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Theme.of(context).colorScheme.shadow,
-                            ),
-                          ),
-                        ],
-                      )
-                    : Column(children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Scheduled for Today',
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                            ),
-                            CommonUI.getTextButton(ButtonDetails(
-                              icon: Icons.add_rounded,
-                              onTap: () => CommonFunctions.onAddWorkoutTap(context, reloadState,
-                                  date: today, categories: todayCategories),
-                            )),
-                          ],
+            final schedule = snapshot.data!;
+            final todayCategories = schedule.getCategoriesForDay(today);
+            return todayCategories.isEmpty
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(Icons.hotel_rounded, size: 30),
+                      Text(
+                        'Relax! Today is a scheduled Rest Day.',
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Theme.of(context).colorScheme.shadow,
                         ),
-                        Row(children: [
-                          Expanded(
-                            child: Wrap(
-                              alignment: WrapAlignment.start,
-                              children:
-                                  todayCategories.map((c) => CommonUI.getPropDisplay(context, c.displayName)).toList(),
+                      ),
+                    ],
+                  )
+                : Column(children: [
+                    const Padding(padding: EdgeInsetsGeometry.all(10)),
+                    const Row(children: [
+                      Text('Scheduled for Today', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                    ]),
+                    CommonUI.getCard(
+                      context,
+                      GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        onTap: () => CommonFunctions.onAddWorkoutTap(
+                          context,
+                          reloadState,
+                          date: today,
+                          categories: todayCategories,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsetsGeometry.all(10),
+                          child: Row(children: [
+                            Expanded(
+                              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                                const Text('Workout', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                                Wrap(
+                                  alignment: WrapAlignment.start,
+                                  children: todayCategories
+                                      .map(
+                                        (c) => CommonUI.getPropDisplay(
+                                          context,
+                                          c.displayName,
+                                          color: propOnCardColor,
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                              ]),
                             ),
-                          ),
-                        ]),
-                      ]);
-              }));
+                            const Icon(Icons.chevron_right_rounded),
+                          ]),
+                        ),
+                      ),
+                    ),
+                  ]);
+          });
     }
 
     workouts.sort((a, b) => a.date.compareTo(b.date)); // sort by date asc
-    return workouts.length == 1
-        ? getWorkoutDisplay(workouts.first)
-        : SingleChildScrollView(child: Column(children: workouts.map((w) => getWorkoutDisplay(w)).toList()));
+    return SingleChildScrollView(child: Column(children: workouts.map((w) => getWorkoutDisplay(w)).toList()));
   }
 
   String getTodayTotalCalsString(List<Workout> workouts) {
@@ -337,7 +357,7 @@ class _TodayState extends State<Today> {
                         ],
                       ),
                       Text(
-                        'Total Burned (kcals)',
+                        'kcals',
                         style: TextStyle(color: Theme.of(context).colorScheme.shadow),
                       ),
                     ],
@@ -362,7 +382,7 @@ class _TodayState extends State<Today> {
                             return CommonUI.getTextButton(ButtonDetails(
                               onTap: onAddWeightTap,
                               text: 'Bodyweight',
-                              icon: Icons.add_rounded,
+                              icon: Icons.monitor_weight_rounded,
                             ));
                           }
 

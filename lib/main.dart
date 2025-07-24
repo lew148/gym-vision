@@ -32,7 +32,8 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  final darkThemeBackground = const Color.fromARGB(255, 46, 46, 46);
+  final darkThemeBackground = const Color.fromARGB(255, 35, 35, 35);
+  final darkCard = const Color.fromARGB(255, 46, 46, 46);
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +48,7 @@ class MyApp extends StatelessWidget {
         splashColor: Colors.transparent,
         scaffoldBackgroundColor: const Color(0xFFF8F8F8),
         appBarTheme: const AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle.dark),
-        cardTheme: CardThemeData(shape: Border.all(color: Colors.grey[500]!)),
+        // cardTheme: CardThemeData(shape: Border.all(color: darkCard)),
         colorScheme: ColorScheme.light(
           primary: Colors.lightBlue[400]!,
           secondary: const Color.fromARGB(255, 216, 160, 233),
@@ -65,8 +66,7 @@ class MyApp extends StatelessWidget {
           secondary: const Color.fromARGB(255, 216, 160, 233),
           tertiary: const Color.fromARGB(255, 255, 101, 101),
           shadow: Colors.grey[500],
-          surface: Colors.grey[800]!,
-          surfaceTint: Colors.grey[800],
+          surface: darkCard,
         ),
       ),
       themeMode: EasyDynamicTheme.of(context).themeMode,

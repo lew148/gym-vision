@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:collection/collection.dart';
 import 'package:intl/intl.dart';
 
@@ -6,6 +8,8 @@ const String appVersion = '1.0.5+40';
 const String dmyFormat = 'd MMMM yyyy';
 const String dmFormat = 'd MMMM';
 const dayFormat = 'EEEE';
+
+const propOnCardColor = Color.fromARGB(255, 60, 60, 60);
 
 const dayStrings = [
   'Monday',

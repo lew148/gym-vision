@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 
 class ButtonDetailsStyle {
-  Color? iconColor;
   Color? textColor;
+  Color? iconColor;
+  double? iconSize;
 
   ButtonDetailsStyle({
-    this.iconColor,
     this.textColor,
+    this.iconColor,
+    this.iconSize,
   });
 
   static ButtonDetailsStyle primaryIcon(BuildContext context) =>
@@ -97,6 +99,12 @@ class CommonUI {
       );
 
   static Widget getTextButton(ButtonDetails bd) => TextButton(
+        style: TextButton.styleFrom(
+          padding: EdgeInsets.zero,
+          minimumSize: Size.zero,
+          overlayColor: Colors.transparent, // remove splash
+          splashFactory: NoSplash.splashFactory, // remove splash
+        ),
         onPressed: bd.disabled ? null : bd.onTap,
         onLongPress: bd.disabled ? null : bd.onLongTap,
         child: Row(
@@ -105,10 +113,10 @@ class CommonUI {
             if (bd.icon != null)
               Icon(
                 bd.icon,
-                size: 25,
+                size: bd.style?.iconSize ?? 25,
                 color: bd.style?.iconColor,
               ),
-            if (bd.icon != null && bd.text != null) const Padding(padding: EdgeInsets.only(left: 5)),
+            if (bd.icon != null && bd.text != null) const Padding(padding: EdgeInsets.only(left: 2.5)),
             if (bd.text != null) Text(bd.text!, style: TextStyle(color: bd.style?.textColor)),
           ],
         ),
@@ -149,12 +157,12 @@ class CommonUI {
         ),
       );
 
-  static Widget getPropDisplay(BuildContext context, String text, {Function()? onTap}) => getCard(
+  static Widget getPropDisplay(BuildContext context, String text, {Function()? onTap, Color? color}) => getCard(
         context,
         GestureDetector(
           onTap: onTap,
           child: Container(
-            decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10))),
+            decoration: BoxDecoration(color: color, borderRadius: const BorderRadius.all(Radius.circular(10))),
             padding: const EdgeInsets.all(10),
             child: onTap == null
                 ? Text(text)
@@ -188,6 +196,9 @@ class CommonUI {
       );
 
   static getDivider({double? height}) => Divider(thickness: 0.25, height: height);
+
+  static getVerticalDivider(BuildContext context, {double? thickness, Color? color}) =>
+      VerticalDivider(thickness: thickness ?? 0.25, color: color ?? Theme.of(context).colorScheme.shadow);
 
   static getInfoWidget(BuildContext context, String title, Widget? info) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 5),
@@ -225,7 +236,7 @@ class CommonUI {
             icon,
             size: 15,
           ),
-          const Padding(padding: EdgeInsets.all(1)),
+          const Padding(padding: EdgeInsets.all(2.5)),
           str == null ? getDash() : Text(str)
         ],
       );

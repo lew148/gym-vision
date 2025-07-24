@@ -197,9 +197,10 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                     ),
                   ),
                 ),
-                VerticalDivider(
-                  thickness: isToday ? 5 : 0.5,
-                  color: isToday ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.shadow,
+                CommonUI.getVerticalDivider(
+                  context,
+                  thickness: isToday ? 5 : null,
+                  color: isToday ? Theme.of(context).colorScheme.primary : null,
                 ),
                 Expanded(
                   flex: 5,
