@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:collection/collection.dart';
 import 'package:intl/intl.dart';
 
-const String appVersion = '1.0.5+40';
+const String appVersion = '1.0.6';
 
 const String dmyFormat = 'd MMMM yyyy';
 const String dmFormat = 'd MMMM';

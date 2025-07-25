@@ -182,15 +182,10 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
     return Row(children: [Expanded(child: widget)]);
   }
 
-  void addSchedule() {
-    Navigator.pop(context);
-    CommonFunctions.showBottomSheet(context, ScheduleForm(reloadParent: reloadState));
-  }
+  void addScheduleOnTap() => CommonFunctions.showBottomSheet(context, ScheduleForm(reloadParent: reloadState));
 
-  void editSchedule(Schedule schedule) {
-    Navigator.pop(context);
-    CommonFunctions.showBottomSheet(context, ScheduleForm(reloadParent: reloadState, schedule: schedule));
-  }
+  void editScheduleOnTap(Schedule schedule) =>
+      CommonFunctions.showBottomSheet(context, ScheduleForm(reloadParent: reloadState, schedule: schedule));
 
   void setActiveSchedule(int newActiveScheduleId, int? currentActiveScheduleId) async {
     Navigator.pop(context);
@@ -212,7 +207,10 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
         icon: Icons.edit_rounded,
         text: 'Edit Schedule',
         style: ButtonDetailsStyle(iconColor: Theme.of(context).colorScheme.primary),
-        onTap: () => editSchedule(activeSchedule),
+        onTap: () {
+          Navigator.pop(context);
+          editScheduleOnTap(activeSchedule);
+        },
       ),
       CommonUI.getDeleteButtonDetails(
         () => CommonFunctions.showDeleteConfirm(
@@ -259,14 +257,17 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
                         : const Text('Schedule'),
                     [
                       ButtonDetails(
-                        icon: Icons.format_list_bulleted_rounded,
+                        icon: Icons.more_vert_rounded,
                         onTap: () => CommonFunctions.showOptionsMenu(
                             context,
                             [
                               ButtonDetails(
                                 text: 'Add Schedule',
                                 icon: Icons.add_rounded,
-                                onTap: addSchedule,
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  addScheduleOnTap();
+                                },
                                 style: ButtonDetailsStyle.primaryIconAndText(context),
                               ),
                               if (schedulesSnapshot.hasData && schedulesSnapshot.data!.isNotEmpty)
@@ -291,7 +292,11 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
                   const Padding(padding: EdgeInsets.all(5)),
                   activeScheduleSnapshot.hasData
                       ? getScheduleDisplay(activeScheduleSnapshot.data!)
-                      : getTextDisplayWidget('No active schedule set'),
+                      : CommonUI.getElevatedPrimaryButton(ButtonDetails(
+                          icon: Icons.add_rounded,
+                          text: 'Add a Schedule',
+                          onTap: addScheduleOnTap,
+                        )),
                 ],
               );
             });

@@ -13,8 +13,10 @@ import 'package:gymvision/pages/workouts/flavour_text_card.dart';
 import 'package:gymvision/pages/forms/add_bodyweight_form.dart';
 import 'package:gymvision/pages/workouts/workout_view.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
+import 'package:gymvision/providers/navigation_provider.dart';
 import 'package:gymvision/static_data/helpers.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class Today extends StatefulWidget {
   const Today({super.key});
@@ -233,11 +235,36 @@ class _TodayState extends State<Today> {
           future: schedule,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
-              return Text(
-                'Tap + to get started!',
-                style: TextStyle(
-                  fontSize: 15,
-                  color: Theme.of(context).colorScheme.shadow,
+              return Padding(
+                padding: const EdgeInsetsGeometry.all(30),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.sports_gymnastics_rounded, size: 60, color: Theme.of(context).colorScheme.primary),
+                    const Padding(padding: EdgeInsetsGeometry.all(5)),
+                    const Text(
+                      'Ready to crush your goals?',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      'Tap + above to begin a workout!',
+                      style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
+                      textAlign: TextAlign.center,
+                    ),
+                    const Padding(padding: EdgeInsetsGeometry.all(5)),
+                    Text(
+                      'OR',
+                      style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
+                      textAlign: TextAlign.center,
+                    ),
+                    const Padding(padding: EdgeInsetsGeometry.all(5)),
+                    CommonUI.getElevatedPrimaryButton(ButtonDetails(
+                      icon: Icons.add_rounded,
+                      text: 'Add a Schedule',
+                      onTap: () => Provider.of<NavigationProvider>(context, listen: false).changeTab(3),
+                    )),
+                  ],
                 ),
               );
             }
@@ -259,10 +286,6 @@ class _TodayState extends State<Today> {
                     ],
                   )
                 : Column(children: [
-                    const Padding(padding: EdgeInsetsGeometry.all(10)),
-                    const Row(children: [
-                      Text('Scheduled for Today', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                    ]),
                     CommonUI.getCard(
                       context,
                       GestureDetector(
@@ -278,7 +301,10 @@ class _TodayState extends State<Today> {
                           child: Row(children: [
                             Expanded(
                               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                const Text('Workout', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                                const Text(
+                                  'Scheduled for Today',
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                ),
                                 Wrap(
                                   alignment: WrapAlignment.start,
                                   children: todayCategories

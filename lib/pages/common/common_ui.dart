@@ -110,12 +110,7 @@ class CommonUI {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (bd.icon != null)
-              Icon(
-                bd.icon,
-                size: bd.style?.iconSize ?? 25,
-                color: bd.style?.iconColor,
-              ),
+            if (bd.icon != null) Icon(bd.icon, size: bd.style?.iconSize ?? 25, color: bd.style?.iconColor),
             if (bd.icon != null && bd.text != null) const Padding(padding: EdgeInsets.only(left: 2.5)),
             if (bd.text != null) Text(bd.text!, style: TextStyle(color: bd.style?.textColor)),
           ],
@@ -125,7 +120,10 @@ class CommonUI {
   static Widget getElevatedPrimaryButton(ButtonDetails bd) => ElevatedButton(
         onPressed: bd.disabled ? null : bd.onTap,
         onLongPress: bd.disabled ? null : bd.onLongTap,
-        style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))),
+        style: ElevatedButton.styleFrom(
+          shadowColor: Colors.transparent,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -150,12 +148,10 @@ class CommonUI {
         style: ButtonDetailsStyle(iconColor: Colors.red),
       );
 
-  static getDoneButton(Function() onSubmit) => CommonUI.getTextButton(
-        ButtonDetails(
-          onTap: onSubmit,
-          text: 'Done',
-        ),
-      );
+  static getDoneButton(Function() onSubmit) => CommonUI.getTextButton(ButtonDetails(
+        onTap: onSubmit,
+        text: 'Done',
+      ));
 
   static Widget getPropDisplay(BuildContext context, String text, {Function()? onTap, Color? color}) => getCard(
         context,

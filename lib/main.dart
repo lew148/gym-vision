@@ -7,6 +7,8 @@ import 'package:gymvision/pages/exercises/exercises.dart';
 import 'package:gymvision/pages/progress/progress.dart';
 import 'package:gymvision/pages/today/today.dart';
 import 'package:gymvision/pages/workouts/workouts.dart';
+import 'package:gymvision/providers/navigation_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 void main() async {
@@ -24,7 +26,12 @@ void main() async {
     },
     appRunner: () => runApp(EasyDynamicThemeWidget(
       initialThemeMode: ThemeMode.system,
-      child: const MyApp(),
+      child: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => NavigationProvider()),
+        ],
+        child: const MyApp(),
+      ),
     )),
   );
 }
@@ -83,16 +90,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int selectedIndex = 0;
-
-  void onItemTapped(int index) {
-    setState(() {
-      selectedIndex = index;
-    });
-  }
-
-  void reloadState() => onItemTapped(selectedIndex);
-
   List<Widget> widgetPages() => [
         const Today(),
         const Workouts(),
@@ -109,10 +106,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final navProvider = Provider.of<NavigationProvider>(context);
+    final selectedIndex = navProvider.selectedIndex;
+
     return DebugScaffold(
       body: widgetPages().elementAt(selectedIndex),
       bottomNavigationBar: NavigationBar(
-        onDestinationSelected: onItemTapped,
+        onDestinationSelected: navProvider.changeTab,
         labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
         indicatorColor: Colors.transparent,
         selectedIndex: selectedIndex,
