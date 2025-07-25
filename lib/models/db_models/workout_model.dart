@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_category.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise_ordering.dart';
+import 'package:gymvision/db/custom_database.dart';
 import 'package:gymvision/db/db.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
 import 'package:gymvision/globals.dart';
@@ -19,6 +20,7 @@ class WorkoutModel {
       SELECT
         workouts.id,
         workouts.date,
+        workouts.endDate,
         workout_categories.id AS workoutCategoryId,
         workout_categories.category,
         workout_exercise_orderings.id AS weoId,
@@ -39,13 +41,13 @@ class WorkoutModel {
         Workout(
           id: gm.key,
           date: parseDateTime(gm.value.first['date']),
+          endDate: tryParseDateTime(gm.value.first['endDate']),
           workoutCategories: processWorkoutCategories(gm.value),
           exerciseOrdering: WorkoutExerciseOrdering(
             id: gm.value.first['weoId'],
             workoutId: gm.key,
             positions: gm.value.first['positions'],
           ),
-          done: await workoutIsDone(workoutId: gm.key, db: db),
           workoutExercises: await WorkoutExerciseModel.getWorkoutExercisesForWorkout(gm.key, db: db),
         ),
       );
@@ -60,6 +62,7 @@ class WorkoutModel {
       SELECT
         workouts.id,
         workouts.date,
+        workouts.endDate,
         workout_categories.id AS workoutCategoryId,
         workout_categories.category,
         workout_exercises.id as weId,
@@ -81,13 +84,13 @@ class WorkoutModel {
         Workout(
           id: gm.key,
           date: parseDateTime(gm.value.first['date']),
+          endDate: tryParseDateTime(gm.value.first['endDate']),
           workoutCategories: processWorkoutCategories(gm.value),
           exerciseOrdering: WorkoutExerciseOrdering(
             id: gm.value.first['weoId'],
             workoutId: gm.key,
             positions: gm.value.first['positions'],
           ),
-          done: await workoutIsDone(workoutId: gm.key, db: db),
           isEmpty: gm.value.first['weId'] == null,
         ),
       );
@@ -118,7 +121,7 @@ class WorkoutModel {
     return workoutCategories;
   }
 
-  static Future<bool> workoutIsDone({required int workoutId, Database? db}) async {
+  static Future<bool> allExercisesInWorkoutAreDone({required int workoutId, CustomDatabase? db}) async {
     db ??= await DatabaseHelper.getDb();
     int? noIncompleteSets = Sqflite.firstIntValue(await db.rawQuery('''
       SELECT COUNT(*)
@@ -135,15 +138,13 @@ class WorkoutModel {
   }) async {
     try {
       final db = await DatabaseHelper.getDb();
-      final List<Map<String, dynamic>> maps = await db.query(
-        'workouts',
-        where: 'id = ?',
-        whereArgs: [workoutId],
-      );
+      final List<Map<String, dynamic>> maps = await db.query('workouts', where: 'id = ?', whereArgs: [workoutId]);
+      if (maps.isEmpty) return null;
 
       return Workout(
         id: workoutId,
-        date: DateTime.parse(maps.first['date']),
+        date: parseDateTime(maps.first['date']),
+        endDate: tryParseDateTime(maps.first['endDate']),
         workoutCategories:
             includeCategories ? await WorkoutCategoryModel.getWorkoutCategoriesForWorkout(workoutId) : null,
         workoutExercises:
@@ -160,7 +161,6 @@ class WorkoutModel {
 
   static Future<int> insertWorkout(Workout workout) async {
     final db = await DatabaseHelper.getDb();
-
     final now = DateTime.now();
     workout.createdAt = now;
     workout.updatedAt = now;
@@ -176,7 +176,6 @@ class WorkoutModel {
 
   static deleteWorkout(int workoutId) async {
     final db = await DatabaseHelper.getDb();
-
     final wes = await WorkoutExerciseModel.getWorkoutExercisesForWorkout(workoutId, db: db);
     for (var we in wes) {
       await WorkoutExerciseModel.deleteWorkoutExercise(we.id!, db: db);
@@ -227,7 +226,6 @@ class WorkoutModel {
 
   static Future<int?> getMostRecentWorkoutIdForCategory(WorkoutCategory wc) async {
     final db = await DatabaseHelper.getDb();
-
     var workout = await getWorkout(workoutId: wc.workoutId);
     if (workout == null) return null;
 
@@ -239,5 +237,18 @@ class WorkoutModel {
       ORDER BY workouts.id DESC
       LIMIT 1;
     '''));
+  }
+
+  static Future<bool> updateWorkout(Workout workout) async {
+    final db = await DatabaseHelper.getDb();
+    workout.updatedAt = DateTime.now();
+    await db.update(
+      'workouts',
+      workout.toMap(),
+      where: 'id = ?',
+      whereArgs: [workout.id],
+    );
+
+    return true;
   }
 }

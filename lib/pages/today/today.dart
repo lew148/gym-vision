@@ -46,7 +46,7 @@ class _TodayState extends State<Today> {
         todaysBodyweight = BodyweightModel.getBodyweightForDay(today);
       });
 
-  void onAddWeightTap() async => CommonFunctions.showBottomSheet(
+  void onAddWeightTap() async => showCustomBottomSheet(
         context,
         const AddBodyWeightForm(),
       ).then((x) => reloadState());
@@ -150,11 +150,10 @@ class _TodayState extends State<Today> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(children: [
-                      if (w.workoutExercises?.isNotEmpty ?? false)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 15),
-                          child: CommonUI.getCompleteMark(context, w.done),
-                        ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 15),
+                        child: CommonUI.getCompleteMark(context, w.isFinished()),
+                      ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,11 +170,11 @@ class _TodayState extends State<Today> {
                       ),
                     ]),
                     GestureDetector(
-                      onTap: () => CommonFunctions.showOptionsMenu(context, [
+                      onTap: () => showOptionsMenu(context, [
                         ButtonDetails(
                           onTap: () {
                             Navigator.pop(context);
-                            CommonFunctions.showDeleteConfirm(
+                            showDeleteConfirm(
                               context,
                               "workout",
                               () => WorkoutModel.deleteWorkout(w.id!),
@@ -290,7 +289,7 @@ class _TodayState extends State<Today> {
                       context,
                       GestureDetector(
                         behavior: HitTestBehavior.translucent,
-                        onTap: () => CommonFunctions.onAddWorkoutTap(
+                        onTap: () => onAddWorkoutTap(
                           context,
                           reloadState,
                           date: today,
@@ -413,7 +412,7 @@ class _TodayState extends State<Today> {
                           }
 
                           return GestureDetector(
-                            onTap: () => CommonFunctions.showDeleteConfirm(
+                            onTap: () => showDeleteConfirm(
                               context,
                               "bodyweight",
                               () => BodyweightModel.deleteBodyweight(bwsnapshot.data!.id!),
@@ -472,7 +471,7 @@ class _TodayState extends State<Today> {
             ),
             ButtonDetails(
               icon: Icons.add_rounded,
-              onTap: () => CommonFunctions.onAddWorkoutTap(context, reloadState, date: today),
+              onTap: () => onAddWorkoutTap(context, reloadState, date: today),
             ),
           ),
         ),

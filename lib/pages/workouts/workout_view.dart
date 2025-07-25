@@ -14,6 +14,8 @@ import 'package:gymvision/pages/common/debug_scaffold.dart';
 import 'package:gymvision/pages/forms/category_picker.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/pages/forms/add_exercises_to_workout.dart';
+import 'package:gymvision/pages/forms/fields/custom_form_fields.dart';
+import 'package:gymvision/pages/workouts/time_elapsed_widget.dart';
 import 'package:gymvision/pages/workouts/workout_exercise_widget.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:reorderables/reorderables.dart';
@@ -35,6 +37,7 @@ class WorkoutView extends StatefulWidget {
 class _WorkoutViewState extends State<WorkoutView> {
   late Future<Workout?> workoutFuture;
   List<int> droppedWes = [];
+  late bool workoutIsFinished;
 
   @override
   void initState() {
@@ -64,7 +67,7 @@ class _WorkoutViewState extends State<WorkoutView> {
     }
   }
 
-  void onAddCategoryClick(List<Category> existingWorkoutCategoryIds) => CommonFunctions.showBottomSheet(
+  void onAddCategoryClick(List<Category> existingWorkoutCategoryIds) => showCustomBottomSheet(
         context,
         CateogryPicker(
           selectedCategories: existingWorkoutCategoryIds,
@@ -180,7 +183,7 @@ class _WorkoutViewState extends State<WorkoutView> {
     reloadState();
   }
 
-  void showMoreMenu(Workout workout) => CommonFunctions.showOptionsMenu(
+  void showMoreMenu(Workout workout) => showOptionsMenu(
         context,
         [
           ButtonDetails(
@@ -202,7 +205,7 @@ class _WorkoutViewState extends State<WorkoutView> {
           ButtonDetails(
             onTap: () {
               Navigator.pop(context);
-              CommonFunctions.showDeleteConfirm(
+              showDeleteConfirm(
                 context,
                 "workout",
                 () => WorkoutModel.deleteWorkout(workout.id!),
@@ -250,17 +253,33 @@ class _WorkoutViewState extends State<WorkoutView> {
     reloadState();
   }
 
+  void finishWorkoutOnTap(Workout workout, bool? value, Function workoutFinishedSetState) async {
+    try {
+      workout.endDate = value ?? false ? DateTime.now() : null;
+      await WorkoutModel.updateWorkout(workout);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to finish workout.')));
+    }
+
+    workoutFinishedSetState(() => workoutIsFinished = value ?? false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Workout?>(
       future: workoutFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) return const SizedBox.shrink();
-        if (!snapshot.hasData || snapshot.data == null) return const Center(child: Text("Failed to load workout."));
+        if (!snapshot.hasData || snapshot.data == null) {
+          return const DebugScaffold(body: Center(child: Text("Failed to load workout.")));
+        }
 
         final workout = snapshot.data!;
         final categories = workout.getCategories();
         final workoutExercises = workout.getWorkoutExercises();
+
+        workoutIsFinished = workout.isFinished();
 
         return DebugScaffold(
           customAppBarTitle: Column(
@@ -271,7 +290,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                 style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
               ),
               Text(
-                workout.getTimeStr(),
+                '@ ${workout.getTimeStr()}',
                 style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
               ),
             ],
@@ -286,6 +305,53 @@ class _WorkoutViewState extends State<WorkoutView> {
           ],
           body: Column(
             children: [
+              const Padding(padding: EdgeInsetsGeometry.all(5)),
+              CommonUI.getCard(
+                context,
+                Padding(
+                  padding: const EdgeInsetsGeometry.all(10),
+                  child: StatefulBuilder(
+                    builder: (context, workoutFinishedSetState) => Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(children: [
+                          CustomFormFields.checkbox(
+                            context,
+                            workoutIsFinished,
+                            (bool? value) => finishWorkoutOnTap(workout, value, workoutFinishedSetState),
+                          ),
+                          const Padding(padding: EdgeInsetsGeometry.all(2.5)),
+                          GestureDetector(
+                            onTap: () => finishWorkoutOnTap(workout, !workoutIsFinished, workoutFinishedSetState),
+                            child: workoutIsFinished
+                                ? Text(
+                                    'Workout Finished!',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: Theme.of(context).colorScheme.primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )
+                                : Text(
+                                    'Finish Workout',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: Theme.of(context).colorScheme.primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                          ),
+                        ]),
+                        TimeElapsed(
+                          since: workout.date,
+                          end: workout.endDate,
+                          color: Theme.of(context).colorScheme.shadow,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
               getCategoriesWidget(workout, categories),
               CommonUI.getSectionTitleWithAction(
                 context,
@@ -301,10 +367,9 @@ class _WorkoutViewState extends State<WorkoutView> {
                       padding: const EdgeInsets.all(10),
                       child: Text(
                         'Tap + to record an Exercise!',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.shadow,
-                        ),
-                      ))
+                        style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                      ),
+                    )
                   : Expanded(
                       child: ReorderableColumn(
                         onReorder: onWorkoutExerciseReorder,

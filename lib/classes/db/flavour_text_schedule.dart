@@ -1,4 +1,4 @@
-import 'package:gymvision/classes/db/database_object.dart';
+import 'package:gymvision/classes/db/_database_object.dart';
 import 'package:gymvision/classes/flavour_text.dart';
 
 class FlavourTextSchedule extends DatabaseObject {

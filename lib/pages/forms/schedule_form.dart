@@ -107,7 +107,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
   }
 
   void onTypeTap(ScheduleType type) {
-    CommonFunctions.closeKeyboard();
+    closeKeyboard();
     int numDays;
 
     switch (type) {
@@ -138,7 +138,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
       context,
       GestureDetector(
         behavior: HitTestBehavior.translucent,
-        onTap: () => CommonFunctions.showBottomSheet(
+        onTap: () => showCustomBottomSheet(
           context,
           CateogryPicker(
             selectedCategories: categoriesForDay,

@@ -1,6 +1,7 @@
 import 'package:gymvision/classes/db/schedules/schedule.dart';
 import 'package:gymvision/classes/db/schedules/schedule_category.dart';
 import 'package:gymvision/classes/db/schedules/schedule_item.dart';
+import 'package:gymvision/db/custom_database.dart';
 import 'package:gymvision/db/db.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/globals.dart';
@@ -11,7 +12,6 @@ class ScheduleModel {
   static Future<List<Schedule>> getSchedules() async {
     final db = await DatabaseHelper.getDb();
     final List<Map<String, dynamic>> maps = await db.query('schedules');
-
     if (maps.isEmpty) return [];
 
     List<Schedule> schedules = [];
@@ -33,10 +33,9 @@ class ScheduleModel {
   static Future<Schedule?> getSchedule(int scheduleId, {bool shallow = false}) async {
     final db = await DatabaseHelper.getDb();
     final List<Map<String, dynamic>> maps = await db.query('schedules', where: 'id = ?', whereArgs: [scheduleId]);
-
     if (maps.isEmpty) return null;
-    final scheduleMap = maps.first;
 
+    final scheduleMap = maps.first;
     return Schedule(
       id: scheduleMap['id'],
       updatedAt: tryParseDateTime(scheduleMap['updatedAt']),
@@ -52,10 +51,9 @@ class ScheduleModel {
   static Future<Schedule?> getActiveSchedule({bool shallow = true}) async {
     final db = await DatabaseHelper.getDb();
     final List<Map<String, dynamic>> maps = await db.rawQuery('SELECT * FROM schedules WHERE active = 1;');
-
     if (maps.isEmpty) return null;
-    final activeScheduleMap = maps.first;
 
+    final activeScheduleMap = maps.first;
     return Schedule(
       id: activeScheduleMap['id'],
       updatedAt: tryParseDateTime(activeScheduleMap['updatedAt']),
@@ -72,7 +70,6 @@ class ScheduleModel {
     final db = await DatabaseHelper.getDb();
     final List<Map<String, dynamic>> maps =
         await db.rawQuery('SELECT * FROM schedule_items WHERE scheduleId = $scheduleId;');
-
     if (maps.isEmpty) return [];
 
     List<ScheduleItem> items = [];
@@ -94,7 +91,6 @@ class ScheduleModel {
     final db = await DatabaseHelper.getDb();
     final List<Map<String, dynamic>> maps =
         await db.rawQuery('SELECT * FROM schedule_categories WHERE scheduleItemId = $scheduleItemId;');
-
     if (maps.isEmpty) return [];
 
     List<ScheduleCategory> categories = [];
@@ -216,7 +212,7 @@ class ScheduleModel {
     }
   }
 
-  static Future<bool> deleteScheduleItemsAndCategories(int scheduleId, {Database? db}) async {
+  static Future<bool> deleteScheduleItemsAndCategories(int scheduleId, {CustomDatabase? db}) async {
     try {
       db ??= await DatabaseHelper.getDb();
 

@@ -7,106 +7,129 @@ import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/pages/workouts/workout_view.dart';
 import 'package:gymvision/static_data/enums.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
-class CommonFunctions {
-  static void showDeleteConfirm(
-    BuildContext context,
-    String objectName,
-    Function onDelete,
-    Function? reloadState, {
-    bool popCaller = false,
-  }) {
-    HapticFeedback.heavyImpact();
-    showDialog(
-      context: context,
-      builder: (context) => CupertinoAlertDialog(
-        title: Text("Delete $objectName?"),
-        content: Text("Are you sure you would like to delete this $objectName?"),
-        // backgroundColor: Theme.of(context).cardColor,
-        actions: [
-          CupertinoDialogAction(
-            child: const Text("No"),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-          CupertinoDialogAction(
-            child: const Text(
-              "Delete",
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-            ),
-            onPressed: () async {
-              HapticFeedback.heavyImpact();
-              Navigator.pop(context);
-              if (popCaller) Navigator.pop(context);
+Future<T> runSafe<T>(
+  Function f, {
+  required T fallback,
+  bool logToSentry = false,
+  String? sentryMessage,
+  BuildContext? context,
+  String? snackBarMessage,
+}) async {
+  try {
+    return await f();
+  } catch (ex, stack) {
+    if (context != null && context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(snackBarMessage ?? 'An error has occured.')));
+    }
 
-              try {
-                await onDelete();
-              } catch (ex) {
-                if (!context.mounted) return;
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text('Failed to delete $objectName: ${ex.toString()}')));
-              }
-
-              if (reloadState != null) reloadState();
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  static Future showBottomSheet(BuildContext context, Widget child) => showModalBottomSheet(
-        context: context,
-        builder: (BuildContext context) => Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: child,
-              ),
-            ),
-          ],
-        ),
-        isScrollControlled: true,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
-        ),
-      );
-
-  static Future showOptionsMenu(BuildContext context, List<ButtonDetails> list, {String? menuName}) =>
-      showBottomSheet(context, CommonUI.getModalMenu(context, list, modalName: menuName));
-
-  static Future onAddWorkoutTap(
-    BuildContext context,
-    Function reloadState, {
-    DateTime? date,
-    List<Category>? categories,
-  }) async {
-    try {
-      var now = DateTime.now();
-
-      if (date != null) {
-        date = DateTime(date.year, date.month, date.day, now.hour, now.minute);
-      }
-
-      final newWorkoutId = await WorkoutModel.insertWorkout(Workout(date: date ?? now));
-      if (categories != null && categories.isNotEmpty) {
-        await WorkoutCategoryModel.setWorkoutCategories(newWorkoutId, categories);
-      }
-
-      if (!context.mounted) return;
-
-      Navigator.of(context)
-          .push(
-              MaterialPageRoute(builder: (context) => WorkoutView(workoutId: newWorkoutId, reloadParent: reloadState)))
-          .then((value) => reloadState());
-    } catch (ex) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add workout')));
+    if (logToSentry || sentryMessage != null) {
+      sentryMessage == null
+          ? await Sentry.captureException(ex, stackTrace: stack)
+          : await Sentry.captureMessage(sentryMessage);
     }
   }
 
-  static void closeKeyboard() => FocusManager.instance.primaryFocus?.unfocus();
+  return fallback;
 }
+
+void showDeleteConfirm(
+  BuildContext context,
+  String objectName,
+  Function onDelete,
+  Function? reloadState, {
+  bool popCaller = false,
+}) {
+  HapticFeedback.heavyImpact();
+  showDialog(
+    context: context,
+    builder: (context) => CupertinoAlertDialog(
+      title: Text("Delete $objectName?"),
+      content: Text("Are you sure you would like to delete this $objectName?"),
+      // backgroundColor: Theme.of(context).cardColor,
+      actions: [
+        CupertinoDialogAction(
+          child: const Text("No"),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        CupertinoDialogAction(
+          child: const Text(
+            "Delete",
+            style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+          ),
+          onPressed: () async {
+            HapticFeedback.heavyImpact();
+            Navigator.pop(context);
+            if (popCaller) Navigator.pop(context);
+
+            try {
+              await onDelete();
+            } catch (ex) {
+              if (!context.mounted) return;
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(SnackBar(content: Text('Failed to delete $objectName: ${ex.toString()}')));
+            }
+
+            if (reloadState != null) reloadState();
+          },
+        ),
+      ],
+    ),
+  );
+}
+
+Future showCustomBottomSheet(BuildContext context, Widget child) => showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: child,
+            ),
+          ),
+        ],
+      ),
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
+    );
+
+Future showOptionsMenu(BuildContext context, List<ButtonDetails> list, {String? menuName}) =>
+    showCustomBottomSheet(context, CommonUI.getModalMenu(context, list, modalName: menuName));
+
+Future onAddWorkoutTap(
+  BuildContext context,
+  Function reloadState, {
+  DateTime? date,
+  List<Category>? categories,
+}) async {
+  try {
+    var now = DateTime.now();
+
+    if (date != null) {
+      date = DateTime(date.year, date.month, date.day, now.hour, now.minute);
+    }
+
+    final newWorkoutId = await WorkoutModel.insertWorkout(Workout(date: date ?? now));
+    if (categories != null && categories.isNotEmpty) {
+      await WorkoutCategoryModel.setWorkoutCategories(newWorkoutId, categories);
+    }
+
+    if (!context.mounted) return;
+
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => WorkoutView(workoutId: newWorkoutId, reloadParent: reloadState)))
+        .then((value) => reloadState());
+  } catch (ex) {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add workout')));
+  }
+}
+
+void closeKeyboard() => FocusManager.instance.primaryFocus?.unfocus();

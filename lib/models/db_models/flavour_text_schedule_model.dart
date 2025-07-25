@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:gymvision/classes/db/flavour_text_schedule.dart';
+import 'package:gymvision/db/custom_database.dart';
 import 'package:gymvision/db/db.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/flavour_text_model.dart';
@@ -9,7 +10,6 @@ import 'package:sqflite/sqflite.dart';
 class FlavourTextScheduleModel {
   static Future<FlavourTextSchedule> getTodaysFlavourTextSchedule() async {
     final db = await DatabaseHelper.getDb();
-
     final recentFlavourTextSchedules = await getRecentFlavourTextSchedules(db);
     if (recentFlavourTextSchedules.isNotEmpty && isToday(recentFlavourTextSchedules[0].date)) {
       return recentFlavourTextSchedules[0];
@@ -18,7 +18,7 @@ class FlavourTextScheduleModel {
     return addNewFlavourTextSchedule(db, recentFlavourTextSchedules.map((fts) => fts.flavourTextId).toList());
   }
 
-  static Future<List<FlavourTextSchedule>> getRecentFlavourTextSchedules(Database db) async {
+  static Future<List<FlavourTextSchedule>> getRecentFlavourTextSchedules(CustomDatabase db) async {
     final List<Map<String, dynamic>> maps =
         await db.rawQuery('SELECT * FROM flavour_text_schedules ORDER BY date DESC LIMIT 5;');
 
@@ -37,7 +37,7 @@ class FlavourTextScheduleModel {
   }
 
   static Future<FlavourTextSchedule> addNewFlavourTextSchedule(
-    Database db,
+    CustomDatabase db,
     List<int> excludedFlavourTextInts,
   ) async {
     final newFlavourText = FlavourTextModel.getRandomFlavourText(excludedFlavourTextInts);

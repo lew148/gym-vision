@@ -6,7 +6,6 @@ import 'package:gymvision/models/db_models/flavour_text_schedule_model.dart';
 import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/pages/common/debug_scaffold.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'models/db_models/user_settings_model.dart';
 import 'globals.dart';
 
@@ -54,27 +53,18 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                   ),
                   CommonUI.getElevatedPrimaryButton(
                     ButtonDetails(
-                      onTap: () async {
-                        try {
-                          throw ("(IGNORE) This error was sent manually by a developer!");
-                        } catch (ex, stack) {
-                          await Sentry.captureException(
-                            ex,
-                            stackTrace: stack,
-                          );
-
-                          if (!context.mounted) return;
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(content: Text('Error sent to Sentry!')));
-                        }
-                      },
+                      onTap: () => runSafe(
+                        () => throw Exception(),
+                        sentryMessage: '(IGNORE) This error was sent manually by a developer!',
+                        fallback: null,
+                      ),
                       text: 'Send Error to sentry',
                     ),
                   ),
                   const Divider(),
                   CommonUI.getElevatedPrimaryButton(
                     ButtonDetails(
-                      onTap: () => CommonFunctions.showDeleteConfirm(
+                      onTap: () => showDeleteConfirm(
                         context,
                         "DATABASE",
                         () async {
@@ -93,7 +83,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                   ),
                   CommonUI.getElevatedPrimaryButton(
                     ButtonDetails(
-                      onTap: () => CommonFunctions.showDeleteConfirm(
+                      onTap: () => showDeleteConfirm(
                         context,
                         "DATABASE",
                         () async {

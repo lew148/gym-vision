@@ -31,13 +31,13 @@ class BodyweightModel {
     List<Bodyweight> bws = [];
     for (var map in maps) {
       bws.add(Bodyweight(
-      id: map['id'],
-      updatedAt: tryParseDateTime(map['updatedAt']),
-      createdAt: tryParseDateTime(map['createdAt']),
-      date: parseDateTime(map['date']),
-      weight: map['weight'],
-      units: map['units'],
-    ));
+        id: map['id'],
+        updatedAt: tryParseDateTime(map['updatedAt']),
+        createdAt: tryParseDateTime(map['createdAt']),
+        date: parseDateTime(map['date']),
+        weight: map['weight'],
+        units: map['units'],
+      ));
     }
 
     return bws;

@@ -1,3 +1,4 @@
+import 'package:gymvision/db/custom_database.dart';
 import 'package:gymvision/db/migrations.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -41,10 +42,9 @@ class DatabaseHelper {
     );
   }
 
-  static Future<Database> getDb({Database? existingDb}) async {
-    if (existingDb != null) return existingDb;
+  static Future<CustomDatabase> getDb() async {
     if (database == null) await openDb();
-    return database!;
+    return await CustomDatabase.loadDb(database!);
   }
 
   static void initialDbCreate(Batch batch) {
@@ -55,7 +55,8 @@ class DatabaseHelper {
         id INTEGER PRIMARY KEY,
         updatedAt TEXT NOT NULL,
         createdAt TEXT NOT NULL,
-        date TEXT NOT NULL
+        date TEXT NOT NULL,
+        endDate TEXT
       );
     ''');
 
@@ -172,8 +173,8 @@ class DatabaseHelper {
     batch.execute('INSERT INTO user_settings(id, updatedAt, createdAt, theme) VALUES (1, "$now", "$now", "system");');
   }
 
-  static Future<bool> tableExists(String table, {Database? db}) async {
-    db ??= await DatabaseHelper.getDb();
+  static Future<bool> tableExists(String table) async {
+    var db = await DatabaseHelper.getDb();
     var maps = await db.rawQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='$table';");
     return maps.isNotEmpty;
   }
@@ -195,32 +196,32 @@ class DatabaseHelper {
       var prevDb = await getDb();
 
       // in order of initialDbCreate()
-      if (await tableExists('workouts', db: prevDb)) workouts = await prevDb.query('workouts');
-      if (await tableExists('workout_exercise_orderings', db: prevDb)) {
+      if (await tableExists('workouts')) workouts = await prevDb.query('workouts');
+      if (await tableExists('workout_exercise_orderings')) {
         workoutExerciseOrderings = await prevDb.query('workout_exercise_orderings');
       }
 
-      if (await tableExists('workout_categories', db: prevDb)) {
+      if (await tableExists('workout_categories')) {
         workoutCategories = await prevDb.query('workout_categories');
       }
 
-      if (await tableExists('workout_exercises', db: prevDb)) {
+      if (await tableExists('workout_exercises')) {
         workoutExercises = await prevDb.query('workout_exercises');
       }
 
-      if (await tableExists('workout_sets', db: prevDb)) workoutSets = await prevDb.query('workout_sets');
-      if (await tableExists('schedules', db: prevDb)) schedules = await prevDb.query('schedules');
-      if (await tableExists('schedule_items', db: prevDb)) scheduleItems = await prevDb.query('schedule_items');
-      if (await tableExists('schedule_categories', db: prevDb)) {
+      if (await tableExists('workout_sets')) workoutSets = await prevDb.query('workout_sets');
+      if (await tableExists('schedules')) schedules = await prevDb.query('schedules');
+      if (await tableExists('schedule_items')) scheduleItems = await prevDb.query('schedule_items');
+      if (await tableExists('schedule_categories')) {
         scheduleCategories = await prevDb.query('schedule_categories');
       }
 
-      if (await tableExists('flavour_text_schedules', db: prevDb)) {
+      if (await tableExists('flavour_text_schedules')) {
         flavourTextSchedules = await prevDb.query('flavour_text_schedules');
       }
 
-      if (await tableExists('bodyweights', db: prevDb)) bodyweights = await prevDb.query('bodyweights');
-      if (await tableExists('user_settings', db: prevDb)) userSettings = await prevDb.query('user_settings');
+      if (await tableExists('bodyweights')) bodyweights = await prevDb.query('bodyweights');
+      if (await tableExists('user_settings')) userSettings = await prevDb.query('user_settings');
     } catch (ex) {
       return false;
     }
@@ -235,6 +236,7 @@ class DatabaseHelper {
           'updatedAt': w['updatedAt'],
           'createdAt': w['createdAt'],
           'date': w['date'],
+          'endDate': w['endDate'],
         });
       }
 

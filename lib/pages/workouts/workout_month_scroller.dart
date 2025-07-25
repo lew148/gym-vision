@@ -73,7 +73,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
 
   Widget getWorkoutDisplay(Workout workout) => GestureDetector(
         behavior: HitTestBehavior.translucent,
-        onLongPress: () => CommonFunctions.showDeleteConfirm(
+        onLongPress: () => showDeleteConfirm(
           context,
           "workout",
           () => WorkoutModel.deleteWorkout(workout.id!),
@@ -99,7 +99,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                     if (!workout.getIsEmpty())
                       Padding(
                         padding: const EdgeInsets.only(right: 5),
-                        child: CommonUI.getCompleteMark(context, !workout.isInFuture() && workout.done),
+                        child: CommonUI.getCompleteMark(context, !workout.isInFuture() && workout.isFinished()),
                       ),
                     Text(
                       workout.getWorkoutTitle(),
@@ -128,7 +128,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
       );
 
   Widget getBodyweightDisplay(Bodyweight bw) => GestureDetector(
-        onLongPress: () => CommonFunctions.showDeleteConfirm(
+        onLongPress: () => showDeleteConfirm(
           context,
           "bodyweight",
           () => BodyweightModel.deleteBodyweight(bw.id!),
@@ -213,7 +213,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                         : [
                             GestureDetector(
                               behavior: HitTestBehavior.translucent,
-                              onTap: () => CommonFunctions.onAddWorkoutTap(context, reloadState, date: currentDate)
+                              onTap: () => onAddWorkoutTap(context, reloadState, date: currentDate)
                                   .then((x) => widget.reloadParent()),
                               child: dateXIsAfterDateY(widget.userSettings.createdAt!, currentDate) ||
                                       dateIsInFuture(currentDate) ||

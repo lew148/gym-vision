@@ -61,6 +61,15 @@ int getDaysInMonth(int year, int month) => DateTime(year, month + 1, 0).day;
 bool dateIsInFuture(DateTime dt) => DateTime.now().compareTo(dt) < 0;
 bool dateXIsAfterDateY(DateTime x, DateTime y) => y.compareTo(x) < 0;
 
+String getIntTwoDigitsString(int n) => n.toString().padLeft(2, "0");
+
+String getDurationString(Duration duration) {
+  String hours = getIntTwoDigitsString(duration.inHours);
+  String minutes = getIntTwoDigitsString(duration.inMinutes.remainder(60).abs());
+  String seconds = getIntTwoDigitsString(duration.inSeconds.remainder(60).abs());
+  return "${duration.isNegative ? '-' : ''}$hours:$minutes:$seconds";
+}
+
 int daysBetween(DateTime from, DateTime to) {
   from = DateTime(from.year, from.month, from.day);
   to = DateTime(to.year, to.month, to.day);

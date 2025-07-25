@@ -1,20 +1,20 @@
 import 'package:gymvision/classes/exercise_details.dart';
+import 'package:gymvision/db/custom_database.dart';
 import 'package:gymvision/db/db.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';
-import 'package:sqflite/sqflite.dart';
 
 class ExerciseDetailsModel {
   static Future<ExerciseDetails?> getExerciseDetails({
     required String exerciseIdentifier,
     required bool includeRecentUses,
-    Database? existingDb,
+    CustomDatabase? db,
   }) async {
-    final db = await DatabaseHelper.getDb(existingDb: existingDb);
+    db ??= await DatabaseHelper.getDb();
     return ExerciseDetails(
       exerciseIdentifier: exerciseIdentifier,
       // notes: map['notes'],
-      pr: await WorkoutSetModel.getPr(exerciseIdentifier: exerciseIdentifier, existingDb: db),
-      last: await WorkoutSetModel.getLast(exerciseIdentifier: exerciseIdentifier, existingDb: db),
+      pr: await WorkoutSetModel.getPr(exerciseIdentifier: exerciseIdentifier, db: db),
+      last: await WorkoutSetModel.getLast(exerciseIdentifier: exerciseIdentifier, db: db),
       recentUses: includeRecentUses ? await WorkoutSetModel.getWorkoutSetsForExercise(exerciseIdentifier) : null,
     );
   }

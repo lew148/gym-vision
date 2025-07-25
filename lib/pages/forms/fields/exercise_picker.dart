@@ -77,7 +77,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
             ButtonDetails(
               onTap: () {
                 Navigator.pop(context);
-                CommonFunctions.showBottomSheet(
+                showCustomBottomSheet(
                   context,
                   Column(
                     children: [

@@ -1,4 +1,5 @@
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
+import 'package:gymvision/db/custom_database.dart';
 import 'package:gymvision/db/db.dart';
 import 'package:gymvision/models/db_models/workout_exercise_orderings_model.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';
@@ -6,7 +7,7 @@ import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:sqflite/sqflite.dart';
 
 class WorkoutExerciseModel {
-  static Future<WorkoutExercise?> getWorkoutExercise(int workoutExerciseId, [Database? db]) async {
+  static Future<WorkoutExercise?> getWorkoutExercise(int workoutExerciseId, [CustomDatabase? db]) async {
     db ??= await DatabaseHelper.getDb();
     final List<Map<String, dynamic>> maps = await db.query(
       'workout_exercises',
@@ -26,7 +27,9 @@ class WorkoutExerciseModel {
   }
 
   static Future<WorkoutExercise?> getWorkoutExerciseByWorkoutAndExercise(
-      int workoutId, String exerciseIdentifier) async {
+    int workoutId,
+    String exerciseIdentifier,
+  ) async {
     final db = await DatabaseHelper.getDb();
     final List<Map<String, dynamic>> maps = await db.query(
       'workout_exercises',
@@ -45,7 +48,7 @@ class WorkoutExerciseModel {
     );
   }
 
-  static Future deleteWorkoutExercise(int workoutExerciseId, {Database? db}) async {
+  static Future deleteWorkoutExercise(int workoutExerciseId, {CustomDatabase? db}) async {
     db ??= await DatabaseHelper.getDb();
 
     var we = await getWorkoutExercise(workoutExerciseId, db);
@@ -59,10 +62,10 @@ class WorkoutExerciseModel {
       whereArgs: [workoutExerciseId],
     );
 
-    await WorkoutExerciseOrderingsModel.removeExerciseFromOrderingForWorkout(workoutExerciseId, we.workoutId, db);
+    await WorkoutExerciseOrderingsModel.removeExerciseFromOrderingForWorkout(workoutExerciseId, we.workoutId);
   }
 
-  static Future<List<WorkoutExercise>> getWorkoutExercisesForWorkout(int workoutId, {Database? db}) async {
+  static Future<List<WorkoutExercise>> getWorkoutExercisesForWorkout(int workoutId, {CustomDatabase? db}) async {
     db ??= await DatabaseHelper.getDb();
 
     final List<Map<String, dynamic>> maps = await db.query(

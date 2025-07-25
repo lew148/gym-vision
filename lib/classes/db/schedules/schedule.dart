@@ -1,4 +1,4 @@
-import 'package:gymvision/classes/db/database_object.dart';
+import 'package:gymvision/classes/db/_database_object.dart';
 import 'package:gymvision/classes/db/schedules/schedule_item.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/globals.dart';

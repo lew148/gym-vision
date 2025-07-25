@@ -1,4 +1,4 @@
-import 'package:gymvision/classes/db/database_object.dart';
+import 'package:gymvision/classes/db/_database_object.dart';
 import 'package:gymvision/classes/db/workouts/workout_category.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise_ordering.dart';
@@ -9,9 +9,9 @@ import 'package:intl/intl.dart';
 
 class Workout extends DatabaseObject {
   DateTime date;
+  DateTime? endDate;
 
   // non-db props
-  bool done;
   List<WorkoutCategory>? workoutCategories;
   WorkoutExerciseOrdering? exerciseOrdering;
   List<WorkoutExercise>? workoutExercises;
@@ -22,7 +22,7 @@ class Workout extends DatabaseObject {
     super.updatedAt,
     super.createdAt,
     required this.date,
-    this.done = false,
+    this.endDate,
     this.workoutCategories,
     this.exerciseOrdering,
     this.workoutExercises,
@@ -35,7 +35,10 @@ class Workout extends DatabaseObject {
         'updatedAt': DateTime.now().toString(),
         'createdAt': createdAt.toString(),
         'date': date.toString(),
+        'endDate': endDate.toString(),
       };
+
+  bool isFinished() => endDate != null;
 
   String getTimeStr() => DateFormat('Hm').format(date);
   bool isInFuture() => dateIsInFuture(date);

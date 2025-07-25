@@ -50,7 +50,7 @@ class WorkoutCategoryModel {
         WorkoutCategory(
           workoutId: workoutId,
           category: category,
-          createdAt: now,  
+          createdAt: now,
           updatedAt: now,
         ).toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace,

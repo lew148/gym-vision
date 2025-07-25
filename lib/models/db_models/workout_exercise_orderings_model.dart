@@ -54,9 +54,7 @@ class WorkoutExerciseOrderingsModel {
     }
   }
 
-  static removeExerciseFromOrderingForWorkout(int workoutExerciseId, int workoutId, [Database? db]) async {
-    await DatabaseHelper.getDb(existingDb: db);
-
+  static removeExerciseFromOrderingForWorkout(int workoutExerciseId, int workoutId) async {
     final ordering = await getWorkoutExerciseOrderingForWorkout(workoutExerciseId);
     if (ordering == null) return;
     var positions = ordering.getPositions();

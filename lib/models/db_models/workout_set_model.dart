@@ -1,6 +1,7 @@
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
+import 'package:gymvision/db/custom_database.dart';
 import 'package:gymvision/db/db.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
@@ -12,7 +13,7 @@ class WorkoutSetModel {
   static Future<List<WorkoutSet>?> getWorkoutSetsForExercise(String exerciseIdentifier) async =>
       await getWorkoutSets(whereStr: ' workout_exercises.exerciseIdentifier = "$exerciseIdentifier"');
 
-  static getWorkoutSetsForWorkoutExercise(int workoutExerciseId, Database db) async =>
+  static getWorkoutSetsForWorkoutExercise(int workoutExerciseId, CustomDatabase db) async =>
       await getWorkoutSets(whereStr: 'workout_sets.workoutExerciseId = $workoutExerciseId');
 
   static Future<WorkoutSet?> getWorkoutSet({required int id, bool shallow = false}) async {
@@ -114,7 +115,6 @@ class WorkoutSetModel {
 
   static Future updateWorkoutSet(WorkoutSet ws) async {
     final db = await DatabaseHelper.getDb();
-
     ws.updatedAt = DateTime.now();
     await db.update(
       'workout_sets',
@@ -124,7 +124,7 @@ class WorkoutSetModel {
     );
   }
 
-  static Future removeSetsForWorkoutExercise(int workoutExerciseId, [Database? db]) async {
+  static Future removeSetsForWorkoutExercise(int workoutExerciseId, [CustomDatabase? db]) async {
     db ??= await DatabaseHelper.getDb();
     await db.delete(
       'workout_sets',
@@ -133,8 +133,8 @@ class WorkoutSetModel {
     );
   }
 
-  static Future<WorkoutSet?> getPr({required String exerciseIdentifier, Database? existingDb}) async {
-    final db = await DatabaseHelper.getDb(existingDb: existingDb);
+  static Future<WorkoutSet?> getPr({required String exerciseIdentifier, CustomDatabase? db}) async {
+    db ??= await DatabaseHelper.getDb();
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
       WITH max_table AS (
         SELECT *
@@ -183,8 +183,8 @@ class WorkoutSetModel {
     );
   }
 
-  static Future<WorkoutSet?> getLast({required String exerciseIdentifier, Database? existingDb}) async {
-    final db = await DatabaseHelper.getDb(existingDb: existingDb);
+  static Future<WorkoutSet?> getLast({required String exerciseIdentifier, CustomDatabase? db}) async {
+    db ??= await DatabaseHelper.getDb();
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
       SELECT
         workout_sets.id,

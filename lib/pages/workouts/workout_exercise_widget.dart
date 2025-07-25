@@ -63,7 +63,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     widget.toggleDroppedParent(widget.workoutExercise.id!);
   }
 
-  void onEditWorkoutSetTap(WorkoutSet ws) => CommonFunctions.showBottomSheet(
+  void onEditWorkoutSetTap(WorkoutSet ws) => showCustomBottomSheet(
         context,
         EditWorkoutSetForm(
           workoutSet: ws,
@@ -96,7 +96,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   }
 
   void onAddSetsButtonTap() {
-    CommonFunctions.showBottomSheet(
+    showCustomBottomSheet(
       context,
       AddSetToWorkoutForm(
         exerciseIdentifier: exerciseIdentifier,
@@ -182,7 +182,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   }
 
   void showExerciseMenu() {
-    CommonFunctions.showBottomSheet(
+    showCustomBottomSheet(
       context,
       Column(
         children: [
@@ -216,7 +216,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
             child: InkWell(
               onTap: () {
                 Navigator.pop(context);
-                CommonFunctions.showDeleteConfirm(
+                showDeleteConfirm(
                   context,
                   "exercise from workout",
                   () => WorkoutExerciseModel.deleteWorkoutExercise(widget.workoutExercise.id!),
@@ -244,7 +244,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   }
 
   void showSetMenu(WorkoutSet ws) {
-    CommonFunctions.showOptionsMenu(
+    showOptionsMenu(
       context,
       [
         ButtonDetails(
@@ -264,7 +264,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           text: 'Delete Set',
           icon: Icons.delete_rounded,
           style: ButtonDetailsStyle.redIcon,
-          onTap: () => CommonFunctions.showDeleteConfirm(
+          onTap: () => showDeleteConfirm(
             context,
             "set",
             () => WorkoutSetModel.removeSet(ws.id!),

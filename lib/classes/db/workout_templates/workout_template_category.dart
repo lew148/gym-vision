@@ -1,4 +1,4 @@
-import 'package:gymvision/classes/db/database_object.dart';
+import 'package:gymvision/classes/db/_database_object.dart';
 import 'package:gymvision/classes/db/workout_templates/workout_template.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/static_data/enums.dart';

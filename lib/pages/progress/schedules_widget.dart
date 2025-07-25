@@ -182,10 +182,10 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
     return Row(children: [Expanded(child: widget)]);
   }
 
-  void addScheduleOnTap() => CommonFunctions.showBottomSheet(context, ScheduleForm(reloadParent: reloadState));
+  void addScheduleOnTap() => showCustomBottomSheet(context, ScheduleForm(reloadParent: reloadState));
 
   void editScheduleOnTap(Schedule schedule) =>
-      CommonFunctions.showBottomSheet(context, ScheduleForm(reloadParent: reloadState, schedule: schedule));
+      showCustomBottomSheet(context, ScheduleForm(reloadParent: reloadState, schedule: schedule));
 
   void setActiveSchedule(int newActiveScheduleId, int? currentActiveScheduleId) async {
     Navigator.pop(context);
@@ -202,7 +202,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
   }
 
   void showMoreMenu(Schedule activeSchedule) {
-    CommonFunctions.showOptionsMenu(context, [
+    showOptionsMenu(context, [
       ButtonDetails(
         icon: Icons.edit_rounded,
         text: 'Edit Schedule',
@@ -213,7 +213,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
         },
       ),
       CommonUI.getDeleteButtonDetails(
-        () => CommonFunctions.showDeleteConfirm(
+        () => showDeleteConfirm(
           context,
           'Schedule',
           () async => await ScheduleModel.deleteSchedule(activeSchedule.id!),
@@ -258,7 +258,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
                     [
                       ButtonDetails(
                         icon: Icons.more_vert_rounded,
-                        onTap: () => CommonFunctions.showOptionsMenu(
+                        onTap: () => showOptionsMenu(
                             context,
                             [
                               ButtonDetails(
