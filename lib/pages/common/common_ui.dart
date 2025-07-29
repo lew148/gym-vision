@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
+import 'package:gymvision/globals.dart';
+import 'package:intl/intl.dart';
 
 class ButtonDetailsStyle {
   Color? textColor;
@@ -210,13 +212,37 @@ class CommonUI {
         ),
       );
 
+  static getTimeWithIcon(BuildContext context, DateTime time) => Row(children: [
+        Icon(Icons.access_time_rounded, color: Theme.of(context).colorScheme.shadow, size: 15),
+        const Padding(padding: EdgeInsetsGeometry.all(1)),
+        Text(
+          DateFormat('Hm').format(time),
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.shadow,
+            fontSize: 15,
+          ),
+        ),
+      ]);
+
+  static getTimeElapsedWithIcon(BuildContext context, Duration timeElapsed) => Row(children: [
+        Icon(Icons.hourglass_empty_rounded, color: Theme.of(context).colorScheme.shadow, size: 15),
+        const Padding(padding: EdgeInsetsGeometry.all(1)),
+        Text(
+          getReadableDurationString(timeElapsed),
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.shadow,
+            fontSize: 15,
+          ),
+        ),
+      ]);
+
   static getWeightWithIcon(WorkoutSet set) =>
       getXwithIcon(Icons.fitness_center_rounded, set.hasWeight() ? set.getWeightDisplay() : null);
 
   static getRepsWithIcon(WorkoutSet set) =>
       getXwithIcon(Icons.repeat_rounded, set.hasReps() ? set.getRepsDisplay() : null);
 
-  static getTimeWithIcon(WorkoutSet set) =>
+  static getSetTimeWithIcon(WorkoutSet set) =>
       getXwithIcon(Icons.timer_rounded, set.hasTime() ? set.getTimeDisplay() : null);
 
   static getDistanceWithIcon(WorkoutSet set) =>

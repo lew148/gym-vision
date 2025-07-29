@@ -70,11 +70,19 @@ String getDurationString(Duration duration) {
   return "${duration.isNegative ? '-' : ''}$hours:$minutes:$seconds";
 }
 
+String getReadableDurationString(Duration duration) {
+  String hours = duration.inHours == 0 ? '' : '${duration.inHours}h';
+  String minutes = duration.inMinutes == 0 ? '' : '${duration.inMinutes.remainder(60).abs()}m';
+  return "$hours${hours != '' && minutes != '' ? ' ' : ''}$minutes";
+}
+
 int daysBetween(DateTime from, DateTime to) {
   from = DateTime(from.year, from.month, from.day);
   to = DateTime(to.year, to.month, to.day);
   return to.difference(from).inDays;
 }
+
+Duration timeBetween(DateTime from, DateTime to) => to.difference(from);
 
 Duration? tryParseDuration(String? s) {
   // format = ##:##:##.######

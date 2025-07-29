@@ -78,11 +78,12 @@ class _TodayState extends State<Today> {
         child: Row(
           children: [
             Expanded(
-              flex: 4,
-              child: Center(
+                flex: 4,
+                child: Center(
                   child: Text(
-                      '${workout.getWorkoutExercises().length.toString()} exercise${workout.getWorkoutExercises().length == 1 ? '' : 's'}')),
-            ),
+                    '${workout.getWorkoutExercises().length.toString()} exercise${workout.getWorkoutExercises().length == 1 ? '' : 's'}',
+                  ),
+                )),
             CommonUI.getVerticalDivider(context),
             Expanded(
               flex: 4,
@@ -96,7 +97,7 @@ class _TodayState extends State<Today> {
           ],
         ),
       ),
-      if (bestSetName != null) CommonUI.getDivider(),
+      CommonUI.getDivider(),
       if (bestSetName != null)
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -162,10 +163,13 @@ class _TodayState extends State<Today> {
                             w.getWorkoutTitle(),
                             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                           ),
-                          Text(
-                            '@ ${w.getTimeStr()}',
-                            style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-                          ),
+                          Row(children: [
+                            CommonUI.getTimeWithIcon(context, w.date),
+                            if (w.endDate != null) ...[
+                              const Padding(padding: EdgeInsetsGeometry.all(5)),
+                              CommonUI.getTimeElapsedWithIcon(context, timeBetween(w.date, w.endDate!)),
+                            ],
+                          ]),
                         ],
                       ),
                     ]),
@@ -259,8 +263,8 @@ class _TodayState extends State<Today> {
                     ),
                     const Padding(padding: EdgeInsetsGeometry.all(5)),
                     CommonUI.getElevatedPrimaryButton(ButtonDetails(
-                      icon: Icons.add_rounded,
-                      text: 'Add a Schedule',
+                      icon: Icons.calendar_month_rounded,
+                      text: 'Create a Schedule',
                       onTap: () => Provider.of<NavigationProvider>(context, listen: false).changeTab(3),
                     )),
                   ],
@@ -490,7 +494,7 @@ class _TodayState extends State<Today> {
                   ],
                 );
               }),
-        )
+        ),
       ],
     );
   }

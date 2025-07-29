@@ -113,7 +113,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       ];
 
   List<Widget> getCardioSetContents(WorkoutSet ws) => [
-        Expanded(flex: 4, child: CommonUI.getTimeWithIcon(ws)),
+        Expanded(flex: 4, child: CommonUI.getSetTimeWithIcon(ws)),
         Expanded(flex: 3, child: CommonUI.getDistanceWithIcon(ws)),
         Expanded(flex: 3, child: CommonUI.getCaloriesWithIcon(ws)),
       ];

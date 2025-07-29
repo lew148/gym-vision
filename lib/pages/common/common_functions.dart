@@ -47,7 +47,6 @@ void showDeleteConfirm(
     builder: (context) => CupertinoAlertDialog(
       title: Text("Delete $objectName?"),
       content: Text("Are you sure you would like to delete this $objectName?"),
-      // backgroundColor: Theme.of(context).cardColor,
       actions: [
         CupertinoDialogAction(
           child: const Text("No"),
@@ -79,6 +78,47 @@ void showDeleteConfirm(
       ],
     ),
   );
+}
+
+Future<bool> showConfirm(
+  BuildContext context,
+  String title,
+  String content,
+) async {
+  HapticFeedback.heavyImpact();
+  var confirmed = false;
+
+  await showDialog(
+    context: context,
+    builder: (context) => CupertinoAlertDialog(
+      title: Text(title),
+      content: Text(content),
+      actions: [
+        CupertinoDialogAction(
+          child: Text(
+            "Cancel",
+            style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        CupertinoDialogAction(
+          child: Text(
+            "Confirm",
+            style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),
+          ),
+          onPressed: () {
+            HapticFeedback.heavyImpact();
+            Navigator.pop(context);
+            confirmed = true;
+          },
+        ),
+      ],
+    ),
+  );
+
+  return confirmed;
 }
 
 Future showCustomBottomSheet(BuildContext context, Widget child) => showModalBottomSheet(
@@ -114,7 +154,7 @@ Future onAddWorkoutTap(
     var now = DateTime.now();
 
     if (date != null) {
-      date = DateTime(date.year, date.month, date.day, now.hour, now.minute);
+      date = DateTime(date.year, date.month, date.day, now.hour, now.minute, now.second, now.millisecond);
     }
 
     final newWorkoutId = await WorkoutModel.insertWorkout(Workout(date: date ?? now));

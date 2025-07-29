@@ -54,7 +54,7 @@ class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
                 : [
                     Expanded(
                       flex: 3,
-                      child: CommonUI.getTimeWithIcon(set),
+                      child: CommonUI.getSetTimeWithIcon(set),
                     ),
                     Expanded(
                       flex: 3,

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:gymvision/globals.dart';
 
@@ -27,20 +26,18 @@ class _TimeElapsedState extends State<TimeElapsed> {
   void initState() {
     super.initState();
 
-    timeSince = calcElapsedTime();
+    timeSince = timeBetween(widget.since, widget.end ?? DateTime.now());
     if (widget.end == null) {
       timer = Timer.periodic(
         const Duration(seconds: 1),
         (Timer t) {
           setState(() {
-            timeSince = calcElapsedTime();
+            timeSince = timeBetween(widget.since, widget.end ?? DateTime.now());
           });
         },
       );
     }
   }
-
-  Duration calcElapsedTime() => timeSince = (widget.end ?? DateTime.now()).difference(widget.since);
 
   @override
   void dispose() {
@@ -51,7 +48,7 @@ class _TimeElapsedState extends State<TimeElapsed> {
   @override
   Widget build(BuildContext context) {
     return Row(children: [
-      Icon(Icons.access_time_rounded, size: 20, color: widget.color),
+      Icon(Icons.hourglass_empty_rounded, size: 15, color: widget.color),
       const Padding(padding: EdgeInsetsGeometry.all(2.5)),
       Text(getDurationString(timeSince), style: TextStyle(color: widget.color)),
     ]);

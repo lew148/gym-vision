@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_confetti/flutter_confetti.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_category.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
@@ -199,7 +200,7 @@ class _WorkoutViewState extends State<WorkoutView> {
               Navigator.pop(context);
               showEditTime(workout);
             },
-            icon: Icons.watch_rounded,
+            icon: Icons.access_time_rounded,
             text: 'Edit Time',
           ),
           ButtonDetails(
@@ -253,16 +254,35 @@ class _WorkoutViewState extends State<WorkoutView> {
     reloadState();
   }
 
-  void finishWorkoutOnTap(Workout workout, bool? value, Function workoutFinishedSetState) async {
+  void finishWorkoutOnTap(BuildContext context, Workout workout, bool? value, Function workoutFinishedSetState) async {
+    var confirmed = true;
+    value ??= false;
+
     try {
-      workout.endDate = value ?? false ? DateTime.now() : null;
-      await WorkoutModel.updateWorkout(workout);
+      if (value) {
+        Confetti.launch(
+          context,
+          options: const ConfettiOptions(particleCount: 150, spread: 70, y: 0.6),
+        );
+
+        workout.endDate = DateTime.now();
+      } else {
+        confirmed = await showConfirm(
+          context,
+          'Resume Workout?',
+          'Are you sure you would like to resume this workout?',
+        );
+
+        if (confirmed) workout.endDate = null;
+      }
+
+      if (confirmed) await WorkoutModel.updateWorkout(workout);
     } catch (e) {
-      if (!mounted) return;
+      if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to finish workout.')));
     }
 
-    workoutFinishedSetState(() => workoutIsFinished = value ?? false);
+    if (confirmed) workoutFinishedSetState(() => workoutIsFinished = value!);
   }
 
   @override
@@ -289,10 +309,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                 getDateOrDayStr(workout.date),
                 style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
               ),
-              Text(
-                '@ ${workout.getTimeStr()}',
-                style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
-              ),
+              CommonUI.getTimeWithIcon(context, workout.date),
             ],
           ),
           customAppBarActions: [
@@ -318,16 +335,20 @@ class _WorkoutViewState extends State<WorkoutView> {
                           CustomFormFields.checkbox(
                             context,
                             workoutIsFinished,
-                            (bool? value) => finishWorkoutOnTap(workout, value, workoutFinishedSetState),
+                            (bool? value) => finishWorkoutOnTap(context, workout, value, workoutFinishedSetState),
                           ),
                           const Padding(padding: EdgeInsetsGeometry.all(2.5)),
                           GestureDetector(
-                            onTap: () => finishWorkoutOnTap(workout, !workoutIsFinished, workoutFinishedSetState),
+                            onTap: () => finishWorkoutOnTap(
+                              context,
+                              workout,
+                              !workoutIsFinished,
+                              workoutFinishedSetState,
+                            ),
                             child: workoutIsFinished
                                 ? Text(
                                     'Workout Finished!',
                                     style: TextStyle(
-                                      fontSize: 15,
                                       color: Theme.of(context).colorScheme.primary,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -335,18 +356,19 @@ class _WorkoutViewState extends State<WorkoutView> {
                                 : Text(
                                     'Finish Workout',
                                     style: TextStyle(
-                                      fontSize: 15,
                                       color: Theme.of(context).colorScheme.primary,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
                           ),
                         ]),
-                        TimeElapsed(
-                          since: workout.date,
-                          end: workout.endDate,
-                          color: Theme.of(context).colorScheme.shadow,
-                        ),
+                        workout.endDate == null
+                            ? TimeElapsed(
+                                since: workout.date,
+                                end: workout.endDate,
+                                color: Theme.of(context).colorScheme.shadow,
+                              )
+                            : CommonUI.getTimeElapsedWithIcon(context, timeBetween(workout.date, workout.endDate!)),
                       ],
                     ),
                   ),
