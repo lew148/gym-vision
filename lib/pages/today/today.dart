@@ -395,6 +395,7 @@ class _TodayState extends State<Today> {
               ),
             ),
           ),
+          const Padding(padding: EdgeInsetsGeometry.all(2.5)),
           Expanded(
             flex: 6,
             child: CommonUI.getCard(

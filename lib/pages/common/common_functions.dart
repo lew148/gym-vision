@@ -21,7 +21,7 @@ Future<T> runSafe<T>(
     return await f();
   } catch (ex, stack) {
     if (context != null && context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(snackBarMessage ?? 'An error has occured.')));
+      showSnackBar(context, snackBarMessage ?? 'An error has occured.');
     }
 
     if (logToSentry || sentryMessage != null) {
@@ -41,7 +41,7 @@ void showDeleteConfirm(
   Function? reloadState, {
   bool popCaller = false,
 }) {
-  HapticFeedback.heavyImpact();
+  HapticFeedback.lightImpact();
   showDialog(
     context: context,
     builder: (context) => CupertinoAlertDialog(
@@ -60,7 +60,6 @@ void showDeleteConfirm(
             style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
           ),
           onPressed: () async {
-            HapticFeedback.heavyImpact();
             Navigator.pop(context);
             if (popCaller) Navigator.pop(context);
 
@@ -68,8 +67,7 @@ void showDeleteConfirm(
               await onDelete();
             } catch (ex) {
               if (!context.mounted) return;
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text('Failed to delete $objectName: ${ex.toString()}')));
+              showSnackBar(context, 'Failed to delete $objectName: ${ex.toString()}');
             }
 
             if (reloadState != null) reloadState();
@@ -85,7 +83,7 @@ Future<bool> showConfirm(
   String title,
   String content,
 ) async {
-  HapticFeedback.heavyImpact();
+  HapticFeedback.lightImpact();
   var confirmed = false;
 
   await showDialog(
@@ -109,7 +107,6 @@ Future<bool> showConfirm(
             style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),
           ),
           onPressed: () {
-            HapticFeedback.heavyImpact();
             Navigator.pop(context);
             confirmed = true;
           },
@@ -168,8 +165,13 @@ Future onAddWorkoutTap(
         .push(MaterialPageRoute(builder: (context) => WorkoutView(workoutId: newWorkoutId, reloadParent: reloadState)))
         .then((value) => reloadState());
   } catch (ex) {
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add workout')));
+    showSnackBar(context, 'Failed to add workout');
   }
 }
 
 void closeKeyboard() => FocusManager.instance.primaryFocus?.unfocus();
+
+void showSnackBar(BuildContext context, String text) {
+  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
+}

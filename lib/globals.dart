@@ -70,10 +70,13 @@ String getDurationString(Duration duration) {
   return "${duration.isNegative ? '-' : ''}$hours:$minutes:$seconds";
 }
 
-String getReadableDurationString(Duration duration) {
+String getHoursAndMinsDurationString(Duration duration) {
+  String gap = '';
   String hours = duration.inHours == 0 ? '' : '${duration.inHours}h';
   String minutes = duration.inMinutes == 0 ? '' : '${duration.inMinutes.remainder(60).abs()}m';
-  return "$hours${hours != '' && minutes != '' ? ' ' : ''}$minutes";
+  if (hours != '' && minutes != '') gap = ' ';
+  if (hours == '' && minutes == '') minutes = '<1m';
+  return "$hours$gap$minutes";
 }
 
 int daysBetween(DateTime from, DateTime to) {

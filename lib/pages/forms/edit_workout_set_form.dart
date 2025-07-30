@@ -4,6 +4,7 @@ import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';
+import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/forms/fields/custom_form_fields.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/static_data/enums.dart';
@@ -88,7 +89,7 @@ class _EditWorkoutSetFormState extends State<EditWorkoutSetForm> {
         await WorkoutSetModel.updateWorkoutSet(set);
       } catch (ex) {
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to edit Workout Set')));
+        showSnackBar(context, 'Failed to edit Workout Set');
       }
 
       widget.reloadState();
@@ -101,9 +102,7 @@ class _EditWorkoutSetFormState extends State<EditWorkoutSetForm> {
       await WorkoutSetModel.removeSet(id);
     } catch (ex) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to remove Set from workout: ${ex.toString()}')),
-      );
+      showSnackBar(context, 'Failed to remove Set from workout: ${ex.toString()}');
     }
 
     widget.reloadState();
@@ -147,7 +146,7 @@ class _EditWorkoutSetFormState extends State<EditWorkoutSetForm> {
 
   void onCopySetButtonTap() async {
     try {
-      HapticFeedback.heavyImpact();
+      HapticFeedback.lightImpact();
       await WorkoutSetModel.addSetToWorkout(
         WorkoutSet(
           workoutExerciseId: widget.workoutSet.workoutExerciseId,
@@ -161,8 +160,7 @@ class _EditWorkoutSetFormState extends State<EditWorkoutSetForm> {
       );
     } catch (ex) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Failed add set to workout: ${ex.toString()}')));
+      showSnackBar(context, 'Failed add set to workout: ${ex.toString()}');
     }
 
     widget.reloadState();

@@ -37,9 +37,7 @@
 //           isSingle: !isDoubleValue,
 //         ));
 //       } catch (ex) {
-//         ScaffoldMessenger.of(context).showSnackBar(
-//           const SnackBar(content: Text('Failed to add exercise')),
-//         );
+//         showSnackBar(context, 'Failed to add exercise');
 //       }
 
 //       widget.reloadState();

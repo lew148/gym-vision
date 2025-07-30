@@ -74,7 +74,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
 
   void onCopySetButtonTap(WorkoutSet ws) async {
     try {
-      HapticFeedback.heavyImpact();
+      HapticFeedback.lightImpact();
       await WorkoutSetModel.addSetToWorkout(
         WorkoutSet(
           workoutExerciseId: ws.workoutExerciseId,
@@ -88,8 +88,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       );
     } catch (ex) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Failed add set to workout: ${ex.toString()}')));
+      showSnackBar(context, 'Failed add set to workout: ${ex.toString()}');
     }
 
     widget.reloadParent();
@@ -126,7 +125,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       widgets.add(InkWell(
         enableFeedback: false,
         onLongPress: () {
-          HapticFeedback.heavyImpact();
+          HapticFeedback.lightImpact();
           showSetMenu(ws);
         },
         onTap: () => onEditWorkoutSetTap(ws),
@@ -161,10 +160,10 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
 
   void onWorkoutExerciseDoneTap(bool done) async {
     try {
-      HapticFeedback.heavyImpact();
+      HapticFeedback.lightImpact();
 
       if (widget.isInFuture && done) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Cannot mark future sets done!')));
+        showSnackBar(context, 'Cannot complete sets that are in the future.');
         return;
       }
 

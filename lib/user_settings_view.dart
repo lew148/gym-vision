@@ -45,8 +45,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                       onTap: () async {
                         await FlavourTextScheduleModel.setRecentFlavourTextScheduleNotDismissed();
                         if (!context.mounted) return;
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(const SnackBar(content: Text('Flavour Text Un-dismissed!')));
+                        showSnackBar(context, 'Flavour Text Un-dismissed!');
                       },
                       text: 'Un-Dismiss Flavour Text',
                     ),
@@ -70,10 +69,12 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                         () async {
                           DatabaseHelper.resetWhilePersistingData().then((s) {
                             if (!context.mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text(s
-                                    ? 'Successfully reset DB, while persisting data'
-                                    : 'Failed to reset DB, while persisting data')));
+                            showSnackBar(
+                              context,
+                              s
+                                  ? 'Successfully reset DB, while persisting data'
+                                  : 'Failed to reset DB, while persisting data',
+                            );
                           });
                         },
                         () => null,
@@ -90,8 +91,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                           await DatabaseHelper.deleteDb();
                           await DatabaseHelper.openDb();
                           if (!context.mounted) return;
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(const SnackBar(content: Text('Successfully reset DB')));
+                          showSnackBar(context, 'Successfully reset DB');
                         },
                         () => null,
                       ),

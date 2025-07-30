@@ -228,7 +228,7 @@ class CommonUI {
         Icon(Icons.hourglass_empty_rounded, color: Theme.of(context).colorScheme.shadow, size: 15),
         const Padding(padding: EdgeInsetsGeometry.all(1)),
         Text(
-          getReadableDurationString(timeElapsed),
+          getHoursAndMinsDurationString(timeElapsed),
           style: TextStyle(
             color: Theme.of(context).colorScheme.shadow,
             fontSize: 15,

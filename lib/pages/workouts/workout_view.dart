@@ -64,7 +64,7 @@ class _WorkoutViewState extends State<WorkoutView> {
       reloadState();
     } catch (ex) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add Categories to workout.')));
+      showSnackBar(context, 'Failed to add Categories to workout.');
     }
   }
 
@@ -78,8 +78,12 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   goToMostRecentWorkout(WorkoutCategory wc) async {
     var id = await WorkoutModel.getMostRecentWorkoutIdForCategory(wc);
-    if (id == null) return;
     if (!mounted) return;
+
+    if (id == null) {
+      showSnackBar(context, 'No previous workouts for this category.');
+      return;
+    }
 
     Navigator.of(context).push(
       MaterialPageRoute(
@@ -176,7 +180,8 @@ class _WorkoutViewState extends State<WorkoutView> {
     );
 
     try {
-      await WorkoutModel.updateTime(workout.id!, newTime!);
+      if (newTime == null) return;
+      await WorkoutModel.updateTime(workout.id!, newTime);
     } catch (ex) {
       // do nothing
     }
@@ -223,17 +228,19 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   Widget getCategoriesWidget(Workout workout, List<Category> existingCategoryIds) =>
       workout.workoutCategories == null || workout.workoutCategories!.isEmpty
-          ? Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                CommonUI.getTextButton(
-                  ButtonDetails(
-                    onTap: () => onAddCategoryClick([]),
-                    text: 'Add Categories',
-                    icon: Icons.add_rounded,
+          ? CommonUI.getCard(
+              context,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CommonUI.getTextButton(
+                    ButtonDetails(
+                      onTap: () => onAddCategoryClick([]),
+                      text: 'Add Categories',
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             )
           : getWorkoutCategoriesWidget(workout.workoutCategories!, existingCategoryIds);
 
@@ -260,6 +267,7 @@ class _WorkoutViewState extends State<WorkoutView> {
 
     try {
       if (value) {
+        HapticFeedback.heavyImpact();
         Confetti.launch(
           context,
           options: const ConfettiOptions(particleCount: 150, spread: 70, y: 0.6),
@@ -279,7 +287,7 @@ class _WorkoutViewState extends State<WorkoutView> {
       if (confirmed) await WorkoutModel.updateWorkout(workout);
     } catch (e) {
       if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to finish workout.')));
+      showSnackBar(context, 'Failed to finish workout.');
     }
 
     if (confirmed) workoutFinishedSetState(() => workoutIsFinished = value!);
@@ -375,21 +383,44 @@ class _WorkoutViewState extends State<WorkoutView> {
                 ),
               ),
               getCategoriesWidget(workout, categories),
-              CommonUI.getSectionTitleWithAction(
+              CommonUI.getSectionTitleWithActions(
                 context,
                 'Exercises',
-                ButtonDetails(
-                  icon: Icons.add_rounded,
-                  onTap: () => onAddExerciseClick(workout.id!),
-                ),
+                [
+                  ButtonDetails(
+                    icon: Icons.hourglass_empty_rounded,
+                    onTap: () => onAddExerciseClick(workout.id!),
+                  ),
+                  ButtonDetails(
+                    icon: Icons.add_rounded,
+                    onTap: () => onAddExerciseClick(workout.id!),
+                  ),
+                ],
               ),
               CommonUI.getDivider(),
               workoutExercises.isEmpty
                   ? Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Text(
-                        'Tap + to record an Exercise!',
-                        style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                      padding: const EdgeInsetsGeometry.all(30),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'What are we training today?',
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                          Text(
+                            'Set focus categories for this workout!',
+                            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
+                            textAlign: TextAlign.center,
+                          ),
+                          const Padding(padding: EdgeInsetsGeometry.all(5)),
+                          CommonUI.getElevatedPrimaryButton(ButtonDetails(
+                            icon: Icons.add_rounded,
+                            text: 'Add an exercise',
+                            onTap: () => onAddExerciseClick(workout.id!),
+                          )),
+                        ],
                       ),
                     )
                   : Expanded(
@@ -398,7 +429,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                         children: getWorkoutExercisesWidget(workout, workoutExercises, workout.exerciseOrdering),
                       ),
                     ),
-              const Padding(padding: EdgeInsetsGeometry.only(bottom: 10)),
+              const Padding(padding: EdgeInsetsGeometry.all(10)),
             ],
           ),
         );

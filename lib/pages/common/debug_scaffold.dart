@@ -47,9 +47,7 @@ class _DebugScaffoldState extends State<DebugScaffold> {
         icon: const Icon(Icons.bug_report_outlined),
         onPressed: () => showCustomBottomSheet(context, ReportBugForm(onReportSent: (success) {
           if (!mounted) return;
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(success ? 'Report sent!' : 'Failed to send report!'),
-          ));
+          showSnackBar(context, success ? 'Report sent!' : 'Failed to send report!');
         })),
       ),
     );

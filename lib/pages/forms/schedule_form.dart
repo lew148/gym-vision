@@ -62,7 +62,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
       if (!formKey.currentState!.validate() || nameController.text.isEmpty) return;
       if (categoriesByDay.entries.every((e) => e.value.isEmpty)) {
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Schedule was empty!')));
+        showSnackBar(context, 'Schedule is empty!');
         return;
       }
 
@@ -98,7 +98,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
       }
     } catch (ex) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add Schedule')));
+      showSnackBar(context, 'Failed to add Schedule');
     }
 
     if (!mounted) return;

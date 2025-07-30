@@ -3,6 +3,7 @@ import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
+import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/common/debug_scaffold.dart';
 import 'package:gymvision/pages/exercises/exercises.dart';
 
@@ -37,7 +38,7 @@ class _AddExercisesToWorkoutState extends State<AddExercisesToWorkout> {
       if (mounted) Navigator.pop(context);
     } catch (ex) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to add set(s) to workout')));
+      showSnackBar(context, 'Failed to add set(s) to workout');
     }
   }
 

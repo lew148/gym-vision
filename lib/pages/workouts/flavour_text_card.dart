@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/flavour_text_schedule.dart';
 import 'package:gymvision/models/db_models/flavour_text_schedule_model.dart';
+import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
 
 class FlavourTextCard extends StatefulWidget {
@@ -18,7 +19,7 @@ class _FlavourTextCardState extends State<FlavourTextCard> {
       await FlavourTextScheduleModel.setFlavourTextScheduleDismissed(fts);
     } catch (ex) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to dismiss Flavour Text')));
+      showSnackBar(context, 'Failed to dismiss Flavour Text');
     }
     setState(() {});
   }

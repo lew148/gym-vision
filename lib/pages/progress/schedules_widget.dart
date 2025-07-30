@@ -195,7 +195,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
       await ScheduleModel.setActiveSchedule(newActiveScheduleId);
     } catch (ex) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to set active Schedule')));
+      showSnackBar(context, 'Failed to set active Schedule');
     }
 
     reloadState();

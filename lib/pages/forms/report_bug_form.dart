@@ -49,16 +49,16 @@ class _ReportBugFormState extends State<ReportBugForm> {
           canBeBlank: false,
           maxLength: 250,
         ),
-        CustomFormFields.stringField(
-          controller: nameController,
-          label: 'Name',
-          canBeBlank: true,
-          maxLength: 15,
-        ),
         CustomFormFields.textArea(
           controller: descriptionController,
           label: 'Description',
           canBeBlank: true,
+        ),
+        CustomFormFields.stringField(
+          controller: nameController,
+          label: 'Your Name',
+          canBeBlank: true,
+          maxLength: 15,
         ),
         CustomFormFields.checkboxWithLabel(
           context,
@@ -68,7 +68,10 @@ class _ReportBugFormState extends State<ReportBugForm> {
             isBug = !isBug;
           }),
         ),
-        CommonUI.getTextButton(ButtonDetails(text: 'Report', onTap: onSubmit))
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [CommonUI.getTextButton(ButtonDetails(text: 'Report', onTap: onSubmit))],
+        ),
       ]),
     );
   }

@@ -5,6 +5,7 @@ import 'package:gymvision/classes/exercise_details.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
+import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/common/debug_scaffold.dart';
 import 'package:gymvision/pages/exercises/exercise_recent_uses_view.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
@@ -64,8 +65,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                     // await UserExerciseDetailsHelper.updateUserExerciseDetails(details);
                   } catch (ex) {
                     if (!mounted) return;
-
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to edit Notes')));
+                    showSnackBar(context, 'Failed to edit Notes');
                   }
 
                   reloadState();
