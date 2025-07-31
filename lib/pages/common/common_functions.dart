@@ -5,6 +5,8 @@ import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
+import 'package:gymvision/pages/forms/date_time_picker.dart';
+import 'package:gymvision/pages/forms/duration_picker.dart';
 import 'package:gymvision/pages/workouts/workout_view.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -118,6 +120,38 @@ Future<bool> showConfirm(
   return confirmed;
 }
 
+void showDateTimePicker(
+  BuildContext context,
+  CupertinoDatePickerMode mode,
+  Function(DateTime) onChange, {
+  DateTime? initialDateTime,
+}) =>
+    showCustomBottomSheet(
+      context,
+      DateTimePicker(
+        onChange: onChange,
+        mode: mode,
+        initialValue: initialDateTime,
+      ),
+    );
+
+void showDurationPicker(
+  BuildContext context,
+  CupertinoTimerPickerMode mode,
+  Function(Duration) onChange, {
+  Duration? initialDuration,
+  bool isTimer = false,
+}) =>
+    showCustomBottomSheet(
+      context,
+      DurationPicker(
+        onChange: onChange,
+        mode: mode,
+        initialValue: initialDuration,
+        isTimer: isTimer,
+      ),
+    );
+
 Future showCustomBottomSheet(BuildContext context, Widget child) => showModalBottomSheet(
       context: context,
       builder: (BuildContext context) => Column(
@@ -127,7 +161,10 @@ Future showCustomBottomSheet(BuildContext context, Widget child) => showModalBot
             padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Padding(
               padding: const EdgeInsets.all(20),
-              child: child,
+              child: SafeArea(
+                top: false,
+                child: child,
+              ),
             ),
           ),
         ],

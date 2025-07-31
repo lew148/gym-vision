@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_confetti/flutter_confetti.dart';
@@ -156,38 +157,40 @@ class _WorkoutViewState extends State<WorkoutView> {
         .toList();
   }
 
-  void showEditDate(Workout workout) async {
-    final newDate = await showDatePicker(
-      context: context,
-      initialDate: workout.date,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2050),
-    );
+  void showEditDate(Workout workout) => showDateTimePicker(
+        context,
+        initialDateTime: workout.date,
+        CupertinoDatePickerMode.date,
+        (DateTime dt) async {
+          try {
+            await WorkoutModel.updateDate(workout.id!, dt);
+            reloadState();
+          } catch (ex) {
+            // do nothing
+          }
+        },
+      );
 
-    try {
-      await WorkoutModel.updateDate(workout.id!, newDate!);
-    } catch (ex) {
-      // do nothing
-    }
+  void showEditTime(Workout workout) => showDateTimePicker(
+        context,
+        initialDateTime: workout.date,
+        CupertinoDatePickerMode.time,
+        (DateTime dt) async {
+          try {
+            await WorkoutModel.updateTime(workout.id!, dt);
+            reloadState();
+          } catch (ex) {
+            // do nothing
+          }
+        },
+      );
 
-    reloadState();
-  }
-
-  void showEditTime(Workout workout) async {
-    final newTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(workout.date),
-    );
-
-    try {
-      if (newTime == null) return;
-      await WorkoutModel.updateTime(workout.id!, newTime);
-    } catch (ex) {
-      // do nothing
-    }
-
-    reloadState();
-  }
+  void showTimer() => showDurationPicker(
+        context,
+        CupertinoTimerPickerMode.hms,
+        (Duration d) {},
+        isTimer: true,
+      );
 
   void showMoreMenu(Workout workout) => showOptionsMenu(
         context,
@@ -389,7 +392,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                 [
                   ButtonDetails(
                     icon: Icons.hourglass_empty_rounded,
-                    onTap: () => onAddExerciseClick(workout.id!),
+                    onTap: showTimer,
                   ),
                   ButtonDetails(
                     icon: Icons.add_rounded,

@@ -155,6 +155,16 @@ class CommonUI {
         text: 'Done',
       ));
 
+  static getDoneButtonRow(Function() onSubmit) => Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          getTextButton(ButtonDetails(
+            onTap: onSubmit,
+            text: 'Done',
+          )),
+        ],
+      );
+
   static Widget getPropDisplay(BuildContext context, String text, {Function()? onTap, Color? color}) => getCard(
         context,
         GestureDetector(

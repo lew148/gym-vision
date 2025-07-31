@@ -209,7 +209,7 @@ class WorkoutModel {
     );
   }
 
-  static updateTime(int id, TimeOfDay newTime) async {
+  static updateTime(int id, DateTime newTime) async {
     final db = await DatabaseHelper.getDb();
     final workout = await getWorkout(workoutId: id);
     if (workout == null) return;
