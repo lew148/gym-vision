@@ -38,9 +38,17 @@ class Workout extends DatabaseObject {
         'endDate': endDate.toString(),
       };
 
-  bool isFinished() => endDate != null;
+  static const int maxHours = 4;
 
-  String getTimeStr() => DateFormat('Hm').format(date);
+  bool hasReachedMaxDuration() => hoursBetween(date, DateTime.now()) >= maxHours;
+  bool isFinished() => endDate != null || hasReachedMaxDuration();
+  Duration getDuration() => hasReachedMaxDuration()
+      ? const Duration(hours: maxHours)
+      : endDate == null
+          ? timeBetween(date, DateTime.now())
+          : timeBetween(date, endDate!);
+
+  String getTimeStr() => DateFormat(hmFormat).format(date);
   bool isInFuture() => dateIsInFuture(date);
 
   List<Category> getCategories() => workoutCategories?.map((wc) => wc.category).toList() ?? [];

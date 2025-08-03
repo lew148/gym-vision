@@ -165,9 +165,9 @@ class _TodayState extends State<Today> {
                           ),
                           Row(children: [
                             CommonUI.getTimeWithIcon(context, w.date),
-                            if (w.endDate != null) ...[
+                            if (w.isFinished()) ...[
                               const Padding(padding: EdgeInsetsGeometry.all(5)),
-                              CommonUI.getTimeElapsedWithIcon(context, timeBetween(w.date, w.endDate!)),
+                              CommonUI.getTimeElapsedWithIcon(context, w.getDuration() ),
                             ],
                           ]),
                         ],

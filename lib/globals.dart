@@ -75,7 +75,7 @@ String getDurationString(Duration duration) {
 String getHoursAndMinsDurationString(Duration duration) {
   String gap = '';
   String hours = duration.inHours == 0 ? '' : '${duration.inHours}h';
-  String minutes = duration.inMinutes == 0 ? '' : '${duration.inMinutes.remainder(60).abs()}m';
+  String minutes = duration.inMinutes.remainder(60) == 0 ? '' : '${duration.inMinutes.remainder(60).abs()}m';
   if (hours != '' && minutes != '') gap = ' ';
   if (hours == '' && minutes == '') minutes = '<1m';
   return "$hours$gap$minutes";

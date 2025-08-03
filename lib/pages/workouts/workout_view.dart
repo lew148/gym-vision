@@ -319,17 +319,17 @@ class _WorkoutViewState extends State<WorkoutView> {
                       ),
                       CommonUI.getDateWithIcon(context, workout.date),
                       CommonUI.getTimeWithIcon(context, workout.date),
-                      workout.endDate == null
-                          ? TimeElapsed(
+                      workout.isFinished()
+                          ? CommonUI.getTimeElapsedWithIcon(context, workout.getDuration())
+                          : TimeElapsed(
                               since: workout.date,
                               end: workout.endDate,
                               color: Theme.of(context).colorScheme.shadow,
-                            )
-                          : CommonUI.getTimeElapsedWithIcon(context, timeBetween(workout.date, workout.endDate!)),
+                            ),
                     ],
                   ),
                   workoutIsFinished
-                      ? hoursBetween(workout.date, DateTime.now()) >= 4
+                      ? workout.hasReachedMaxDuration()
                           ? const SizedBox.shrink()
                           : CommonUI.getElevatedPrimaryButton(
                               ButtonDetails(
