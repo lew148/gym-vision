@@ -16,7 +16,6 @@ import 'package:gymvision/pages/common/debug_scaffold.dart';
 import 'package:gymvision/pages/forms/category_picker.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/pages/forms/add_exercises_to_workout.dart';
-import 'package:gymvision/pages/forms/fields/custom_form_fields.dart';
 import 'package:gymvision/pages/workouts/time_elapsed_widget.dart';
 import 'package:gymvision/pages/workouts/workout_exercise_widget.dart';
 import 'package:gymvision/static_data/enums.dart';
@@ -98,14 +97,15 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories, List<Category> existingCategories) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Expanded(
             child: Wrap(
               alignment: WrapAlignment.start,
               children: workoutCategories //todo: sort
-                  .map((wc) => CommonUI.getPropDisplay(
+                  .map((wc) => CommonUI.getSmallPropDisplay(
                         context,
-                        wc.getCategoryDisplayName(),
+                        wc.getCategoryDisplayNamePlain(),
                         onTap: () => goToMostRecentWorkout(wc),
                       ))
                   .toList(),
@@ -229,23 +229,12 @@ class _WorkoutViewState extends State<WorkoutView> {
         ],
       );
 
-  Widget getCategoriesWidget(Workout workout, List<Category> existingCategoryIds) =>
-      workout.workoutCategories == null || workout.workoutCategories!.isEmpty
-          ? CommonUI.getCard(
-              context,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  CommonUI.getTextButton(
-                    ButtonDetails(
-                      onTap: () => onAddCategoryClick([]),
-                      text: 'Add Categories',
-                    ),
-                  ),
-                ],
-              ),
-            )
-          : getWorkoutCategoriesWidget(workout.workoutCategories!, existingCategoryIds);
+  Widget getCategoriesWidget(Workout workout, List<Category> existingCategoryIds) => Expanded(
+      child: workout.workoutCategories == null || workout.workoutCategories!.isEmpty
+          ? Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+              CommonUI.getTextButton(ButtonDetails(onTap: () => onAddCategoryClick([]), icon: Icons.category_rounded)),
+            ])
+          : getWorkoutCategoriesWidget(workout.workoutCategories!, existingCategoryIds));
 
   void onAddExerciseClick(int workoutId) => Navigator.of(context)
       .push(MaterialPageRoute(
@@ -264,36 +253,31 @@ class _WorkoutViewState extends State<WorkoutView> {
     reloadState();
   }
 
-  void finishWorkoutOnTap(BuildContext context, Workout workout, bool? value, Function workoutFinishedSetState) async {
-    var confirmed = true;
-    value ??= false;
-
+  void finishOrResumeOnTap(BuildContext context, Workout workout, bool resuming) async {
     try {
-      if (value) {
-        HapticFeedback.heavyImpact();
-        Confetti.launch(
-          context,
-          options: const ConfettiOptions(particleCount: 150, spread: 70, y: 0.6),
-        );
+      var confirmed = await showConfirm(
+        context,
+        resuming ? 'Resume Workout?' : 'Finish Workout?',
+        resuming
+            ? 'Are you sure you would like to resume this workout?'
+            : 'Are you sure you are finished with this workout?',
+      );
 
-        workout.endDate = DateTime.now();
-      } else {
-        confirmed = await showConfirm(
-          context,
-          'Resume Workout?',
-          'Are you sure you would like to resume this workout?',
-        );
+      if (!confirmed) return;
+      workout.endDate = resuming ? null : DateTime.now();
+      final success = await WorkoutModel.updateWorkout(workout);
+      if (!success) throw Exception();
 
-        if (confirmed) workout.endDate = null;
+      if (!resuming && context.mounted) {
+        Navigator.pop(context);
+        return;
       }
 
-      if (confirmed) await WorkoutModel.updateWorkout(workout);
+      reloadState();
     } catch (e) {
       if (!context.mounted) return;
-      showSnackBar(context, 'Failed to finish workout.');
+      showSnackBar(context, 'Failed to ${resuming ? 'resume' : 'finish'} workout.');
     }
-
-    if (confirmed) workoutFinishedSetState(() => workoutIsFinished = value!);
   }
 
   @override
@@ -313,91 +297,74 @@ class _WorkoutViewState extends State<WorkoutView> {
         workoutIsFinished = workout.isFinished();
 
         return DebugScaffold(
-          customAppBarTitle: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                getDateOrDayStr(workout.date),
-                style: const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-              ),
-              CommonUI.getTimeWithIcon(context, workout.date),
-            ],
-          ),
+          customAppBarTitle: const SizedBox.shrink(),
           customAppBarActions: [
             IconButton(
-              icon: const Icon(
-                Icons.more_vert_rounded,
-              ),
+              icon: const Icon(Icons.more_vert_rounded),
               onPressed: () => showMoreMenu(workout),
             )
           ],
           body: Column(
             children: [
-              const Padding(padding: EdgeInsetsGeometry.all(5)),
-              CommonUI.getCard(
-                context,
-                Padding(
-                  padding: const EdgeInsetsGeometry.all(10),
-                  child: StatefulBuilder(
-                    builder: (context, workoutFinishedSetState) => Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(children: [
-                          CustomFormFields.checkbox(
-                            context,
-                            workoutIsFinished,
-                            (bool? value) => finishWorkoutOnTap(context, workout, value, workoutFinishedSetState),
-                          ),
-                          const Padding(padding: EdgeInsetsGeometry.all(2.5)),
-                          GestureDetector(
-                            onTap: () => finishWorkoutOnTap(
-                              context,
-                              workout,
-                              !workoutIsFinished,
-                              workoutFinishedSetState,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        workout.getWorkoutTitle(),
+                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      CommonUI.getDateWithIcon(context, workout.date),
+                      CommonUI.getTimeWithIcon(context, workout.date),
+                      workout.endDate == null
+                          ? TimeElapsed(
+                              since: workout.date,
+                              end: workout.endDate,
+                              color: Theme.of(context).colorScheme.shadow,
+                            )
+                          : CommonUI.getTimeElapsedWithIcon(context, timeBetween(workout.date, workout.endDate!)),
+                    ],
+                  ),
+                  workoutIsFinished
+                      ? hoursBetween(workout.date, DateTime.now()) >= 4
+                          ? const SizedBox.shrink()
+                          : CommonUI.getElevatedPrimaryButton(
+                              ButtonDetails(
+                                text: 'Resume',
+                                onTap: () => finishOrResumeOnTap(context, workout, true),
+                              ),
+                            )
+                      : CommonUI.getElevatedPrimaryButton(
+                          ButtonDetails(
+                            text: 'Finish',
+                            onTap: () => finishOrResumeOnTap(context, workout, false),
+                            style: ButtonDetailsStyle(
+                              textColor: Colors.white,
+                              backgroundColor: Colors.green[500],
                             ),
-                            child: workoutIsFinished
-                                ? Text(
-                                    'Workout Finished!',
-                                    style: TextStyle(
-                                      color: Theme.of(context).colorScheme.primary,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  )
-                                : Text(
-                                    'Finish Workout',
-                                    style: TextStyle(
-                                      color: Theme.of(context).colorScheme.primary,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
                           ),
-                        ]),
-                        workout.endDate == null
-                            ? TimeElapsed(
-                                since: workout.date,
-                                end: workout.endDate,
-                                color: Theme.of(context).colorScheme.shadow,
-                              )
-                            : CommonUI.getTimeElapsedWithIcon(context, timeBetween(workout.date, workout.endDate!)),
-                      ],
-                    ),
-                  ),
-                ),
+                        ),
+                ],
               ),
-              getCategoriesWidget(workout, categories),
-              CommonUI.getSectionTitleWithActions(
-                context,
-                'Exercises',
-                [
-                  ButtonDetails(
-                    icon: Icons.hourglass_empty_rounded,
-                    onTap: showTimer,
-                  ),
-                  ButtonDetails(
-                    icon: Icons.add_rounded,
-                    onTap: () => onAddExerciseClick(workout.id!),
-                  ),
+              const Padding(padding: EdgeInsets.all(10)),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  getCategoriesWidget(workout, categories),
+                  Row(children: [
+                    CommonUI.getTextButton(ButtonDetails(
+                      icon: Icons.av_timer_rounded,
+                      onTap: () => null,
+                    )),
+                    CommonUI.getTextButton(ButtonDetails(
+                      icon: Icons.add_rounded,
+                      onTap: () => onAddExerciseClick(workout.id!),
+                    )),
+                  ]),
                 ],
               ),
               CommonUI.getDivider(),

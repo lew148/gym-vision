@@ -257,7 +257,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
                         : const Text('Schedule'),
                     [
                       ButtonDetails(
-                        icon: Icons.more_vert_rounded,
+                        icon: Icons.menu_rounded,
                         onTap: () => showOptionsMenu(
                             context,
                             [

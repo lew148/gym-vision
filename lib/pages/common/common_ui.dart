@@ -7,18 +7,24 @@ class ButtonDetailsStyle {
   Color? textColor;
   Color? iconColor;
   double? iconSize;
+  Color? backgroundColor;
+  EdgeInsetsGeometry? padding;
 
   ButtonDetailsStyle({
     this.textColor,
     this.iconColor,
     this.iconSize,
+    this.backgroundColor,
+    this.padding,
   });
 
   static ButtonDetailsStyle primaryIcon(BuildContext context) =>
       ButtonDetailsStyle(iconColor: Theme.of(context).colorScheme.primary);
 
   static ButtonDetailsStyle primaryIconAndText(BuildContext context) => ButtonDetailsStyle(
-      iconColor: Theme.of(context).colorScheme.primary, textColor: Theme.of(context).colorScheme.primary);
+        iconColor: Theme.of(context).colorScheme.primary,
+        textColor: Theme.of(context).colorScheme.primary,
+      );
 
   static ButtonDetailsStyle redIcon = ButtonDetailsStyle(iconColor: Colors.red);
   static ButtonDetailsStyle redIconAndText = ButtonDetailsStyle(iconColor: Colors.red, textColor: Colors.red);
@@ -44,7 +50,7 @@ class ButtonDetails {
 
 class CommonUI {
   static Widget getSectionTitle(BuildContext context, String title) => Padding(
-        padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+        padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -102,15 +108,17 @@ class CommonUI {
 
   static Widget getTextButton(ButtonDetails bd) => TextButton(
         style: TextButton.styleFrom(
-          padding: EdgeInsets.zero,
+          backgroundColor: bd.style?.backgroundColor,
+          padding: bd.style?.padding ?? const EdgeInsets.symmetric(horizontal: 5),
           minimumSize: Size.zero,
-          overlayColor: Colors.transparent, // remove splash
-          splashFactory: NoSplash.splashFactory, // remove splash
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          shadowColor: Colors.transparent,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          overlayColor: Colors.grey,
         ),
         onPressed: bd.disabled ? null : bd.onTap,
         onLongPress: bd.disabled ? null : bd.onLongTap,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (bd.icon != null) Icon(bd.icon, size: bd.style?.iconSize ?? 25, color: bd.style?.iconColor),
             if (bd.icon != null && bd.text != null) const Padding(padding: EdgeInsets.only(left: 2.5)),
@@ -123,18 +131,18 @@ class CommonUI {
         onPressed: bd.disabled ? null : bd.onTap,
         onLongPress: bd.disabled ? null : bd.onLongTap,
         style: ElevatedButton.styleFrom(
+          backgroundColor: bd.style?.backgroundColor,
+          padding: bd.style?.padding ?? const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+          minimumSize: Size.zero,
+          tapTargetSize: MaterialTapTargetSize.padded,
           shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          overlayColor: Colors.grey,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (bd.icon != null)
-              Icon(
-                bd.icon,
-                color: bd.style?.iconColor,
-                size: 25,
-              ),
+            if (bd.icon != null) Icon(bd.icon, color: bd.style?.iconColor, size: 25),
             if (bd.icon != null && bd.text != null) const Padding(padding: EdgeInsets.only(left: 5)),
             if (bd.text != null) Text(bd.text!, style: TextStyle(color: bd.style?.textColor)),
           ],
@@ -174,28 +182,50 @@ class CommonUI {
             padding: const EdgeInsets.all(10),
             child: onTap == null
                 ? Text(text)
-                : Row(mainAxisSize: MainAxisSize.min, children: [
-                    Text(text),
-                    const Icon(Icons.chevron_right_rounded),
-                  ]),
+                : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(text),
+                      const Icon(Icons.chevron_right_rounded),
+                    ],
+                  ),
           ),
         ),
       );
 
-  static Widget getCard(BuildContext context, Widget child, {Color? color}) =>
-      Theme.of(context).brightness == Brightness.dark
-          ? Card.filled(
-              margin: const EdgeInsets.symmetric(horizontal: 2.5, vertical: 5),
-              color: color,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-              child: child,
-            )
-          : Card(
-              margin: const EdgeInsets.symmetric(horizontal: 2.5, vertical: 5),
-              color: color,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-              child: child,
-            );
+  static Widget getSmallPropDisplay(BuildContext context, String text, {Function()? onTap, Color? color}) => getCard(
+        context,
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            decoration: BoxDecoration(color: color, borderRadius: const BorderRadius.all(Radius.circular(10))),
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
+            child: onTap == null
+                ? Text(text)
+                : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(text),
+                      Icon(Icons.chevron_right_rounded, color: Theme.of(context).colorScheme.shadow, size: 15),
+                    ],
+                  ),
+          ),
+        ),
+      );
+
+  static Widget getCard(BuildContext context, Widget child, {Color? color}) => isDarkMode(context)
+      ? Card.filled(
+          margin: const EdgeInsets.symmetric(horizontal: 2.5, vertical: 5),
+          color: color,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          child: child,
+        )
+      : Card(
+          margin: const EdgeInsets.symmetric(horizontal: 2.5, vertical: 5),
+          color: color,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          child: child,
+        );
 
   static Widget getCompleteMark(BuildContext context, bool complete) => Icon(
         complete ? Icons.check_circle_rounded : Icons.circle_outlined,
@@ -222,15 +252,30 @@ class CommonUI {
         ),
       );
 
-  static getTimeWithIcon(BuildContext context, DateTime time) => Row(children: [
+  static getDateTimeWithIcon(BuildContext context, DateTime dt) => Row(children: [
+        Icon(Icons.calendar_month_rounded, color: Theme.of(context).colorScheme.shadow, size: 15),
+        const Padding(padding: EdgeInsetsGeometry.all(1)),
+        Text(
+          '${DateFormat(dmyFormat).format(dt)} @ ${DateFormat(hmFormat).format(dt)}',
+          style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
+        ),
+      ]);
+
+  static getDateWithIcon(BuildContext context, DateTime dt) => Row(children: [
+        Icon(Icons.calendar_month_rounded, color: Theme.of(context).colorScheme.shadow, size: 15),
+        const Padding(padding: EdgeInsetsGeometry.all(1)),
+        Text(
+          DateFormat(dmyFormat).format(dt),
+          style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
+        ),
+      ]);
+
+  static getTimeWithIcon(BuildContext context, DateTime dt) => Row(children: [
         Icon(Icons.access_time_rounded, color: Theme.of(context).colorScheme.shadow, size: 15),
         const Padding(padding: EdgeInsetsGeometry.all(1)),
         Text(
-          DateFormat('Hm').format(time),
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.shadow,
-            fontSize: 15,
-          ),
+          DateFormat(hmFormat).format(dt),
+          style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
         ),
       ]);
 

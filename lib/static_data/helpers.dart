@@ -100,6 +100,41 @@ extension MuscleGroupHelper on MuscleGroup {
 }
 
 extension CategoryHelper on Category {
+  String get displayNamePlain {
+    switch (this) {
+      case Category.upperBody:
+        return 'Upper Body';
+      case Category.lowerBody:
+        return 'Lower Body';
+      case Category.push:
+        return 'Push';
+      case Category.pull:
+        return 'Pull';
+      case Category.legs:
+        return 'Legs';
+      // case Category.fullBody:
+      //   return '💯 Full Body';
+      case Category.arms:
+        return 'Arms';
+      case Category.back:
+        return 'Back';
+      case Category.biceps:
+        return 'Biceps';
+      case Category.triceps:
+        return 'Triceps';
+      case Category.shoulders:
+        return 'Shoulders';
+      case Category.chest:
+        return 'Chest';
+      case Category.core:
+        return 'Core';
+      case Category.other:
+        return otherDisplayName;
+      case Category.cardio:
+        return 'Cardio';
+    }
+  }
+
   String get displayName {
     switch (this) {
       case Category.upperBody:

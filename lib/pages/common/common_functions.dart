@@ -51,16 +51,13 @@ void showDeleteConfirm(
       content: Text("Are you sure you would like to delete this $objectName?"),
       actions: [
         CupertinoDialogAction(
-          child: const Text("No"),
+          child: const Text("Keep"),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
         CupertinoDialogAction(
-          child: const Text(
-            "Delete",
-            style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-          ),
+          child: const Text("Delete", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
           onPressed: () async {
             Navigator.pop(context);
             if (popCaller) Navigator.pop(context);
@@ -95,19 +92,14 @@ Future<bool> showConfirm(
       content: Text(content),
       actions: [
         CupertinoDialogAction(
-          child: Text(
-            "Cancel",
-            style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),
-          ),
+          child: const Text('Cancel', style: TextStyle(color: Colors.red)),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
         CupertinoDialogAction(
-          child: Text(
-            "Confirm",
-            style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),
-          ),
+          child: Text('Confirm',
+              style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold)),
           onPressed: () {
             Navigator.pop(context);
             confirmed = true;

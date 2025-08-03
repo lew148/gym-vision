@@ -30,5 +30,6 @@ class WorkoutCategory extends DatabaseObject {
       };
 
   String getCategoryDisplayName() => category.displayName;
+  String getCategoryDisplayNamePlain() => category.displayNamePlain;
   String? getCategoryEnumString() => enumToString(category);
 }

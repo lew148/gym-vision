@@ -204,13 +204,14 @@ class _TodayState extends State<Today> {
                             .map((c) => CommonUI.getPropDisplay(
                                   context,
                                   c.displayName,
-                                  color: propOnCardColor,
+                                  color: isDarkMode(context) ? darkPropOnCardColor : null,
                                 ))
                             .toList(),
                       ),
                     ),
                   ]),
                 getWorkoutOverview(w),
+                const Padding(padding: EdgeInsetsGeometry.all(2.5)),
                 Row(children: [
                   CommonUI.getTextButton(ButtonDetails(
                     text: 'Add Notes',
@@ -315,7 +316,7 @@ class _TodayState extends State<Today> {
                                         (c) => CommonUI.getPropDisplay(
                                           context,
                                           c.displayName,
-                                          color: propOnCardColor,
+                                          color: isDarkMode(context) ? darkPropOnCardColor : null,
                                         ),
                                       )
                                       .toList(),

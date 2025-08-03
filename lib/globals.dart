@@ -1,15 +1,15 @@
-import 'dart:ui';
-
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-const String appVersion = '1.0.6';
+const String appVersion = '0.0.7';
 
 const String dmyFormat = 'd MMMM yyyy';
 const String dmFormat = 'd MMMM';
-const dayFormat = 'EEEE';
+const String dayFormat = 'EEEE';
+const String hmFormat = 'Hm';
 
-const propOnCardColor = Color.fromARGB(255, 60, 60, 60);
+const darkPropOnCardColor = Color.fromARGB(255, 60, 60, 60);
 
 const dayStrings = [
   'Monday',
@@ -20,6 +20,8 @@ const dayStrings = [
   'Saturday',
   'Sunday',
 ];
+
+bool isDarkMode(BuildContext context) => Theme.of(context).brightness == Brightness.dark;
 
 String getDateStr(DateTime dt) =>
     dt.year != DateTime.now().year ? DateFormat(dmyFormat).format(dt) : DateFormat(dmFormat).format(dt);
@@ -84,6 +86,8 @@ int daysBetween(DateTime from, DateTime to) {
   to = DateTime(to.year, to.month, to.day);
   return to.difference(from).inDays;
 }
+
+int hoursBetween(DateTime from, DateTime to) => to.difference(from).inHours;
 
 Duration timeBetween(DateTime from, DateTime to) => to.difference(from);
 
