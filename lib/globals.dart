@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-const String appVersion = '0.0.7';
+const String appVersion = '0.0.8';
 
 const String dmyFormat = 'd MMMM yyyy';
 const String dmFormat = 'd MMMM';

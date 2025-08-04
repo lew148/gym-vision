@@ -132,7 +132,7 @@ class CommonUI {
         onLongPress: bd.disabled ? null : bd.onLongTap,
         style: ElevatedButton.styleFrom(
           backgroundColor: bd.style?.backgroundColor,
-          padding: bd.style?.padding ?? const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+          padding: bd.style?.padding ?? const EdgeInsets.all(10),
           minimumSize: Size.zero,
           tapTargetSize: MaterialTapTargetSize.padded,
           shadowColor: Colors.transparent,

@@ -6,6 +6,7 @@ import 'package:gymvision/models/db_models/flavour_text_schedule_model.dart';
 import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/pages/common/debug_scaffold.dart';
+import 'package:gymvision/pages/forms/import_workout_form.dart';
 import 'models/db_models/user_settings_model.dart';
 import 'globals.dart';
 
@@ -58,6 +59,12 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                         fallback: null,
                       ),
                       text: 'Send Error to sentry',
+                    ),
+                  ),
+                  CommonUI.getElevatedPrimaryButton(
+                    ButtonDetails(
+                      onTap: () => showCustomBottomSheet(context, const ImportWorkoutForm()),
+                      text: 'Import Workout',
                     ),
                   ),
                   const Divider(),

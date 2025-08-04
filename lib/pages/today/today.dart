@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/bodyweight.dart';
 import 'package:gymvision/classes/db/schedules/schedule.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
@@ -167,7 +168,7 @@ class _TodayState extends State<Today> {
                             CommonUI.getTimeWithIcon(context, w.date),
                             if (w.isFinished()) ...[
                               const Padding(padding: EdgeInsetsGeometry.all(5)),
-                              CommonUI.getTimeElapsedWithIcon(context, w.getDuration() ),
+                              CommonUI.getTimeElapsedWithIcon(context, w.getDuration()),
                             ],
                           ]),
                         ],
@@ -175,6 +176,22 @@ class _TodayState extends State<Today> {
                     ]),
                     GestureDetector(
                       onTap: () => showOptionsMenu(context, [
+                        ButtonDetails(
+                          onTap: () async {
+                            Navigator.pop(context);
+
+                            try {
+                              final exportString = await WorkoutModel.getWorkoutExportString(w.id!);
+                              if (exportString == null) throw Exception();
+                              await Clipboard.setData(ClipboardData(text: exportString));
+                              if (mounted) showSnackBar(context, 'Workout copied to clipboard!');
+                            } catch (ex) {
+                              if (mounted) showSnackBar(context, 'Failed to export workout.');
+                            }
+                          },
+                          icon: Icons.share_rounded,
+                          text: 'Export Workout',
+                        ),
                         ButtonDetails(
                           onTap: () {
                             Navigator.pop(context);
@@ -188,7 +205,7 @@ class _TodayState extends State<Today> {
                           icon: Icons.delete_rounded,
                           text: 'Delete Workout',
                           style: ButtonDetailsStyle.redIcon,
-                        )
+                        ),
                       ]),
                       child: const Icon(Icons.more_vert_rounded),
                     ),

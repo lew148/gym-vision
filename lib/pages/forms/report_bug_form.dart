@@ -68,9 +68,12 @@ class _ReportBugFormState extends State<ReportBugForm> {
             isBug = !isBug;
           }),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [CommonUI.getTextButton(ButtonDetails(text: 'Report', onTap: onSubmit))],
+        Padding(
+          padding: const EdgeInsetsGeometry.symmetric(vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [CommonUI.getTextButton(ButtonDetails(text: 'Report', onTap: onSubmit))],
+          ),
         ),
       ]),
     );

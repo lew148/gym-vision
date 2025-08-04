@@ -1,5 +1,6 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_category.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise_ordering.dart';
@@ -250,5 +251,99 @@ class WorkoutModel {
     );
 
     return true;
+  }
+
+  static Future<String?> getWorkoutExportString(int id) async {
+    final fullWorkout = await getWorkout(workoutId: id, includeCategories: true, includeWorkoutExercises: true);
+    if (fullWorkout == null) return null;
+
+    final workoutExercises = fullWorkout.workoutExercises?.map((we) => we.toMap()).toList();
+    if (workoutExercises != null) {
+      for (int i = 0; i < workoutExercises.length; i++) {
+        final we = workoutExercises[i];
+        we['sets'] = fullWorkout.workoutExercises
+            ?.firstWhereOrNull((w) => w.id == we['id'])
+            ?.workoutSets
+            ?.map((ws) => ws.toMap())
+            .toList();
+      }
+    }
+
+    final workoutMap = fullWorkout.toMap();
+    workoutMap['categories'] = fullWorkout.workoutCategories?.map((wc) => wc.toMap()).toList();
+    workoutMap['workoutExercises'] = workoutExercises?.toList();
+    workoutMap['workoutExerciseOrdering'] = fullWorkout.exerciseOrdering?.toMap();
+    return jsonEncode(workoutMap);
+  }
+
+  static Future<bool> importWorkout(String input) async {
+    if (input.isEmpty) return false;
+
+    if (input[0] != '[') {
+      // wrap single imports in brackets to handle as bulk
+      input = '[$input]';
+    }
+
+    try {
+      final db = await DatabaseHelper.getDb();
+      final maps = jsonDecode(input);
+      for (var workoutMap in maps) {
+        var workoutId = await db.insert('workouts', {
+          'updatedAt': workoutMap['updatedAt'],
+          'createdAt': workoutMap['createdAt'],
+          'date': workoutMap['date'],
+          'endDate': workoutMap['endDate'],
+        });
+
+        if (workoutId == 0) return false;
+
+        final weo = workoutMap['workoutExerciseOrdering'];
+        await db.insert('workout_exercise_orderings', {
+          'workoutId': workoutId,
+          'updatedAt': weo['updatedAt'],
+          'createdAt': weo['createdAt'],
+          'positions': weo['positions'],
+        });
+
+        for (var wc in workoutMap['categories']) {
+          await db.insert('workout_categories', {
+            'workoutId': workoutId,
+            'updatedAt': wc['updatedAt'],
+            'createdAt': wc['createdAt'],
+            'category': wc['category'],
+          });
+        }
+
+        for (var we in workoutMap['workoutExercises']) {
+          var workoutExerciseId = await db.insert('workout_exercises', {
+            'workoutId': workoutId,
+            'updatedAt': we['updatedAt'],
+            'createdAt': we['createdAt'],
+            'exerciseIdentifier': we['exerciseIdentifier'],
+            'done': we['done'],
+          });
+
+          if (workoutExerciseId == 0) continue;
+
+          for (var ws in we['sets']) {
+            await db.insert('workout_sets', {
+              'workoutExerciseId': workoutExerciseId,
+              'updatedAt': ws['updatedAt'],
+              'createdAt': ws['createdAt'],
+              'done': ws['done'],
+              'weight': ws['weight'],
+              'reps': ws['reps'],
+              'time': ws['time'],
+              'distance': ws['distance'],
+              'calsBurned': ws['calsBurned'],
+            });
+          }
+        }
+      }
+
+      return true;
+    } catch (ex) {
+      return false;
+    }
   }
 }
