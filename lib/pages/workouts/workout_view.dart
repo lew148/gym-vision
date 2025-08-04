@@ -194,6 +194,22 @@ class _WorkoutViewState extends State<WorkoutView> {
         context,
         [
           ButtonDetails(
+            onTap: () async {
+              Navigator.pop(context);
+
+              try {
+                final exportString = await WorkoutModel.getWorkoutExportString(workout.id!);
+                if (exportString == null) throw Exception();
+                await Clipboard.setData(ClipboardData(text: exportString));
+                if (mounted) showSnackBar(context, 'Workout copied to clipboard!');
+              } catch (ex) {
+                if (mounted) showSnackBar(context, 'Failed to export workout.');
+              }
+            },
+            icon: Icons.share_rounded,
+            text: 'Export Workout',
+          ),
+          ButtonDetails(
             onTap: () {
               Navigator.pop(context);
               showEditDate(workout);
