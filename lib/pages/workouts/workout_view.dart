@@ -11,6 +11,7 @@ import 'package:gymvision/models/db_models/workout_exercise_orderings_model.dart
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/common/debug_scaffold.dart';
+import 'package:gymvision/pages/workouts/rest_timer.dart';
 import 'package:gymvision/pages/forms/category_picker.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/pages/forms/add_exercises_to_workout.dart';
@@ -95,7 +96,6 @@ class _WorkoutViewState extends State<WorkoutView> {
 
   getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories, List<Category> existingCategories) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Expanded(
             child: Wrap(
@@ -103,7 +103,7 @@ class _WorkoutViewState extends State<WorkoutView> {
               children: workoutCategories //todo: sort
                   .map((wc) => CommonUI.getSmallPropDisplay(
                         context,
-                        wc.getCategoryDisplayNamePlain(),
+                        wc.getCategoryDisplayName(),
                         onTap: () => goToMostRecentWorkout(wc),
                       ))
                   .toList(),
@@ -183,13 +183,6 @@ class _WorkoutViewState extends State<WorkoutView> {
         },
       );
 
-  void showTimer() => showDurationPicker(
-        context,
-        CupertinoTimerPickerMode.hms,
-        (Duration d) {},
-        isTimer: true,
-      );
-
   void showMoreMenu(Workout workout) => showOptionsMenu(
         context,
         [
@@ -243,17 +236,17 @@ class _WorkoutViewState extends State<WorkoutView> {
         ],
       );
 
-  Widget getCategoriesWidget(Workout workout, List<Category> existingCategoryIds) => Expanded(
-      child: workout.workoutCategories == null || workout.workoutCategories!.isEmpty
-          ? Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-              CommonUI.getTextButton(ButtonDetails(onTap: () => onAddCategoryClick([]), icon: Icons.category_rounded)),
-            ])
-          : getWorkoutCategoriesWidget(workout.workoutCategories!, existingCategoryIds));
+  Widget getCategoriesWidget(Workout workout, List<Category> existingCategoryIds) =>
+      workout.workoutCategories == null || workout.workoutCategories!.isEmpty
+          ? CommonUI.getTextButton(ButtonDetails(
+              onTap: () => onAddCategoryClick([]),
+              text: 'Add Categories',
+              style: ButtonDetailsStyle(padding: EdgeInsets.zero),
+            ))
+          : getWorkoutCategoriesWidget(workout.workoutCategories!, existingCategoryIds);
 
   void onAddExerciseClick(int workoutId) => Navigator.of(context)
-      .push(MaterialPageRoute(
-        builder: (context) => AddExercisesToWorkout(workoutId: workoutId),
-      ))
+      .push(MaterialPageRoute(builder: (context) => AddExercisesToWorkout(workoutId: workoutId)))
       .then((x) => reloadState());
 
   void onWorkoutExerciseReorder(int oldIndex, int newIndex) async {
@@ -363,17 +356,16 @@ class _WorkoutViewState extends State<WorkoutView> {
                         ),
                 ],
               ),
-              const Padding(padding: EdgeInsets.all(10)),
+              const Padding(padding: EdgeInsets.all(5)),
+              getCategoriesWidget(workout, categories),
+              const Padding(padding: EdgeInsets.all(5)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  getCategoriesWidget(workout, categories),
+                  CommonUI.getSectionTitle(context, 'Exercises'),
                   Row(children: [
-                    CommonUI.getTextButton(ButtonDetails(
-                      icon: Icons.av_timer_rounded,
-                      onTap: () => null,
-                    )),
+                    const CountdownTimer(),
                     CommonUI.getTextButton(ButtonDetails(
                       icon: Icons.add_rounded,
                       onTap: () => onAddExerciseClick(workout.id!),

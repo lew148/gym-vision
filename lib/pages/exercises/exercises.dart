@@ -233,19 +233,23 @@ class _ExercisesState extends State<Exercises> {
             placeholder: 'Search for exercise...',
             style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
             onChanged: (s) => setSearchValue(s),
+            suffixIcon: const Icon(Icons.clear_rounded),
+            onSuffixTap: () {
+              closeKeyboard();
+              setSearchValue(null);
+              searchTextController.clear();
+            },
           ),
         ),
-        // if (searching)
-        //   TextButton(
-        //     onPressed: () {
-        //       FocusScope.of(context).unfocus();
-        //       setSearchValue(null);
-        //     },
-        //     child: const Text('Cancel'),
-        //   ),
       ]),
       if (selectedType != ExerciseType.cardio)
-        CommonUI.getTextButton(ButtonDetails(text: 'Categories', onTap: showCategories)),
+        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          CommonUI.getTextButton(ButtonDetails(
+            text: 'Categories',
+            onTap: showCategories,
+            style: ButtonDetailsStyle(padding: const EdgeInsets.all(10)),
+          )),
+        ]),
       Expanded(child: getExercisesScrollView()),
     ]);
   }

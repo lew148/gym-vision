@@ -8,6 +8,7 @@ import 'package:gymvision/pages/progress/progress.dart';
 import 'package:gymvision/pages/today/today.dart';
 import 'package:gymvision/pages/workouts/workouts.dart';
 import 'package:gymvision/providers/navigation_provider.dart';
+import 'package:gymvision/providers/rest_timer_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -29,6 +30,7 @@ void main() async {
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => NavigationProvider()),
+          ChangeNotifierProvider(create: (_) => RestTimerProvider()),
         ],
         child: const MyApp(),
       ),
