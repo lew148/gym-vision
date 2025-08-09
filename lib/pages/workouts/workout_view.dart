@@ -84,14 +84,7 @@ class _WorkoutViewState extends State<WorkoutView> {
       return;
     }
 
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => WorkoutView(
-          workoutId: id,
-          reloadParent: reloadState,
-        ),
-      ),
-    );
+    openWorkoutView(context, id, reloadState: reloadState);
   }
 
   getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories, List<Category> existingCategories) => Row(
@@ -365,7 +358,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                 children: [
                   CommonUI.getSectionTitle(context, 'Exercises'),
                   Row(children: [
-                    const CountdownTimer(),
+                    RestTimer(workoutId: workout.id),
                     CommonUI.getTextButton(ButtonDetails(
                       icon: Icons.add_rounded,
                       onTap: () => onAddExerciseClick(workout.id!),

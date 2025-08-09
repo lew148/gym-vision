@@ -65,11 +65,12 @@ bool dateXIsAfterDateY(DateTime x, DateTime y) => y.compareTo(x) < 0;
 
 String getIntTwoDigitsString(int n) => n.toString().padLeft(2, "0");
 
-String getDurationString(Duration duration) {
-  String hours = getIntTwoDigitsString(duration.inHours);
-  String minutes = getIntTwoDigitsString(duration.inMinutes.remainder(60).abs());
+String getDurationString(Duration duration, {bool noHours = false}) {
+  String hours = noHours ? '' : getIntTwoDigitsString(duration.inHours);
+  String minutes =
+      noHours ? duration.inMinutes.abs().toString() : getIntTwoDigitsString(duration.inMinutes.remainder(60).abs());
   String seconds = getIntTwoDigitsString(duration.inSeconds.remainder(60).abs());
-  return "${duration.isNegative ? '-' : ''}$hours:$minutes:$seconds";
+  return "${duration.isNegative ? '-' : ''}${noHours ? '' : '$hours:'}$minutes:$seconds";
 }
 
 String getHoursAndMinsDurationString(Duration duration) {

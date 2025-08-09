@@ -79,14 +79,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
           () => WorkoutModel.deleteWorkout(workout.id!),
           widget.reloadParent,
         ),
-        onTap: () => Navigator.of(context)
-            .push(MaterialPageRoute(
-              builder: (context) => WorkoutView(
-                workoutId: workout.id!,
-                reloadParent: widget.reloadParent,
-              ),
-            ))
-            .then((value) => widget.reloadParent()),
+        onTap: () => openWorkoutView(context, workout.id!, reloadState: widget.reloadParent),
         child: Container(
           padding: const EdgeInsets.all(10),
           child: Row(

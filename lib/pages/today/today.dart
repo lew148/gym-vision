@@ -136,16 +136,7 @@ class _TodayState extends State<Today> {
           padding: const EdgeInsets.all(15),
           child: GestureDetector(
             behavior: HitTestBehavior.translucent,
-            onTap: () => Navigator.of(context)
-                .push(
-                  MaterialPageRoute(
-                    builder: (context) => WorkoutView(
-                      workoutId: w.id!,
-                      reloadParent: reloadState,
-                    ),
-                  ),
-                )
-                .then((value) => reloadState()),
+            onTap: () => openWorkoutView(context, w.id!, reloadState: reloadState),
             child: Column(
               children: [
                 Row(

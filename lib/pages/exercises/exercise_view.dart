@@ -105,9 +105,7 @@ class _ExerciseViewState extends State<ExerciseView> {
     setsGroupedByWorkoutExercise.forEach((key, value) {
       weWidgets.add(
         GestureDetector(
-          onTap: () => Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => WorkoutView(workoutId: value[0].getWorkout()!.id!)))
-              .then((value) => reloadState()),
+          onTap: () => openWorkoutView(context, value[0].getWorkout()!.id!, reloadState: reloadState),
           child: ExerciseRecentUsesView(workoutSets: value, exercise: exercise),
         ),
       );
@@ -139,9 +137,7 @@ class _ExerciseViewState extends State<ExerciseView> {
         )
       : GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: () => Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => WorkoutView(workoutId: details.pr!.getWorkout()!.id!)))
-              .then((value) => reloadState()),
+          onTap: () => openWorkoutView(context, details.pr!.getWorkout()!.id!, reloadState: reloadState),
           child: Padding(
             padding: const EdgeInsetsGeometry.symmetric(vertical: 5),
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [

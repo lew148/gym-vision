@@ -43,7 +43,7 @@ void showDeleteConfirm(
   Function? reloadState, {
   bool popCaller = false,
 }) {
-  HapticFeedback.lightImpact();
+  HapticFeedback.heavyImpact();
   showDialog(
     context: context,
     builder: (context) => CupertinoAlertDialog(
@@ -82,7 +82,7 @@ Future<bool> showConfirm(
   String title,
   String content,
 ) async {
-  HapticFeedback.lightImpact();
+  HapticFeedback.heavyImpact();
   var confirmed = false;
 
   await showDialog(
@@ -110,6 +110,34 @@ Future<bool> showConfirm(
   );
 
   return confirmed;
+}
+
+Future showCustomDialog(
+  BuildContext context,
+  Widget title,
+  Widget content, {
+  List<CupertinoDialogAction>? actions,
+}) async {
+  HapticFeedback.heavyImpact();
+  await showDialog(
+    context: context,
+    builder: (context) => CupertinoAlertDialog(
+      title: title,
+      content: content,
+      actions: actions ??
+          [
+            CupertinoDialogAction(
+              child: Text(
+                'Done',
+                style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+    ),
+  );
 }
 
 void showDateTimePicker(
@@ -189,14 +217,17 @@ Future onAddWorkoutTap(
     }
 
     if (!context.mounted) return;
-
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => WorkoutView(workoutId: newWorkoutId, reloadParent: reloadState)))
-        .then((value) => reloadState());
+    openWorkoutView(context, newWorkoutId, reloadState: reloadState);
   } catch (ex) {
     showSnackBar(context, 'Failed to add workout');
   }
 }
+
+void openWorkoutView(BuildContext context, int workoutId, {Function? reloadState}) => Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => WorkoutView(workoutId: workoutId, reloadParent: reloadState)))
+        .then((value) {
+      if (reloadState != null) reloadState();
+    });
 
 void closeKeyboard() => FocusManager.instance.primaryFocus?.unfocus();
 

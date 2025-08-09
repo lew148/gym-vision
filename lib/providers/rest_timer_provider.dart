@@ -37,7 +37,6 @@ class RestTimerProvider extends ChangeNotifier {
 
         if (SchedulerBinding.instance.lifecycleState != AppLifecycleState.resumed && backgroundCallback != null) {
           backgroundCallback();
-          return;
         } else {
           callback();
         }

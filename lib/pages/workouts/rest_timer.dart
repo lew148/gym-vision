@@ -1,30 +1,39 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
+import 'package:gymvision/providers/navigation_provider.dart';
 import 'package:gymvision/providers/rest_timer_provider.dart';
 import 'package:provider/provider.dart';
 
-class CountdownTimer extends StatefulWidget {
-  const CountdownTimer({super.key});
+class RestTimer extends StatefulWidget {
+  final int? workoutId;
+
+  const RestTimer({
+    super.key,
+    this.workoutId,
+  });
 
   @override
-  State<CountdownTimer> createState() => _CountdownTimerState();
+  State<RestTimer> createState() => _RestTimerState();
 }
 
-class _CountdownTimerState extends State<CountdownTimer> {
+class _RestTimerState extends State<RestTimer> {
+  late RestTimerProvider restTimerProvider;
+  late NavigationProvider navProvider;
   Timer? uiRefreshTimer;
-  RestTimerProvider? provider;
   Duration? left;
+  int? workoutId;
+  bool leftWorkoutScreen = false;
 
   @override
   void initState() {
     super.initState();
+    workoutId = widget.workoutId;
     uiRefreshTimer = Timer.periodic(
-      const Duration(seconds: 1),
+      const Duration(milliseconds: 500),
       (Timer t) {
         setState(() {});
       },
@@ -35,15 +44,57 @@ class _CountdownTimerState extends State<CountdownTimer> {
   void dispose() {
     uiRefreshTimer?.cancel();
     super.dispose();
+    leftWorkoutScreen = true;
   }
 
-  void setTimer(Duration duration) => provider?.setTimer(
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    restTimerProvider = Provider.of<RestTimerProvider>(context);
+    navProvider = Provider.of<NavigationProvider>(context);
+  }
+
+  void setTimer(Duration duration) => restTimerProvider.setTimer(
         duration: duration,
-        callback: () {
-          HapticFeedback.heavyImpact();
-          HapticFeedback.heavyImpact();
-          HapticFeedback.heavyImpact();
+        callback: () async {
+          final globalContext = navProvider.getGlobalContext();
+          if (globalContext == null || !globalContext.mounted) return;
+          await showCustomDialog(
+            globalContext,
+            const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Icon(Icons.alarm_on_rounded),
+              Padding(padding: EdgeInsetsGeometry.all(2.5)),
+              Text('Rest Over!'),
+            ]),
+            Column(children: [
+              const Text('Time to get back to work!'),
+              Text('Return to active workout?', style: TextStyle(color: Theme.of(globalContext).colorScheme.shadow)),
+            ]),
+            actions: [
+              CupertinoDialogAction(
+                child: const Text('Close'),
+                onPressed: () {
+                  Navigator.pop(globalContext);
+                },
+              ),
+              if (workoutId != null && leftWorkoutScreen)
+                CupertinoDialogAction(
+                  child: Text(
+                    'Go',
+                    style: TextStyle(
+                      color: Theme.of(globalContext).colorScheme.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(globalContext);
+                    openWorkoutView(globalContext, workoutId!);
+                  },
+                ),
+            ],
+          );
         },
+        backgroundCallback: () => null,
       );
 
   void showPicker() => showDurationPicker(
@@ -53,20 +104,37 @@ class _CountdownTimerState extends State<CountdownTimer> {
         isTimer: true,
       );
 
-  void onTimerDelete() => provider?.clearTimer();
+  void onTimerDelete() => restTimerProvider.clearTimer();
 
   @override
   Widget build(BuildContext context) {
-    provider ??= Provider.of<RestTimerProvider>(context);
-    return provider?.timer == null
+    return restTimerProvider.timer == null
         ? CommonUI.getTextButton(ButtonDetails(
-            icon: Icons.av_timer_rounded,
+            icon: Icons.alarm_add_rounded,
             onTap: showPicker,
           ))
         : GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: () => showDeleteConfirm(context, 'Timer', onTimerDelete, null),
-            child: Text(getDurationString(provider!.getTimeLeft())),
+            child: Stack(children: [
+              Container(
+                height: 20,
+                width: 50 * (restTimerProvider.getPercentageLeft() / 100),
+                decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
+                    borderRadius: const BorderRadius.all(Radius.circular(5))),
+              ),
+              SizedBox(
+                height: 20,
+                width: 50,
+                child: Center(
+                  child: Text(
+                    getDurationString(restTimerProvider.getTimeLeft(), noHours: true),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ]),
           );
   }
 }
