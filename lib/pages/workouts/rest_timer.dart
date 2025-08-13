@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/globals.dart';
+import 'package:gymvision/local_notif_service.dart';
 import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
 import 'package:gymvision/providers/navigation_provider.dart';
@@ -94,7 +95,9 @@ class _RestTimerState extends State<RestTimer> {
             ],
           );
         },
-        backgroundCallback: () => null,
+        backgroundCallback: () => {
+          LocalNotifService.showNotification(title: 'Rest Timer Up!', body: 'Time to get back to work.')
+        },
       );
 
   void showPicker() => showDurationPicker(
