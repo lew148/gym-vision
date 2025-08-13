@@ -1,6 +1,7 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gymvision/local_notif_service.dart';
 import 'package:gymvision/pages/common/coming_soon.dart';
 import 'package:gymvision/pages/common/debug_scaffold.dart';
 import 'package:gymvision/pages/exercises/exercises.dart';
@@ -14,6 +15,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // needed for calling async methods in main()
+  LocalNotifService.init();
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

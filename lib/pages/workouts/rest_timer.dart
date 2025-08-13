@@ -118,14 +118,19 @@ class _RestTimerState extends State<RestTimer> {
             onTap: () => showDeleteConfirm(context, 'Timer', onTimerDelete, null),
             child: Stack(children: [
               Container(
-                height: 20,
+                height: 25,
                 width: 50 * (restTimerProvider.getPercentageLeft() / 100),
                 decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary,
-                    borderRadius: const BorderRadius.all(Radius.circular(5))),
+                  color: Theme.of(context).colorScheme.primary,
+                  borderRadius: const BorderRadius.all(Radius.circular(5)),
+                ),
               ),
-              SizedBox(
-                height: 20,
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Theme.of(context).colorScheme.shadow),
+                  borderRadius: const BorderRadius.all(Radius.circular(5)),
+                ),
+                height: 25,
                 width: 50,
                 child: Center(
                   child: Text(
