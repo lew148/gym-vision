@@ -23,4 +23,7 @@ brew install cocoapods
 # Install CocoaPods dependencies.
 cd ios && pod install # run `pod install` in the `ios` directory.
 
+flutter clean
+flutter build ipa --no-pub
+
 exit 0
