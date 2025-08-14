@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/globals.dart';
@@ -95,9 +96,16 @@ class _RestTimerState extends State<RestTimer> {
             ],
           );
         },
-        backgroundCallback: () => {
-          LocalNotifService.showNotification(title: 'Rest Timer Up!', body: 'Time to get back to work.')
-        },
+        backgroundCallback: Platform.isAndroid
+            ? () => LocalNotifService.showNotification(
+                  title: 'Rest Timer Up!',
+                  body: 'Time to get back to work.',
+                )
+            : () => LocalNotifService.scheduleNotification(
+                  title: 'Rest Timer Up!',
+                  body: 'Time to get back to work.',
+                  scheduledTime: DateTime.now().add(const Duration(seconds: 1)),
+                ),
       );
 
   void showPicker() => showDurationPicker(
