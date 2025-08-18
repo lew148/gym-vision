@@ -40,13 +40,13 @@ class _AddBodyWeightFormState extends State<AddBodyWeightForm> {
       key: formKey,
       child: Column(
         children: [
-          CommonUI.getSectionTitle(context, 'Add Weight'),
+          CommonUI.getSectionTitle(context, 'Record Bodyweight'),
           CommonUI.getDivider(),
           Row(children: [
             Expanded(
               child: CustomFormFields.doubleField(
                 controller: weightController,
-                label: 'Weight',
+                label: 'BW',
                 unit: 'kg',
                 autofocus: true,
                 hideNone: true,

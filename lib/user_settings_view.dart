@@ -2,7 +2,7 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/user_setting.dart';
 import 'package:gymvision/db/db.dart';
-import 'package:gymvision/local_notif_service.dart';
+import 'package:gymvision/local_notification_service.dart';
 import 'package:gymvision/models/db_models/flavour_text_schedule_model.dart';
 import 'package:gymvision/pages/common/common_functions.dart';
 import 'package:gymvision/pages/common/common_ui.dart';
@@ -64,7 +64,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                   ),
                   CommonUI.getElevatedPrimaryButton(
                     ButtonDetails(
-                      onTap: () => LocalNotifService.showTestNotification(),
+                      onTap: () => LocalNotificationService.showTestNotification(),
                       text: 'Show Test Notification',
                     ),
                   ),

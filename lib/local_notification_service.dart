@@ -1,7 +1,13 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest_all.dart' as tz;
 
-class LocalNotifService {
+class LocalNotificationIds {
+  static int restTimer = 1;
+}
+
+class LocalNotificationService {
   static final plugin = FlutterLocalNotificationsPlugin();
   static bool isInit = false;
 
@@ -18,7 +24,10 @@ class LocalNotifService {
     );
 
     await plugin.initialize(settings);
-    tz.initializeDatabase([]);
+
+    tz.initializeTimeZones();
+    tz.setLocalLocation(tz.getLocation(await FlutterTimezone.getLocalTimezone()));
+
     isInit = true;
   }
 
@@ -56,4 +65,6 @@ class LocalNotifService {
         details,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       );
+
+  static Future<void> cancelNotification(int id) => plugin.cancel(id);
 }

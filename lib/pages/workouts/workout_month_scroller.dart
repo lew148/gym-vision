@@ -123,7 +123,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
   Widget getBodyweightDisplay(Bodyweight bw) => GestureDetector(
         onLongPress: () => showDeleteConfirm(
           context,
-          "bodyweight",
+          'bodyweight',
           () => BodyweightModel.deleteBodyweight(bw.id!),
           widget.reloadParent,
         ),

@@ -6,7 +6,7 @@ import 'package:gymvision/classes/db/schedules/schedule.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/globals.dart';
-import 'package:gymvision/local_notif_service.dart';
+import 'package:gymvision/local_notification_service.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/models/db_models/schedule_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
@@ -419,17 +419,22 @@ class _TodayState extends State<Today> {
                         future: todaysBodyweight,
                         builder: (context, bwsnapshot) {
                           if (!bwsnapshot.hasData) {
-                            return CommonUI.getTextButton(ButtonDetails(
-                              onTap: onAddWeightTap,
-                              text: 'Bodyweight',
-                              icon: Icons.monitor_weight_rounded,
-                            ));
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                CommonUI.getTextButton(ButtonDetails(
+                                  onTap: onAddWeightTap,
+                                  text: 'Add BW',
+                                  icon: Icons.monitor_weight_rounded,
+                                )),
+                              ],
+                            );
                           }
 
                           return GestureDetector(
                             onTap: () => showDeleteConfirm(
                               context,
-                              "bodyweight",
+                              'bodyweight',
                               () => BodyweightModel.deleteBodyweight(bwsnapshot.data!.id!),
                               reloadState,
                             ),
