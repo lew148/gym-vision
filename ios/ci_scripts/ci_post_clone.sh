@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Fail this script if any subcommand fails.
-set -ex
+# set -ex
 
 # print verbose failure on error
 trap 'echo "[ERROR] Command failed on line $LINENO: $BASH_COMMAND"' ERR
@@ -23,6 +23,6 @@ HOMEBREW_NO_AUTO_UPDATE=1
 cd ios && pod install
 
 # to flush build
-# flutter build ios
+flutter build ios
 
 exit 0
