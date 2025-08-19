@@ -329,14 +329,12 @@ class _WorkoutViewState extends State<WorkoutView> {
                     ],
                   ),
                   workoutIsFinished
-                      ? workout.hasReachedMaxDuration()
-                          ? const SizedBox.shrink()
-                          : CommonUI.getElevatedPrimaryButton(
-                              ButtonDetails(
-                                text: 'Resume',
-                                onTap: () => finishOrResumeOnTap(context, workout, true),
-                              ),
-                            )
+                      ? CommonUI.getElevatedPrimaryButton(
+                          ButtonDetails(
+                            text: 'Resume',
+                            onTap: () => finishOrResumeOnTap(context, workout, true),
+                          ),
+                        )
                       : CommonUI.getElevatedPrimaryButton(
                           ButtonDetails(
                             text: 'Finish',

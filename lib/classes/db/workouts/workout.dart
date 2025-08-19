@@ -38,15 +38,8 @@ class Workout extends DatabaseObject {
         'endDate': endDate.toString(),
       };
 
-  static const int maxHours = 4;
-
-  bool hasReachedMaxDuration() => hoursBetween(date, DateTime.now()) >= maxHours;
-  bool isFinished() => endDate != null || hasReachedMaxDuration();
-  Duration getDuration() => hasReachedMaxDuration()
-      ? const Duration(hours: maxHours)
-      : endDate == null
-          ? timeBetween(date, DateTime.now())
-          : timeBetween(date, endDate!);
+  bool isFinished() => endDate != null;
+  Duration getDuration() => endDate == null ? timeBetween(date, DateTime.now()) : timeBetween(date, endDate!);
 
   String getTimeStr() => DateFormat(hmFormat).format(date);
   bool isInFuture() => dateIsInFuture(date);

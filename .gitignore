@@ -45,6 +45,6 @@ app.*.map.json
 .vscode/settings.json
 
 # temp (to remove annoying build files)
-/linux/
-/macos/
-/windows/
+linux/
+macos/
+windows/
