@@ -19,7 +19,7 @@ HOMEBREW_NO_AUTO_UPDATE=1
 cd ios && pod install
 
 # to flush build
-# flutter clean
-# flutter build ios
+flutter clean
+flutter build ios
 
 exit 0
