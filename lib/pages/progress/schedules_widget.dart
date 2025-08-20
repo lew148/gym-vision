@@ -5,9 +5,9 @@ import 'package:gymvision/classes/db/schedules/schedule_item.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/db_models/schedule_model.dart';
-import 'package:gymvision/pages/common/common_functions.dart';
-import 'package:gymvision/pages/common/common_ui.dart';
-import 'package:gymvision/pages/forms/schedule_form.dart';
+import 'package:gymvision/common/common_functions.dart';
+import 'package:gymvision/common/common_ui.dart';
+import 'package:gymvision/common/forms/schedule_form.dart';
 import 'package:gymvision/static_data/helpers.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 

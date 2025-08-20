@@ -1,9 +1,9 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gymvision/local_notification_service.dart';
-import 'package:gymvision/pages/common/coming_soon.dart';
-import 'package:gymvision/pages/common/debug_scaffold.dart';
+import 'package:gymvision/services/local_notification_service.dart';
+import 'package:gymvision/common/components/coming_soon.dart';
+import 'package:gymvision/common/components/debug_scaffold.dart';
 import 'package:gymvision/pages/exercises/exercises.dart';
 import 'package:gymvision/pages/progress/progress.dart';
 import 'package:gymvision/pages/today/today.dart';

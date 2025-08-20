@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gymvision/pages/common/common_functions.dart';
-import 'package:gymvision/pages/forms/report_bug_form.dart';
-import 'package:gymvision/user_settings_view.dart';
+import 'package:gymvision/common/common_functions.dart';
+import 'package:gymvision/common/forms/report_bug_form.dart';
+import 'package:gymvision/pages/user_settings_view.dart';
 
 class DebugScaffold extends StatefulWidget {
   final Widget body;

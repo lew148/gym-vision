@@ -1,4 +1,4 @@
-import 'package:gymvision/pages/common/common_functions.dart';
+import 'package:gymvision/common/common_functions.dart';
 import 'package:sqflite/sqflite.dart';
 
 class CustomDatabase {

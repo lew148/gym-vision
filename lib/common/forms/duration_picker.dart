@@ -1,47 +1,48 @@
 import 'package:flutter/cupertino.dart';
-import 'package:gymvision/pages/common/common_ui.dart';
+import 'package:gymvision/common/common_ui.dart';
 
-class DateTimePicker extends StatefulWidget {
-  final void Function(DateTime dt) onChange;
-  final CupertinoDatePickerMode mode;
-  final DateTime? initialValue;
+class DurationPicker extends StatefulWidget {
+  final void Function(Duration d) onChange;
+  final CupertinoTimerPickerMode mode;
+  final Duration? initialValue;
+  final bool isTimer;
 
-  const DateTimePicker({
+  const DurationPicker({
     super.key,
     required this.onChange,
     required this.mode,
     this.initialValue,
+    this.isTimer = false,
   });
 
   @override
-  State<DateTimePicker> createState() => _DateTimePickerState();
+  State<DurationPicker> createState() => _DurationPickerState();
 }
 
-class _DateTimePickerState extends State<DateTimePicker> {
+class _DurationPickerState extends State<DurationPicker> {
   late GlobalKey key;
-  late DateTime value;
+  late Duration value;
 
   @override
   void initState() {
     super.initState();
     key = GlobalKey();
-    value = widget.initialValue ?? DateTime.now();
+    value = widget.initialValue ?? Duration.zero;
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommonUI.getSectionTitleWithCloseButton(context, widget.mode == CupertinoDatePickerMode.time ? 'Time' : 'Date'),
+        CommonUI.getSectionTitleWithCloseButton(context, widget.isTimer ? 'Timer' : 'Duration'),
         SizedBox(
           height: 100,
-          child: CupertinoDatePicker(
+          child: CupertinoTimerPicker(
             key: key,
-            initialDateTime: value,
+            initialTimerDuration: value,
             mode: widget.mode,
-            use24hFormat: true,
-            onDateTimeChanged: (dt) => setState(() {
-              value = dt;
+            onTimerDurationChanged: (d) => setState(() {
+              value = d;
             }),
           ),
         ),
@@ -49,10 +50,10 @@ class _DateTimePickerState extends State<DateTimePicker> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             CommonUI.getTextButton(ButtonDetails(
-              text: 'Now',
+              text: 'Reset',
               onTap: () => setState(() {
                 key = GlobalKey(); // prevent persisting state
-                value = DateTime.now();
+                value = Duration.zero;
               }),
             )),
             CommonUI.getDoneButton(() {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/bodyweight.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
-import 'package:gymvision/pages/common/common_functions.dart';
-import 'package:gymvision/pages/common/common_ui.dart';
+import 'package:gymvision/common/common_functions.dart';
+import 'package:gymvision/common/common_ui.dart';
 import 'fields/custom_form_fields.dart';
 
 class AddBodyWeightForm extends StatefulWidget {

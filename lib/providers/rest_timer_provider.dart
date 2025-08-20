@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:gymvision/globals.dart';
-import 'package:gymvision/local_notification_service.dart';
+import 'package:gymvision/services/local_notification_service.dart';
 
 class RestTimerProvider extends ChangeNotifier {
   DateTime? _startTime;

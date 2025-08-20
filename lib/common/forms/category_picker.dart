@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gymvision/pages/common/common_ui.dart';
+import 'package:gymvision/common/common_ui.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 

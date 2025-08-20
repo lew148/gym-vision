@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
-import 'package:gymvision/pages/common/common_functions.dart';
-import 'package:gymvision/pages/common/common_ui.dart';
-import 'package:gymvision/pages/forms/fields/custom_form_fields.dart';
+import 'package:gymvision/common/common_functions.dart';
+import 'package:gymvision/common/common_ui.dart';
+import 'package:gymvision/common/forms/fields/custom_form_fields.dart';
 
 class ImportWorkoutForm extends StatefulWidget {
   const ImportWorkoutForm({super.key});

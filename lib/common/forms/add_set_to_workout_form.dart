@@ -5,9 +5,9 @@ import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';
-import 'package:gymvision/pages/common/common_functions.dart';
-import 'package:gymvision/pages/common/common_ui.dart';
-import 'package:gymvision/pages/forms/fields/exercise_picker.dart';
+import 'package:gymvision/common/common_functions.dart';
+import 'package:gymvision/common/common_ui.dart';
+import 'package:gymvision/common/forms/fields/exercise_picker.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'fields/custom_form_fields.dart';
 
