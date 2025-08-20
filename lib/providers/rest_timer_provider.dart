@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/local_notification_service.dart';
 
@@ -9,6 +11,9 @@ class RestTimerProvider extends ChangeNotifier {
   Timer? _timer;
 
   Timer? get timer => _timer;
+
+  static const String restTimerTitle = "Rest Time Over!";
+  static const String restTimerBody = "Let's get back to work.";
 
   DateTime _getNow() {
     final now = DateTime.now();
@@ -34,16 +39,26 @@ class RestTimerProvider extends ChangeNotifier {
       duration,
       (Timer t) {
         clearTimer();
-        callback();
+
+        if (SchedulerBinding.instance.lifecycleState != AppLifecycleState.resumed) {
+          if (Platform.isAndroid) {
+            LocalNotificationService.showNotification(title: restTimerTitle, body: restTimerBody);
+          }
+        } else {
+          callback();
+        }
+
         notifyListeners();
       },
     );
 
-    await LocalNotificationService.scheduleNotification(
-      title: 'Rest Timer Up!',
-      body: 'Time to get back to work.',
-      scheduledTime: _startTime!.add(_duration!),
-    );
+    if (Platform.isIOS) {
+      await LocalNotificationService.scheduleNotification(
+        title: restTimerTitle,
+        body: restTimerBody,
+        scheduledTime: _startTime!.add(_duration!),
+      );
+    }
 
     notifyListeners();
   }
