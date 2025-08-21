@@ -91,28 +91,17 @@ class _WorkoutViewState extends State<WorkoutView> {
     openWorkoutView(context, id, reloadState: reloadState);
   }
 
-  getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories, List<Category> existingCategories) => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Wrap(
-              alignment: WrapAlignment.start,
-              children: workoutCategories //todo: sort
-                  .map((wc) => CommonUI.getSmallPropDisplay(
-                        context,
-                        wc.getCategoryDisplayName(),
-                        onTap: () => goToMostRecentWorkout(wc),
-                      ))
-                  .toList(),
-            ),
-          ),
-          CommonUI.getTextButton(
-            ButtonDetails(
-              icon: Icons.edit_rounded,
-              onTap: () => onAddCategoryClick(existingCategories),
-            ),
-          ),
-        ],
+  getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories, List<Category> existingCategories) => Expanded(
+        child: Wrap(
+          alignment: WrapAlignment.start,
+          children: workoutCategories //todo: sort
+              .map((wc) => CommonUI.getSmallPropDisplay(
+                    context,
+                    wc.getCategoryDisplayName(),
+                    onTap: () => goToMostRecentWorkout(wc),
+                  ))
+              .toList(),
+        ),
       );
 
   List<Widget> getWorkoutExercisesWidget(
@@ -233,15 +222,6 @@ class _WorkoutViewState extends State<WorkoutView> {
         ],
       );
 
-  Widget getCategoriesWidget(Workout workout, List<Category> existingCategoryIds) =>
-      workout.workoutCategories == null || workout.workoutCategories!.isEmpty
-          ? CommonUI.getTextButton(ButtonDetails(
-              onTap: () => onAddCategoryClick([]),
-              text: 'Add Categories',
-              style: ButtonDetailsStyle(padding: EdgeInsets.zero),
-            ))
-          : getWorkoutCategoriesWidget(workout.workoutCategories!, existingCategoryIds);
-
   void onAddExerciseClick(int workoutId) => Navigator.of(context)
       .push(MaterialPageRoute(builder: (context) => AddExercisesToWorkout(workoutId: workoutId)))
       .then((x) => reloadState());
@@ -301,7 +281,10 @@ class _WorkoutViewState extends State<WorkoutView> {
         workoutIsFinished = workout.isFinished();
 
         return DebugScaffold(
-          customAppBarTitle: const SizedBox.shrink(),
+          customAppBarTitle: const Text(
+            'Workout',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
           customAppBarActions: [
             IconButton(
               icon: const Icon(Icons.more_vert_rounded),
@@ -317,10 +300,6 @@ class _WorkoutViewState extends State<WorkoutView> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        workout.getWorkoutTitle(),
-                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
                       CommonUI.getDateWithIcon(context, workout.date),
                       CommonUI.getTimeWithIcon(context, workout.date),
                       workout.isFinished()
@@ -345,23 +324,33 @@ class _WorkoutViewState extends State<WorkoutView> {
                             onTap: () => finishOrResumeOnTap(context, workout, false),
                             style: ButtonDetailsStyle(
                               textColor: Colors.white,
-                              backgroundColor: Colors.green[500],
+                              backgroundColor: const Color.fromARGB(255, 45, 121, 45),
                             ),
                           ),
                         ),
                 ],
               ),
-              const Padding(padding: EdgeInsets.all(5)),
-              getCategoriesWidget(workout, categories),
-              const Padding(padding: EdgeInsets.all(5)),
-              Notes(type: NoteType.workout, objectId: workout.id!.toString(), autofocus: widget.autofocusNotes),
+              Padding(
+                padding: const EdgeInsetsGeometry.symmetric(vertical: 5),
+                child: Notes(
+                  type: NoteType.workout,
+                  objectId: workout.id!.toString(),
+                  autofocus: widget.autofocusNotes,
+                ),
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
+                // crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  CommonUI.getSectionTitle(context, 'Exercises'),
+                  workout.workoutCategories?.isNotEmpty ?? false
+                      ? getWorkoutCategoriesWidget(workout.workoutCategories!, categories)
+                      : CommonUI.getSectionTitle(context, 'Exercises'),
                   Row(children: [
                     RestTimer(workoutId: workout.id),
+                    CommonUI.getTextButton(ButtonDetails(
+                      icon: Icons.post_add_rounded,
+                      onTap: () => categories.isEmpty ? onAddCategoryClick([]) : onAddCategoryClick(categories),
+                    )),
                     CommonUI.getTextButton(ButtonDetails(
                       icon: Icons.add_rounded,
                       onTap: () => onAddExerciseClick(workout.id!),
@@ -379,19 +368,31 @@ class _WorkoutViewState extends State<WorkoutView> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Text(
-                                'What are we training today?',
+                                'What are you training today?',
                                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                                 textAlign: TextAlign.center,
                               ),
                               Text(
-                                'Set focus categories for this workout!',
+                                'Log focus categories for this workout.',
+                                style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
+                                textAlign: TextAlign.center,
+                              ),
+                              const Padding(padding: EdgeInsetsGeometry.all(5)),
+                              CommonUI.getElevatedPrimaryButton(ButtonDetails(
+                                icon: Icons.post_add_rounded,
+                                text: 'Select categories',
+                                onTap: () => onAddExerciseClick(workout.id!),
+                              )),
+                              const Padding(padding: EdgeInsetsGeometry.all(5)),
+                              Text(
+                                'OR',
                                 style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
                                 textAlign: TextAlign.center,
                               ),
                               const Padding(padding: EdgeInsetsGeometry.all(5)),
                               CommonUI.getElevatedPrimaryButton(ButtonDetails(
                                 icon: Icons.add_rounded,
-                                text: 'Add an exercise',
+                                text: 'Add exercises',
                                 onTap: () => onAddExerciseClick(workout.id!),
                               )),
                             ],

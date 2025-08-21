@@ -124,38 +124,26 @@ class _ExerciseViewState extends State<ExerciseView> {
     );
   }
 
-  Widget getPrSection(ExerciseDetails? details) => details == null || details.pr == null
-      // todo: set pr manually here?
-      ? CommonUI.getCard(
-          context,
-          Padding(
-            padding: const EdgeInsetsGeometry.all(10),
-            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              const Text('PR'),
-              CommonUI.getDash(),
-            ]),
-          ),
-        )
-      : GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => openWorkoutView(context, details.pr!.getWorkout()!.id!, reloadState: reloadState),
-          child: Padding(
-            padding: const EdgeInsetsGeometry.symmetric(vertical: 5),
-            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-              Text(
-                'PR (${getDateStr(details.pr!.getWorkout()!.date)})',
-                style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-              ),
-              Row(
-                children: [
-                  CommonUI.getWeightWithIcon(details.pr!),
-                  const Padding(padding: EdgeInsets.all(5)),
-                  CommonUI.getRepsWithIcon(details.pr!),
-                ],
-              ),
-            ]),
-          ),
-        );
+  Widget getPrSection(WorkoutSet pr) => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => openWorkoutView(context, pr.getWorkout()!.id!, reloadState: reloadState),
+        child: Padding(
+          padding: const EdgeInsetsGeometry.symmetric(vertical: 5),
+          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            Text(
+              'PR (${getDateStr(pr.getWorkout()!.date)})',
+              style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+            ),
+            Row(
+              children: [
+                CommonUI.getWeightWithIcon(pr),
+                const Padding(padding: EdgeInsets.all(5)),
+                CommonUI.getRepsWithIcon(pr),
+              ],
+            ),
+          ]),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -187,7 +175,7 @@ class _ExerciseViewState extends State<ExerciseView> {
               CommonUI.getInfoWidget(context, 'Type', Text(exercise.type.displayName)),
               CommonUI.getInfoWidget(context, 'Primary Muscle', Text(exercise.primaryMuscleGroup.displayName)),
               CommonUI.getInfoWidget(context, 'Equipment', Text(exercise.equipment.displayName)),
-              if (exercise.type == ExerciseType.strength) getPrSection(details),
+              if (exercise.type == ExerciseType.strength && details?.pr != null) getPrSection(details!.pr!),
               Notes(type: NoteType.exercise, objectId: exercise.identifier),
               CommonUI.getDivider(),
               CommonUI.getSectionTitle(context, 'History'),

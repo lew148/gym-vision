@@ -84,10 +84,12 @@ class _NotesState extends State<Notes> {
                     controller: controller,
                     keyboardType: TextInputType.multiline,
                     autofocus: widget.autofocus,
-                    minLines: 1,
-                    maxLines: 3,
                     textInputAction: TextInputAction.done,
                     onEditingComplete: () => onSave(snapshot.data),
+                    padding: const EdgeInsetsGeometry.all(10),
+                    minLines: 1,
+                    maxLines: 3,
+                    suffixMode: OverlayVisibilityMode.editing,
                     suffix: GestureDetector(
                       child: Padding(
                         padding: const EdgeInsetsGeometry.all(5),
@@ -108,7 +110,6 @@ class _NotesState extends State<Notes> {
                       ),
                     ),
                     placeholder: 'Add note...',
-                    suffixMode: OverlayVisibilityMode.editing,
                     style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
                     decoration: const BoxDecoration(color: Colors.transparent),
                   );

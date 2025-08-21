@@ -199,7 +199,7 @@ class CommonUI {
           onTap: onTap,
           child: Container(
             decoration: BoxDecoration(color: color, borderRadius: const BorderRadius.all(Radius.circular(10))),
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),
+            padding: const EdgeInsets.all(5),
             child: onTap == null
                 ? Text(text)
                 : Row(
@@ -254,7 +254,7 @@ class CommonUI {
 
   static getDateTimeWithIcon(BuildContext context, DateTime dt) => Row(children: [
         Icon(Icons.calendar_month_rounded, color: Theme.of(context).colorScheme.shadow, size: 15),
-        const Padding(padding: EdgeInsetsGeometry.all(1)),
+        const Padding(padding: EdgeInsetsGeometry.all(2.5)),
         Text(
           '${DateFormat(dmyFormat).format(dt)} @ ${DateFormat(hmFormat).format(dt)}',
           style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
@@ -263,7 +263,7 @@ class CommonUI {
 
   static getDateWithIcon(BuildContext context, DateTime dt) => Row(children: [
         Icon(Icons.calendar_month_rounded, color: Theme.of(context).colorScheme.shadow, size: 15),
-        const Padding(padding: EdgeInsetsGeometry.all(1)),
+        const Padding(padding: EdgeInsetsGeometry.all(2.5)),
         Text(
           DateFormat(dmyFormat).format(dt),
           style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
@@ -272,7 +272,7 @@ class CommonUI {
 
   static getTimeWithIcon(BuildContext context, DateTime dt) => Row(children: [
         Icon(Icons.access_time_rounded, color: Theme.of(context).colorScheme.shadow, size: 15),
-        const Padding(padding: EdgeInsetsGeometry.all(1)),
+        const Padding(padding: EdgeInsetsGeometry.all(2.5)),
         Text(
           DateFormat(hmFormat).format(dt),
           style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
@@ -281,7 +281,7 @@ class CommonUI {
 
   static getTimeElapsedWithIcon(BuildContext context, Duration timeElapsed) => Row(children: [
         Icon(Icons.hourglass_empty_rounded, color: Theme.of(context).colorScheme.shadow, size: 15),
-        const Padding(padding: EdgeInsetsGeometry.all(1)),
+        const Padding(padding: EdgeInsetsGeometry.all(2.5)),
         Text(
           getHoursAndMinsDurationString(timeElapsed),
           style: TextStyle(
