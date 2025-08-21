@@ -3,3 +3,9 @@ enum ScheduleType {
   biweekly,
   split,
 }
+
+enum NoteType {
+  workout,
+  exercise,
+  other,
+}

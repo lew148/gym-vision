@@ -6,6 +6,8 @@ import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_category.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise_ordering.dart';
+import 'package:gymvision/common/components/notes.dart';
+import 'package:gymvision/enums.dart';
 import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workout_exercise_orderings_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
@@ -22,11 +24,13 @@ import 'package:reorderables/reorderables.dart';
 
 class WorkoutView extends StatefulWidget {
   final int workoutId;
+  final bool autofocusNotes;
   final Function? reloadParent;
 
   const WorkoutView({
     super.key,
     required this.workoutId,
+    this.autofocusNotes = false,
     this.reloadParent,
   });
 
@@ -350,6 +354,7 @@ class _WorkoutViewState extends State<WorkoutView> {
               const Padding(padding: EdgeInsets.all(5)),
               getCategoriesWidget(workout, categories),
               const Padding(padding: EdgeInsets.all(5)),
+              Notes(type: NoteType.workout, objectId: workout.id!.toString(), autofocus: widget.autofocusNotes),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -365,38 +370,42 @@ class _WorkoutViewState extends State<WorkoutView> {
                 ],
               ),
               CommonUI.getDivider(),
-              workoutExercises.isEmpty
-                  ? Padding(
-                      padding: const EdgeInsetsGeometry.all(30),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'What are we training today?',
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
+              Expanded(
+                child: workoutExercises.isEmpty
+                    ? Padding(
+                        padding: const EdgeInsetsGeometry.fromLTRB(30, 30, 30, 0),
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text(
+                                'What are we training today?',
+                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                textAlign: TextAlign.center,
+                              ),
+                              Text(
+                                'Set focus categories for this workout!',
+                                style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
+                                textAlign: TextAlign.center,
+                              ),
+                              const Padding(padding: EdgeInsetsGeometry.all(5)),
+                              CommonUI.getElevatedPrimaryButton(ButtonDetails(
+                                icon: Icons.add_rounded,
+                                text: 'Add an exercise',
+                                onTap: () => onAddExerciseClick(workout.id!),
+                              )),
+                            ],
                           ),
-                          Text(
-                            'Set focus categories for this workout!',
-                            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
-                            textAlign: TextAlign.center,
-                          ),
-                          const Padding(padding: EdgeInsetsGeometry.all(5)),
-                          CommonUI.getElevatedPrimaryButton(ButtonDetails(
-                            icon: Icons.add_rounded,
-                            text: 'Add an exercise',
-                            onTap: () => onAddExerciseClick(workout.id!),
-                          )),
-                        ],
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsetsGeometry.only(bottom: 10),
+                        child: ReorderableColumn(
+                          onReorder: onWorkoutExerciseReorder,
+                          children: getWorkoutExercisesWidget(workout, workoutExercises, workout.exerciseOrdering),
+                        ),
                       ),
-                    )
-                  : Expanded(
-                      child: ReorderableColumn(
-                        onReorder: onWorkoutExerciseReorder,
-                        children: getWorkoutExercisesWidget(workout, workoutExercises, workout.exerciseOrdering),
-                      ),
-                    ),
-              const Padding(padding: EdgeInsetsGeometry.all(10)),
+              ),
             ],
           ),
         );

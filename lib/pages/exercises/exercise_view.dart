@@ -3,13 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/classes/exercise_details.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
+import 'package:gymvision/common/components/notes.dart';
+import 'package:gymvision/enums.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/common/common_functions.dart';
 import 'package:gymvision/common/components/debug_scaffold.dart';
 import 'package:gymvision/pages/exercises/exercise_recent_uses_view.dart';
 import 'package:gymvision/common/common_ui.dart';
-import 'package:gymvision/pages/workouts/workout_view.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 
@@ -187,7 +188,7 @@ class _ExerciseViewState extends State<ExerciseView> {
               CommonUI.getInfoWidget(context, 'Primary Muscle', Text(exercise.primaryMuscleGroup.displayName)),
               CommonUI.getInfoWidget(context, 'Equipment', Text(exercise.equipment.displayName)),
               if (exercise.type == ExerciseType.strength) getPrSection(details),
-              // getNotesDisplay(details),
+              Notes(type: NoteType.exercise, objectId: exercise.identifier),
               CommonUI.getDivider(),
               CommonUI.getSectionTitle(context, 'History'),
               getRecentUsesWidget(exercise, details),

@@ -161,6 +161,17 @@ class DatabaseHelper {
     ''');
 
     batch.execute('''
+      CREATE TABLE notes(
+        id INTEGER PRIMARY KEY,
+        updatedAt TEXT NOT NULL,
+        createdAt TEXT NOT NULL,
+        objectId TEXT NOT NULL,
+        type TEXT NOT NULL,
+        note TEXT NOT NULL
+      );
+    ''');
+
+    batch.execute('''
       CREATE TABLE user_settings(
         id INTEGER PRIMARY KEY,
         updatedAt TEXT NOT NULL,
@@ -190,6 +201,7 @@ class DatabaseHelper {
     var scheduleCategories = [];
     var flavourTextSchedules = [];
     var bodyweights = [];
+    var notes = [];
     var userSettings = [];
 
     try {
@@ -221,6 +233,7 @@ class DatabaseHelper {
       }
 
       if (await tableExists('bodyweights')) bodyweights = await prevDb.query('bodyweights');
+      if (await tableExists('notes')) notes = await prevDb.query('notes');
       if (await tableExists('user_settings')) userSettings = await prevDb.query('user_settings');
     } catch (ex) {
       return false;
@@ -305,6 +318,17 @@ class DatabaseHelper {
           'weight': bw['weight'],
           'date': bw['date'],
           'units': bw['units'],
+        });
+      }
+
+      for (var n in notes) {
+        await newDb.insert('notes', {
+          'id': n['id'],
+          'updatedAt': n['updatedAt'],
+          'createdAt': n['createdAt'],
+          'objectId': n['objectId'],
+          'type': n['type'],
+          'note': n['note'],
         });
       }
 

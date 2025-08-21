@@ -223,8 +223,11 @@ Future onAddWorkoutTap(
   }
 }
 
-void openWorkoutView(BuildContext context, int workoutId, {Function? reloadState}) => Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => WorkoutView(workoutId: workoutId, reloadParent: reloadState)))
+void openWorkoutView(BuildContext context, int workoutId, {Function? reloadState, bool autofocusNotes = false}) =>
+    Navigator.of(context)
+        .push(MaterialPageRoute(
+            builder: (context) =>
+                WorkoutView(workoutId: workoutId, reloadParent: reloadState, autofocusNotes: autofocusNotes)))
         .then((value) {
       if (reloadState != null) reloadState();
     });
