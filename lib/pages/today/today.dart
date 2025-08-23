@@ -258,18 +258,24 @@ class _TodayState extends State<Today> {
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                       textAlign: TextAlign.center,
                     ),
-                    Text(
-                      'Tap + above to begin a workout!',
-                      style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
-                      textAlign: TextAlign.center,
-                    ),
                     const Padding(padding: EdgeInsetsGeometry.all(5)),
-                    Text(
-                      'OR',
-                      style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
-                      textAlign: TextAlign.center,
+                    CommonUI.getElevatedPrimaryButton(ButtonDetails(
+                      icon: Icons.add_rounded,
+                      text: 'Start a workout',
+                      onTap: () => onAddWorkoutTap(
+                        context,
+                        reloadState,
+                        date: today,
+                      ),
+                    )),
+                    Padding(
+                      padding: const EdgeInsetsGeometry.all(5),
+                      child: Text(
+                        'OR',
+                        style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                    const Padding(padding: EdgeInsetsGeometry.all(5)),
                     CommonUI.getElevatedPrimaryButton(ButtonDetails(
                       icon: Icons.calendar_month_rounded,
                       text: 'Create a Schedule',

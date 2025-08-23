@@ -32,6 +32,7 @@ class _AddExercisesToWorkoutState extends State<AddExercisesToWorkout> {
         WorkoutExercise(
           workoutId: widget.workoutId,
           exerciseIdentifier: exerciseIdentifier,
+          setOrder: '',
         ),
       );
 

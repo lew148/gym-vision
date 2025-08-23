@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/classes/exercise.dart';
+import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';
 import 'package:gymvision/common/common_functions.dart';
@@ -52,7 +53,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     workoutSets = widget.workoutExercise.workoutSets ?? [];
     dropped = widget.dropped;
     isDroppable = workoutSets.isNotEmpty;
-    isDone = widget.workoutExercise.done;
+    isDone = widget.workoutExercise.isDone();
   }
 
   void toggleDropped() {
@@ -120,8 +121,9 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   List<Widget> getSetWidgets() {
     final List<Widget> widgets = [];
 
-    for (int i = 0; i < workoutSets.length; i++) {
-      final ws = workoutSets[i];
+    final orderedSets = OrderingHelper.orderListById(workoutSets, widget.workoutExercise.setOrder);
+    for (int i = 0; i < orderedSets.length; i++) {
+      final ws = orderedSets[i];
       widgets.add(InkWell(
         enableFeedback: false,
         onLongPress: () {
@@ -167,17 +169,18 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         return;
       }
 
-      widget.workoutExercise.done = done;
-      await WorkoutExerciseModel.updateWorkoutExercise(widget.workoutExercise);
+      final success = await WorkoutExerciseModel.markAllSetsDone(widget.workoutExercise.id!, done);
+      if (!success) throw Exception();
 
       setState(() {
         isDone = done;
       });
     } catch (ex) {
-      // ignore
+      if (mounted) showSnackBar(context, 'Failed to update one or more sets');
+      return;
     }
 
-    // widget.reloadParent();
+    widget.reloadParent();
   }
 
   void showExerciseMenu() {

@@ -340,16 +340,15 @@ class _WorkoutViewState extends State<WorkoutView> {
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                // crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  workout.workoutCategories?.isNotEmpty ?? false
+                  workout.hasCategories()
                       ? getWorkoutCategoriesWidget(workout.workoutCategories!, categories)
                       : CommonUI.getSectionTitle(context, 'Exercises'),
                   Row(children: [
                     RestTimer(workoutId: workout.id),
                     CommonUI.getTextButton(ButtonDetails(
-                      icon: Icons.post_add_rounded,
-                      onTap: () => categories.isEmpty ? onAddCategoryClick([]) : onAddCategoryClick(categories),
+                      icon: Icons.category_rounded,
+                      onTap: () => onAddCategoryClick(categories),
                     )),
                     CommonUI.getTextButton(ButtonDetails(
                       icon: Icons.add_rounded,
@@ -373,23 +372,26 @@ class _WorkoutViewState extends State<WorkoutView> {
                                 textAlign: TextAlign.center,
                               ),
                               Text(
-                                'Log focus categories for this workout.',
+                                'One workout closer to your goals!',
                                 style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
                                 textAlign: TextAlign.center,
                               ),
                               const Padding(padding: EdgeInsetsGeometry.all(5)),
-                              CommonUI.getElevatedPrimaryButton(ButtonDetails(
-                                icon: Icons.post_add_rounded,
-                                text: 'Select categories',
-                                onTap: () => onAddExerciseClick(workout.id!),
-                              )),
-                              const Padding(padding: EdgeInsetsGeometry.all(5)),
-                              Text(
-                                'OR',
-                                style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
-                                textAlign: TextAlign.center,
-                              ),
-                              const Padding(padding: EdgeInsetsGeometry.all(5)),
+                              if (!workout.hasCategories()) ...[
+                                CommonUI.getElevatedPrimaryButton(ButtonDetails(
+                                  icon: Icons.category_rounded,
+                                  text: 'Select categories',
+                                  onTap: () => onAddCategoryClick(categories),
+                                )),
+                                Padding(
+                                  padding: const EdgeInsetsGeometry.all(5),
+                                  child: Text(
+                                    'OR',
+                                    style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
                               CommonUI.getElevatedPrimaryButton(ButtonDetails(
                                 icon: Icons.add_rounded,
                                 text: 'Add exercises',

@@ -12,8 +12,6 @@ class WorkoutSet extends DatabaseObject {
   Duration? time;
   double? distance;
   int? calsBurned;
-
-  // deprecated / subject to change
   bool done;
 
   // non-db props

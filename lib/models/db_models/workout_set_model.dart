@@ -4,9 +4,8 @@ import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/db/custom_database.dart';
 import 'package:gymvision/db/db.dart';
 import 'package:gymvision/globals.dart';
+import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
-import 'package:gymvision/models/db_models/workout_exercise_orderings_model.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:sqflite/sqflite.dart';
 
 class WorkoutSetModel {
@@ -31,6 +30,7 @@ class WorkoutSetModel {
         workout_sets.createdAt,
         workout_sets.workoutExerciseId,
         workout_sets.weight,
+        workout_sets.done,
         workout_sets.reps,
         workout_sets.time,
         workout_sets.distance,
@@ -38,7 +38,7 @@ class WorkoutSetModel {
         workout_exercises.id AS workoutExerciseId,
         workout_exercises.exerciseIdentifier,
         workout_exercises.workoutId,
-        workout_exercises.done,
+        workout_exercises.setOrder,
         workouts.id AS workoutId,
         workouts.date
       FROM workout_sets
@@ -60,16 +60,16 @@ class WorkoutSetModel {
           time: tryParseDuration(map['time']),
           distance: map['distance'],
           calsBurned: map['calsBurned'],
+          done: map['done'] == 1,
           workoutExercise: WorkoutExercise(
-            id: map['workoutExerciseId'],
-            workoutId: map['workoutId'],
-            exerciseIdentifier: map['exerciseIdentifier'],
-            done: map['done'] == 1,
-            workout: Workout(
-              id: map['workoutId'],
-              date: parseDateTime(map['date']),
-            ),
-          ),
+              id: map['workoutExerciseId'],
+              workoutId: map['workoutId'],
+              exerciseIdentifier: map['exerciseIdentifier'],
+              workout: Workout(
+                id: map['workoutId'],
+                date: parseDateTime(map['date']),
+              ),
+              setOrder: map['setOrder']),
         ),
       );
     }
@@ -77,40 +77,42 @@ class WorkoutSetModel {
     return sets;
   }
 
-  static Future addSetToWorkout(WorkoutSet ws) async {
-    try {
-      final db = await DatabaseHelper.getDb();
-      final we = await WorkoutExerciseModel.getWorkoutExercise(ws.workoutExerciseId, db);
-      if (we == null) return;
-      final ordering = await WorkoutExerciseOrderingsModel.getWorkoutExerciseOrderingForWorkout(we.workoutId);
+  static Future addSetToWorkout(WorkoutSet set) async {
+    final db = await DatabaseHelper.getDb();
+    final workoutExercise = await WorkoutExerciseModel.getWorkoutExercise(set.workoutExerciseId, db);
+    if (workoutExercise == null) return;
 
-      var now = DateTime.now();
-      ws.updatedAt = now;
-      ws.createdAt = now;
-      await db.insert(
-        'workout_sets',
-        ws.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
+    var now = DateTime.now();
+    set.updatedAt = now;
+    set.createdAt = now;
+    final setId = await db.insert(
+      'workout_sets',
+      set.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
 
-      if (ordering != null && !ordering.getPositions().contains(we.id)) {
-        final newOrder = ordering.getPositions();
-        newOrder.add(we.id!);
-        ordering.setPositions(newOrder);
-        await WorkoutExerciseOrderingsModel.updateWorkoutExerciseOrdering(ordering);
-      }
-    } catch (ex, stack) {
-      await Sentry.captureException(ex, stackTrace: stack);
-    }
+    workoutExercise.setOrder = OrderingHelper.addToOrdering(workoutExercise.setOrder, setId);
+    await WorkoutExerciseModel.updateWorkoutExercise(workoutExercise);
   }
 
-  static Future removeSet(int setId) async {
+  static Future<bool> removeSet(int setId) async {
     final db = await DatabaseHelper.getDb();
+    final set = await getWorkoutSet(id: setId);
+    if (set == null) return false;
+
+    final workoutExercise = await WorkoutExerciseModel.getWorkoutExercise(set.workoutExerciseId, db);
+    if (workoutExercise == null) return false;
+
+    workoutExercise.setOrder = OrderingHelper.removeFromOrdering(workoutExercise.setOrder, setId);
+    await WorkoutExerciseModel.updateWorkoutExercise(workoutExercise);
+
     await db.delete(
       'workout_sets',
       where: 'id = ?',
       whereArgs: [setId],
     );
+
+    return true;
   }
 
   static Future updateWorkoutSet(WorkoutSet ws) async {
@@ -121,15 +123,6 @@ class WorkoutSetModel {
       ws.toMap(),
       where: 'id = ?',
       whereArgs: [ws.id],
-    );
-  }
-
-  static Future removeSetsForWorkoutExercise(int workoutExerciseId, [CustomDatabase? db]) async {
-    db ??= await DatabaseHelper.getDb();
-    await db.delete(
-      'workout_sets',
-      where: 'workoutExerciseId = ?',
-      whereArgs: [workoutExerciseId],
     );
   }
 
@@ -145,9 +138,9 @@ class WorkoutSetModel {
           SELECT MAX(workout_sets.weight) AS max_weight
           FROM workout_sets
           LEFT JOIN workout_exercises ON workout_sets.workoutExerciseId = workout_exercises.id
-          WHERE workout_exercises.exerciseIdentifier = "$exerciseIdentifier" AND workout_exercises.done = 1 AND NOT (workout_sets.weight = 0.0 AND workout_sets.reps = 0)
+          WHERE workout_exercises.exerciseIdentifier = "$exerciseIdentifier" AND workout_sets.done = 1 AND NOT (workout_sets.weight = 0.0 AND workout_sets.reps = 0)
         ) AS b ON workout_sets.weight = b.max_weight
-        WHERE workout_exercises.exerciseIdentifier = "$exerciseIdentifier" AND workout_exercises.done = 1 AND NOT (workout_sets.weight = 0.0 AND workout_sets.reps = 0)
+        WHERE workout_exercises.exerciseIdentifier = "$exerciseIdentifier" AND workout_sets.done = 1 AND NOT (workout_sets.weight = 0.0 AND workout_sets.reps = 0)
       )
 
       SELECT *
@@ -175,6 +168,7 @@ class WorkoutSetModel {
         id: maps.first['workoutExerciseId'],
         workoutId: maps.first['workoutId'],
         exerciseIdentifier: maps.first['exerciseIdentifier'],
+        setOrder: maps.first['setOrder'],
         workout: Workout(
           id: maps.first['workoutId'],
           date: parseDateTime(maps.first['date']),
@@ -194,12 +188,13 @@ class WorkoutSetModel {
         workout_sets.weight,
         workout_sets.reps,
         workout_sets.time,
+        workout_sets.done,
         workout_sets.distance,
         workout_sets.calsBurned,
         workout_exercises.id AS workoutExerciseId,
-        workout_exercises.exerciseIdentifier,
-        workout_exercises.done,
         workout_exercises.workoutId,
+        workout_exercises.exerciseIdentifier,
+        workout_exercises.setOrder,
         workouts.id AS workoutId,
         workouts.date
       FROM workout_sets
@@ -216,17 +211,17 @@ class WorkoutSetModel {
       updatedAt: tryParseDateTime(maps.first['updatedAt']),
       createdAt: tryParseDateTime(maps.first['createdAt']),
       workoutExerciseId: maps.first['workoutExerciseId'],
-      // done: maps.first['done'] == 1,
       weight: maps.first['weight'],
       reps: maps.first['reps'],
       time: tryParseDuration(maps.first['time']),
       distance: maps.first['distance'],
       calsBurned: maps.first['calsBurned'],
+      done: maps.first['done'] == 1,
       workoutExercise: WorkoutExercise(
         id: maps.first['workoutExerciseId'],
         workoutId: maps.first['workoutId'],
         exerciseIdentifier: maps.first['exerciseIdentifier'],
-        done: maps.first['done'] == 1,
+        setOrder: maps.first['setOrder'],
         workout: Workout(
           id: maps.first['workoutId'],
           date: parseDateTime(maps.first['date']),

@@ -59,4 +59,6 @@ class Workout extends DatabaseObject {
   }
 
   bool getIsEmpty() => workoutExercises?.isEmpty ?? isEmpty ?? true;
+
+  bool hasCategories() => workoutCategories != null && workoutCategories!.isNotEmpty;
 }

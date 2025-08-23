@@ -7,7 +7,7 @@ import 'package:gymvision/static_data/enums.dart';
 class WorkoutExercise extends DatabaseObject {
   final int workoutId;
   final String exerciseIdentifier;
-  bool done;
+  String setOrder;
 
   // non-db props
   Workout? workout;
@@ -22,8 +22,8 @@ class WorkoutExercise extends DatabaseObject {
     this.workout,
     required this.exerciseIdentifier,
     this.exercise,
+    required this.setOrder,
     this.workoutSets,
-    this.done = false,
   });
 
   @override
@@ -33,8 +33,9 @@ class WorkoutExercise extends DatabaseObject {
         'createdAt': createdAt.toString(),
         'workoutId': workoutId,
         'exerciseIdentifier': exerciseIdentifier,
-        'done': done ? 1 : 0,
+        'setOrder': setOrder,
       };
 
   bool isCardio() => exercise?.type == ExerciseType.cardio;
+  bool isDone() => workoutSets == null ? false : (workoutSets!.isEmpty ? false : !(workoutSets!.any((ws) => !ws.done)));
 }

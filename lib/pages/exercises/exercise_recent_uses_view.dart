@@ -3,6 +3,7 @@ import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/globals.dart';
 import 'package:gymvision/common/common_ui.dart';
+import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/static_data/enums.dart';
 
 class ExerciseRecentUsesView extends StatefulWidget {
@@ -20,55 +21,58 @@ class ExerciseRecentUsesView extends StatefulWidget {
 }
 
 class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
-  List<Widget> getWorkoutExerciseWidget(List<WorkoutSet> sets) => sets
-      .map(
-        (set) => Padding(
-          padding: const EdgeInsets.all(10),
-          child: Row(
-            children: widget.exercise.type == ExerciseType.strength
-                ? [
-                    Expanded(
-                      flex: 3,
-                      child: Container(
-                        padding: const EdgeInsets.all(3),
-                        decoration: BoxDecoration(
-                          border: BoxBorder.all(color: Theme.of(context).colorScheme.shadow),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          (sets.indexOf(set) + 1).toString(),
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+  List<Widget> getWorkoutExerciseWidget(List<WorkoutSet> sets) {
+    final orderedSets = OrderingHelper.orderListById(sets, sets.first.workoutExercise!.setOrder);
+    return orderedSets
+        .map(
+          (set) => Padding(
+            padding: const EdgeInsets.all(10),
+            child: Row(
+              children: widget.exercise.type == ExerciseType.strength
+                  ? [
+                      Expanded(
+                        flex: 3,
+                        child: Container(
+                          padding: const EdgeInsets.all(3),
+                          decoration: BoxDecoration(
+                            border: BoxBorder.all(color: Theme.of(context).colorScheme.shadow),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            (sets.indexOf(set) + 1).toString(),
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 5,
-                      child: CommonUI.getWeightWithIcon(set),
-                    ),
-                    Expanded(
-                      flex: 5,
-                      child: CommonUI.getRepsWithIcon(set),
-                    ),
-                  ]
-                : [
-                    Expanded(
-                      flex: 3,
-                      child: CommonUI.getSetTimeWithIcon(set),
-                    ),
-                    Expanded(
-                      flex: 3,
-                      child: CommonUI.getDistanceWithIcon(set),
-                    ),
-                    Expanded(
-                      flex: 3,
-                      child: CommonUI.getCaloriesWithIcon(set),
-                    ),
-                  ],
+                      Expanded(
+                        flex: 5,
+                        child: CommonUI.getWeightWithIcon(set),
+                      ),
+                      Expanded(
+                        flex: 5,
+                        child: CommonUI.getRepsWithIcon(set),
+                      ),
+                    ]
+                  : [
+                      Expanded(
+                        flex: 3,
+                        child: CommonUI.getSetTimeWithIcon(set),
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: CommonUI.getDistanceWithIcon(set),
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: CommonUI.getCaloriesWithIcon(set),
+                      ),
+                    ],
+            ),
           ),
-        ),
-      )
-      .toList();
+        )
+        .toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +84,7 @@ class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
           padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
           child: Row(
             children: [
-              CommonUI.getCompleteMark(context, widget.workoutSets.first.workoutExercise?.done ?? false),
+              CommonUI.getCompleteMark(context, !widget.workoutSets.any((ws) => !ws.done)),
               const Padding(padding: EdgeInsets.all(5)),
               Text(
                 workout != null ? getDateStr(workout.date) : '-',

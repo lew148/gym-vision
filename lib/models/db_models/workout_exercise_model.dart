@@ -22,7 +22,7 @@ class WorkoutExerciseModel {
       createdAt: DateTime.parse(maps.first['createdAt']),
       workoutId: maps.first['workoutId'],
       exerciseIdentifier: maps.first['exerciseIdentifier'],
-      done: maps.first['done'] == 1,
+      setOrder: maps.first['setOrder'],
     );
   }
 
@@ -44,7 +44,7 @@ class WorkoutExerciseModel {
       createdAt: DateTime.parse(maps.first['createdAt']),
       workoutId: maps.first['workoutId'],
       exerciseIdentifier: maps.first['exerciseIdentifier'],
-      done: maps.first['done'] == 1,
+      setOrder: maps.first['setOrder'],
     );
   }
 
@@ -54,7 +54,11 @@ class WorkoutExerciseModel {
     var we = await getWorkoutExercise(workoutExerciseId, db);
     if (we == null) return;
 
-    await WorkoutSetModel.removeSetsForWorkoutExercise(workoutExerciseId, db);
+    await db.delete(
+      'workout_sets',
+      where: 'workoutExerciseId = ?',
+      whereArgs: [workoutExerciseId],
+    );
 
     await db.delete(
       'workout_exercises',
@@ -87,7 +91,7 @@ class WorkoutExerciseModel {
         exerciseIdentifier: m['exerciseIdentifier'],
         exercise: DefaultExercisesModel.getExerciseByIdentifier(m['exerciseIdentifier']),
         workoutSets: await WorkoutSetModel.getWorkoutSetsForWorkoutExercise(m['id'], db),
-        done: m['done'] == 1,
+        setOrder: maps.first['setOrder'],
       ));
     }
 
@@ -123,5 +127,19 @@ class WorkoutExerciseModel {
       where: 'id = ?',
       whereArgs: [workoutExercise.id],
     );
+  }
+
+  static Future<bool> markAllSetsDone(int id, bool done) async {
+    try {
+      final sets = await WorkoutSetModel.getWorkoutSets(whereStr: 'workoutExerciseId = $id');
+      for (var set in sets) {
+        set.done = done;
+        await WorkoutSetModel.updateWorkoutSet(set);
+      }
+
+      return true;
+    } catch (ex) {
+      return false;
+    }
   }
 }

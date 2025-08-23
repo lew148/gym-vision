@@ -91,12 +91,13 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
     Navigator.pop(context);
 
     try {
-      var weId = //get existing or create workoutExercise
+      var weId = // get existing or create workoutExercise
           (await WorkoutExerciseModel.getWorkoutExerciseByWorkoutAndExercise(widget.workoutId, subject.identifier))
                   ?.id ??
               await WorkoutExerciseModel.insertWorkoutExercise(WorkoutExercise(
                 workoutId: widget.workoutId,
                 exerciseIdentifier: subject.identifier,
+                setOrder: '',
               ));
 
       if (quickAddExercise != null) {
