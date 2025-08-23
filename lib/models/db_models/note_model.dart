@@ -1,7 +1,8 @@
 import 'package:gymvision/classes/db/note.dart';
 import 'package:gymvision/db/db.dart';
 import 'package:gymvision/enums.dart';
-import 'package:gymvision/globals.dart';
+import 'package:gymvision/helpers/datetime_helper.dart';
+import 'package:gymvision/helpers/enum_helper.dart';
 
 class NoteModel {
   static const _tableName = 'notes';
@@ -14,10 +15,10 @@ class NoteModel {
     final Map<String, dynamic> map = maps.first;
     return Note(
       id: map['id'],
-      updatedAt: tryParseDateTime(map['updatedAt']),
-      createdAt: tryParseDateTime(map['createdAt']),
+      updatedAt: DateTimeHelper.tryParseDateTime(map['updatedAt']),
+      createdAt: DateTimeHelper.tryParseDateTime(map['createdAt']),
       objectId: map['objectId'],
-      type: stringToEnum(map['type'], NoteType.values) ?? NoteType.other,
+      type: EnumHelper.stringToEnum(map['type'], NoteType.values) ?? NoteType.other,
       note: map['note'],
     );
   }

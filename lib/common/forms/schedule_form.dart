@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/schedules/schedule.dart';
 import 'package:gymvision/classes/db/schedules/schedule_item.dart';
 import 'package:gymvision/enums.dart';
-import 'package:gymvision/globals.dart';
+import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/models/db_models/schedule_model.dart';
 import 'package:gymvision/common/common_functions.dart';
 import 'package:gymvision/common/common_ui.dart';
@@ -155,7 +155,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(selectedType == ScheduleType.split ? 'Day $day' : dayStrings[day - 1]),
+                Text(selectedType == ScheduleType.split ? 'Day $day' : DateTimeHelper.dayStrings[day - 1]),
                 categoriesForDay == null || categoriesForDay.isEmpty
                     ? CommonUI.getRestWidget()
                     : Expanded(

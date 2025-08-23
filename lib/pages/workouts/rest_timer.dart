@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gymvision/globals.dart';
 import 'package:gymvision/common/common_functions.dart';
 import 'package:gymvision/common/common_ui.dart';
+import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/providers/navigation_provider.dart';
 import 'package:gymvision/providers/rest_timer_provider.dart';
 import 'package:provider/provider.dart';
@@ -133,7 +133,7 @@ class _RestTimerState extends State<RestTimer> {
                 width: 50,
                 child: Center(
                   child: Text(
-                    getDurationString(restTimerProvider.getTimeLeft(), noHours: true),
+                    DateTimeHelper.getDurationString(restTimerProvider.getTimeLeft(), noHours: true),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:gymvision/globals.dart';
+import 'package:gymvision/helpers/datetime_helper.dart';
 
 class TimeElapsed extends StatefulWidget {
   final DateTime since;
@@ -26,13 +26,13 @@ class _TimeElapsedState extends State<TimeElapsed> {
   void initState() {
     super.initState();
 
-    timeSince = timeBetween(widget.since, widget.end ?? DateTime.now());
+    timeSince = DateTimeHelper.timeBetween(widget.since, widget.end ?? DateTime.now());
     if (widget.end == null) {
       timer = Timer.periodic(
         const Duration(seconds: 1),
         (Timer t) {
           setState(() {
-            timeSince = timeBetween(widget.since, widget.end ?? DateTime.now());
+            timeSince = DateTimeHelper.timeBetween(widget.since, widget.end ?? DateTime.now());
           });
         },
       );
@@ -50,7 +50,7 @@ class _TimeElapsedState extends State<TimeElapsed> {
     return Row(children: [
       Icon(Icons.hourglass_empty_rounded, size: 15, color: widget.color),
       const Padding(padding: EdgeInsetsGeometry.all(2.5)),
-      Text(getDurationString(timeSince), style: TextStyle(color: widget.color)),
+      Text(DateTimeHelper.getDurationString(timeSince), style: TextStyle(color: widget.color)),
     ]);
   }
 }

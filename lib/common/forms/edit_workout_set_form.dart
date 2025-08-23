@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/classes/exercise.dart';
-import 'package:gymvision/globals.dart';
+import 'package:gymvision/helpers/number_helper.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';
 import 'package:gymvision/common/common_functions.dart';
 import 'package:gymvision/common/forms/fields/custom_form_fields.dart';
@@ -38,9 +38,9 @@ class _EditWorkoutSetFormState extends State<EditWorkoutSetForm> {
   @override
   void initState() {
     super.initState();
-    weightController = TextEditingController(text: blankStringIfZero(truncateDouble(widget.workoutSet.weight)));
+    weightController = TextEditingController(text: blankStringIfZero(NumberHelper.truncateDouble(widget.workoutSet.weight)));
     repsController = TextEditingController(text: blankStringIfZero(widget.workoutSet.reps.toString()));
-    distanceController = TextEditingController(text: blankStringIfZero(truncateDouble(widget.workoutSet.distance)));
+    distanceController = TextEditingController(text: blankStringIfZero(NumberHelper.truncateDouble(widget.workoutSet.distance)));
     calsBurnedController = TextEditingController(text: blankStringIfZero(widget.workoutSet.calsBurned.toString()));
     duration = widget.workoutSet.time ?? const Duration();
   }
@@ -50,10 +50,10 @@ class _EditWorkoutSetFormState extends State<EditWorkoutSetForm> {
       Navigator.pop(context);
       bool hasChanges = false;
 
-      final newWeight = stringToDouble(weightController.text);
-      final newReps = int.parse(getNumberString(repsController.text));
-      final newDistance = stringToDouble(distanceController.text);
-      final newCalsBurned = int.parse(getNumberString(calsBurnedController.text));
+      final newWeight = NumberHelper.parseDouble(weightController.text);
+      final newReps = int.parse(NumberHelper.getNumberString(repsController.text));
+      final newDistance = NumberHelper.parseDouble(distanceController.text);
+      final newCalsBurned = int.parse(NumberHelper.getNumberString(calsBurnedController.text));
       final newDuration = duration;
 
       final set = widget.workoutSet;

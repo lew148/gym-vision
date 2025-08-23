@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/bodyweight.dart';
 import 'package:gymvision/classes/db/user_setting.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
-import 'package:gymvision/globals.dart';
+import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/common/common_functions.dart';
@@ -146,7 +146,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
 
   List<Widget> getWorkoutsWidget(List<Workout> workouts, List<Bodyweight> bws) {
     var selectedMonthIsTrueMonth = selectedMonth.year == trueDate.year && selectedMonth.month == trueDate.month;
-    var daysInCurrentMonth = getDaysInMonth(selectedMonth.year, selectedMonth.month);
+    var daysInCurrentMonth = DateTimeHelper.getDaysInMonth(selectedMonth.year, selectedMonth.month);
 
     List<Widget> widgets = [];
 
@@ -207,8 +207,8 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                               behavior: HitTestBehavior.translucent,
                               onTap: () => onAddWorkoutTap(context, reloadState, date: currentDate)
                                   .then((x) => widget.reloadParent()),
-                              child: dateXIsAfterDateY(widget.userSettings.createdAt!, currentDate) ||
-                                      dateIsInFuture(currentDate) ||
+                              child: DateTimeHelper.dateXIsAfterDateY(widget.userSettings.createdAt!, currentDate) ||
+                                      DateTimeHelper.dateIsInFuture(currentDate) ||
                                       isToday
                                   ? Row(mainAxisAlignment: MainAxisAlignment.start, children: [CommonUI.getDash()])
                                   : CommonUI.getRestWidget(color: Theme.of(context).colorScheme.shadow),
@@ -309,7 +309,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                   flex: 4,
                   child: Center(
                     child: Text(
-                      getMonthAndYear(selectedMonth),
+                      DateTimeHelper.getMonthAndYearString(selectedMonth),
                       style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ),

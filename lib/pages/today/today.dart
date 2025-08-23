@@ -5,7 +5,7 @@ import 'package:gymvision/classes/db/bodyweight.dart';
 import 'package:gymvision/classes/db/schedules/schedule.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
-import 'package:gymvision/globals.dart';
+import 'package:gymvision/helpers/app_helper.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/models/db_models/schedule_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
@@ -211,7 +211,7 @@ class _TodayState extends State<Today> {
                             .map((c) => CommonUI.getPropDisplay(
                                   context,
                                   c.displayName,
-                                  color: isDarkMode(context) ? darkPropOnCardColor : null,
+                                  color: AppHelper.isDarkMode(context) ? AppHelper.darkPropOnCardColor : null,
                                 ))
                             .toList(),
                       ),
@@ -329,7 +329,7 @@ class _TodayState extends State<Today> {
                                         (c) => CommonUI.getPropDisplay(
                                           context,
                                           c.displayName,
-                                          color: isDarkMode(context) ? darkPropOnCardColor : null,
+                                          color: AppHelper.isDarkMode(context) ? AppHelper.darkPropOnCardColor : null,
                                         ),
                                       )
                                       .toList(),

@@ -1,5 +1,5 @@
 import 'package:gymvision/classes/db/_database_object.dart';
-import 'package:gymvision/globals.dart';
+import 'package:gymvision/helpers/number_helper.dart';
 import 'package:intl/intl.dart';
 
 class Bodyweight extends DatabaseObject {
@@ -27,5 +27,5 @@ class Bodyweight extends DatabaseObject {
       };
 
   String getTimeString() => DateFormat('Hm').format(date);
-  String getWeightDisplay() => '${truncateDouble(weight)}$units';
+  String getWeightDisplay() => '${NumberHelper.truncateDouble(weight)}$units';
 }

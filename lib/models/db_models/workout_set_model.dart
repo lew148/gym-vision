@@ -3,7 +3,7 @@ import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/db/custom_database.dart';
 import 'package:gymvision/db/db.dart';
-import 'package:gymvision/globals.dart';
+import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
 import 'package:sqflite/sqflite.dart';
@@ -52,12 +52,12 @@ class WorkoutSetModel {
       sets.add(
         WorkoutSet(
           id: map['id'],
-          updatedAt: tryParseDateTime(map['updatedAt']),
-          createdAt: tryParseDateTime(map['createdAt']),
+          updatedAt: DateTimeHelper.tryParseDateTime(map['updatedAt']),
+          createdAt: DateTimeHelper.tryParseDateTime(map['createdAt']),
           workoutExerciseId: map['workoutExerciseId'],
           weight: map['weight'],
           reps: map['reps'],
-          time: tryParseDuration(map['time']),
+          time: DateTimeHelper.tryParseDuration(map['time']),
           distance: map['distance'],
           calsBurned: map['calsBurned'],
           done: map['done'] == 1,
@@ -67,7 +67,7 @@ class WorkoutSetModel {
               exerciseIdentifier: map['exerciseIdentifier'],
               workout: Workout(
                 id: map['workoutId'],
-                date: parseDateTime(map['date']),
+                date: DateTimeHelper.parseDateTime(map['date']),
               ),
               setOrder: map['setOrder']),
         ),
@@ -155,13 +155,13 @@ class WorkoutSetModel {
     if (maps.isEmpty) return null;
     return WorkoutSet(
       id: maps.first['id'],
-      updatedAt: tryParseDateTime(maps.first['updatedAt']),
-      createdAt: tryParseDateTime(maps.first['createdAt']),
+      updatedAt: DateTimeHelper.tryParseDateTime(maps.first['updatedAt']),
+      createdAt: DateTimeHelper.tryParseDateTime(maps.first['createdAt']),
       workoutExerciseId: maps.first['workoutExerciseId'],
       done: maps.first['done'] == 1,
       weight: maps.first['weight'],
       reps: maps.first['reps'],
-      time: tryParseDuration(maps.first['time']),
+      time: DateTimeHelper.tryParseDuration(maps.first['time']),
       distance: maps.first['distance'],
       calsBurned: maps.first['calsBurned'],
       workoutExercise: WorkoutExercise(
@@ -171,7 +171,7 @@ class WorkoutSetModel {
         setOrder: maps.first['setOrder'],
         workout: Workout(
           id: maps.first['workoutId'],
-          date: parseDateTime(maps.first['date']),
+          date: DateTimeHelper.parseDateTime(maps.first['date']),
         ),
       ),
     );
@@ -208,12 +208,12 @@ class WorkoutSetModel {
     if (maps.isEmpty) return null;
     return WorkoutSet(
       id: maps.first['id'],
-      updatedAt: tryParseDateTime(maps.first['updatedAt']),
-      createdAt: tryParseDateTime(maps.first['createdAt']),
+      updatedAt: DateTimeHelper.tryParseDateTime(maps.first['updatedAt']),
+      createdAt: DateTimeHelper.tryParseDateTime(maps.first['createdAt']),
       workoutExerciseId: maps.first['workoutExerciseId'],
       weight: maps.first['weight'],
       reps: maps.first['reps'],
-      time: tryParseDuration(maps.first['time']),
+      time: DateTimeHelper.tryParseDuration(maps.first['time']),
       distance: maps.first['distance'],
       calsBurned: maps.first['calsBurned'],
       done: maps.first['done'] == 1,
@@ -224,7 +224,7 @@ class WorkoutSetModel {
         setOrder: maps.first['setOrder'],
         workout: Workout(
           id: maps.first['workoutId'],
-          date: parseDateTime(maps.first['date']),
+          date: DateTimeHelper.parseDateTime(maps.first['date']),
         ),
       ),
     );

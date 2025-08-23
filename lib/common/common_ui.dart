@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
-import 'package:gymvision/globals.dart';
+import 'package:gymvision/helpers/app_helper.dart';
+import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:intl/intl.dart';
 
 class ButtonDetailsStyle {
@@ -213,7 +214,7 @@ class CommonUI {
         ),
       );
 
-  static Widget getCard(BuildContext context, Widget child, {Color? color}) => isDarkMode(context)
+  static Widget getCard(BuildContext context, Widget child, {Color? color}) => AppHelper.isDarkMode(context)
       ? Card.filled(
           margin: const EdgeInsets.symmetric(horizontal: 2.5, vertical: 5),
           color: color,
@@ -256,7 +257,7 @@ class CommonUI {
         Icon(Icons.calendar_month_rounded, color: Theme.of(context).colorScheme.shadow, size: 15),
         const Padding(padding: EdgeInsetsGeometry.all(2.5)),
         Text(
-          '${DateFormat(dmyFormat).format(dt)} @ ${DateFormat(hmFormat).format(dt)}',
+          '${DateFormat(DateTimeHelper.dmyFormat).format(dt)} @ ${DateFormat(DateTimeHelper.hmFormat).format(dt)}',
           style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
         ),
       ]);
@@ -265,7 +266,7 @@ class CommonUI {
         Icon(Icons.calendar_month_rounded, color: Theme.of(context).colorScheme.shadow, size: 15),
         const Padding(padding: EdgeInsetsGeometry.all(2.5)),
         Text(
-          DateFormat(dmyFormat).format(dt),
+          DateFormat(DateTimeHelper.dmyFormat).format(dt),
           style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
         ),
       ]);
@@ -274,7 +275,7 @@ class CommonUI {
         Icon(Icons.access_time_rounded, color: Theme.of(context).colorScheme.shadow, size: 15),
         const Padding(padding: EdgeInsetsGeometry.all(2.5)),
         Text(
-          DateFormat(hmFormat).format(dt),
+          DateFormat(DateTimeHelper.hmFormat).format(dt),
           style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
         ),
       ]);
@@ -283,7 +284,7 @@ class CommonUI {
         Icon(Icons.hourglass_empty_rounded, color: Theme.of(context).colorScheme.shadow, size: 15),
         const Padding(padding: EdgeInsetsGeometry.all(2.5)),
         Text(
-          getHoursAndMinsDurationString(timeElapsed),
+          DateTimeHelper.getHoursAndMinsDurationString(timeElapsed),
           style: TextStyle(
             color: Theme.of(context).colorScheme.shadow,
             fontSize: 15,

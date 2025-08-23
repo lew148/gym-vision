@@ -5,7 +5,7 @@ import 'package:gymvision/classes/exercise_details.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/common/components/notes.dart';
 import 'package:gymvision/enums.dart';
-import 'package:gymvision/globals.dart';
+import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/common/common_functions.dart';
 import 'package:gymvision/common/components/debug_scaffold.dart';
@@ -92,7 +92,7 @@ class _ExerciseViewState extends State<ExerciseView> {
     final recentUses = details.recentUses!;
     recentUses.removeWhere((ws) {
       final workout = ws.getWorkout();
-      return workout != null && dateIsInFuture(workout.date);
+      return workout != null && DateTimeHelper.dateIsInFuture(workout.date);
     });
 
     if (recentUses.isEmpty) return getNoRecentUsesWidget();
@@ -131,7 +131,7 @@ class _ExerciseViewState extends State<ExerciseView> {
           padding: const EdgeInsetsGeometry.symmetric(vertical: 5),
           child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Text(
-              'PR (${getDateStr(pr.getWorkout()!.date)})',
+              'PR (${DateTimeHelper.getDateStr(pr.getWorkout()!.date)})',
               style: TextStyle(color: Theme.of(context).colorScheme.shadow),
             ),
             Row(

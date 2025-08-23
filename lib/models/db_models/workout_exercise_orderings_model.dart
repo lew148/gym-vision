@@ -1,6 +1,6 @@
 import 'package:gymvision/classes/db/workouts/workout_exercise_ordering.dart';
 import 'package:gymvision/db/db.dart';
-import 'package:gymvision/globals.dart';
+import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -16,8 +16,8 @@ class WorkoutExerciseOrderingsModel {
     if (maps.isEmpty) return null;
     return WorkoutExerciseOrdering(
       id: maps.first['id'],
-      updatedAt: tryParseDateTime(maps.first['updatedAt']),
-      createdAt: tryParseDateTime(maps.first['createdAt']),
+      updatedAt: DateTimeHelper.tryParseDateTime(maps.first['updatedAt']),
+      createdAt: DateTimeHelper.tryParseDateTime(maps.first['createdAt']),
       workoutId: maps.first['workoutId'],
       positions: maps.first['positions'],
     );

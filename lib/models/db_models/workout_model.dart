@@ -6,8 +6,10 @@ import 'package:gymvision/classes/db/workouts/workout_category.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise_ordering.dart';
 import 'package:gymvision/db/custom_database.dart';
 import 'package:gymvision/db/db.dart';
+import 'package:gymvision/helpers/datetime_helper.dart';
+import 'package:gymvision/helpers/enum_helper.dart';
+import 'package:gymvision/helpers/number_helper.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
-import 'package:gymvision/globals.dart';
 import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workout_exercise_orderings_model.dart';
 import 'package:gymvision/static_data/enums.dart';
@@ -29,7 +31,7 @@ class WorkoutModel {
       FROM workouts
       LEFT JOIN workout_exercise_orderings ON workouts.id = workout_exercise_orderings.workoutId
       LEFT JOIN workout_categories ON workouts.id = workout_categories.workoutId
-      WHERE workouts.date LIKE '%${date.year}-${getMonthOrDayString(date.month)}-${getMonthOrDayString(date.day)}%'
+      WHERE workouts.date LIKE '%${date.year}-${NumberHelper.getIntTwoDigitsString(date.month)}-${NumberHelper.getIntTwoDigitsString(date.day)}%'
       ORDER BY workouts.date DESC;
     ''');
 
@@ -41,8 +43,8 @@ class WorkoutModel {
       workouts.add(
         Workout(
           id: gm.key,
-          date: parseDateTime(gm.value.first['date']),
-          endDate: tryParseDateTime(gm.value.first['endDate']),
+          date: DateTimeHelper.parseDateTime(gm.value.first['date']),
+          endDate: DateTimeHelper.tryParseDateTime(gm.value.first['endDate']),
           workoutCategories: processWorkoutCategories(gm.value),
           exerciseOrdering: WorkoutExerciseOrdering(
             id: gm.value.first['weoId'],
@@ -84,8 +86,8 @@ class WorkoutModel {
       workouts.add(
         Workout(
           id: gm.key,
-          date: parseDateTime(gm.value.first['date']),
-          endDate: tryParseDateTime(gm.value.first['endDate']),
+          date: DateTimeHelper.parseDateTime(gm.value.first['date']),
+          endDate: DateTimeHelper.tryParseDateTime(gm.value.first['endDate']),
           workoutCategories: processWorkoutCategories(gm.value),
           exerciseOrdering: WorkoutExerciseOrdering(
             id: gm.value.first['weoId'],
@@ -112,10 +114,10 @@ class WorkoutModel {
 
       workoutCategories.add(WorkoutCategory(
         id: workoutCategoryId,
-        updatedAt: tryParseDateTime(m['updatedAt']),
-        createdAt: tryParseDateTime(m['createdAt']),
+        updatedAt: DateTimeHelper.tryParseDateTime(m['updatedAt']),
+        createdAt: DateTimeHelper.tryParseDateTime(m['createdAt']),
         workoutId: m['id'],
-        category: stringToEnum<Category>(m['category'], Category.values)!,
+        category: EnumHelper.stringToEnum<Category>(m['category'], Category.values)!,
       ));
     }
 
@@ -144,8 +146,8 @@ class WorkoutModel {
 
       return Workout(
         id: workoutId,
-        date: parseDateTime(maps.first['date']),
-        endDate: tryParseDateTime(maps.first['endDate']),
+        date: DateTimeHelper.parseDateTime(maps.first['date']),
+        endDate: DateTimeHelper.tryParseDateTime(maps.first['endDate']),
         workoutCategories:
             includeCategories ? await WorkoutCategoryModel.getWorkoutCategoriesForWorkout(workoutId) : null,
         workoutExercises:

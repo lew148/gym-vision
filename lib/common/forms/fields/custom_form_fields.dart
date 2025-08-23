@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gymvision/globals.dart';
+import 'package:gymvision/helpers/number_helper.dart';
 
 stringValidator(value, canBeBlank, label) =>
     !canBeBlank && (value == null || value == '') ? '$label cannot be blank' : null;
@@ -59,7 +59,7 @@ class CustomFormFields {
               suffix: Text(unit),
             ),
             validator: (value) =>
-                value != null && value != '' && stringToDouble(value) == null ? 'Please enter a valid weight' : null,
+                value != null && value != '' && NumberHelper.parseDouble(value) == null ? 'Please enter a valid weight' : null,
           ),
         ),
         Row(children: [

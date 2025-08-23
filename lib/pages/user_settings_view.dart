@@ -2,6 +2,7 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/user_setting.dart';
 import 'package:gymvision/db/db.dart';
+import 'package:gymvision/helpers/app_helper.dart';
 import 'package:gymvision/services/local_notification_service.dart';
 import 'package:gymvision/models/db_models/flavour_text_schedule_model.dart';
 import 'package:gymvision/common/common_functions.dart';
@@ -9,7 +10,6 @@ import 'package:gymvision/common/common_ui.dart';
 import 'package:gymvision/common/components/debug_scaffold.dart';
 import 'package:gymvision/common/forms/import_workout_form.dart';
 import '../models/db_models/user_settings_model.dart';
-import '../globals.dart';
 
 const String system = 'system';
 const String dark = 'dark';
@@ -149,7 +149,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                 ],
               ),
               const Padding(padding: EdgeInsets.all(20)),
-              const Center(child: Text('Version: $appVersion')),
+              const Center(child: Text('Version: ${AppHelper.appVersion}')),
             ],
           );
         },

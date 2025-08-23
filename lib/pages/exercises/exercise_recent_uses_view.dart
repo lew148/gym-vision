@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/classes/exercise.dart';
-import 'package:gymvision/globals.dart';
 import 'package:gymvision/common/common_ui.dart';
+import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/static_data/enums.dart';
 
@@ -87,7 +87,7 @@ class _ExerciseRecentUsesViewState extends State<ExerciseRecentUsesView> {
               CommonUI.getCompleteMark(context, !widget.workoutSets.any((ws) => !ws.done)),
               const Padding(padding: EdgeInsets.all(5)),
               Text(
-                workout != null ? getDateStr(workout.date) : '-',
+                workout != null ? DateTimeHelper.getDateStr(workout.date) : '-',
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ],

@@ -4,7 +4,8 @@ import 'package:gymvision/classes/db/schedules/schedule_item.dart';
 import 'package:gymvision/db/custom_database.dart';
 import 'package:gymvision/db/db.dart';
 import 'package:gymvision/enums.dart';
-import 'package:gymvision/globals.dart';
+import 'package:gymvision/helpers/datetime_helper.dart';
+import 'package:gymvision/helpers/enum_helper.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -18,10 +19,10 @@ class ScheduleModel {
     for (var map in maps) {
       schedules.add(Schedule(
         id: map['id'],
-        updatedAt: tryParseDateTime(map['updatedAt']),
-        createdAt: tryParseDateTime(map['createdAt']),
+        updatedAt: DateTimeHelper.tryParseDateTime(map['updatedAt']),
+        createdAt: DateTimeHelper.tryParseDateTime(map['createdAt']),
         name: map['name'],
-        type: stringToEnum(map['type'], ScheduleType.values)!,
+        type: EnumHelper.stringToEnum(map['type'], ScheduleType.values)!,
         active: map['active'] == 1,
         startDate: DateTime.parse(map['startDate']),
       ));
@@ -38,10 +39,10 @@ class ScheduleModel {
     final scheduleMap = maps.first;
     return Schedule(
       id: scheduleMap['id'],
-      updatedAt: tryParseDateTime(scheduleMap['updatedAt']),
-      createdAt: tryParseDateTime(scheduleMap['createdAt']),
+      updatedAt: DateTimeHelper.tryParseDateTime(scheduleMap['updatedAt']),
+      createdAt: DateTimeHelper.tryParseDateTime(scheduleMap['createdAt']),
       name: scheduleMap['name'],
-      type: stringToEnum<ScheduleType>(scheduleMap['type'], ScheduleType.values)!,
+      type: EnumHelper.stringToEnum<ScheduleType>(scheduleMap['type'], ScheduleType.values)!,
       active: scheduleMap['active'] == 1,
       items: shallow ? null : await getScheduleItems(scheduleMap['id'], shallow: shallow),
       startDate: DateTime.parse(scheduleMap['startDate']),
@@ -56,10 +57,10 @@ class ScheduleModel {
     final activeScheduleMap = maps.first;
     return Schedule(
       id: activeScheduleMap['id'],
-      updatedAt: tryParseDateTime(activeScheduleMap['updatedAt']),
-      createdAt: tryParseDateTime(activeScheduleMap['createdAt']),
+      updatedAt: DateTimeHelper.tryParseDateTime(activeScheduleMap['updatedAt']),
+      createdAt: DateTimeHelper.tryParseDateTime(activeScheduleMap['createdAt']),
       name: activeScheduleMap['name'],
-      type: stringToEnum<ScheduleType>(activeScheduleMap['type'], ScheduleType.values)!,
+      type: EnumHelper.stringToEnum<ScheduleType>(activeScheduleMap['type'], ScheduleType.values)!,
       active: activeScheduleMap['active'] == 1,
       items: shallow ? null : await getScheduleItems(activeScheduleMap['id'], shallow: shallow),
       startDate: DateTime.parse(activeScheduleMap['startDate']),
@@ -76,8 +77,8 @@ class ScheduleModel {
     for (var map in maps) {
       items.add(ScheduleItem(
         id: map['id'],
-        updatedAt: tryParseDateTime(map['updatedAt']),
-        createdAt: tryParseDateTime(map['createdAt']),
+        updatedAt: DateTimeHelper.tryParseDateTime(map['updatedAt']),
+        createdAt: DateTimeHelper.tryParseDateTime(map['createdAt']),
         scheduleId: scheduleId,
         itemOrder: map['itemOrder'],
         scheduleCategories: shallow ? null : await getScheduleCategories(map['id']),
@@ -97,10 +98,10 @@ class ScheduleModel {
     for (var map in maps) {
       categories.add(ScheduleCategory(
           id: map['id'],
-          updatedAt: tryParseDateTime(map['updatedAt']),
-          createdAt: tryParseDateTime(map['createdAt']),
+          updatedAt: DateTimeHelper.tryParseDateTime(map['updatedAt']),
+          createdAt: DateTimeHelper.tryParseDateTime(map['createdAt']),
           scheduleItemId: scheduleItemId,
-          category: stringToEnum<Category>(map['category'], Category.values)!));
+          category: EnumHelper.stringToEnum<Category>(map['category'], Category.values)!));
     }
 
     return categories;

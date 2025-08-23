@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:gymvision/globals.dart';
+import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/services/local_notification_service.dart';
 
 class RestTimerProvider extends ChangeNotifier {
@@ -21,7 +21,7 @@ class RestTimerProvider extends ChangeNotifier {
   }
 
   Duration getTimeLeft() =>
-      _startTime == null || _duration == null ? Duration.zero : timeBetween(_getNow(), _startTime!.add(_duration!));
+      _startTime == null || _duration == null ? Duration.zero : DateTimeHelper.timeBetween(_getNow(), _startTime!.add(_duration!));
 
   int getPercentageLeft() => _duration == null ? 0 : (getTimeLeft().inSeconds / _duration!.inSeconds * 100).truncate();
 

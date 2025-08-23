@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/schedules/schedule.dart';
 import 'package:gymvision/classes/db/schedules/schedule_item.dart';
 import 'package:gymvision/enums.dart';
-import 'package:gymvision/globals.dart';
+import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/models/db_models/schedule_model.dart';
 import 'package:gymvision/common/common_functions.dart';
 import 'package:gymvision/common/common_ui.dart';
@@ -249,7 +249,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
                                 ),
                               ),
                               Text(
-                                'Started ${getDateOrDayStr(activeScheduleSnapshot.data!.startDate)}',
+                                'Started ${DateTimeHelper.getDateOrDayStr(activeScheduleSnapshot.data!.startDate)}',
                                 style: TextStyle(color: Theme.of(context).colorScheme.shadow),
                               ),
                             ],

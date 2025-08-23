@@ -1,7 +1,8 @@
 import 'package:gymvision/classes/db/_database_object.dart';
 import 'package:gymvision/classes/db/schedules/schedule_item.dart';
 import 'package:gymvision/enums.dart';
-import 'package:gymvision/globals.dart';
+import 'package:gymvision/helpers/datetime_helper.dart';
+import 'package:gymvision/helpers/enum_helper.dart';
 import 'package:gymvision/static_data/enums.dart';
 
 class Schedule extends DatabaseObject {
@@ -29,13 +30,13 @@ class Schedule extends DatabaseObject {
         'updatedAt': DateTime.now().toString(),
         'createdAt': createdAt.toString(),
         'name': name,
-        'type': enumToString(type),
+        'type': EnumHelper.enumToString(type),
         'active': active ? 1 : 0,
         'startDate': startDate.toString(),
       };
 
   int indexOfTodaysScheduleItem() {
-    final daysSinceStart = daysBetween(startDate, DateTime.now());
+    final daysSinceStart = DateTimeHelper.daysBetween(startDate, DateTime.now());
     if (daysSinceStart == 0 || items == null) return 0;
 
     int p = 0, index = 0;

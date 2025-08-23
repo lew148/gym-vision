@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/classes/exercise.dart';
-import 'package:gymvision/globals.dart';
+import 'package:gymvision/helpers/number_helper.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';
 import 'package:gymvision/common/common_functions.dart';
@@ -109,11 +109,11 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
         await WorkoutSetModel.addSetToWorkout(
           WorkoutSet(
             workoutExerciseId: weId,
-            weight: stringToDouble(weightController.text),
-            reps: int.parse(getNumberString(repsController.text)),
+            weight: NumberHelper.parseDouble(weightController.text),
+            reps: int.parse(NumberHelper.getNumberString(repsController.text)),
             time: duration,
-            distance: stringToDouble(distanceController.text),
-            calsBurned: int.parse(getNumberString(calsBurnedController.text)),
+            distance: NumberHelper.parseDouble(distanceController.text),
+            calsBurned: int.parse(NumberHelper.getNumberString(calsBurnedController.text)),
           ),
         );
       }

@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:gymvision/classes/db/flavour_text_schedule.dart';
 import 'package:gymvision/db/custom_database.dart';
 import 'package:gymvision/db/db.dart';
-import 'package:gymvision/globals.dart';
+import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/models/flavour_text_model.dart';
 import 'package:gymvision/static_data/data/flavour_texts.dart';
 import 'package:sqflite/sqflite.dart';
@@ -11,7 +11,7 @@ class FlavourTextScheduleModel {
   static Future<FlavourTextSchedule> getTodaysFlavourTextSchedule() async {
     final db = await DatabaseHelper.getDb();
     final recentFlavourTextSchedules = await getRecentFlavourTextSchedules(db);
-    if (recentFlavourTextSchedules.isNotEmpty && isToday(recentFlavourTextSchedules[0].date)) {
+    if (recentFlavourTextSchedules.isNotEmpty && DateTimeHelper.isToday(recentFlavourTextSchedules[0].date)) {
       return recentFlavourTextSchedules[0];
     }
 
@@ -26,10 +26,10 @@ class FlavourTextScheduleModel {
       maps.length,
       (i) => FlavourTextSchedule(
         id: maps[i]['id'],
-        updatedAt: tryParseDateTime(maps[i]['updatedAt'] ?? ''),
-        createdAt: tryParseDateTime(maps[i]['createdAt'] ?? ''),
+        updatedAt: DateTimeHelper.tryParseDateTime(maps[i]['updatedAt'] ?? ''),
+        createdAt: DateTimeHelper.tryParseDateTime(maps[i]['createdAt'] ?? ''),
         flavourTextId: maps[i]['flavourTextId'],
-        date: parseDateTime(maps[i]['date'] ?? ''),
+        date: DateTimeHelper.parseDateTime(maps[i]['date'] ?? ''),
         dismissed: maps[i]['dismissed'] == 1,
         flavourText: flavourTexts.firstWhereOrNull((ft) => ft.id == maps[i]['flavourTextId']),
       ),

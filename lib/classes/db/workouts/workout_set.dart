@@ -2,7 +2,8 @@ import 'package:gymvision/classes/db/_database_object.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/classes/exercise.dart';
-import 'package:gymvision/globals.dart';
+import 'package:gymvision/helpers/datetime_helper.dart';
+import 'package:gymvision/helpers/number_helper.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 
 class WorkoutSet extends DatabaseObject {
@@ -45,11 +46,11 @@ class WorkoutSet extends DatabaseObject {
         'workoutExerciseId': workoutExerciseId,
       };
 
-  void setTime(String? str) => time = str == null ? null : tryParseDuration(str);
+  void setTime(String? str) => time = str == null ? null : DateTimeHelper.tryParseDuration(str);
 
   bool hasWeight() => weight != null && weight != 0;
   double getWeight() => hasWeight() ? weight! : 0;
-  String getWeightDisplay() => '${truncateDouble(weight)}kg';
+  String getWeightDisplay() => '${NumberHelper.truncateDouble(weight)}kg';
 
   bool hasReps() => reps != null && reps! > 0;
   String getRepsDisplay() => hasReps() ? '$reps rep${reps == 1 ? '' : 's'}' : 'No Reps';

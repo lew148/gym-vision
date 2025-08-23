@@ -3,7 +3,7 @@ import 'package:gymvision/classes/db/workouts/workout_category.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise_ordering.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
-import 'package:gymvision/globals.dart';
+import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:intl/intl.dart';
 
@@ -39,10 +39,10 @@ class Workout extends DatabaseObject {
       };
 
   bool isFinished() => endDate != null;
-  Duration getDuration() => endDate == null ? timeBetween(date, DateTime.now()) : timeBetween(date, endDate!);
+  Duration getDuration() => endDate == null ? DateTimeHelper.timeBetween(date, DateTime.now()) : DateTimeHelper.timeBetween(date, endDate!);
 
-  String getTimeStr() => DateFormat(hmFormat).format(date);
-  bool isInFuture() => dateIsInFuture(date);
+  String getTimeStr() => DateFormat(DateTimeHelper.hmFormat).format(date);
+  bool isInFuture() => DateTimeHelper.dateIsInFuture(date);
 
   List<Category> getCategories() => workoutCategories?.map((wc) => wc.category).toList() ?? [];
   List<WorkoutExercise> getWorkoutExercises() => workoutExercises ?? [];

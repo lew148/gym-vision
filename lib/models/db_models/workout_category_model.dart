@@ -1,6 +1,7 @@
 import 'package:gymvision/classes/db/workouts/workout_category.dart';
 import 'package:gymvision/db/db.dart';
-import 'package:gymvision/globals.dart';
+import 'package:gymvision/helpers/datetime_helper.dart';
+import 'package:gymvision/helpers/enum_helper.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -18,10 +19,10 @@ class WorkoutCategoryModel {
         .map(
           (m) => WorkoutCategory(
             id: m['id'],
-            updatedAt: tryParseDateTime(m['updatedAt']),
-            createdAt: tryParseDateTime(m['createdAt']),
+            updatedAt: DateTimeHelper.tryParseDateTime(m['updatedAt']),
+            createdAt: DateTimeHelper.tryParseDateTime(m['createdAt']),
             workoutId: m['workoutId'],
-            category: stringToEnum<Category>(m['category'], Category.values)!,
+            category: EnumHelper.stringToEnum<Category>(m['category'], Category.values)!,
           ),
         )
         .toList();
