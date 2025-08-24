@@ -1,6 +1,8 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gymvision/enums.dart';
+import 'package:gymvision/models/db_models/user_settings_model.dart';
 import 'package:gymvision/services/local_notification_service.dart';
 import 'package:gymvision/common/components/coming_soon.dart';
 import 'package:gymvision/common/components/debug_scaffold.dart';
@@ -22,6 +24,8 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
+  final settings = await UserSettingsModel.getUserSettings();
+
   await SentryFlutter.init(
     (options) {
       options.dsn = 'https://2b42d972537c900eabae2739a88e994b@o4507913067823104.ingest.de.sentry.io/4507913074770000';
@@ -29,7 +33,9 @@ void main() async {
       options.profilesSampleRate = 1.0;
     },
     appRunner: () => runApp(EasyDynamicThemeWidget(
-      initialThemeMode: ThemeMode.system,
+      initialThemeMode: settings.theme == UserTheme.system
+          ? ThemeMode.system
+          : (settings.theme == UserTheme.dark ? ThemeMode.dark : ThemeMode.light),
       child: MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => NavigationProvider()),

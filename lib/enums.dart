@@ -1,3 +1,9 @@
+enum UserTheme {
+  system,
+  light,
+  dark,
+}
+
 enum ScheduleType {
   weekly,
   biweekly,

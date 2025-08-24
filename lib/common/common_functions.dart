@@ -8,7 +8,9 @@ import 'package:gymvision/common/common_ui.dart';
 import 'package:gymvision/common/forms/date_time_picker.dart';
 import 'package:gymvision/common/forms/duration_picker.dart';
 import 'package:gymvision/pages/workouts/workout_view.dart';
+import 'package:gymvision/providers/rest_timer_provider.dart';
 import 'package:gymvision/static_data/enums.dart';
+import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 Future<T> runSafe<T>(
@@ -80,8 +82,9 @@ void showDeleteConfirm(
 Future<bool> showConfirm(
   BuildContext context,
   String title,
-  String content,
-) async {
+  String content, {
+  Function? onConfirm,
+}) async {
   HapticFeedback.heavyImpact();
   var confirmed = false;
 
@@ -103,6 +106,7 @@ Future<bool> showConfirm(
           onPressed: () {
             Navigator.pop(context);
             confirmed = true;
+            if (onConfirm != null) onConfirm();
           },
         ),
       ],
@@ -238,3 +242,6 @@ void showSnackBar(BuildContext context, String text) {
   ScaffoldMessenger.of(context).hideCurrentSnackBar();
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
 }
+
+void setRestTimer(BuildContext context, Duration duration) =>
+    Provider.of<RestTimerProvider>(context, listen: false).setTimer(context: context, duration: duration);

@@ -4,6 +4,7 @@ import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
+import 'package:gymvision/models/db_models/user_settings_model.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';
 import 'package:gymvision/common/common_functions.dart';
@@ -42,7 +43,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   late List<WorkoutSet> workoutSets;
   late bool dropped;
   late bool isDroppable;
-  late bool isDone;
+  late bool allSetsDone;
 
   @override
   void initState() {
@@ -53,7 +54,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     workoutSets = widget.workoutExercise.workoutSets ?? [];
     dropped = widget.dropped;
     isDroppable = workoutSets.isNotEmpty;
-    isDone = widget.workoutExercise.isDone();
+    allSetsDone = widget.workoutExercise.isDone();
   }
 
   void toggleDropped() {
@@ -137,16 +138,26 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
             children: [
               Expanded(
                 flex: 2,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                  decoration: BoxDecoration(
-                    border: BoxBorder.all(color: Theme.of(context).colorScheme.shadow),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    (i + 1).toString(),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                child: GestureDetector(
+                  onTap: () => onSetDoneTap(ws),
+                  child: Container(
+                    height: 25,
+                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                    decoration: BoxDecoration(
+                      border: BoxBorder.all(color: Theme.of(context).colorScheme.shadow),
+                      borderRadius: BorderRadius.circular(10),
+                      color: ws.done ? Theme.of(context).colorScheme.primary : null,
+                    ),
+                    child: ws.done
+                        ? Icon(Icons.check_rounded, size: 20, color: Theme.of(context).colorScheme.surface)
+                        : Text(
+                            (i + 1).toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: ws.done ? Colors.black : null,
+                            ),
+                          ),
                   ),
                 ),
               ),
@@ -173,10 +184,33 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       if (!success) throw Exception();
 
       setState(() {
-        isDone = done;
+        allSetsDone = done;
       });
     } catch (ex) {
       if (mounted) showSnackBar(context, 'Failed to update one or more sets');
+      return;
+    }
+
+    widget.reloadParent();
+  }
+
+  void onSetDoneTap(WorkoutSet set) async {
+    try {
+      HapticFeedback.lightImpact();
+      final done = !set.done;
+
+      if (widget.isInFuture && done) {
+        showSnackBar(context, 'Cannot complete set, as it is in the future.');
+        return;
+      }
+
+      final success = await WorkoutSetModel.markSetDone(set, done);
+      if (!success) throw Exception();
+
+      final settings = await UserSettingsModel.getUserSettings();
+      if (settings.intraSetRestTimer != null && mounted) setRestTimer(context, settings.intraSetRestTimer!);
+    } catch (ex) {
+      if (mounted) showSnackBar(context, 'Failed to update set');
       return;
     }
 
@@ -294,7 +328,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                 children: [
                   CustomFormFields.checkbox(
                     context,
-                    isDone,
+                    allSetsDone,
                     (bool? value) => onWorkoutExerciseDoneTap(value!),
                   ),
                   Expanded(

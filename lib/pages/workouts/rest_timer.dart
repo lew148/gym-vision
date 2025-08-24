@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/common/common_functions.dart';
 import 'package:gymvision/common/common_ui.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
-import 'package:gymvision/providers/navigation_provider.dart';
 import 'package:gymvision/providers/rest_timer_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -22,7 +21,6 @@ class RestTimer extends StatefulWidget {
 
 class _RestTimerState extends State<RestTimer> {
   late RestTimerProvider restTimerProvider;
-  late NavigationProvider navProvider;
   Timer? uiRefreshTimer;
   Duration? left;
   int? workoutId;
@@ -51,55 +49,13 @@ class _RestTimerState extends State<RestTimer> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     restTimerProvider = Provider.of<RestTimerProvider>(context);
-    navProvider = Provider.of<NavigationProvider>(context);
   }
 
-  void setTimer(Duration duration) => restTimerProvider.setTimer(
-        duration: duration,
-        callback: () async {
-          final globalContext = navProvider.getGlobalContext();
-          if (globalContext == null || !globalContext.mounted) return;
-          await showCustomDialog(
-            globalContext,
-            const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Icon(Icons.alarm_on_rounded),
-              Padding(padding: EdgeInsetsGeometry.all(2.5)),
-              Text('Rest Over!'),
-            ]),
-            Column(children: [
-              const Text('Time to get back to work!'),
-              Text('Return to active workout?', style: TextStyle(color: Theme.of(globalContext).colorScheme.shadow)),
-            ]),
-            actions: [
-              CupertinoDialogAction(
-                child: const Text('Close'),
-                onPressed: () {
-                  Navigator.pop(globalContext);
-                },
-              ),
-              if (workoutId != null && leftWorkoutScreen)
-                CupertinoDialogAction(
-                  child: Text(
-                    'Go',
-                    style: TextStyle(
-                      color: Theme.of(globalContext).colorScheme.primary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.pop(globalContext);
-                    openWorkoutView(globalContext, workoutId!);
-                  },
-                ),
-            ],
-          );
-        },
-      );
 
   void showPicker() => showDurationPicker(
         context,
         CupertinoTimerPickerMode.ms,
-        (Duration d) => setTimer(d),
+        (Duration d) => restTimerProvider.setTimer(context: context, duration: d),
         isTimer: true,
       );
 

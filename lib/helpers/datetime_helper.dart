@@ -57,7 +57,7 @@ class DateTimeHelper {
   static String getDurationString(Duration duration, {bool noHours = false}) {
     String hours = noHours ? '' : NumberHelper.getIntTwoDigitsString(duration.inHours);
     String minutes = noHours
-        ? duration.inMinutes.abs().toString()
+        ? NumberHelper.getIntTwoDigitsString(duration.inMinutes.abs())
         : NumberHelper.getIntTwoDigitsString(duration.inMinutes.remainder(60).abs());
     String seconds = NumberHelper.getIntTwoDigitsString(duration.inSeconds.remainder(60).abs());
     return "${duration.isNegative ? '-' : ''}${noHours ? '' : '$hours:'}$minutes:$seconds";

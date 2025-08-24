@@ -176,7 +176,8 @@ class DatabaseHelper {
         id INTEGER PRIMARY KEY,
         updatedAt TEXT NOT NULL,
         createdAt TEXT NOT NULL,
-        theme TEXT
+        theme TEXT NOT NULL,
+        intraSetRestTimer TEXT
       );
     ''');
 
@@ -339,6 +340,7 @@ class DatabaseHelper {
           'updatedAt': us['updatedAt'],
           'createdAt': us['createdAt'],
           'theme': us['theme'],
+          'intraSetRestTimer': us['intraSetRestTimer'],
         });
       }
 

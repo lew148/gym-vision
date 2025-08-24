@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/bodyweight.dart';
-import 'package:gymvision/classes/db/user_setting.dart';
+import 'package:gymvision/classes/db/user_settings.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/models/db_models/user_settings_model.dart';

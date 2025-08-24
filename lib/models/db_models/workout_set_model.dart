@@ -126,6 +126,16 @@ class WorkoutSetModel {
     );
   }
 
+  static Future<bool> markSetDone(WorkoutSet set, bool done) async {
+    try {
+      set.done = done;
+      await WorkoutSetModel.updateWorkoutSet(set);
+      return true;
+    } catch (ex) {
+      return false;
+    }
+  }
+
   static Future<WorkoutSet?> getPr({required String exerciseIdentifier, CustomDatabase? db}) async {
     db ??= await DatabaseHelper.getDb();
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
