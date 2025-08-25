@@ -51,7 +51,6 @@ class _RestTimerState extends State<RestTimer> {
     restTimerProvider = Provider.of<RestTimerProvider>(context);
   }
 
-
   void showPicker() => showDurationPicker(
         context,
         CupertinoTimerPickerMode.ms,
@@ -74,7 +73,7 @@ class _RestTimerState extends State<RestTimer> {
             child: Stack(children: [
               Container(
                 height: 25,
-                width: 50 * (restTimerProvider.getPercentageLeft() / 100),
+                width: 60 * (restTimerProvider.getPercentageLeft() / 100),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primary,
                   borderRadius: const BorderRadius.all(Radius.circular(5)),
@@ -86,12 +85,12 @@ class _RestTimerState extends State<RestTimer> {
                   borderRadius: const BorderRadius.all(Radius.circular(5)),
                 ),
                 height: 25,
-                width: 50,
+                width: 60,
                 child: Center(
-                  child: Text(
-                    DateTimeHelper.getDurationString(restTimerProvider.getTimeLeft(), noHours: true),
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                  child: Text(DateTimeHelper.getDurationString(
+                    restTimerProvider.getTimeLeft(),
+                    noHours: true,
+                  )),
                 ),
               ),
             ]),

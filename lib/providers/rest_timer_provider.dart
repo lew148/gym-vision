@@ -16,8 +16,9 @@ class RestTimerProvider extends ChangeNotifier {
 
   Timer? get timer => _timer;
 
-  static const String restTimerTitle = "Rest Time Over!";
-  static const String restTimerBody = "Let's get back to work.";
+  static const int iosNotifId = 11;
+  static const String restTimerTitle = "Rest is over!";
+  static const String restTimerBody = "Time to get back to work";
 
   DateTime _getNow() {
     final now = DateTime.now();
@@ -30,7 +31,8 @@ class RestTimerProvider extends ChangeNotifier {
 
   int getPercentageLeft() => _duration == null ? 0 : (getTimeLeft().inSeconds / _duration!.inSeconds * 100).truncate();
 
-  void clearTimer() {
+  void clearTimer({Timer? t}) {
+    t?.cancel();
     timer?.cancel();
     _startTime = null;
     _duration = null;
@@ -40,11 +42,12 @@ class RestTimerProvider extends ChangeNotifier {
   void setTimer({required BuildContext context, required Duration duration}) async {
     final globalContext = Provider.of<NavigationProvider>(context, listen: false).getGlobalContext();
 
+    clearTimer();
     _startTime = DateTime.now();
     _duration = duration;
-    _timer = Timer.periodic(
+    _timer = Timer(
       duration,
-      (Timer t) {
+      () async {
         clearTimer();
 
         if (SchedulerBinding.instance.lifecycleState != AppLifecycleState.resumed) {
@@ -53,38 +56,26 @@ class RestTimerProvider extends ChangeNotifier {
           }
         } else {
           if (globalContext == null || !globalContext.mounted) return;
+
+          if (Platform.isIOS) {
+            await LocalNotificationService.cancelNotification(iosNotifId);
+          }
+
+          if (!globalContext.mounted) return;
+
           showCustomDialog(
             globalContext,
             const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Icon(Icons.alarm_on_rounded),
               Padding(padding: EdgeInsetsGeometry.all(2.5)),
-              Text('Rest Over!'),
+              Text(restTimerTitle),
             ]),
-            Column(children: [
-              const Text('Time to get back to work!'),
-              Text('Return to active workout?', style: TextStyle(color: Theme.of(globalContext).colorScheme.shadow)),
-            ]),
+            const Text(restTimerBody),
             actions: [
               CupertinoDialogAction(
-                child: const Text('Close'),
-                onPressed: () {
-                  Navigator.pop(globalContext);
-                },
+                child: const Text("Let's go!"),
+                onPressed: () => Navigator.pop(globalContext),
               ),
-              // if (workoutId != null && leftWorkoutScreen)
-              //   CupertinoDialogAction(
-              //     child: Text(
-              //       'Go',
-              //       style: TextStyle(
-              //         color: Theme.of(globalContext).colorScheme.primary,
-              //         fontWeight: FontWeight.bold,
-              //       ),
-              //     ),
-              //     onPressed: () {
-              //       Navigator.pop(globalContext);
-              //       openWorkoutView(globalContext, workoutId!);
-              //     },
-              //   ),
             ],
           );
         }
@@ -95,6 +86,7 @@ class RestTimerProvider extends ChangeNotifier {
 
     if (Platform.isIOS) {
       await LocalNotificationService.scheduleNotification(
+        id: iosNotifId,
         title: restTimerTitle,
         body: restTimerBody,
         scheduledTime: _startTime!.add(_duration!),

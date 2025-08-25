@@ -208,7 +208,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       if (!success) throw Exception();
 
       final settings = await UserSettingsModel.getUserSettings();
-      if (settings.intraSetRestTimer != null && mounted) setRestTimer(context, settings.intraSetRestTimer!);
+      if (done && settings.intraSetRestTimer != null && mounted) setRestTimer(context, settings.intraSetRestTimer!);
     } catch (ex) {
       if (mounted) showSnackBar(context, 'Failed to update set');
       return;
