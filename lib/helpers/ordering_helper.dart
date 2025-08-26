@@ -24,13 +24,23 @@ class OrderingHelper {
     return getStringFromIntList(il);
   }
 
-  static String reorder(String ordering, int i, int newIndex) {
+  static String reorderById(String ordering, int id, int newIndex) {
     var il = getOrderingIntList(ordering);
-    if (il.isEmpty || !il.contains(i)) return ordering;
+    if (il.isEmpty || !il.contains(id)) return ordering;
 
-    final index = il.indexOf(i);
+    final index = il.indexOf(id);
     il.removeAt(index);
-    il.insert(newIndex, i);
+    il.insert(newIndex, id);
+    return getStringFromIntList(il);
+  }
+
+  static String reorderByIndex(String ordering, int currentIndex, int newIndex) {
+    var il = getOrderingIntList(ordering);
+    if (il.isEmpty || currentIndex > il.length - 1) return ordering;
+
+    final id = il[currentIndex];
+    il.removeAt(currentIndex);
+    il.insert(newIndex, id);
     return getStringFromIntList(il);
   }
 

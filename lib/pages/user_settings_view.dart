@@ -6,7 +6,6 @@ import 'package:gymvision/db/db.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/app_helper.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
-import 'package:gymvision/helpers/enum_helper.dart';
 import 'package:gymvision/services/local_notification_service.dart';
 import 'package:gymvision/models/db_models/flavour_text_schedule_model.dart';
 import 'package:gymvision/common/common_functions.dart';

@@ -1,7 +1,8 @@
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/db/custom_database.dart';
 import 'package:gymvision/db/db.dart';
-import 'package:gymvision/models/db_models/workout_exercise_orderings_model.dart';
+import 'package:gymvision/helpers/ordering_helper.dart';
+import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:sqflite/sqflite.dart';
@@ -53,8 +54,13 @@ class WorkoutExerciseModel {
   static Future deleteWorkoutExercise(int workoutExerciseId, {CustomDatabase? db}) async {
     db ??= await DatabaseHelper.getDb();
 
-    var we = await getWorkoutExercise(workoutExerciseId, db);
-    if (we == null) return;
+    var workoutExercise = await getWorkoutExercise(workoutExerciseId, db);
+    if (workoutExercise == null) return;
+
+    final workout = await WorkoutModel.getWorkout(workoutId: workoutExercise.workoutId);
+    if (workout == null) return false;
+    workout.exerciseOrder = OrderingHelper.removeFromOrdering(workout.exerciseOrder, workoutExerciseId);
+    await WorkoutModel.updateWorkout(workout);
 
     await db.delete(
       'workout_sets',
@@ -67,8 +73,6 @@ class WorkoutExerciseModel {
       where: 'id = ?',
       whereArgs: [workoutExerciseId],
     );
-
-    await WorkoutExerciseOrderingsModel.removeExerciseFromOrderingForWorkout(workoutExerciseId, we.workoutId);
   }
 
   static Future<List<WorkoutExercise>> getWorkoutExercisesForWorkout(int workoutId, {CustomDatabase? db}) async {
@@ -101,24 +105,24 @@ class WorkoutExerciseModel {
     return workoutExercises;
   }
 
-  static Future<int> insertWorkoutExercise(WorkoutExercise we) async {
+  static Future<int> insertWorkoutExercise(WorkoutExercise workoutExercise) async {
     var db = await DatabaseHelper.getDb();
+    final workout = await WorkoutModel.getWorkout(workoutId: workoutExercise.workoutId);
+    if (workout == null) return -1;
+
     final now = DateTime.now();
-    we.updatedAt = now;
-    we.createdAt = now;
-    final id = await db.insert(
+    workoutExercise.updatedAt = now;
+    workoutExercise.createdAt = now;
+    final newWorkoutExerciseId = await db.insert(
       'workout_exercises',
-      we.toMap(),
+      workoutExercise.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
-    final existingOrdering = await WorkoutExerciseOrderingsModel.getWorkoutExerciseOrderingForWorkout(we.workoutId);
-    if (existingOrdering != null) {
-      existingOrdering.addExerciseToOrdering(id);
-      await WorkoutExerciseOrderingsModel.updateWorkoutExerciseOrdering(existingOrdering);
-    }
+    workout.exerciseOrder = OrderingHelper.addToOrdering(workout.exerciseOrder, newWorkoutExerciseId);
+    await WorkoutModel.updateWorkout(workout);
 
-    return id;
+    return newWorkoutExerciseId;
   }
 
   static Future<bool> updateWorkoutExercise(WorkoutExercise workoutExercise) async {

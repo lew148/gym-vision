@@ -54,7 +54,9 @@ class WorkoutSetModel {
         workout_exercises.done AS weDone,
         workout_exercises.setOrder,
         workouts.id AS workoutId,
-        workouts.date
+        workouts.date,
+        workouts.endDate,
+        workouts.exerciseOrder
       FROM workout_sets
       LEFT JOIN workout_exercises ON workout_sets.workoutExerciseId = workout_exercises.id
       LEFT JOIN workouts ON workout_exercises.workoutId = workouts.id
@@ -82,6 +84,8 @@ class WorkoutSetModel {
               workout: Workout(
                 id: map['workoutId'],
                 date: DateTimeHelper.parseDateTime(map['date']),
+                endDate: DateTimeHelper.tryParseDateTime(map['endDate']),
+                exerciseOrder: map['exerciseOrder'],
               ),
               done: map['weDone'] == 1,
               setOrder: map['setOrder']),
@@ -92,7 +96,7 @@ class WorkoutSetModel {
     return sets;
   }
 
-  static Future addSetToWorkout(WorkoutSet set) async {
+  static Future insertSet(WorkoutSet set) async {
     final db = await DatabaseHelper.getDb();
     final workoutExercise = await WorkoutExerciseModel.getWorkoutExercise(set.workoutExerciseId, db);
     if (workoutExercise == null) return;
@@ -117,7 +121,6 @@ class WorkoutSetModel {
 
     final workoutExercise = await WorkoutExerciseModel.getWorkoutExercise(set.workoutExerciseId, db);
     if (workoutExercise == null) return false;
-
     workoutExercise.setOrder = OrderingHelper.removeFromOrdering(workoutExercise.setOrder, setId);
     await WorkoutExerciseModel.updateWorkoutExercise(workoutExercise);
 
@@ -163,7 +166,9 @@ class WorkoutSetModel {
             workout_exercises.done AS weDone,
             workout_exercises.setOrder,
             workouts.id AS workoutId,
-            workouts.date
+            workouts.date,
+            workouts.endDate,
+            workouts.exerciseOrder
         FROM workout_sets
         LEFT JOIN workout_exercises ON workout_sets.workoutExerciseId = workout_exercises.id
         LEFT JOIN workouts ON workout_exercises.workoutId = workouts.id
@@ -206,6 +211,8 @@ class WorkoutSetModel {
         workout: Workout(
           id: maps.first['workoutId'],
           date: DateTimeHelper.parseDateTime(maps.first['date']),
+          endDate: DateTimeHelper.tryParseDateTime(maps.first['endDate']),
+          exerciseOrder: maps.first['exerciseOrder'],
         ),
       ),
     );
@@ -231,7 +238,9 @@ class WorkoutSetModel {
         workout_exercises.done AS weDone,
         workout_exercises.setOrder,
         workouts.id AS workoutId,
-        workouts.date
+        workouts.date,
+        workouts.endDate,
+        workouts.exerciseOrder
       FROM workout_sets
       LEFT JOIN workout_exercises ON workout_sets.workoutExerciseId = workout_exercises.id
       LEFT JOIN workouts ON workout_exercises.workoutId = workouts.id
@@ -261,6 +270,8 @@ class WorkoutSetModel {
         workout: Workout(
           id: maps.first['workoutId'],
           date: DateTimeHelper.parseDateTime(maps.first['date']),
+          endDate: DateTimeHelper.tryParseDateTime(maps.first['endDate']),
+          exerciseOrder: maps.first['exerciseOrder'],
         ),
       ),
     );

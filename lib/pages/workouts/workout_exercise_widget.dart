@@ -77,7 +77,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   void onCopySetButtonTap(WorkoutSet ws) async {
     try {
       HapticFeedback.lightImpact();
-      await WorkoutSetModel.addSetToWorkout(
+      await WorkoutSetModel.insertSet(
         WorkoutSet(
           workoutExerciseId: ws.workoutExerciseId,
           weight: ws.weight,

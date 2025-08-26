@@ -106,7 +106,7 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
       }
 
       for (int i = 0; i < (addThree ? 3 : 1); i++) {
-        await WorkoutSetModel.addSetToWorkout(
+        await WorkoutSetModel.insertSet(
           WorkoutSet(
             workoutExerciseId: weId,
             weight: NumberHelper.parseDouble(weightController.text),

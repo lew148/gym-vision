@@ -38,9 +38,11 @@ class _EditWorkoutSetFormState extends State<EditWorkoutSetForm> {
   @override
   void initState() {
     super.initState();
-    weightController = TextEditingController(text: blankStringIfZero(NumberHelper.truncateDouble(widget.workoutSet.weight)));
+    weightController =
+        TextEditingController(text: blankStringIfZero(NumberHelper.truncateDouble(widget.workoutSet.weight)));
     repsController = TextEditingController(text: blankStringIfZero(widget.workoutSet.reps.toString()));
-    distanceController = TextEditingController(text: blankStringIfZero(NumberHelper.truncateDouble(widget.workoutSet.distance)));
+    distanceController =
+        TextEditingController(text: blankStringIfZero(NumberHelper.truncateDouble(widget.workoutSet.distance)));
     calsBurnedController = TextEditingController(text: blankStringIfZero(widget.workoutSet.calsBurned.toString()));
     duration = widget.workoutSet.time ?? const Duration();
   }
@@ -147,7 +149,7 @@ class _EditWorkoutSetFormState extends State<EditWorkoutSetForm> {
   void onCopySetButtonTap() async {
     try {
       HapticFeedback.lightImpact();
-      await WorkoutSetModel.addSetToWorkout(
+      await WorkoutSetModel.insertSet(
         WorkoutSet(
           workoutExerciseId: widget.workoutSet.workoutExerciseId,
           weight: widget.workoutSet.weight,

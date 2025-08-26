@@ -1,7 +1,6 @@
 import 'package:gymvision/classes/db/_database_object.dart';
 import 'package:gymvision/classes/db/workouts/workout_category.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
-import 'package:gymvision/classes/db/workouts/workout_exercise_ordering.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/static_data/enums.dart';
@@ -10,10 +9,10 @@ import 'package:intl/intl.dart';
 class Workout extends DatabaseObject {
   DateTime date;
   DateTime? endDate;
+  String exerciseOrder;
 
   // non-db props
   List<WorkoutCategory>? workoutCategories;
-  WorkoutExerciseOrdering? exerciseOrdering;
   List<WorkoutExercise>? workoutExercises;
   bool? isEmpty;
 
@@ -22,9 +21,9 @@ class Workout extends DatabaseObject {
     super.updatedAt,
     super.createdAt,
     required this.date,
+    required this.exerciseOrder,
     this.endDate,
     this.workoutCategories,
-    this.exerciseOrdering,
     this.workoutExercises,
     this.isEmpty,
   });
@@ -36,10 +35,12 @@ class Workout extends DatabaseObject {
         'createdAt': createdAt.toString(),
         'date': date.toString(),
         'endDate': endDate.toString(),
+        'exerciseOrder': exerciseOrder,
       };
 
   bool isFinished() => endDate != null;
-  Duration getDuration() => endDate == null ? DateTimeHelper.timeBetween(date, DateTime.now()) : DateTimeHelper.timeBetween(date, endDate!);
+  Duration getDuration() =>
+      endDate == null ? DateTimeHelper.timeBetween(date, DateTime.now()) : DateTimeHelper.timeBetween(date, endDate!);
 
   String getTimeStr() => DateFormat(DateTimeHelper.hmFormat).format(date);
   bool isInFuture() => DateTimeHelper.dateIsInFuture(date);

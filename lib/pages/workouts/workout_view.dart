@@ -5,11 +5,10 @@ import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_category.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
-import 'package:gymvision/classes/db/workouts/workout_exercise_ordering.dart';
 import 'package:gymvision/common/components/notes.dart';
 import 'package:gymvision/enums.dart';
+import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workout_category_model.dart';
-import 'package:gymvision/models/db_models/workout_exercise_orderings_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/common/common_functions.dart';
 import 'package:gymvision/common/components/debug_scaffold.dart';
@@ -104,42 +103,23 @@ class _WorkoutViewState extends State<WorkoutView> {
         ),
       );
 
-  List<Widget> getWorkoutExercisesWidget(
-    Workout workout,
-    List<WorkoutExercise> workoutExercises,
-    WorkoutExerciseOrdering? ordering,
-  ) {
-    if (ordering != null) {
-      final List<WorkoutExercise> remainder = workoutExercises;
-      final List<WorkoutExercise> newOrder = [];
-      for (var weId in ordering.getPositions()) {
-        var we = remainder.firstWhereOrNull((we) => we.id == weId);
-        if (we == null) continue;
-        newOrder.add(we);
-        remainder.removeWhere((we) => we.id == weId);
-      }
-
-      newOrder.addAll(remainder);
-      workoutExercises = newOrder;
-    }
-
-    return workoutExercises
-        .map((we) => Container(
-              key: Key(we.id.toString()),
-              child: WorkoutExerciseWidget(
-                workoutExercise: we,
-                reloadParent: reloadState,
-                toggleDroppedParent: (int? wexId) {
-                  if (wexId != null) {
-                    droppedWes.contains(wexId) ? droppedWes.remove(wexId) : droppedWes.add(wexId);
-                  }
-                },
-                dropped: droppedWes.contains(we.id),
-                isInFuture: workout.isInFuture(),
-              ),
-            ))
-        .toList();
-  }
+  List<Widget> getWorkoutExercisesWidget(Workout workout, List<WorkoutExercise> workoutExercises) =>
+      OrderingHelper.orderListById(workoutExercises, workout.exerciseOrder)
+          .map((we) => Container(
+                key: Key(we.id.toString()),
+                child: WorkoutExerciseWidget(
+                  workoutExercise: we,
+                  reloadParent: reloadState,
+                  toggleDroppedParent: (int? wexId) {
+                    if (wexId != null) {
+                      droppedWes.contains(wexId) ? droppedWes.remove(wexId) : droppedWes.add(wexId);
+                    }
+                  },
+                  dropped: droppedWes.contains(we.id),
+                  isInFuture: workout.isInFuture(),
+                ),
+              ))
+          .toList();
 
   void showEditDate(Workout workout) => showDateTimePicker(
         context,
@@ -226,10 +206,11 @@ class _WorkoutViewState extends State<WorkoutView> {
       .push(MaterialPageRoute(builder: (context) => AddExercisesToWorkout(workoutId: workoutId)))
       .then((x) => reloadState());
 
-  void onWorkoutExerciseReorder(int oldIndex, int newIndex) async {
+  void onWorkoutExerciseReorder(Workout workout, int currentIndex, int newIndex) async {
     try {
       HapticFeedback.mediumImpact();
-      await WorkoutExerciseOrderingsModel.reorderPositioning(widget.workoutId, oldIndex, newIndex);
+      workout.exerciseOrder = OrderingHelper.reorderByIndex(workout.exerciseOrder, currentIndex, newIndex);
+      await WorkoutModel.updateWorkout(workout);
     } catch (e) {
       // do nothing
     }
@@ -404,8 +385,8 @@ class _WorkoutViewState extends State<WorkoutView> {
                     : Padding(
                         padding: const EdgeInsetsGeometry.only(bottom: 10),
                         child: ReorderableColumn(
-                          onReorder: onWorkoutExerciseReorder,
-                          children: getWorkoutExercisesWidget(workout, workoutExercises, workout.exerciseOrdering),
+                          onReorder: (i1, i2) => onWorkoutExerciseReorder(workout, i1, i2),
+                          children: getWorkoutExercisesWidget(workout, workoutExercises),
                         ),
                       ),
               ),

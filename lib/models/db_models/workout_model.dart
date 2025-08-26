@@ -3,15 +3,12 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_category.dart';
-import 'package:gymvision/classes/db/workouts/workout_exercise_ordering.dart';
-import 'package:gymvision/db/custom_database.dart';
 import 'package:gymvision/db/db.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/helpers/enum_helper.dart';
 import 'package:gymvision/helpers/number_helper.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workout_category_model.dart';
-import 'package:gymvision/models/db_models/workout_exercise_orderings_model.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:sqflite/sqflite.dart';
@@ -24,12 +21,10 @@ class WorkoutModel {
         workouts.id,
         workouts.date,
         workouts.endDate,
+        workouts.exerciseOrder,
         workout_categories.id AS workoutCategoryId,
-        workout_categories.category,
-        workout_exercise_orderings.id AS weoId,
-        workout_exercise_orderings.positions
+        workout_categories.category
       FROM workouts
-      LEFT JOIN workout_exercise_orderings ON workouts.id = workout_exercise_orderings.workoutId
       LEFT JOIN workout_categories ON workouts.id = workout_categories.workoutId
       WHERE workouts.date LIKE '%${date.year}-${NumberHelper.getIntTwoDigitsString(date.month)}-${NumberHelper.getIntTwoDigitsString(date.day)}%'
       ORDER BY workouts.date DESC;
@@ -45,12 +40,8 @@ class WorkoutModel {
           id: gm.key,
           date: DateTimeHelper.parseDateTime(gm.value.first['date']),
           endDate: DateTimeHelper.tryParseDateTime(gm.value.first['endDate']),
+          exerciseOrder: gm.value.first['exerciseOrder'],
           workoutCategories: processWorkoutCategories(gm.value),
-          exerciseOrdering: WorkoutExerciseOrdering(
-            id: gm.value.first['weoId'],
-            workoutId: gm.key,
-            positions: gm.value.first['positions'],
-          ),
           workoutExercises: await WorkoutExerciseModel.getWorkoutExercisesForWorkout(gm.key, db: db),
         ),
       );
@@ -66,15 +57,13 @@ class WorkoutModel {
         workouts.id,
         workouts.date,
         workouts.endDate,
+        workouts.exerciseOrder,
         workout_categories.id AS workoutCategoryId,
         workout_categories.category,
-        workout_exercises.id as weId,
-        workout_exercise_orderings.id AS weoId,
-        workout_exercise_orderings.positions
+        workout_exercises.id as weId
       FROM workouts
       LEFT JOIN workout_exercises ON workouts.id = workout_exercises.workoutId
       LEFT JOIN workout_categories ON workouts.id = workout_categories.workoutId
-      LEFT JOIN workout_exercise_orderings ON workouts.id = workout_exercise_orderings.workoutId
       ORDER BY workouts.date DESC;
     ''');
 
@@ -88,12 +77,8 @@ class WorkoutModel {
           id: gm.key,
           date: DateTimeHelper.parseDateTime(gm.value.first['date']),
           endDate: DateTimeHelper.tryParseDateTime(gm.value.first['endDate']),
+          exerciseOrder: gm.value.first['exerciseOrder'],
           workoutCategories: processWorkoutCategories(gm.value),
-          exerciseOrdering: WorkoutExerciseOrdering(
-            id: gm.value.first['weoId'],
-            workoutId: gm.key,
-            positions: gm.value.first['positions'],
-          ),
           isEmpty: gm.value.first['weId'] == null,
         ),
       );
@@ -124,16 +109,6 @@ class WorkoutModel {
     return workoutCategories;
   }
 
-  static Future<bool> allExercisesInWorkoutAreDone({required int workoutId, CustomDatabase? db}) async {
-    db ??= await DatabaseHelper.getDb();
-    int? noIncompleteSets = Sqflite.firstIntValue(await db.rawQuery('''
-      SELECT COUNT(*)
-      FROM workout_exercises
-      WHERE workoutId = $workoutId AND done = 0;
-    '''));
-    return noIncompleteSets == 0;
-  }
-
   static Future<Workout?> getWorkout({
     required int workoutId,
     bool includeCategories = false,
@@ -148,13 +123,11 @@ class WorkoutModel {
         id: workoutId,
         date: DateTimeHelper.parseDateTime(maps.first['date']),
         endDate: DateTimeHelper.tryParseDateTime(maps.first['endDate']),
+        exerciseOrder: maps.first['exerciseOrder'],
         workoutCategories:
             includeCategories ? await WorkoutCategoryModel.getWorkoutCategoriesForWorkout(workoutId) : null,
         workoutExercises:
             includeWorkoutExercises ? await WorkoutExerciseModel.getWorkoutExercisesForWorkout(workoutId) : null,
-        exerciseOrdering: includeWorkoutExercises
-            ? await WorkoutExerciseOrderingsModel.getWorkoutExerciseOrderingForWorkout(workoutId)
-            : null,
       );
     } catch (ex, stack) {
       await Sentry.captureException(ex, stackTrace: stack);
@@ -173,7 +146,6 @@ class WorkoutModel {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
-    await WorkoutExerciseOrderingsModel.insertWorkoutExerciseOrdering(WorkoutExerciseOrdering(workoutId: workoutId));
     return workoutId;
   }
 
@@ -274,7 +246,6 @@ class WorkoutModel {
     final workoutMap = fullWorkout.toMap();
     workoutMap['categories'] = fullWorkout.workoutCategories?.map((wc) => wc.toMap()).toList();
     workoutMap['workoutExercises'] = workoutExercises?.toList();
-    workoutMap['workoutExerciseOrdering'] = fullWorkout.exerciseOrdering?.toMap();
     return jsonEncode(workoutMap);
   }
 
@@ -295,17 +266,10 @@ class WorkoutModel {
           'createdAt': workoutMap['createdAt'],
           'date': workoutMap['date'],
           'endDate': workoutMap['endDate'],
+          'exerciseOrder': '', // import clears order, as IDs will change
         });
 
         if (workoutId == 0) return false;
-
-        final weo = workoutMap['workoutExerciseOrdering'];
-        await db.insert('workout_exercise_orderings', {
-          'workoutId': workoutId,
-          'updatedAt': weo['updatedAt'],
-          'createdAt': weo['createdAt'],
-          'positions': weo['positions'],
-        });
 
         for (var wc in workoutMap['categories']) {
           await db.insert('workout_categories', {

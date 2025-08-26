@@ -56,17 +56,8 @@ class DatabaseHelper {
         updatedAt TEXT NOT NULL,
         createdAt TEXT NOT NULL,
         date TEXT NOT NULL,
-        endDate TEXT
-      );
-    ''');
-
-    batch.execute('''
-      CREATE TABLE workout_exercise_orderings(
-        id INTEGER PRIMARY KEY,
-        updatedAt TEXT NOT NULL,
-        createdAt TEXT NOT NULL,
-        workoutId INTEGER NOT NULL,
-        positions TEXT
+        endDate TEXT,
+        exerciseOrder TEXT NOT NULL
       );
     ''');
 
@@ -194,7 +185,6 @@ class DatabaseHelper {
 
   static Future<bool> resetWhilePersistingData() async {
     var workouts = [];
-    var workoutExerciseOrderings = [];
     var workoutCategories = [];
     var workoutExercises = [];
     var workoutSets = [];
@@ -211,9 +201,6 @@ class DatabaseHelper {
 
       // in order of initialDbCreate()
       if (await tableExists('workouts')) workouts = await prevDb.query('workouts');
-      if (await tableExists('workout_exercise_orderings')) {
-        workoutExerciseOrderings = await prevDb.query('workout_exercise_orderings');
-      }
 
       if (await tableExists('workout_categories')) {
         workoutCategories = await prevDb.query('workout_categories');
@@ -252,16 +239,7 @@ class DatabaseHelper {
           'createdAt': w['createdAt'],
           'date': w['date'],
           'endDate': w['endDate'],
-        });
-      }
-
-      for (var weo in workoutExerciseOrderings) {
-        await newDb.insert('workout_exercise_orderings', {
-          'id': weo['id'],
-          'updatedAt': weo['updatedAt'],
-          'createdAt': weo['createdAt'],
-          'workoutId': weo['workoutId'],
-          'positions': weo['positions'],
+          'exerciseOrder': w['exerciseOrder'] ?? '',
         });
       }
 
