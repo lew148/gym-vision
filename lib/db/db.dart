@@ -87,6 +87,7 @@ class DatabaseHelper {
         createdAt TEXT NOT NULL,
         workoutId INTEGER NOT NULL,
         exerciseIdentifier TEXT NOT NULL,
+        done INTEGER DEFAULT 0,
         setOrder TEXT NOT NULL
       );
     ''');
@@ -281,6 +282,7 @@ class DatabaseHelper {
           'createdAt': we['createdAt'],
           'workoutId': we['workoutId'],
           'exerciseIdentifier': we['exerciseIdentifier'],
+          'done': we['done'] ?? '1',
           'setOrder': we['setOrder'] ?? '',
         });
       }
@@ -291,7 +293,7 @@ class DatabaseHelper {
           'updatedAt': ws['updatedAt'],
           'createdAt': ws['createdAt'],
           'workoutExerciseId': ws['workoutExerciseId'],
-          'done': ws['done'],
+          'done': ws['done'] ?? '1',
           'weight': ws['weight'],
           'reps': ws['reps'],
           'time': ws['time'],

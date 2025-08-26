@@ -43,7 +43,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   late List<WorkoutSet> workoutSets;
   late bool dropped;
   late bool isDroppable;
-  late bool allSetsDone;
+  late bool isDone;
 
   @override
   void initState() {
@@ -54,7 +54,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     workoutSets = widget.workoutExercise.workoutSets ?? [];
     dropped = widget.dropped;
     isDroppable = workoutSets.isNotEmpty;
-    allSetsDone = widget.workoutExercise.isDone();
+    isDone = widget.workoutExercise.isDone();
   }
 
   void toggleDropped() {
@@ -175,19 +175,29 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     try {
       HapticFeedback.lightImpact();
 
-      if (widget.isInFuture && done) {
-        showSnackBar(context, 'Cannot complete sets that are in the future.');
-        return;
+      if (workoutSets.isEmpty) {
+        widget.workoutExercise.done = done;
+        final success = await WorkoutExerciseModel.updateWorkoutExercise(widget.workoutExercise);
+        if (!success) throw Exception();
+
+        setState(() {
+          isDone = done;
+        });
+      } else {
+        if (widget.isInFuture && done) {
+          showSnackBar(context, 'Cannot complete sets that are in the future.');
+          return;
+        }
+
+        final success = await WorkoutExerciseModel.markAllSetsDone(widget.workoutExercise.id!, done);
+        if (!success) throw Exception();
+
+        setState(() {
+          isDone = done;
+        });
       }
-
-      final success = await WorkoutExerciseModel.markAllSetsDone(widget.workoutExercise.id!, done);
-      if (!success) throw Exception();
-
-      setState(() {
-        allSetsDone = done;
-      });
     } catch (ex) {
-      if (mounted) showSnackBar(context, 'Failed to update one or more sets');
+      if (mounted) showSnackBar(context, 'Failed to update exercise');
       return;
     }
 
@@ -204,7 +214,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         return;
       }
 
-      final success = await WorkoutSetModel.markSetDone(set, done);
+      set.done = done;
+      final success = await WorkoutSetModel.updateWorkoutSet(set);
       if (!success) throw Exception();
 
       final settings = await UserSettingsModel.getUserSettings();
@@ -328,7 +339,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                 children: [
                   CustomFormFields.checkbox(
                     context,
-                    allSetsDone,
+                    isDone,
                     (bool? value) => onWorkoutExerciseDoneTap(value!),
                   ),
                   Expanded(

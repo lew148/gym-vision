@@ -22,6 +22,7 @@ class WorkoutExerciseModel {
       createdAt: DateTime.parse(maps.first['createdAt']),
       workoutId: maps.first['workoutId'],
       exerciseIdentifier: maps.first['exerciseIdentifier'],
+      done: maps.first['done'] == 1,
       setOrder: maps.first['setOrder'],
     );
   }
@@ -44,6 +45,7 @@ class WorkoutExerciseModel {
       createdAt: DateTime.parse(maps.first['createdAt']),
       workoutId: maps.first['workoutId'],
       exerciseIdentifier: maps.first['exerciseIdentifier'],
+      done: maps.first['done'] == 1,
       setOrder: maps.first['setOrder'],
     );
   }
@@ -91,7 +93,8 @@ class WorkoutExerciseModel {
         exerciseIdentifier: m['exerciseIdentifier'],
         exercise: DefaultExercisesModel.getExerciseByIdentifier(m['exerciseIdentifier']),
         workoutSets: await WorkoutSetModel.getWorkoutSetsForWorkoutExercise(m['id'], db),
-        setOrder: maps.first['setOrder'],
+        done: m['done'] == 1,
+        setOrder: m['setOrder'],
       ));
     }
 
@@ -118,7 +121,7 @@ class WorkoutExerciseModel {
     return id;
   }
 
-  static Future updateWorkoutExercise(WorkoutExercise workoutExercise) async {
+  static Future<bool> updateWorkoutExercise(WorkoutExercise workoutExercise) async {
     final db = await DatabaseHelper.getDb();
     workoutExercise.updatedAt = DateTime.now();
     await db.update(
@@ -127,6 +130,7 @@ class WorkoutExerciseModel {
       where: 'id = ?',
       whereArgs: [workoutExercise.id],
     );
+    return true;
   }
 
   static Future<bool> markAllSetsDone(int id, bool done) async {
