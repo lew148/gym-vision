@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:drift/remote.dart';
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,7 +26,7 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  const int maxRetries = 3;
+  const int maxTries = 1;
 
   await SentryFlutter.init(
     (options) {
@@ -49,32 +50,41 @@ void main() async {
         return true;
       };
 
-      for (var retries = 0; retries < maxRetries; retries++) {
+      for (var tries = 0; tries < maxTries; tries++) {
         try {
           await start();
           return;
-        } catch (ex, st) {
-          if (retries == maxRetries - 1) { // last try
-            await Sentry.captureException(ex, stackTrace: st);
-            runApp(const MaterialApp(
-              home: Scaffold(
-                body: Center(
-                  child: Text(
-                    'Something went wrong during startup. Please restart.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ),
-              ),
-            ));
-          }
+        } on DriftRemoteException catch (ex, st) {
+          // todo: REMOVE THIS AS SOON AS ALL IOS USERS HAVE MIGRATED!!!
+          await DatabaseHelper.resetDatabase();
+          await Future.delayed(const Duration(seconds: 3)); // small wait between retries
 
-          await Future.delayed(const Duration(seconds: 2)); // small wait between retries
+          if (tries == maxTries - 1) {
+            // last try
+            await Sentry.captureException(ex, stackTrace: st);
+            showErrorScreen();
+          }
+        } catch (ex, st) {
+          await Sentry.captureException(ex, stackTrace: st);
+          showErrorScreen();
+          return;
         }
       }
     },
   );
 }
+
+void showErrorScreen() => runApp(const MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Text(
+            'Something went wrong during startup. Please restart.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 18),
+          ),
+        ),
+      ),
+    ));
 
 Future start() async {
   LocalNotificationService.init();
