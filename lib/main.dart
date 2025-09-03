@@ -2,6 +2,7 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/enums.dart';
+import 'package:gymvision/helpers/database_helper.dart';
 import 'package:gymvision/models/db_models/user_settings_model.dart';
 import 'package:gymvision/services/local_notification_service.dart';
 import 'package:gymvision/common/components/coming_soon.dart';
@@ -17,9 +18,10 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // needed for calling async methods in main()
-  LocalNotificationService.init();
 
-  // await DatabaseHelper.initialiseDatabase();
+  // helper inits
+  LocalNotificationService.init();
+  await DatabaseHelper.initialiseDatabase();
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

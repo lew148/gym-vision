@@ -4,6 +4,7 @@ import 'package:drift/native.dart';
 import 'package:gymvision/db/drift_database.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 class DatabaseHelper {
   static AppDatabase? _database;
@@ -19,7 +20,12 @@ class DatabaseHelper {
   static const String databaseName = 'gymvision.db';
 
   static Future<void> initialiseDatabase() async {
-    _database = AppDatabase(openConnection());
+    try {
+      _database = AppDatabase(openConnection());
+    } catch (ex, st) {
+      await Sentry.captureException(ex, stackTrace: st);
+      rethrow;
+    }
   }
 
   static LazyDatabase openConnection() {
