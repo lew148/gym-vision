@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,6 +25,8 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
+  const int maxRetries = 3;
+
   await SentryFlutter.init(
     (options) {
       options.dsn = 'https://2b42d972537c900eabae2739a88e994b@o4507913067823104.ingest.de.sentry.io/4507913074770000';
@@ -48,32 +49,50 @@ void main() async {
         return true;
       };
 
-      try {
-        // helper inits
-        LocalNotificationService.init();
-        await DatabaseHelper.initialiseDatabase();
+      for (var retries = 0; retries < maxRetries; retries++) {
+        try {
+          await start();
+          return;
+        } catch (ex, st) {
+          if (retries == maxRetries - 1) { // last try
+            await Sentry.captureException(ex, stackTrace: st);
+            runApp(const MaterialApp(
+              home: Scaffold(
+                body: Center(
+                  child: Text(
+                    'Something went wrong during startup. Please restart.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              ),
+            ));
+          }
 
-        final settings = await UserSettingsModel.getUserSettings();
-        runApp(EasyDynamicThemeWidget(
-          initialThemeMode: settings.theme == UserTheme.system
-              ? ThemeMode.system
-              : (settings.theme == UserTheme.dark ? ThemeMode.dark : ThemeMode.light),
-          child: MultiProvider(
-            providers: [
-              ChangeNotifierProvider(create: (_) => NavigationProvider()),
-              ChangeNotifierProvider(create: (_) => RestTimerProvider()),
-            ],
-            child: const MyApp(),
-          ),
-        ));
-      } catch (ex, st) {
-        await Sentry.captureException(ex, stackTrace: st);
-        runApp(const MaterialApp(
-          home: Scaffold(body: Center(child: Text('Something went wrong during app startup. Please restart.'))),
-        ));
+          await Future.delayed(const Duration(seconds: 2)); // small wait between retries
+        }
       }
     },
   );
+}
+
+Future start() async {
+  LocalNotificationService.init();
+  await DatabaseHelper.initialiseDatabase();
+
+  final settings = await UserSettingsModel.getUserSettings();
+  runApp(EasyDynamicThemeWidget(
+    initialThemeMode: settings.theme == UserTheme.system
+        ? ThemeMode.system
+        : (settings.theme == UserTheme.dark ? ThemeMode.dark : ThemeMode.light),
+    child: MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => NavigationProvider()),
+        ChangeNotifierProvider(create: (_) => RestTimerProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  ));
 }
 
 class MyApp extends StatelessWidget {
