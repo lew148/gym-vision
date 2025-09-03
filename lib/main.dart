@@ -19,6 +19,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // needed for calling async methods in main()
   LocalNotificationService.init();
 
+  // await DatabaseHelper.initialiseDatabase();
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,

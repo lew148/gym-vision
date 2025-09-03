@@ -12,16 +12,18 @@ class FlavourTextCard extends StatefulWidget {
 }
 
 class _FlavourTextCardState extends State<FlavourTextCard> {
-  final Future<FlavourTextSchedule> flavourTextSchedule = FlavourTextScheduleModel.getTodaysFlavourTextSchedule();
+  Future<FlavourTextSchedule> flavourTextSchedule = FlavourTextScheduleModel.getTodaysFlavourTextSchedule();
 
   void onDismissTap(FlavourTextSchedule fts) async {
     try {
       await FlavourTextScheduleModel.setFlavourTextScheduleDismissed(fts);
+      setState(() {
+        flavourTextSchedule = FlavourTextScheduleModel.getTodaysFlavourTextSchedule();
+      });
     } catch (ex) {
       if (!mounted) return;
       showSnackBar(context, 'Failed to dismiss Flavour Text');
     }
-    setState(() {});
   }
 
   @override
@@ -44,7 +46,7 @@ class _FlavourTextCardState extends State<FlavourTextCard> {
                     children: [
                       Flexible(
                         child: Text(
-                          snapshot.data!.flavourText!.message,
+                          snapshot.data!.getFlavourText()!.message,
                           style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
                         ),
                       ),

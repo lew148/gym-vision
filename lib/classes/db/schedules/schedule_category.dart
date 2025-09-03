@@ -1,8 +1,7 @@
-import 'package:gymvision/classes/db/_database_object.dart';
-import 'package:gymvision/helpers/enum_helper.dart';
+import 'package:gymvision/classes/db/_dbo.dart';
 import 'package:gymvision/static_data/enums.dart';
 
-class ScheduleCategory extends DatabaseObject {
+class ScheduleCategory extends DBO {
   int scheduleItemId;
   Category category;
 
@@ -13,13 +12,4 @@ class ScheduleCategory extends DatabaseObject {
     required this.scheduleItemId,
     required this.category,
   });
-
-  @override
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'updatedAt': DateTime.now().toString(),
-        'createdAt': createdAt.toString(),
-        'scheduleItemId': scheduleItemId,
-        'category': EnumHelper.enumToString(category),
-      };
 }

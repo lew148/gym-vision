@@ -75,7 +75,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
         onLongPress: () => showDeleteConfirm(
           context,
           "workout",
-          () => WorkoutModel.deleteWorkout(workout.id!),
+          () => WorkoutModel.delete(workout.id!),
           widget.reloadParent,
         ),
         onTap: () => openWorkoutView(context, workout.id!, reloadState: widget.reloadParent),
@@ -88,11 +88,10 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(children: [
-                    if (!workout.getIsEmpty())
-                      Padding(
-                        padding: const EdgeInsets.only(right: 5),
-                        child: CommonUI.getCompleteMark(context, !workout.isInFuture() && workout.isFinished()),
-                      ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: CommonUI.getCompleteMark(context, !workout.isInFuture() && workout.isFinished()),
+                    ),
                     Text(
                       workout.getWorkoutTitle(),
                       style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
@@ -123,7 +122,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
         onLongPress: () => showDeleteConfirm(
           context,
           'bodyweight',
-          () => BodyweightModel.deleteBodyweight(bw.id!),
+          () => BodyweightModel.delete(bw.id!),
           widget.reloadParent,
         ),
         child: Container(

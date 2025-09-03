@@ -1,64 +1,47 @@
+import 'package:drift/drift.dart';
 import 'package:gymvision/classes/db/note.dart';
-import 'package:gymvision/db/db.dart';
+import 'package:gymvision/db/drift_database.dart';
+import 'package:gymvision/db/table_extensions.dart';
 import 'package:gymvision/enums.dart';
-import 'package:gymvision/helpers/datetime_helper.dart';
-import 'package:gymvision/helpers/enum_helper.dart';
+import 'package:gymvision/helpers/database_helper.dart';
 
 class NoteModel {
-  static const _tableName = 'notes';
-
   static Future<Note?> getNoteForObject(NoteType type, String objectId) async {
-    final db = await DatabaseHelper.getDb();
-    var maps = await db.query(_tableName, where: 'type = ? AND objectId = ?', whereArgs: [type.toString(), objectId]);
-    if (maps.isEmpty) return null;
-
-    final Map<String, dynamic> map = maps.first;
-    return Note(
-      id: map['id'],
-      updatedAt: DateTimeHelper.tryParseDateTime(map['updatedAt']),
-      createdAt: DateTimeHelper.tryParseDateTime(map['createdAt']),
-      objectId: map['objectId'],
-      type: EnumHelper.stringToEnum(map['type'], NoteType.values) ?? NoteType.other,
-      note: map['note'],
-    );
+    final db = DatabaseHelper.db;
+    return (await (db.select(db.driftNotes)
+              ..where((n) => n.type.equalsValue(type))
+              ..where((n) => n.objectId.equals(objectId)))
+            .getSingleOrNull())
+        ?.toObject();
   }
 
-  static Future<bool> addNote(Note note) async {
-    try {
-      final db = await DatabaseHelper.getDb();
-      final now = DateTime.now();
-      note.createdAt = now;
-      note.updatedAt = now;
-      await db.insert(_tableName, note.toMap());
-      return true;
-    } catch (ex) {
-      return false;
-    }
+  static Future<int> insert(Note note) async {
+    final db = DatabaseHelper.db;
+    final now = DateTime.now();
+    return await db.into(db.driftNotes).insert(DriftNotesCompanion(
+          createdAt: Value(now),
+          updatedAt: Value(now),
+          objectId: Value(note.objectId),
+          type: Value(note.type),
+          note: Value(note.note),
+        ));
   }
 
-  static Future<bool> updateNote(Note note) async {
-    try {
-      final db = await DatabaseHelper.getDb();
-      note.updatedAt = DateTime.now();
-      await db.update(
-        _tableName,
-        note.toMap(),
-        where: 'id = ?',
-        whereArgs: [note.id],
-      );
-      return true;
-    } catch (ex) {
-      return false;
-    }
+  static Future<bool> update(Note note) async {
+    if (note.id == null) return false;
+    final db = DatabaseHelper.db;
+    await (db.update(db.driftNotes)..where((s) => s.id.equals(note.id!))).write(DriftNotesCompanion(
+      updatedAt: Value(DateTime.now()),
+      objectId: Value(note.objectId),
+      type: Value(note.type),
+      note: Value(note.note),
+    ));
+
+    return true;
   }
 
-  static Future<bool> deleteNote(int id) async {
-    try {
-      final db = await DatabaseHelper.getDb();
-      await db.delete(_tableName, where: 'id = ?', whereArgs: [id]);
-      return true;
-    } catch (e) {
-      return false;
-    }
+  static Future<int> delete(int id) async {
+    final db = DatabaseHelper.db;
+    return await (db.delete(db.driftNotes)..where((n) => n.id.equals(id))).go();
   }
 }

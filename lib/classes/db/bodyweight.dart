@@ -1,8 +1,8 @@
-import 'package:gymvision/classes/db/_database_object.dart';
+import 'package:gymvision/classes/db/_dbo.dart';
 import 'package:gymvision/helpers/number_helper.dart';
 import 'package:intl/intl.dart';
 
-class Bodyweight extends DatabaseObject {
+class Bodyweight extends DBO {
   DateTime date;
   double weight;
   String units;

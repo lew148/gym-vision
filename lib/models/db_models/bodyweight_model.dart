@@ -1,68 +1,40 @@
+import 'package:drift/drift.dart';
 import 'package:gymvision/classes/db/bodyweight.dart';
-import 'package:gymvision/db/db.dart';
-import 'package:gymvision/helpers/datetime_helper.dart';
-import 'package:gymvision/helpers/number_helper.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:gymvision/db/drift_database.dart';
+import 'package:gymvision/db/table_extensions.dart';
+import 'package:gymvision/helpers/database_helper.dart';
 
 class BodyweightModel {
   static Future<Bodyweight?> getBodyweightForDay(DateTime date) async {
-    final db = await DatabaseHelper.getDb();
-    final dateStr =
-        "${date.year}-${NumberHelper.getIntTwoDigitsString(date.month)}-${NumberHelper.getIntTwoDigitsString(date.day)}";
-    final List<Map<String, dynamic>> maps = await db.query(
-      'bodyweights',
-      where: 'bodyweights.date LIKE ?',
-      whereArgs: ['%$dateStr%'],
-    );
-
-    if (maps.isEmpty) return null;
-    return Bodyweight(
-      id: maps.first['id'],
-      updatedAt: DateTimeHelper.tryParseDateTime(maps.first['updatedAt']),
-      createdAt: DateTimeHelper.tryParseDateTime(maps.first['createdAt']),
-      date: DateTimeHelper.parseDateTime(maps.first['date']),
-      weight: maps.first['weight'],
-      units: maps.first['units'],
-    );
+    final db = DatabaseHelper.db;
+    final startOfDay = DateTime(date.year, date.month, date.day);
+    final endOfDay = startOfDay.add(const Duration(days: 1));
+    return (await (db.select(db.driftBodyweights)
+              ..where((w) => w.date.isBiggerOrEqualValue(startOfDay))
+              ..where((w) => w.date.isSmallerThanValue(endOfDay)))
+            .getSingleOrNull())
+        ?.toObject();
   }
 
   static Future<List<Bodyweight>> getBodyweights() async {
-    final db = await DatabaseHelper.getDb();
-    final List<Map<String, dynamic>> maps = await db.query('bodyweights');
-
-    List<Bodyweight> bws = [];
-    for (var map in maps) {
-      bws.add(Bodyweight(
-        id: map['id'],
-        updatedAt: DateTimeHelper.tryParseDateTime(map['updatedAt']),
-        createdAt: DateTimeHelper.tryParseDateTime(map['createdAt']),
-        date: DateTimeHelper.parseDateTime(map['date']),
-        weight: map['weight'],
-        units: map['units'],
-      ));
-    }
-
-    return bws;
+    final db = DatabaseHelper.db;
+    return (await db.select(db.driftBodyweights).get()).map((b) => b.toObject()).toList();
   }
 
-  static insertBodyweight(Bodyweight bodyweight) async {
-    final db = await DatabaseHelper.getDb();
+  static Future<int> insert(Bodyweight bw) async {
+    final db = DatabaseHelper.db;
     final now = DateTime.now();
-    bodyweight.createdAt = now;
-    bodyweight.updatedAt = now;
-    await db.insert(
-      'bodyweights',
-      bodyweight.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    return await db.into(db.driftBodyweights).insert(DriftBodyweightsCompanion.insert(
+          createdAt: Value(now),
+          updatedAt: Value(now),
+          date: bw.date,
+          weight: bw.weight,
+          units: bw.units,
+        ));
   }
 
-  static deleteBodyweight(int bodyweightId) async {
-    final db = await DatabaseHelper.getDb();
-    await db.delete(
-      'bodyweights',
-      where: 'id = ?',
-      whereArgs: [bodyweightId],
-    );
+  static Future<int> delete(int id) async {
+    final db = DatabaseHelper.db;
+    return await (db.delete(db.driftBodyweights)..where((bw) => bw.id.equals(id))).go();
   }
 }

@@ -1,13 +1,11 @@
-abstract class DatabaseObject {
+abstract class DBO {
   int? id;
   DateTime? updatedAt;
   DateTime? createdAt;
 
-  DatabaseObject({
+  DBO({
     this.id,
     this.updatedAt,
     this.createdAt,
   });
-
-  Map<String, dynamic> toMap();
 }

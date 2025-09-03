@@ -1,9 +1,9 @@
-import 'package:gymvision/classes/db/_database_object.dart';
+import 'package:gymvision/classes/db/_dbo.dart';
 import 'package:gymvision/classes/db/workout_templates/workout_template.dart';
 import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/static_data/enums.dart';
 
-class WorkoutTemplateExercise extends DatabaseObject {
+class WorkoutTemplateExercise extends DBO {
   final int workoutTemplateId;
   final String exerciseIdentifier;
 
@@ -20,15 +20,6 @@ class WorkoutTemplateExercise extends DatabaseObject {
     required this.exerciseIdentifier,
     this.exercise,
   });
-
-  @override
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'updatedAt': DateTime.now().toString(),
-        'createdAt': createdAt.toString(),
-        'workoutTemplateId': workoutTemplateId,
-        'exerciseIdentifier': exerciseIdentifier,
-      };
 
   bool isCardio() => exercise?.type == ExerciseType.cardio;
 }

@@ -2,9 +2,9 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/user_settings.dart';
-import 'package:gymvision/db/db.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/app_helper.dart';
+import 'package:gymvision/helpers/database_helper.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/services/local_notification_service.dart';
 import 'package:gymvision/models/db_models/flavour_text_schedule_model.dart';
@@ -73,7 +73,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                             return;
                         }
 
-                        await UserSettingsModel.updateUserSettings(settings);
+                        await UserSettingsModel.update(settings);
                       } catch (ex) {
                         if (context.mounted) showSnackBar(context, 'Failed to update theme.');
                       }
@@ -104,7 +104,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                       (Duration d) async {
                         try {
                           settings.intraSetRestTimer = d.inSeconds == 0 ? null : d;
-                          await UserSettingsModel.updateUserSettings(settings);
+                          await UserSettingsModel.update(settings);
                         } catch (ex) {
                           if (context.mounted) showSnackBar(context, 'Failed to update Intra-Set Rest Timer.');
                         }
@@ -158,10 +158,9 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                     'Update Database',
                     'This will persist existing data',
                     onConfirm: () async {
-                      DatabaseHelper.resetWhilePersistingData().then((s) {
-                        if (!context.mounted) return;
-                        showSnackBar(context, s ? 'Successfully updated database' : 'Failed to update database');
-                      });
+                      final success = await DatabaseHelper.resetWhilePersistingData();
+                      if (!context.mounted) return;
+                      showSnackBar(context, success ? 'Successfully updated database' : 'Failed to update database');
                     },
                   ),
                   text: 'Update Database',
@@ -173,8 +172,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                     context,
                     "database",
                     () async {
-                      await DatabaseHelper.deleteDb();
-                      await DatabaseHelper.openDb();
+                      await DatabaseHelper.resetDatabase();
                       if (!context.mounted) return;
                       showSnackBar(context, 'Successfully reset database');
                     },

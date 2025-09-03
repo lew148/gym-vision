@@ -1,13 +1,12 @@
-import 'package:gymvision/classes/db/_database_object.dart';
+import 'package:collection/collection.dart';
+import 'package:gymvision/classes/db/_dbo.dart';
 import 'package:gymvision/classes/flavour_text.dart';
+import 'package:gymvision/static_data/data/flavour_texts.dart';
 
-class FlavourTextSchedule extends DatabaseObject {
+class FlavourTextSchedule extends DBO {
   int flavourTextId;
   DateTime date;
   bool dismissed;
-
-  // non-db props
-  FlavourText? flavourText;
 
   FlavourTextSchedule({
     super.id,
@@ -16,16 +15,7 @@ class FlavourTextSchedule extends DatabaseObject {
     required this.flavourTextId,
     required this.date,
     required this.dismissed,
-    this.flavourText,
   });
 
-  @override
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'updatedAt': DateTime.now().toString(),
-        'createdAt': createdAt.toString(),
-        'flavourTextId': flavourTextId,
-        'date': date.toString(),
-        'dismissed': dismissed ? 1 : 0,
-      };
+  FlavourText? getFlavourText() => flavourTexts.firstWhereOrNull((ft) => ft.id == flavourTextId);
 }

@@ -55,11 +55,11 @@ class DateTimeHelper {
   static bool dateXIsAfterDateY(DateTime x, DateTime y) => y.compareTo(x) < 0;
 
   static String getDurationString(Duration duration, {bool noHours = false}) {
-    String hours = noHours ? '' : NumberHelper.getIntTwoDigitsString(duration.inHours);
+    String hours = noHours ? '' : NumberHelper.getDoubleDigit(duration.inHours);
     String minutes = noHours
-        ? NumberHelper.getIntTwoDigitsString(duration.inMinutes.abs())
-        : NumberHelper.getIntTwoDigitsString(duration.inMinutes.remainder(60).abs());
-    String seconds = NumberHelper.getIntTwoDigitsString(duration.inSeconds.remainder(60).abs());
+        ? NumberHelper.getDoubleDigit(duration.inMinutes.abs())
+        : NumberHelper.getDoubleDigit(duration.inMinutes.remainder(60).abs());
+    String seconds = NumberHelper.getDoubleDigit(duration.inSeconds.remainder(60).abs());
     return "${duration.isNegative ? '-' : ''}${noHours ? '' : '$hours:'}$minutes:$seconds";
   }
 

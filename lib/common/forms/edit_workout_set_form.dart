@@ -88,7 +88,7 @@ class _EditWorkoutSetFormState extends State<EditWorkoutSetForm> {
       if (!hasChanges) return;
 
       try {
-        await WorkoutSetModel.updateWorkoutSet(set);
+        await WorkoutSetModel.update(set);
       } catch (ex) {
         if (!mounted) return;
         showSnackBar(context, 'Failed to edit Workout Set');
@@ -101,7 +101,7 @@ class _EditWorkoutSetFormState extends State<EditWorkoutSetForm> {
   void onDeleteButtonTap(int id) async {
     Navigator.pop(context);
     try {
-      await WorkoutSetModel.removeSet(id);
+      await WorkoutSetModel.delete(id);
     } catch (ex) {
       if (!mounted) return;
       showSnackBar(context, 'Failed to remove Set from workout: ${ex.toString()}');
@@ -149,7 +149,7 @@ class _EditWorkoutSetFormState extends State<EditWorkoutSetForm> {
   void onCopySetButtonTap() async {
     try {
       HapticFeedback.lightImpact();
-      await WorkoutSetModel.insertSet(
+      await WorkoutSetModel.insert(
         WorkoutSet(
           workoutExerciseId: widget.workoutSet.workoutExerciseId,
           weight: widget.workoutSet.weight,

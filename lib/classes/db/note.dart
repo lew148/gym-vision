@@ -1,7 +1,7 @@
-import 'package:gymvision/classes/db/_database_object.dart';
+import 'package:gymvision/classes/db/_dbo.dart';
 import 'package:gymvision/enums.dart';
 
-class Note extends DatabaseObject {
+class Note extends DBO {
   String objectId;
   NoteType type;
   String note;
@@ -14,14 +14,4 @@ class Note extends DatabaseObject {
     required this.type,
     required this.note,
   });
-
-  @override
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'updatedAt': DateTime.now().toString(),
-        'createdAt': createdAt.toString(),
-        'objectId': objectId,
-        'type': type.toString(),
-        'note': note,
-      };
 }

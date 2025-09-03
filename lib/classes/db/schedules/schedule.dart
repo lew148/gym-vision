@@ -1,11 +1,10 @@
-import 'package:gymvision/classes/db/_database_object.dart';
+import 'package:gymvision/classes/db/_dbo.dart';
 import 'package:gymvision/classes/db/schedules/schedule_item.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
-import 'package:gymvision/helpers/enum_helper.dart';
 import 'package:gymvision/static_data/enums.dart';
 
-class Schedule extends DatabaseObject {
+class Schedule extends DBO {
   String name;
   ScheduleType type;
   bool active;
@@ -23,17 +22,6 @@ class Schedule extends DatabaseObject {
     required this.startDate,
     this.items,
   });
-
-  @override
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'updatedAt': DateTime.now().toString(),
-        'createdAt': createdAt.toString(),
-        'name': name,
-        'type': EnumHelper.enumToString(type),
-        'active': active ? 1 : 0,
-        'startDate': startDate.toString(),
-      };
 
   int indexOfTodaysScheduleItem() {
     final daysSinceStart = DateTimeHelper.daysBetween(startDate, DateTime.now());

@@ -215,7 +215,7 @@ Future onAddWorkoutTap(
       date = DateTime(date.year, date.month, date.day, now.hour, now.minute, now.second, now.millisecond);
     }
 
-    final newWorkoutId = await WorkoutModel.insertWorkout(Workout(date: date ?? now, exerciseOrder: ''));
+    final newWorkoutId = await WorkoutModel.insert(Workout(date: date ?? now, exerciseOrder: ''));
     if (categories != null && categories.isNotEmpty) {
       await WorkoutCategoryModel.setWorkoutCategories(newWorkoutId, categories);
     }

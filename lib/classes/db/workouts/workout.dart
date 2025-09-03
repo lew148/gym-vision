@@ -1,4 +1,4 @@
-import 'package:gymvision/classes/db/_database_object.dart';
+import 'package:gymvision/classes/db/_dbo.dart';
 import 'package:gymvision/classes/db/workouts/workout_category.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
@@ -6,7 +6,7 @@ import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:intl/intl.dart';
 
-class Workout extends DatabaseObject {
+class Workout extends DBO {
   DateTime date;
   DateTime? endDate;
   String exerciseOrder;
@@ -14,7 +14,6 @@ class Workout extends DatabaseObject {
   // non-db props
   List<WorkoutCategory>? workoutCategories;
   List<WorkoutExercise>? workoutExercises;
-  bool? isEmpty;
 
   Workout({
     super.id,
@@ -25,18 +24,7 @@ class Workout extends DatabaseObject {
     this.endDate,
     this.workoutCategories,
     this.workoutExercises,
-    this.isEmpty,
   });
-
-  @override
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'updatedAt': DateTime.now().toString(),
-        'createdAt': createdAt.toString(),
-        'date': date.toString(),
-        'endDate': endDate.toString(),
-        'exerciseOrder': exerciseOrder,
-      };
 
   bool isFinished() => endDate != null;
   Duration getDuration() =>
@@ -58,8 +46,6 @@ class Workout extends DatabaseObject {
     if (date.hour < 24) return 'Night Workout 🌙';
     return 'Workout';
   }
-
-  bool getIsEmpty() => workoutExercises?.isEmpty ?? isEmpty ?? true;
 
   bool hasCategories() => workoutCategories != null && workoutCategories!.isNotEmpty;
 }

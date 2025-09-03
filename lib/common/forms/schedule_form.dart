@@ -72,14 +72,14 @@ class _ScheduleFormState extends State<ScheduleForm> {
       if (isEdit && activeSchedule != null) {
         if (activeSchedule.name != nameController.text) {
           activeSchedule.name = nameController.text;
-          await ScheduleModel.updateSchedule(activeSchedule);
+          await ScheduleModel.update(activeSchedule);
         }
 
         scheduleId = activeSchedule.id!;
         var success = await ScheduleModel.deleteScheduleItemsAndCategories(scheduleId);
         if (!success) return;
       } else {
-        scheduleId = await ScheduleModel.insertSchedule(Schedule(
+        scheduleId = await ScheduleModel.insert(Schedule(
           name: nameController.text,
           type: selectedType!,
           active: activeSchedule == null,
