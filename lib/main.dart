@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,16 +21,10 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // needed for calling async methods in main()
 
-  // helper inits
-  LocalNotificationService.init();
-  await DatabaseHelper.initialiseDatabase();
-
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-
-  final settings = await UserSettingsModel.getUserSettings();
 
   await SentryFlutter.init(
     (options) {
@@ -36,18 +32,47 @@ void main() async {
       options.tracesSampleRate = 1.0;
       options.profilesSampleRate = 1.0;
     },
-    appRunner: () => runApp(EasyDynamicThemeWidget(
-      initialThemeMode: settings.theme == UserTheme.system
-          ? ThemeMode.system
-          : (settings.theme == UserTheme.dark ? ThemeMode.dark : ThemeMode.light),
-      child: MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_) => NavigationProvider()),
-          ChangeNotifierProvider(create: (_) => RestTimerProvider()),
-        ],
-        child: const MyApp(),
-      ),
-    )),
+    appRunner: () async {
+      // framework errors
+      FlutterError.onError = (FlutterErrorDetails details) async {
+        FlutterError.presentError(details);
+        await Sentry.captureException(
+          details.exception,
+          stackTrace: details.stack,
+        );
+      };
+
+      // async errors
+      PlatformDispatcher.instance.onError = (error, stack) {
+        Sentry.captureException(error, stackTrace: stack);
+        return true;
+      };
+
+      try {
+        // helper inits
+        LocalNotificationService.init();
+        await DatabaseHelper.initialiseDatabase();
+
+        final settings = await UserSettingsModel.getUserSettings();
+        runApp(EasyDynamicThemeWidget(
+          initialThemeMode: settings.theme == UserTheme.system
+              ? ThemeMode.system
+              : (settings.theme == UserTheme.dark ? ThemeMode.dark : ThemeMode.light),
+          child: MultiProvider(
+            providers: [
+              ChangeNotifierProvider(create: (_) => NavigationProvider()),
+              ChangeNotifierProvider(create: (_) => RestTimerProvider()),
+            ],
+            child: const MyApp(),
+          ),
+        ));
+      } catch (ex, st) {
+        await Sentry.captureException(ex, stackTrace: st);
+        runApp(const MaterialApp(
+          home: Scaffold(body: Center(child: Text('Something went wrong during app startup. Please restart.'))),
+        ));
+      }
+    },
   );
 }
 
