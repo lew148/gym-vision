@@ -19,14 +19,14 @@ class SchedulesWidget extends StatefulWidget {
 }
 
 class _SchedulesWidgetState extends State<SchedulesWidget> {
-  late Future<Schedule?> activeSchedule = ScheduleModel.getActiveSchedule(shallow: false);
-  late Future<List<Schedule>> schedules = ScheduleModel.getSchedules();
+  late Future<Schedule?> activeSchedule = ScheduleModel.getActiveSchedule(withItems: true);
+  late Future<List<Schedule>> schedules = ScheduleModel.getAllSchedules();
 
   final biweeklyPageController = PageController(viewportFraction: 0.8, keepPage: true);
 
   void reloadState() => setState(() {
-        activeSchedule = ScheduleModel.getActiveSchedule(shallow: false);
-        schedules = ScheduleModel.getSchedules();
+        activeSchedule = ScheduleModel.getActiveSchedule(withItems: false);
+        schedules = ScheduleModel.getAllSchedules();
       });
 
   Widget getTextDisplayWidget(String text) => CommonUI.getCard(
@@ -216,7 +216,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
         () => showDeleteConfirm(
           context,
           'Schedule',
-          () async => await ScheduleModel.deleteSchedule(activeSchedule.id!),
+          () async => await ScheduleModel.delete(activeSchedule.id!),
           reloadState,
           popCaller: true,
         ),

@@ -6,7 +6,7 @@ class NumberHelper {
     return d % 1 == 0 ? d.toStringAsFixed(0) : d.toStringAsFixed(2);
   }
 
-  static String getIntTwoDigitsString(int n) => n.toString().padLeft(2, "0");
+  static String getDoubleDigit(int n) => n.toString().padLeft(2, "0");
 
   static List<int> distinctIntList(Iterable<int> i) => i.toSet().toList();
 

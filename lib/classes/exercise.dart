@@ -11,9 +11,6 @@ class Exercise {
   Set<Category> categories;
   ExerciseDetails? exerciseDetails;
 
-  // deprecated / subject to change
-  // int? id;
-
   Exercise({
     required this.identifier,
     required this.name,

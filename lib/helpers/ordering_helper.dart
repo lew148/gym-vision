@@ -2,7 +2,7 @@
   for ordering strings, following "int1,int2,int3..." format
 */
 import 'package:collection/collection.dart';
-import 'package:gymvision/classes/db/_database_object.dart';
+import 'package:gymvision/classes/db/_dbo.dart';
 
 class OrderingHelper {
   static List<int> getOrderingIntList(String ordering) =>
@@ -44,7 +44,7 @@ class OrderingHelper {
     return getStringFromIntList(il);
   }
 
-  static List<T> orderListById<T extends DatabaseObject>(List<T> list, String ordering) {
+  static List<T> orderListById<T extends DBO>(List<T> list, String ordering) {
     final List<T> newOrder = [];
     final List<T> remainders = [...list];
 

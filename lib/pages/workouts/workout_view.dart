@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -45,19 +44,11 @@ class _WorkoutViewState extends State<WorkoutView> {
   @override
   void initState() {
     super.initState();
-    workoutFuture = WorkoutModel.getWorkout(
-      workoutId: widget.workoutId,
-      includeCategories: true,
-      includeWorkoutExercises: true,
-    );
+    workoutFuture = WorkoutModel.getWorkout(widget.workoutId, withCategories: true, withWorkoutExercises: true);
   }
 
   void reloadState() => setState(() {
-        workoutFuture = WorkoutModel.getWorkout(
-          workoutId: widget.workoutId,
-          includeCategories: true,
-          includeWorkoutExercises: true,
-        );
+        workoutFuture = WorkoutModel.getWorkout(widget.workoutId, withCategories: true, withWorkoutExercises: true);
       });
 
   void onCategoriesChange(List<Category> newCategories) async {
@@ -127,7 +118,8 @@ class _WorkoutViewState extends State<WorkoutView> {
         CupertinoDatePickerMode.date,
         (DateTime dt) async {
           try {
-            await WorkoutModel.updateDate(workout.id!, dt);
+            workout.date = DateTime(dt.year, dt.month, dt.day, workout.date.hour, workout.date.minute);
+            await WorkoutModel.update(workout);
             reloadState();
           } catch (ex) {
             // do nothing
@@ -141,7 +133,8 @@ class _WorkoutViewState extends State<WorkoutView> {
         CupertinoDatePickerMode.time,
         (DateTime dt) async {
           try {
-            await WorkoutModel.updateTime(workout.id!, dt);
+            workout.date = DateTime(workout.date.year, workout.date.month, workout.date.day, dt.hour, dt.minute);
+            await WorkoutModel.update(workout);
             reloadState();
           } catch (ex) {
             // do nothing
@@ -190,7 +183,7 @@ class _WorkoutViewState extends State<WorkoutView> {
               showDeleteConfirm(
                 context,
                 "workout",
-                () => WorkoutModel.deleteWorkout(workout.id!),
+                () => WorkoutModel.delete(workout.id!),
                 widget.reloadParent,
                 popCaller: true,
               );
@@ -210,7 +203,7 @@ class _WorkoutViewState extends State<WorkoutView> {
     try {
       HapticFeedback.mediumImpact();
       workout.exerciseOrder = OrderingHelper.reorderByIndex(workout.exerciseOrder, currentIndex, newIndex);
-      await WorkoutModel.updateWorkout(workout);
+      await WorkoutModel.update(workout);
     } catch (e) {
       // do nothing
     }
@@ -230,7 +223,7 @@ class _WorkoutViewState extends State<WorkoutView> {
 
       if (!confirmed) return;
       workout.endDate = resuming ? null : DateTime.now();
-      final success = await WorkoutModel.updateWorkout(workout);
+      final success = await WorkoutModel.update(workout);
       if (!success) throw Exception();
 
       if (!resuming && context.mounted) {

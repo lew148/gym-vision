@@ -1,7 +1,7 @@
-import 'package:gymvision/classes/db/_database_object.dart';
+import 'package:gymvision/classes/db/_dbo.dart';
 import 'package:gymvision/classes/db/schedules/schedule_category.dart';
 
-class ScheduleItem extends DatabaseObject {
+class ScheduleItem extends DBO {
   int scheduleId;
   int itemOrder;
 
@@ -16,15 +16,6 @@ class ScheduleItem extends DatabaseObject {
     required this.itemOrder,
     this.scheduleCategories,
   });
-
-  @override
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'updatedAt': DateTime.now().toString(),
-        'createdAt': createdAt.toString(),
-        'scheduleId': scheduleId,
-        'itemOrder': itemOrder,
-      };
 
   bool isRest() => scheduleCategories == null || scheduleCategories!.isEmpty;
 }

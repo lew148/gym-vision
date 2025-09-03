@@ -94,7 +94,7 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
       var weId = // get existing or create workoutExercise
           (await WorkoutExerciseModel.getWorkoutExerciseByWorkoutAndExercise(widget.workoutId, subject.identifier))
                   ?.id ??
-              await WorkoutExerciseModel.insertWorkoutExercise(WorkoutExercise(
+              await WorkoutExerciseModel.insert(WorkoutExercise(
                 workoutId: widget.workoutId,
                 exerciseIdentifier: subject.identifier,
                 setOrder: '',
@@ -106,7 +106,7 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
       }
 
       for (int i = 0; i < (addThree ? 3 : 1); i++) {
-        await WorkoutSetModel.insertSet(
+        await WorkoutSetModel.insert(
           WorkoutSet(
             workoutExerciseId: weId,
             weight: NumberHelper.parseDouble(weightController.text),

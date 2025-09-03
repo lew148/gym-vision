@@ -3,14 +3,12 @@ import 'package:gymvision/helpers/number_helper.dart';
 
 class ExerciseDetails {
   String exerciseIdentifier;
-  String? notes;
   WorkoutSet? pr;
   WorkoutSet? last;
   List<WorkoutSet>? recentUses;
 
   ExerciseDetails({
     required this.exerciseIdentifier,
-    this.notes,
     this.pr,
     this.last,
     this.recentUses,

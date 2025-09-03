@@ -1,4 +1,4 @@
-import 'package:gymvision/classes/db/_database_object.dart';
+import 'package:gymvision/classes/db/_dbo.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/classes/exercise.dart';
@@ -6,7 +6,7 @@ import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/helpers/number_helper.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 
-class WorkoutSet extends DatabaseObject {
+class WorkoutSet extends DBO {
   int workoutExerciseId;
   double? weight;
   int? reps;
@@ -31,20 +31,6 @@ class WorkoutSet extends DatabaseObject {
     this.calsBurned,
     this.workoutExercise,
   });
-
-  @override
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'updatedAt': DateTime.now().toString(),
-        'createdAt': createdAt.toString(),
-        'weight': weight,
-        'reps': reps,
-        'done': done ? 1 : 0,
-        'time': time == null ? '' : time.toString(),
-        'distance': distance,
-        'calsBurned': calsBurned,
-        'workoutExerciseId': workoutExerciseId,
-      };
 
   void setTime(String? str) => time = str == null ? null : DateTimeHelper.tryParseDuration(str);
 

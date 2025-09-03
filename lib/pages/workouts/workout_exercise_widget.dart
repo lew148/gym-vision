@@ -77,7 +77,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   void onCopySetButtonTap(WorkoutSet ws) async {
     try {
       HapticFeedback.lightImpact();
-      await WorkoutSetModel.insertSet(
+      await WorkoutSetModel.insert(
         WorkoutSet(
           workoutExerciseId: ws.workoutExerciseId,
           weight: ws.weight,
@@ -177,7 +177,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
 
       if (workoutSets.isEmpty) {
         widget.workoutExercise.done = done;
-        final success = await WorkoutExerciseModel.updateWorkoutExercise(widget.workoutExercise);
+        final success = await WorkoutExerciseModel.update(widget.workoutExercise);
         if (!success) throw Exception();
 
         setState(() {
@@ -215,7 +215,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       }
 
       set.done = done;
-      final success = await WorkoutSetModel.updateWorkoutSet(set);
+      final success = await WorkoutSetModel.update(set);
       if (!success) throw Exception();
 
       final settings = await UserSettingsModel.getUserSettings();
@@ -266,7 +266,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                 showDeleteConfirm(
                   context,
                   "exercise from workout",
-                  () => WorkoutExerciseModel.deleteWorkoutExercise(widget.workoutExercise.id!),
+                  () => WorkoutExerciseModel.delete(widget.workoutExercise.id!),
                   widget.reloadParent,
                 );
               },
@@ -314,7 +314,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           onTap: () => showDeleteConfirm(
             context,
             "set",
-            () => WorkoutSetModel.removeSet(ws.id!),
+            () => WorkoutSetModel.delete(ws.id!),
             widget.reloadParent,
             popCaller: true,
           ),

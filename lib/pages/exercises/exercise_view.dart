@@ -37,48 +37,6 @@ class _ExerciseViewState extends State<ExerciseView> {
 
   reloadState() => setState(() {});
 
-  Widget getNotesDisplay(ExerciseDetails? details) {
-    if (details == null) return const SizedBox.shrink();
-
-    var controller = TextEditingController(text: details.notes);
-
-    return Row(
-      children: [
-        Expanded(
-          child: CommonUI.getCard(
-            context,
-            Padding(
-              padding: const EdgeInsetsGeometry.symmetric(horizontal: 5),
-              child: TextFormField(
-                controller: controller,
-                textInputAction: TextInputAction.go,
-                keyboardType: TextInputType.multiline,
-                maxLines: 1,
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: 'Notes',
-                    hintStyle: TextStyle(color: Theme.of(context).colorScheme.shadow)),
-                onEditingComplete: () async {
-                  try {
-                    var newValue = controller.text;
-                    if (details.notes == newValue) return;
-                    details.notes = newValue;
-                    // await UserExerciseDetailsHelper.updateUserExerciseDetails(details);
-                  } catch (ex) {
-                    if (!mounted) return;
-                    showSnackBar(context, 'Failed to edit Notes');
-                  }
-
-                  reloadState();
-                },
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget getNoRecentUsesWidget() => const Center(
         child: Padding(
           padding: EdgeInsets.all(10),

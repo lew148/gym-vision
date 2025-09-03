@@ -23,7 +23,7 @@ class _AddBodyWeightFormState extends State<AddBodyWeightForm> {
       var now = DateTime.now();
       var weight = double.tryParse(weightController.text);
       if (weight != null) {
-        await BodyweightModel.insertBodyweight(Bodyweight(date: now, weight: weight, units: 'kg'));
+        await BodyweightModel.insert(Bodyweight(date: now, weight: weight, units: 'kg'));
       }
     } catch (ex) {
       if (!mounted) return;

@@ -1,70 +1,54 @@
+import 'package:drift/drift.dart';
 import 'package:gymvision/classes/db/workouts/workout_category.dart';
-import 'package:gymvision/db/db.dart';
-import 'package:gymvision/helpers/datetime_helper.dart';
-import 'package:gymvision/helpers/enum_helper.dart';
+import 'package:gymvision/db/drift_database.dart';
+import 'package:gymvision/db/table_extensions.dart';
+import 'package:gymvision/helpers/database_helper.dart';
 import 'package:gymvision/static_data/enums.dart';
-import 'package:sqflite/sqflite.dart';
 
 class WorkoutCategoryModel {
-  static Future<List<WorkoutCategory>?> getWorkoutCategoriesForWorkout(int workoutId) async {
-    final db = await DatabaseHelper.getDb();
-    final List<Map<String, dynamic>> maps = await db.query(
-      'workout_categories',
-      where: 'workoutId = ?',
-      whereArgs: [workoutId],
-    );
-
-    if (maps.isEmpty) return null;
-    return maps
-        .map(
-          (m) => WorkoutCategory(
-            id: m['id'],
-            updatedAt: DateTimeHelper.tryParseDateTime(m['updatedAt']),
-            createdAt: DateTimeHelper.tryParseDateTime(m['createdAt']),
-            workoutId: m['workoutId'],
-            category: EnumHelper.stringToEnum<Category>(m['category'], Category.values)!,
-          ),
-        )
+  static Future<List<WorkoutCategory>> getWorkoutCategoriesByWorkout(int workoutId) async {
+    final db = DatabaseHelper.db;
+    return (await (db.select(db.driftWorkoutCategories)..where((wc) => wc.workoutId.equals(workoutId))).get())
+        .map((wc) => wc.toObject())
         .toList();
   }
 
   static setWorkoutCategories(int workoutId, List<Category> categories) async {
-    final db = await DatabaseHelper.getDb();
-    final existingCategories = await getWorkoutCategoriesForWorkout(workoutId);
+    final existingCategories = await getWorkoutCategoriesByWorkout(workoutId);
     final newCategories = categories;
 
-    if (existingCategories != null && existingCategories.isNotEmpty) {
+    if (existingCategories.isNotEmpty) {
       for (var ec in existingCategories) {
         if (categories.contains(ec.category)) {
           newCategories.remove(ec.category);
         } else {
-          await removeWorkoutCategory(ec.id!);
+          await delete(ec.id!);
         }
       }
     }
 
-    final now = DateTime.now();
-
     for (var category in newCategories) {
-      await db.insert(
-        'workout_categories',
-        WorkoutCategory(
-          workoutId: workoutId,
-          category: category,
-          createdAt: now,
-          updatedAt: now,
-        ).toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace,
-      );
+      await insert(WorkoutCategory(
+        workoutId: workoutId,
+        category: category,
+      ));
     }
   }
 
-  static removeWorkoutCategory(int id) async {
-    final db = await DatabaseHelper.getDb();
-    await db.delete(
-      'workout_categories',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+  static Future<int> insert(WorkoutCategory wc) async {
+    final db = DatabaseHelper.db;
+    var now = DateTime.now();
+    return await db.into(db.driftWorkoutCategories).insert(DriftWorkoutCategoriesCompanion.insert(
+          createdAt: Value(now),
+          updatedAt: Value(now),
+          workoutId: wc.workoutId,
+          category: wc.category,
+        ));
+  }
+
+  static Future<bool> delete(int id) async {
+    final db = DatabaseHelper.db;
+    await (db.delete(db.driftWorkoutCategories)..where((wc) => wc.id.equals(id))).go();
+    return true;
   }
 }

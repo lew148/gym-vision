@@ -1,8 +1,7 @@
-import 'package:gymvision/classes/db/_database_object.dart';
+import 'package:gymvision/classes/db/_dbo.dart';
 import 'package:gymvision/enums.dart';
-import 'package:gymvision/helpers/enum_helper.dart';
 
-class UserSettings extends DatabaseObject {
+class UserSettings extends DBO {
   UserTheme theme;
   Duration? intraSetRestTimer;
 
@@ -13,13 +12,4 @@ class UserSettings extends DatabaseObject {
     this.theme = UserTheme.system,
     this.intraSetRestTimer,
   });
-
-  @override
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'updatedAt': DateTime.now().toString(),
-        'createdAt': createdAt.toString(),
-        'theme': EnumHelper.enumToString(theme),
-        'intraSetRestTimer': intraSetRestTimer?.toString() ?? '',
-      };
 }

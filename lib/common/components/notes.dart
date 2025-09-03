@@ -44,7 +44,7 @@ class _NotesState extends State<Notes> {
       closeKeyboard();
 
       if (note == null) {
-        await NoteModel.addNote(Note(
+        await NoteModel.insert(Note(
           objectId: widget.objectId,
           type: widget.type,
           note: controller.text,
@@ -52,9 +52,9 @@ class _NotesState extends State<Notes> {
       } else {
         note.note = controller.text;
         if (note.note == '') {
-          await NoteModel.deleteNote(note.id!);
+          await NoteModel.delete(note.id!);
         } else {
-          await NoteModel.updateNote(note);
+          await NoteModel.update(note);
         }
       }
 

@@ -37,7 +37,7 @@ class _TodayState extends State<Today> {
     today = DateTime.now();
     todaysWorkouts = WorkoutModel.getWorkoutsForDay(today);
     todaysBodyweight = BodyweightModel.getBodyweightForDay(today);
-    schedule = ScheduleModel.getActiveSchedule(shallow: false);
+    schedule = ScheduleModel.getActiveSchedule(withItems: false);
   }
 
   reloadState() => setState(() {
@@ -188,7 +188,7 @@ class _TodayState extends State<Today> {
                             showDeleteConfirm(
                               context,
                               "workout",
-                              () => WorkoutModel.deleteWorkout(w.id!),
+                              () => WorkoutModel.delete(w.id!),
                               reloadState,
                             );
                           },
@@ -439,7 +439,7 @@ class _TodayState extends State<Today> {
                             onTap: () => showDeleteConfirm(
                               context,
                               'bodyweight',
-                              () => BodyweightModel.deleteBodyweight(bwsnapshot.data!.id!),
+                              () => BodyweightModel.delete(bwsnapshot.data!.id!),
                               reloadState,
                             ),
                             child: Column(

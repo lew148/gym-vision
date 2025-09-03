@@ -1,10 +1,10 @@
-import 'package:gymvision/classes/db/_database_object.dart';
+import 'package:gymvision/classes/db/_dbo.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/helpers/enum_helper.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 
-class WorkoutCategory extends DatabaseObject {
+class WorkoutCategory extends DBO {
   int workoutId;
   Category category;
 
@@ -19,15 +19,6 @@ class WorkoutCategory extends DatabaseObject {
     required this.category,
     this.workout,
   });
-
-  @override
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'updatedAt': DateTime.now().toString(),
-        'createdAt': createdAt.toString(),
-        'workoutId': workoutId,
-        'category': getCategoryEnumString(),
-      };
 
   String getCategoryDisplayName() => category.displayName;
   String getCategoryDisplayNamePlain() => category.displayNamePlain;
