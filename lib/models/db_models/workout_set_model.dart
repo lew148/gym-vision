@@ -63,11 +63,13 @@ class WorkoutSetModel {
 
     final workoutExercise = await WorkoutExerciseModel.getWorkoutExercise(set.workoutExerciseId);
     if (workoutExercise == null) return false;
-    workoutExercise.setOrder = OrderingHelper.removeFromOrdering(workoutExercise.setOrder, id);
-    await WorkoutExerciseModel.update(workoutExercise);
 
     final db = DatabaseHelper.db;
-    await (db.delete(db.driftBodyweights)..where((bw) => bw.id.equals(id))).go();
+    final deletedRows = await (db.delete(db.driftWorkoutSets)..where((s) => s.id.equals(id))).go();
+    if (deletedRows == 0) return false;
+
+    workoutExercise.setOrder = OrderingHelper.removeFromOrdering(workoutExercise.setOrder, id);
+    await WorkoutExerciseModel.update(workoutExercise);
     return true;
   }
 }

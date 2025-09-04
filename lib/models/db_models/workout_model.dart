@@ -1,14 +1,22 @@
+import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
+import 'package:flutter/foundation.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_category.dart';
+import 'package:gymvision/classes/db/workouts/workout_set.dart';
+import 'package:gymvision/classes/workout_summary.dart';
 import 'package:gymvision/db/drift_database.dart';
 import 'package:gymvision/db/table_extensions.dart';
+import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/database_helper.dart';
+import 'package:gymvision/models/db_models/note_model.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workout_category_model.dart';
+import 'package:gymvision/models/default_exercises_model.dart';
 
 class WorkoutModel {
-  static Future<List<Workout>> getWorkoutsForDay(DateTime date) async {
+  static Future<List<Workout>> getWorkoutsForDay(DateTime date, {bool withSummary = false}) async {
+    const maxWorkoutsForSummaryCalc = 3;
     final db = DatabaseHelper.db;
     final startOfDay = DateTime(date.year, date.month, date.day);
     final endOfDay = startOfDay.add(const Duration(days: 1));
@@ -25,7 +33,58 @@ class WorkoutModel {
       workout.workoutExercises = await WorkoutExerciseModel.getWorkoutExercisesByWorkout(workout.id!, withSets: true);
     }
 
+    if (withSummary && workouts.length <= maxWorkoutsForSummaryCalc) {
+      for (final workout in workouts) {
+        workout.summary = await getWorkoutSummary(workout: workout);
+      }
+    }
+
     return workouts;
+  }
+
+  // prioritises workout over id
+  static Future<WorkoutSummary?> getWorkoutSummary({int? id, Workout? workout}) async {
+    if (workout == null && id != null) {
+      workout = await getWorkout(id, withWorkoutExercises: true);
+    }
+
+    if (workout == null) return null;
+
+    final summary = WorkoutSummary(
+      note: (await NoteModel.getNoteForObject(NoteType.workout, workout.id.toString()))?.note,
+    );
+
+    if (workout.workoutExercises == null || workout.workoutExercises!.isEmpty) return summary;
+
+    final allSets = [for (var we in workout.getWorkoutExercises()) ...we.getSets()];
+    summary.totalExercises = workout.getWorkoutExercises().length;
+    summary.totalSets = allSets.length;
+    summary.totalReps = allSets.map((s) => s.reps ?? 0).sum;
+    summary.totalCalsBurned = allSets.map((s) => s.calsBurned ?? 0).sum;
+
+    if (allSets.isEmpty) return summary;
+
+    WorkoutSet? bestSet;
+    final setsGroupedByWeight = groupBy(allSets, (s) => s.weight);
+    final heaviestWeight = (setsGroupedByWeight.keys.toList()..sort((a, b) => a! < b! ? 1 : 0)).first;
+    final bestSets = setsGroupedByWeight[heaviestWeight];
+    if (bestSets != null) {
+      if (bestSets.length > 1) {
+        var bestSetsGroupedByReps = groupBy(bestSets, (s) => s.reps);
+        var highestReps = (bestSetsGroupedByReps.keys.toList()..sort((a, b) => a! < b! ? 1 : 0)).first;
+        bestSet = bestSetsGroupedByReps[highestReps]?.first;
+      } else {
+        bestSet = bestSets.first;
+      }
+    }
+
+    if (bestSet != null) {
+      final we = workout.getWorkoutExercises().firstWhere((we) => we.id == bestSet!.workoutExerciseId);
+      summary.bestSetExercise = DefaultExercisesModel.getExerciseByIdentifier(we.exerciseIdentifier);
+    }
+
+    summary.bestSet = bestSet;
+    return summary;
   }
 
   static Future<List<Workout>> getAllWorkouts() async {

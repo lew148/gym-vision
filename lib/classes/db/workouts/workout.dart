@@ -1,7 +1,7 @@
 import 'package:gymvision/classes/db/_dbo.dart';
 import 'package:gymvision/classes/db/workouts/workout_category.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
-import 'package:gymvision/classes/db/workouts/workout_set.dart';
+import 'package:gymvision/classes/workout_summary.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:intl/intl.dart';
@@ -15,6 +15,8 @@ class Workout extends DBO {
   List<WorkoutCategory>? workoutCategories;
   List<WorkoutExercise>? workoutExercises;
 
+  WorkoutSummary? summary;
+
   Workout({
     super.id,
     super.updatedAt,
@@ -24,6 +26,7 @@ class Workout extends DBO {
     this.endDate,
     this.workoutCategories,
     this.workoutExercises,
+    this.summary,
   });
 
   bool isFinished() => endDate != null;
@@ -35,8 +38,6 @@ class Workout extends DBO {
 
   List<Category> getCategories() => workoutCategories?.map((wc) => wc.category).toList() ?? [];
   List<WorkoutExercise> getWorkoutExercises() => workoutExercises ?? [];
-  List<WorkoutSet> getSets() =>
-      workoutExercises?.where((we) => we.workoutSets != null).expand((we) => we.workoutSets!).toList() ?? [];
 
   String getWorkoutTitle() {
     if (isInFuture()) return 'Planned Workout 📍';

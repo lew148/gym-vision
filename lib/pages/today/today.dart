@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/bodyweight.dart';
 import 'package:gymvision/classes/db/schedules/schedule.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
-import 'package:gymvision/classes/db/workouts/workout_set.dart';
+import 'package:gymvision/classes/workout_summary.dart';
 import 'package:gymvision/helpers/app_helper.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/models/db_models/schedule_model.dart';
@@ -35,14 +35,14 @@ class _TodayState extends State<Today> {
   void initState() {
     super.initState();
     today = DateTime.now();
-    todaysWorkouts = WorkoutModel.getWorkoutsForDay(today);
+    todaysWorkouts = WorkoutModel.getWorkoutsForDay(today, withSummary: true);
     todaysBodyweight = BodyweightModel.getBodyweightForDay(today);
-    schedule = ScheduleModel.getActiveSchedule(withItems: false);
+    schedule = ScheduleModel.getActiveSchedule(withItems: true);
   }
 
   reloadState() => setState(() {
         today = DateTime.now();
-        todaysWorkouts = WorkoutModel.getWorkoutsForDay(today);
+        todaysWorkouts = WorkoutModel.getWorkoutsForDay(today, withSummary: true);
         todaysBodyweight = BodyweightModel.getBodyweightForDay(today);
       });
 
@@ -51,91 +51,61 @@ class _TodayState extends State<Today> {
         const AddBodyWeightForm(),
       ).then((x) => reloadState());
 
-  Widget getWorkoutOverview(Workout workout) {
-    var sets = workout.getSets();
-    if (sets.isEmpty) return const SizedBox.shrink();
-
-    var setsGroupedByWeight = groupBy(sets, (s) => s.weight);
-    var heaviestWeight = (setsGroupedByWeight.keys.toList()..sort((a, b) => a! < b! ? 1 : 0))[0];
-    var bestSets = sets.where((s) => s.weight == heaviestWeight);
-    WorkoutSet bestSet;
-
-    if (bestSets.length > 1) {
-      var bestSetsGroupedByReps = groupBy(bestSets, (s) => s.reps);
-      var highestReps = (bestSetsGroupedByReps.keys.toList()..sort((a, b) => a! < b! ? 1 : 0))[0];
-      bestSet = sets.firstWhere((s) => s.weight == heaviestWeight && s.reps == highestReps);
-    } else {
-      bestSet = sets.firstWhere((s) => s.weight == heaviestWeight);
-    }
-
-    final bestSetName = bestSet.getExercise()?.isCardio() ?? false ? null : bestSet.getExercise()?.getFullName();
-
-    return Column(children: [
-      CommonUI.getDivider(),
-      Container(
-        padding: const EdgeInsets.all(5),
-        height: 30,
-        child: Row(
-          children: [
-            Expanded(
-                flex: 4,
-                child: Center(
-                  child: Text(
-                    '${workout.getWorkoutExercises().length.toString()} exercise${workout.getWorkoutExercises().length == 1 ? '' : 's'}',
-                  ),
-                )),
-            CommonUI.getVerticalDivider(context),
-            Expanded(
-              flex: 4,
-              child: Center(child: Text('${sets.length.toString()} sets')),
+  Widget getWorkoutSummary(WorkoutSummary? summary) => summary == null || summary.totalExercises == 0
+      ? const SizedBox.shrink()
+      : Column(children: [
+          CommonUI.getDivider(),
+          Container(
+            padding: const EdgeInsets.all(5),
+            height: 30,
+            child: Row(
+              children: [
+                Expanded(flex: 4, child: Center(child: Text(summary.getTotalExercisesString()))),
+                CommonUI.getVerticalDivider(context),
+                Expanded(flex: 4, child: Center(child: Text(summary.getTotalSetsString()))),
+                CommonUI.getVerticalDivider(context),
+                Expanded(flex: 4, child: Center(child: Text(summary.getTotalRepsString()))),
+              ],
             ),
-            CommonUI.getVerticalDivider(context),
-            Expanded(
-              flex: 4,
-              child: Center(child: Text('${sets.map((s) => s.reps ?? 0).reduce((a, b) => a + b)} reps')),
-            ),
-          ],
-        ),
-      ),
-      CommonUI.getDivider(),
-      if (bestSetName != null)
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          child: Row(children: [
-            Column(children: [
-              Row(
-                children: [
-                  Icon(Icons.emoji_events_rounded, color: Colors.amber[300]),
-                  const Padding(padding: EdgeInsets.all(5)),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          ),
+          CommonUI.getDivider(),
+          if (summary.bestSet != null && summary.bestSetExercise != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Row(children: [
+                Column(children: [
+                  Row(
                     children: [
-                      Text(
-                        bestSetName,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      Icon(Icons.emoji_events_rounded, color: Colors.amber[300]),
+                      const Padding(padding: EdgeInsets.all(5)),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            summary.bestSetExercise!.getFullName(),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                ],
-              ),
-              Row(children: [
-                CommonUI.getWeightWithIcon(bestSet),
-                const Padding(padding: EdgeInsets.symmetric(horizontal: 15)),
-                CommonUI.getRepsWithIcon(bestSet)
+                  Row(children: [
+                    CommonUI.getWeightWithIcon(summary.bestSet!),
+                    const Padding(padding: EdgeInsets.symmetric(horizontal: 15)),
+                    CommonUI.getRepsWithIcon(summary.bestSet!)
+                  ]),
+                ]),
               ]),
-            ]),
-          ]),
-        ),
-    ]);
-  }
+            ),
+        ]);
 
-  Widget getWorkoutDisplay(Workout w) => CommonUI.getCard(
+  Widget getWorkoutDisplay(Workout workout) => CommonUI.getCard(
         context,
         Padding(
           padding: const EdgeInsets.all(15),
           child: GestureDetector(
             behavior: HitTestBehavior.translucent,
-            onTap: () => openWorkoutView(context, w.id!, reloadState: reloadState),
+            onTap: () => openWorkoutView(context, workout.id!, reloadState: reloadState),
             child: Column(
               children: [
                 Row(
@@ -144,21 +114,21 @@ class _TodayState extends State<Today> {
                     Row(children: [
                       Padding(
                         padding: const EdgeInsets.only(right: 15),
-                        child: CommonUI.getCompleteMark(context, w.isFinished()),
+                        child: CommonUI.getCompleteMark(context, workout.isFinished()),
                       ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            w.getWorkoutTitle(),
+                            workout.getWorkoutTitle(),
                             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                           ),
                           Row(children: [
-                            CommonUI.getTimeWithIcon(context, w.date),
-                            if (w.isFinished()) ...[
+                            CommonUI.getTimeWithIcon(context, workout.date),
+                            if (workout.isFinished()) ...[
                               const Padding(padding: EdgeInsetsGeometry.all(5)),
-                              CommonUI.getTimeElapsedWithIcon(context, w.getDuration()),
+                              CommonUI.getTimeElapsedWithIcon(context, workout.getDuration()),
                             ],
                           ]),
                         ],
@@ -171,7 +141,7 @@ class _TodayState extends State<Today> {
                             Navigator.pop(context);
 
                             try {
-                              final exportString = await WorkoutModel.getWorkoutExportString(w.id!);
+                              final exportString = await WorkoutModel.getWorkoutExportString(workout.id!);
                               if (exportString == null) throw Exception();
                               await Clipboard.setData(ClipboardData(text: exportString));
                               if (mounted) showSnackBar(context, 'Workout copied to clipboard!');
@@ -188,7 +158,7 @@ class _TodayState extends State<Today> {
                             showDeleteConfirm(
                               context,
                               "workout",
-                              () => WorkoutModel.delete(w.id!),
+                              () => WorkoutModel.delete(workout.id!),
                               reloadState,
                             );
                           },
@@ -202,11 +172,11 @@ class _TodayState extends State<Today> {
                   ],
                 ),
                 const Padding(padding: EdgeInsets.all(2.5)),
-                if (w.workoutCategories != null && w.workoutCategories!.isNotEmpty)
+                if (workout.workoutCategories != null && workout.workoutCategories!.isNotEmpty)
                   Row(children: [
                     Expanded(
                       child: Wrap(
-                        children: w
+                        children: workout
                             .getCategories()
                             .map((c) => CommonUI.getPropDisplay(
                                   context,
@@ -217,16 +187,18 @@ class _TodayState extends State<Today> {
                       ),
                     ),
                   ]),
-                getWorkoutOverview(w),
-                const Padding(padding: EdgeInsetsGeometry.all(2.5)),
+                getWorkoutSummary(workout.summary),
                 Row(children: [
-                  CommonUI.getTextButton(ButtonDetails(
-                    text: 'Add Note',
-                    icon: Icons.add_rounded,
-                    style: ButtonDetailsStyle(iconSize: 20),
-                    onTap: () => openWorkoutView(context, w.id!, autofocusNotes: true),
-                  )),
-                  const Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: 5)),
+                  if (workout.summary?.note == null)
+                    Padding(
+                      padding: const EdgeInsetsGeometry.only(right: 5),
+                      child: CommonUI.getTextButton(ButtonDetails(
+                        text: 'Add Note',
+                        icon: Icons.add_rounded,
+                        style: ButtonDetailsStyle(iconSize: 20),
+                        onTap: () => openWorkoutView(context, workout.id!, autofocusNotes: true),
+                      )),
+                    ),
                   CommonUI.getTextButton(ButtonDetails(
                     text: 'Add Progress Pic',
                     icon: Icons.add_rounded,
@@ -349,29 +321,8 @@ class _TodayState extends State<Today> {
     return SingleChildScrollView(child: Column(children: workouts.map((w) => getWorkoutDisplay(w)).toList()));
   }
 
-  String getTodayTotalCalsString(List<Workout> workouts) {
-    var totalCals = 0;
-
-    // todo: make this more performant
-
-    for (int i = 0; i < workouts.length; i++) {
-      final workout = workouts[i];
-      if (workout.workoutExercises == null) continue;
-
-      for (int j = 0; j < workout.workoutExercises!.length; j++) {
-        final we = workout.workoutExercises![j];
-        if (we.workoutSets == null) continue;
-
-        for (int k = 0; k < we.workoutSets!.length; k++) {
-          final set = we.workoutSets![k];
-          if (!set.hasCalsBurned()) continue;
-          totalCals += set.calsBurned!;
-        }
-      }
-    }
-
-    return totalCals.toString();
-  }
+  String getTodayTotalCalsString(List<Workout>? workouts) =>
+      workouts == null ? '' : workouts.map((w) => w.summary).map((s) => s?.totalCalsBurned ?? 0).sum.toString();
 
   Widget getCalsAndBodyweightRow(List<Workout>? workouts) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -391,11 +342,8 @@ class _TodayState extends State<Today> {
                         children: [
                           Icon(Icons.local_fire_department_rounded, color: Colors.red[300]!),
                           Text(
-                            '~${getTodayTotalCalsString(workouts ?? [])}',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
+                            '~${getTodayTotalCalsString(workouts)}',
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                           )
                         ],
                       ),

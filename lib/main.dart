@@ -26,7 +26,7 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  const int maxTries = 1;
+  // const int maxTries = 1;
 
   await SentryFlutter.init(
     (options) {
@@ -50,26 +50,26 @@ void main() async {
         return true;
       };
 
-      for (var tries = 0; tries < maxTries; tries++) {
-        try {
-          await start();
-          return;
-        } on DriftRemoteException catch (ex, st) {
-          // todo: REMOVE THIS AS SOON AS ALL IOS USERS HAVE MIGRATED!!!
-          await DatabaseHelper.resetDatabase();
-          await Future.delayed(const Duration(seconds: 3)); // small wait between retries
+      // for (var tries = 0; tries < maxTries; tries++) {
+      try {
+        await start();
+        return;
+        // } on DriftRemoteException catch (ex, st) {
+        //   // todo: REMOVE THIS AS SOON AS ALL IOS USERS HAVE MIGRATED!!!
+        //   await DatabaseHelper.resetDatabase();
+        //   await Future.delayed(const Duration(seconds: 3)); // small wait between retries
 
-          if (tries == maxTries - 1) {
-            // last try
-            await Sentry.captureException(ex, stackTrace: st);
-            showErrorScreen();
-          }
-        } catch (ex, st) {
-          await Sentry.captureException(ex, stackTrace: st);
-          showErrorScreen();
-          return;
-        }
+        //   if (tries == maxTries - 1) {
+        //     // last try
+        //     await Sentry.captureException(ex, stackTrace: st);
+        //     showErrorScreen();
+        //   }
+      } catch (ex, st) {
+        await Sentry.captureException(ex, stackTrace: st);
+        showErrorScreen();
+        return;
       }
+      // }
     },
   );
 }

@@ -1,11 +1,7 @@
 import 'dart:convert';
+import 'package:gymvision/extensions.dart';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
-
-// todo: move this to a common area
-extension StringExtension on String {
-  String capitalize() => "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
-}
 
 class TodoistService {
   static const apiToken = '93abdf7e6284b40cec5c872a3cba557201939337';

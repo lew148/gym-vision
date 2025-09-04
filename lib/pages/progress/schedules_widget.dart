@@ -25,7 +25,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
   final biweeklyPageController = PageController(viewportFraction: 0.8, keepPage: true);
 
   void reloadState() => setState(() {
-        activeSchedule = ScheduleModel.getActiveSchedule(withItems: false);
+        activeSchedule = ScheduleModel.getActiveSchedule(withItems: true);
         schedules = ScheduleModel.getAllSchedules();
       });
 

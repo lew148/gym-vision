@@ -110,7 +110,7 @@ class CommonUI {
   static Widget getTextButton(ButtonDetails bd) => TextButton(
         style: TextButton.styleFrom(
           backgroundColor: bd.style?.backgroundColor,
-          padding: bd.style?.padding ?? const EdgeInsets.symmetric(horizontal: 10),
+          padding: bd.style?.padding ?? const EdgeInsets.all(10),
           minimumSize: Size.zero,
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           shadowColor: Colors.transparent,

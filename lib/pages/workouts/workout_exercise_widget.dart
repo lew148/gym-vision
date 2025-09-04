@@ -297,11 +297,13 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         ButtonDetails(
           text: 'Copy Set',
           icon: Icons.content_copy_rounded,
+          style: ButtonDetailsStyle.primaryIcon(context),
           onTap: () => onCopySetButtonTap(ws),
         ),
         ButtonDetails(
           text: 'Edit Set',
           icon: Icons.edit_rounded,
+          style: ButtonDetailsStyle.primaryIcon(context),
           onTap: () {
             Navigator.pop(context);
             onEditWorkoutSetTap(ws);

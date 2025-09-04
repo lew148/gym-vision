@@ -14,7 +14,6 @@ class Exercise {
   Exercise({
     required this.identifier,
     required this.name,
-    // this.id,
     this.type = ExerciseType.other,
     this.primaryMuscleGroup = MuscleGroup.other,
     this.equipment = Equipment.other,
