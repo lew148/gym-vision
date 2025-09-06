@@ -6,6 +6,7 @@ import 'package:gymvision/classes/db/workouts/workout_category.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/common/components/notes.dart';
 import 'package:gymvision/enums.dart';
+import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
@@ -118,7 +119,8 @@ class _WorkoutViewState extends State<WorkoutView> {
         CupertinoDatePickerMode.date,
         (DateTime dt) async {
           try {
-            workout.date = DateTime(dt.year, dt.month, dt.day, workout.date.hour, workout.date.minute);
+            workout.date =
+                DateTime(dt.year, dt.month, dt.day, workout.date.hour, workout.date.minute, workout.date.second);
             await WorkoutModel.update(workout);
             reloadState();
           } catch (ex) {
@@ -133,7 +135,23 @@ class _WorkoutViewState extends State<WorkoutView> {
         CupertinoDatePickerMode.time,
         (DateTime dt) async {
           try {
-            workout.date = DateTime(workout.date.year, workout.date.month, workout.date.day, dt.hour, dt.minute);
+            workout.date =
+                DateTime(workout.date.year, workout.date.month, workout.date.day, dt.hour, dt.minute, dt.second);
+            await WorkoutModel.update(workout);
+            reloadState();
+          } catch (ex) {
+            // do nothing
+          }
+        },
+      );
+
+  void showEditEndTime(Workout workout) => showDateTimePicker(
+        context,
+        initialDateTime: workout.endDate,
+        CupertinoDatePickerMode.dateAndTime,
+        (DateTime dt) async {
+          try {
+            workout.endDate = dt;
             await WorkoutModel.update(workout);
             reloadState();
           } catch (ex) {
@@ -145,29 +163,30 @@ class _WorkoutViewState extends State<WorkoutView> {
   void showMoreMenu(Workout workout) => showOptionsMenu(
         context,
         [
-          ButtonDetails(
-            onTap: () async {
-              Navigator.pop(context);
+          //   ButtonDetails(
+          //     onTap: () async {
+          //       Navigator.pop(context);
 
-              try {
-                final exportString = await WorkoutModel.getWorkoutExportString(workout.id!);
-                if (exportString == null) throw Exception();
-                await Clipboard.setData(ClipboardData(text: exportString));
-                if (mounted) showSnackBar(context, 'Workout copied to clipboard!');
-              } catch (ex) {
-                if (mounted) showSnackBar(context, 'Failed to export workout.');
-              }
-            },
-            icon: Icons.share_rounded,
-            text: 'Export Workout',
-          ),
+          //       try {
+          //         final exportString = await WorkoutModel.getWorkoutExportString(workout.id!);
+          //         if (exportString == null) throw Exception();
+          //         await Clipboard.setData(ClipboardData(text: exportString));
+          //         if (mounted) showSnackBar(context, 'Workout copied to clipboard!');
+          //       } catch (ex) {
+          //         if (mounted) showSnackBar(context, 'Failed to export workout.');
+          //       }
+          //     },
+          //     icon: Icons.share_rounded,
+          //     text: 'Export Workout',
+          //   ),
           ButtonDetails(
             onTap: () {
               Navigator.pop(context);
               showEditDate(workout);
             },
+            style: ButtonDetailsStyle.primaryIcon(context),
             icon: Icons.calendar_today_rounded,
-            text: 'Edit Date',
+            text: 'Change Date',
           ),
           ButtonDetails(
             onTap: () {
@@ -175,8 +194,20 @@ class _WorkoutViewState extends State<WorkoutView> {
               showEditTime(workout);
             },
             icon: Icons.access_time_rounded,
-            text: 'Edit Time',
+            style: ButtonDetailsStyle.primaryIcon(context),
+            text: 'Change Start Time',
           ),
+          if (workoutIsFinished)
+            ButtonDetails(
+              onTap: () {
+                Navigator.pop(context);
+                showEditEndTime(workout);
+              },
+              icon: Icons.access_time_filled_rounded,
+              style: ButtonDetailsStyle.primaryIcon(context),
+              text: 'Change End Time',
+            ),
+
           ButtonDetails(
             onTap: () {
               Navigator.pop(context);
@@ -275,33 +306,35 @@ class _WorkoutViewState extends State<WorkoutView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CommonUI.getDateWithIcon(context, workout.date),
-                      CommonUI.getTimeWithIcon(context, workout.date),
+                      CommonUI.getTimeWithIcon(context, workout.date, dtEnd: workout.endDate),
                       workout.isFinished()
                           ? CommonUI.getTimeElapsedWithIcon(context, workout.getDuration())
                           : TimeElapsed(
                               since: workout.date,
                               end: workout.endDate,
                               color: Theme.of(context).colorScheme.shadow,
+                              labelForNegativeDuration: 'Starts in',
                             ),
                     ],
                   ),
-                  workoutIsFinished
-                      ? CommonUI.getElevatedPrimaryButton(
-                          ButtonDetails(
-                            text: 'Resume',
-                            onTap: () => finishOrResumeOnTap(context, workout, true),
-                          ),
-                        )
-                      : CommonUI.getElevatedPrimaryButton(
-                          ButtonDetails(
-                            text: 'Finish',
-                            onTap: () => finishOrResumeOnTap(context, workout, false),
-                            style: ButtonDetailsStyle(
-                              textColor: Colors.white,
-                              backgroundColor: const Color.fromARGB(255, 45, 121, 45),
+                  if (!DateTimeHelper.isInFuture(workout.date))
+                    workoutIsFinished
+                        ? CommonUI.getElevatedPrimaryButton(
+                            ButtonDetails(
+                              text: 'Resume',
+                              onTap: () => finishOrResumeOnTap(context, workout, true),
+                            ),
+                          )
+                        : CommonUI.getElevatedPrimaryButton(
+                            ButtonDetails(
+                              text: 'Finish',
+                              onTap: () => finishOrResumeOnTap(context, workout, false),
+                              style: ButtonDetailsStyle(
+                                textColor: Colors.white,
+                                backgroundColor: const Color.fromARGB(255, 45, 121, 45),
+                              ),
                             ),
                           ),
-                        ),
                 ],
               ),
               Padding(

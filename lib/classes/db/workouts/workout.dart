@@ -34,7 +34,7 @@ class Workout extends DBO {
       endDate == null ? DateTimeHelper.timeBetween(date, DateTime.now()) : DateTimeHelper.timeBetween(date, endDate!);
 
   String getTimeStr() => DateFormat(DateTimeHelper.hmFormat).format(date);
-  bool isInFuture() => DateTimeHelper.dateIsInFuture(date);
+  bool isInFuture() => DateTimeHelper.isInFuture(date);
 
   List<Category> getCategories() => workoutCategories?.map((wc) => wc.category).toList() ?? [];
   List<WorkoutExercise> getWorkoutExercises() => workoutExercises ?? [];

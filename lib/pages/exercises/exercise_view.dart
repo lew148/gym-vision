@@ -50,7 +50,7 @@ class _ExerciseViewState extends State<ExerciseView> {
     final recentUses = details.recentUses!;
     recentUses.removeWhere((ws) {
       final workout = ws.getWorkout();
-      return workout != null && DateTimeHelper.dateIsInFuture(workout.date);
+      return workout != null && DateTimeHelper.isInFuture(workout.date);
     });
 
     if (recentUses.isEmpty) return getNoRecentUsesWidget();

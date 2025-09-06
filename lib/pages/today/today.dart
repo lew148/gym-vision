@@ -125,7 +125,7 @@ class _TodayState extends State<Today> {
                             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                           ),
                           Row(children: [
-                            CommonUI.getTimeWithIcon(context, workout.date),
+                            CommonUI.getTimeWithIcon(context, workout.date, dtEnd: workout.endDate),
                             if (workout.isFinished()) ...[
                               const Padding(padding: EdgeInsetsGeometry.all(5)),
                               CommonUI.getTimeElapsedWithIcon(context, workout.getDuration()),

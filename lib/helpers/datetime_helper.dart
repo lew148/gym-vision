@@ -50,17 +50,17 @@ class DateTimeHelper {
 
   static int getDaysInMonth(int year, int month) => DateTime(year, month + 1, 0).day;
 
-  static bool dateIsInFuture(DateTime dt) => DateTime.now().compareTo(dt) < 0;
+  static bool isInFuture(DateTime dt) => DateTime.now().compareTo(dt) < 0;
 
   static bool dateXIsAfterDateY(DateTime x, DateTime y) => y.compareTo(x) < 0;
 
-  static String getDurationString(Duration duration, {bool noHours = false}) {
-    String hours = noHours ? '' : NumberHelper.getDoubleDigit(duration.inHours);
+  static String getDurationString(Duration duration, {bool noHours = false, bool useNegativeSymbol = true}) {
+    String hours = noHours ? '' : duration.inHours.abs().toString();
     String minutes = noHours
         ? NumberHelper.getDoubleDigit(duration.inMinutes.abs())
         : NumberHelper.getDoubleDigit(duration.inMinutes.remainder(60).abs());
     String seconds = NumberHelper.getDoubleDigit(duration.inSeconds.remainder(60).abs());
-    return "${duration.isNegative ? '-' : ''}${noHours ? '' : '$hours:'}$minutes:$seconds";
+    return "${useNegativeSymbol && duration.isNegative ? '-' : ''}${noHours || duration.inHours == 0 ? '' : '$hours:'}$minutes:$seconds";
   }
 
   static String getHoursAndMinsDurationString(Duration duration) {

@@ -271,11 +271,11 @@ class CommonUI {
         ),
       ]);
 
-  static getTimeWithIcon(BuildContext context, DateTime dt) => Row(children: [
+  static getTimeWithIcon(BuildContext context, DateTime dt, {DateTime? dtEnd}) => Row(children: [
         Icon(Icons.access_time_rounded, color: Theme.of(context).colorScheme.shadow, size: 15),
         const Padding(padding: EdgeInsetsGeometry.all(2.5)),
         Text(
-          DateFormat(DateTimeHelper.hmFormat).format(dt),
+          '${DateFormat(DateTimeHelper.hmFormat).format(dt)}${dtEnd == null ? '' : ' - ${DateFormat(DateTimeHelper.hmFormat).format(dtEnd)}'}',
           style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
         ),
       ]);

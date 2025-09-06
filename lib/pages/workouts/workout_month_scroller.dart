@@ -207,7 +207,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                               onTap: () => onAddWorkoutTap(context, reloadState, date: currentDate)
                                   .then((x) => widget.reloadParent()),
                               child: DateTimeHelper.dateXIsAfterDateY(widget.userSettings.createdAt!, currentDate) ||
-                                      DateTimeHelper.dateIsInFuture(currentDate) ||
+                                      DateTimeHelper.isInFuture(currentDate) ||
                                       isToday
                                   ? Row(mainAxisAlignment: MainAxisAlignment.start, children: [CommonUI.getDash()])
                                   : CommonUI.getRestWidget(color: Theme.of(context).colorScheme.shadow),
