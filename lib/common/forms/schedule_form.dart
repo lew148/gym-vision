@@ -195,7 +195,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
       child: IntrinsicHeight(
         child: Column(
           children: [
-            CommonUI.getSectionTitleWithCloseButton(context, 'Add Schedule'),
+            CommonUI.getSectionTitleWithCloseButton(context, isEdit ? 'Edit Schedule' : 'Add Schedule'),
             CommonUI.getDivider(),
             CustomFormFields.stringField(controller: nameController, label: 'Name', autofocus: !isEdit, maxLength: 25),
             const Padding(padding: EdgeInsetsGeometry.all(5)),
@@ -247,6 +247,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
                   )
                 : Column(children: [
                     Column(children: getFieldsScheduleItemFields().toList()),
+                    const Padding(padding: EdgeInsetsGeometry.all(5)),
                     Row(
                       mainAxisAlignment:
                           selectedType == ScheduleType.split ? MainAxisAlignment.spaceBetween : MainAxisAlignment.end,

@@ -194,6 +194,26 @@ class CommonUI {
         ),
       );
 
+  static Widget getBigPropDisplay(BuildContext context, String text, {Function()? onTap, Color? color}) => getCard(
+        context,
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            decoration: BoxDecoration(color: color, borderRadius: const BorderRadius.all(Radius.circular(10))),
+            padding: const EdgeInsets.all(10),
+            child: onTap == null
+                ? Text(text, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold))
+                : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(text),
+                      const Icon(Icons.chevron_right_rounded),
+                    ],
+                  ),
+          ),
+        ),
+      );
+
   static Widget getSmallPropDisplay(BuildContext context, String text, {Function()? onTap, Color? color}) => getCard(
         context,
         GestureDetector(

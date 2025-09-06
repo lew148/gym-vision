@@ -5,6 +5,7 @@ import 'package:gymvision/classes/db/bodyweight.dart';
 import 'package:gymvision/classes/db/schedules/schedule.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/workout_summary.dart';
+import 'package:gymvision/common/forms/schedule_form.dart';
 import 'package:gymvision/helpers/app_helper.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/models/db_models/schedule_model.dart';
@@ -212,111 +213,122 @@ class _TodayState extends State<Today> {
         ),
       );
 
-  Widget getWorkoutsOrPlaceholder(List<Workout>? workouts) {
-    if (workouts == null || workouts.isEmpty) {
-      return FutureBuilder(
-          future: schedule,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return Padding(
-                padding: const EdgeInsetsGeometry.all(30),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.sports_gymnastics_rounded, size: 60, color: Theme.of(context).colorScheme.primary),
-                    const Padding(padding: EdgeInsetsGeometry.all(5)),
-                    const Text(
-                      'Ready to crush your goals?',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                    ),
-                    const Padding(padding: EdgeInsetsGeometry.all(5)),
-                    CommonUI.getElevatedPrimaryButton(ButtonDetails(
-                      icon: Icons.add_rounded,
-                      text: 'Start a workout',
-                      onTap: () => onAddWorkoutTap(
-                        context,
-                        reloadState,
-                        date: today,
-                      ),
-                    )),
-                    Padding(
-                      padding: const EdgeInsetsGeometry.all(5),
-                      child: Text(
-                        'OR',
-                        style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    CommonUI.getElevatedPrimaryButton(ButtonDetails(
-                      icon: Icons.calendar_month_rounded,
-                      text: 'Create a Schedule',
-                      onTap: () => Provider.of<NavigationProvider>(context, listen: false).changeTab(3),
-                    )),
-                  ],
-                ),
-              );
-            }
+  Widget getPlaceholderSplashText() => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.sports_gymnastics_rounded, size: 60, color: Theme.of(context).colorScheme.primary),
+          const Padding(
+            padding: EdgeInsetsGeometry.all(10),
+            child: Text(
+              'Ready to crush your goals?',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      );
 
-            final schedule = snapshot.data!;
-            final todayCategories = schedule.getCategoriesForDay(today);
-            return todayCategories.isEmpty
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.hotel_rounded, size: 30),
-                      Text(
-                        'Relax! Today is a scheduled Rest Day.',
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Theme.of(context).colorScheme.shadow,
-                        ),
-                      ),
-                    ],
-                  )
-                : Column(children: [
-                    CommonUI.getCard(
-                      context,
-                      GestureDetector(
-                        behavior: HitTestBehavior.translucent,
+  Widget getScheduledDaySplashText() => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.calendar_today_rounded, size: 60, color: Theme.of(context).colorScheme.primary),
+          const Padding(
+            padding: EdgeInsetsGeometry.only(top: 10),
+            child: Text(
+              "You scheduled it. Let's do it!",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          Text(
+            "Your workout today is...",
+            style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      );
+
+  Widget getPlaceholder() => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Padding(
+            padding: const EdgeInsetsGeometry.symmetric(horizontal: 30),
+            child: FutureBuilder(
+                future: schedule,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return Column(children: [
+                      getPlaceholderSplashText(),
+                      CommonUI.getElevatedPrimaryButton(ButtonDetails(
+                        icon: Icons.add_rounded,
+                        text: 'Start a workout',
                         onTap: () => onAddWorkoutTap(
                           context,
                           reloadState,
                           date: today,
-                          categories: todayCategories,
                         ),
-                        child: Padding(
-                          padding: const EdgeInsetsGeometry.all(10),
-                          child: Row(children: [
-                            Expanded(
-                              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                                const Text(
-                                  'Scheduled for Today',
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                                ),
-                                Wrap(
-                                  alignment: WrapAlignment.start,
-                                  children: todayCategories
-                                      .map(
-                                        (c) => CommonUI.getPropDisplay(
-                                          context,
-                                          c.displayName,
-                                          color: AppHelper.isDarkMode(context) ? AppHelper.darkPropOnCardColor : null,
-                                        ),
-                                      )
-                                      .toList(),
-                                ),
-                              ]),
-                            ),
-                            const Icon(Icons.chevron_right_rounded),
-                          ]),
+                      )),
+                      Padding(
+                        padding: const EdgeInsetsGeometry.all(5),
+                        child: Text(
+                          'OR',
+                          style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
+                          textAlign: TextAlign.center,
                         ),
                       ),
-                    ),
-                  ]);
-          });
-    }
+                      CommonUI.getElevatedPrimaryButton(ButtonDetails(
+                        icon: Icons.calendar_month_rounded,
+                        text: 'Create a Schedule',
+                        onTap: () => Provider.of<NavigationProvider>(context, listen: false).changeTab(3),
+                      )),
+                    ]);
+                  }
 
+                  final schedule = snapshot.data!;
+                  final todayCategories = schedule.getCategoriesForDay(today);
+                  return todayCategories.isEmpty
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.hotel_rounded, size: 60, color: Theme.of(context).colorScheme.primary),
+                            const Text('Relax and take a breath...',
+                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                            Text(
+                              'Today is a scheduled rest day',
+                              style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        )
+                      : Column(children: [
+                          getScheduledDaySplashText(),
+                          Padding(
+                            padding: const EdgeInsetsGeometry.symmetric(vertical: 10),
+                            child: Wrap(
+                              alignment: WrapAlignment.center,
+                              children: todayCategories
+                                  .map((c) => CommonUI.getBigPropDisplay(context, c.displayName))
+                                  .toList(),
+                            ),
+                          ),
+                          CommonUI.getElevatedPrimaryButton(ButtonDetails(
+                            icon: Icons.add_rounded,
+                            text: 'Start scheduled workout',
+                            onTap: () => onAddWorkoutTap(
+                              context,
+                              reloadState,
+                              date: today,
+                              categories: todayCategories,
+                            ),
+                          )),
+                        ]);
+                }),
+          ),
+        ],
+      );
+
+  Widget getWorkoutsOrPlaceholder(List<Workout>? workouts) {
+    if (workouts == null || workouts.isEmpty) return getPlaceholder();
     workouts.sort((a, b) => a.date.compareTo(b.date)); // sort by date asc
     return SingleChildScrollView(child: Column(children: workouts.map((w) => getWorkoutDisplay(w)).toList()));
   }
