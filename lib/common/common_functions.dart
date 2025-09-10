@@ -199,6 +199,45 @@ Future showCustomBottomSheet(BuildContext context, Widget child) => showModalBot
       ),
     );
 
+Future showCloseableBottomSheet(BuildContext context, Widget child, {String? title}) => showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 5, 20, 20),
+              child: SafeArea(
+                top: false,
+                child: Column(children: [
+                  SizedBox(
+                    width: 100,
+                    child: Divider(
+                      color: Theme.of(context).colorScheme.shadow,
+                      thickness: 4,
+                      radius: const BorderRadius.all(Radius.circular(25)),
+                    ),
+                  ),
+                  if (title != null) ...[
+                    CommonUI.getSectionTitle(context, title),
+                    CommonUI.getDivider(),
+                  ] else
+                    const Padding(padding: EdgeInsetsGeometry.all(10)),
+                  child,
+                ]),
+              ),
+            ),
+          ),
+        ],
+      ),
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
+    );
+
 Future showOptionsMenu(BuildContext context, List<ButtonDetails> list, {String? menuName}) =>
     showCustomBottomSheet(context, CommonUI.getModalMenu(context, list, modalName: menuName));
 

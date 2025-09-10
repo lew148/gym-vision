@@ -107,46 +107,52 @@ class CommonUI {
         ],
       );
 
-  static Widget getTextButton(ButtonDetails bd) => TextButton(
-        style: TextButton.styleFrom(
-          backgroundColor: bd.style?.backgroundColor,
-          padding: bd.style?.padding ?? const EdgeInsets.all(10),
-          minimumSize: Size.zero,
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          overlayColor: Colors.grey,
-        ),
-        onPressed: bd.disabled ? null : bd.onTap,
-        onLongPress: bd.disabled ? null : bd.onLongTap,
-        child: Row(
-          children: [
-            if (bd.icon != null) Icon(bd.icon, size: bd.style?.iconSize ?? 25, color: bd.style?.iconColor),
-            if (bd.icon != null && bd.text != null) const Padding(padding: EdgeInsets.only(left: 2.5)),
-            if (bd.text != null) Text(bd.text!, style: TextStyle(color: bd.style?.textColor)),
-          ],
+  static Widget getTextButton(ButtonDetails bd) => Padding(
+        padding: const EdgeInsetsGeometry.all(2.5),
+        child: TextButton(
+          style: TextButton.styleFrom(
+            backgroundColor: bd.style?.backgroundColor,
+            padding: bd.style?.padding ?? const EdgeInsets.all(10),
+            minimumSize: Size.zero,
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            shadowColor: Colors.transparent,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            overlayColor: Colors.grey,
+          ),
+          onPressed: bd.disabled ? null : bd.onTap,
+          onLongPress: bd.disabled ? null : bd.onLongTap,
+          child: Row(
+            children: [
+              if (bd.icon != null) Icon(bd.icon, size: bd.style?.iconSize ?? 25, color: bd.style?.iconColor),
+              if (bd.icon != null && bd.text != null) const Padding(padding: EdgeInsets.only(left: 2.5)),
+              if (bd.text != null) Text(bd.text!, style: TextStyle(color: bd.style?.textColor)),
+            ],
+          ),
         ),
       );
 
-  static Widget getElevatedPrimaryButton(ButtonDetails bd) => ElevatedButton(
-        onPressed: bd.disabled ? null : bd.onTap,
-        onLongPress: bd.disabled ? null : bd.onLongTap,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: bd.style?.backgroundColor,
-          padding: bd.style?.padding ?? const EdgeInsets.all(10),
-          minimumSize: Size.zero,
-          tapTargetSize: MaterialTapTargetSize.padded,
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          overlayColor: Colors.grey,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (bd.icon != null) Icon(bd.icon, color: bd.style?.iconColor, size: 25),
-            if (bd.icon != null && bd.text != null) const Padding(padding: EdgeInsets.only(left: 5)),
-            if (bd.text != null) Text(bd.text!, style: TextStyle(color: bd.style?.textColor)),
-          ],
+  static Widget getElevatedPrimaryButton(ButtonDetails bd) => Padding(
+        padding: const EdgeInsetsGeometry.all(2.5),
+        child: ElevatedButton(
+          onPressed: bd.disabled ? null : bd.onTap,
+          onLongPress: bd.disabled ? null : bd.onLongTap,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: bd.style?.backgroundColor,
+            padding: bd.style?.padding ?? const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+            minimumSize: Size.zero,
+            tapTargetSize: MaterialTapTargetSize.padded,
+            shadowColor: Colors.transparent,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            overlayColor: Colors.grey,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (bd.icon != null) Icon(bd.icon, color: bd.style?.iconColor, size: 25),
+              if (bd.icon != null && bd.text != null) const Padding(padding: EdgeInsets.only(left: 5)),
+              if (bd.text != null) Text(bd.text!, style: TextStyle(color: bd.style?.textColor)),
+            ],
+          ),
         ),
       );
 
@@ -202,7 +208,7 @@ class CommonUI {
             decoration: BoxDecoration(color: color, borderRadius: const BorderRadius.all(Radius.circular(10))),
             padding: const EdgeInsets.all(10),
             child: onTap == null
-                ? Text(text, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold))
+                ? Text(text, style: const TextStyle(fontSize: 18))
                 : Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -385,4 +391,7 @@ class CommonUI {
         padding: const EdgeInsets.all(10),
         child: child,
       );
+
+  static getElevatedButtonsMenu(BuildContext context, List<ButtonDetails> buttons) =>
+      Column(children: buttons.map<Widget>((bd) => getElevatedPrimaryButton(bd)).toList());
 }

@@ -5,7 +5,6 @@ import 'package:gymvision/classes/db/bodyweight.dart';
 import 'package:gymvision/classes/db/schedules/schedule.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/workout_summary.dart';
-import 'package:gymvision/common/forms/schedule_form.dart';
 import 'package:gymvision/helpers/app_helper.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/models/db_models/schedule_model.dart';
@@ -228,24 +227,23 @@ class _TodayState extends State<Today> {
         ],
       );
 
-  Widget getScheduledDaySplashText() => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.calendar_today_rounded, size: 60, color: Theme.of(context).colorScheme.primary),
-          const Padding(
-            padding: EdgeInsetsGeometry.only(top: 10),
-            child: Text(
+  Widget getScheduledDaySplashText() => Padding(
+        padding: const EdgeInsetsGeometry.symmetric(vertical: 15),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
               "You scheduled it. Let's do it!",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-          ),
-          Text(
-            "Your workout today is...",
-            style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-            textAlign: TextAlign.center,
-          ),
-        ],
+            Text(
+              "Your workout today is...",
+              style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       );
 
   Widget getPlaceholder() => Column(
@@ -262,11 +260,7 @@ class _TodayState extends State<Today> {
                       CommonUI.getElevatedPrimaryButton(ButtonDetails(
                         icon: Icons.add_rounded,
                         text: 'Start a workout',
-                        onTap: () => onAddWorkoutTap(
-                          context,
-                          reloadState,
-                          date: today,
-                        ),
+                        onTap: () => onAddWorkoutTap(context, reloadState, date: today),
                       )),
                       Padding(
                         padding: const EdgeInsetsGeometry.all(5),
@@ -301,16 +295,12 @@ class _TodayState extends State<Today> {
                           ],
                         )
                       : Column(children: [
-                          getScheduledDaySplashText(),
-                          Padding(
-                            padding: const EdgeInsetsGeometry.symmetric(vertical: 10),
-                            child: Wrap(
-                              alignment: WrapAlignment.center,
-                              children: todayCategories
-                                  .map((c) => CommonUI.getBigPropDisplay(context, c.displayName))
-                                  .toList(),
-                            ),
+                          Wrap(
+                            alignment: WrapAlignment.center,
+                            children:
+                                todayCategories.map((c) => CommonUI.getBigPropDisplay(context, c.displayName)).toList(),
                           ),
+                          getScheduledDaySplashText(),
                           CommonUI.getElevatedPrimaryButton(ButtonDetails(
                             icon: Icons.add_rounded,
                             text: 'Start scheduled workout',

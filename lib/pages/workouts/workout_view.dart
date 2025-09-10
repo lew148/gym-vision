@@ -230,6 +230,37 @@ class _WorkoutViewState extends State<WorkoutView> {
       .push(MaterialPageRoute(builder: (context) => AddExercisesToWorkout(workoutId: workoutId)))
       .then((x) => reloadState());
 
+  void onCopyPreviousWorkoutTap(int workoutId, List<Category> categories) => showCloseableBottomSheet(
+      context,
+      CommonUI.getElevatedButtonsMenu(context, [
+        ButtonDetails(
+          text: 'Last Similar Workout',
+          onTap: () async {
+            Navigator.pop(context);
+            final success = await WorkoutModel.copyLastSimilarWorkout(workoutId, categories);
+            if (success) {
+              reloadState();
+              return;
+            }
+
+            if (mounted) showSnackBar(context, 'There is nothing to copy');
+          },
+        ),
+        ButtonDetails(
+          text: 'Last Workout',
+          onTap: () async {
+            Navigator.pop(context);
+            final success = await WorkoutModel.copyLastWorkout(workoutId);
+            if (success) {
+              reloadState();
+              return;
+            }
+
+            if (mounted) showSnackBar(context, 'There is nothing to copy');
+          },
+        ),
+      ]));
+
   void onWorkoutExerciseReorder(Workout workout, int currentIndex, int newIndex) async {
     try {
       HapticFeedback.mediumImpact();
@@ -242,7 +273,7 @@ class _WorkoutViewState extends State<WorkoutView> {
     reloadState();
   }
 
-  void finishOrResumeOnTap(BuildContext context, Workout workout, bool resuming) async {
+  void onFinishOrResumeTap(BuildContext context, Workout workout, bool resuming) async {
     try {
       var confirmed = await showConfirm(
         context,
@@ -322,13 +353,13 @@ class _WorkoutViewState extends State<WorkoutView> {
                         ? CommonUI.getElevatedPrimaryButton(
                             ButtonDetails(
                               text: 'Resume',
-                              onTap: () => finishOrResumeOnTap(context, workout, true),
+                              onTap: () => onFinishOrResumeTap(context, workout, true),
                             ),
                           )
                         : CommonUI.getElevatedPrimaryButton(
                             ButtonDetails(
                               text: 'Finish',
-                              onTap: () => finishOrResumeOnTap(context, workout, false),
+                              onTap: () => onFinishOrResumeTap(context, workout, false),
                               style: ButtonDetailsStyle(
                                 textColor: Colors.white,
                                 backgroundColor: const Color.fromARGB(255, 45, 121, 45),
@@ -368,49 +399,57 @@ class _WorkoutViewState extends State<WorkoutView> {
               Expanded(
                 child: workoutExercises.isEmpty
                     ? Padding(
-                        padding: const EdgeInsetsGeometry.fromLTRB(30, 30, 30, 0),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text(
-                                'What are you training today?',
-                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                                textAlign: TextAlign.center,
-                              ),
-                              Text(
-                                'One workout closer to your goals!',
-                                style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
-                                textAlign: TextAlign.center,
-                              ),
-                              const Padding(padding: EdgeInsetsGeometry.all(5)),
-                              if (!workout.hasCategories()) ...[
-                                CommonUI.getElevatedPrimaryButton(ButtonDetails(
-                                  icon: Icons.category_rounded,
-                                  text: 'Select categories',
-                                  onTap: () => onAddCategoryClick(categories),
-                                )),
-                                Padding(
-                                  padding: const EdgeInsetsGeometry.all(5),
-                                  child: Text(
-                                    'OR',
-                                    style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ],
+                        padding:
+                            const EdgeInsetsGeometry.fromLTRB(30, 30, 30, 0), // b is 0 to avoid padding using keyboard
+                        child:
+                            // SingleChildScrollView(
+                            //   child:
+                            Column(
+                          children: [
+                            const Text(
+                              'What are you training today?',
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
+                            Text(
+                              'One workout closer to your goals!',
+                              style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
+                              textAlign: TextAlign.center,
+                            ),
+                            const Padding(padding: EdgeInsetsGeometry.all(10)),
+                            if (!workout.hasCategories()) ...[
                               CommonUI.getElevatedPrimaryButton(ButtonDetails(
-                                icon: Icons.add_rounded,
-                                text: 'Add exercises',
-                                onTap: () => onAddExerciseClick(workout.id!),
+                                icon: Icons.category_rounded,
+                                text: 'Select categories',
+                                onTap: () => onAddCategoryClick(categories),
                               )),
+                              Padding(
+                                padding: const EdgeInsetsGeometry.all(5),
+                                child: Text(
+                                  'OR',
+                                  style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
                             ],
-                          ),
+                            CommonUI.getElevatedPrimaryButton(ButtonDetails(
+                              icon: Icons.add_rounded,
+                              text: 'Add exercises',
+                              onTap: () => onAddExerciseClick(workout.id!),
+                            )),
+                            CommonUI.getElevatedPrimaryButton(ButtonDetails(
+                              icon: Icons.copy_rounded,
+                              text: 'Copy Workout',
+                              onTap: () => onCopyPreviousWorkoutTap(workout.id!, categories),
+                            )),
+                          ],
                         ),
+                        // ),
                       )
-                    : Padding(
-                        padding: const EdgeInsetsGeometry.only(bottom: 10),
+                    : ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
                         child: ReorderableColumn(
+                          padding: const EdgeInsets.only(bottom: 20),
                           onReorder: (i1, i2) => onWorkoutExerciseReorder(workout, i1, i2),
                           children: getWorkoutExercisesWidget(workout, workoutExercises),
                         ),

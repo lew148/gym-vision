@@ -1,18 +1,21 @@
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
-import 'package:flutter/foundation.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_category.dart';
+import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/classes/workout_summary.dart';
 import 'package:gymvision/db/drift_database.dart';
 import 'package:gymvision/db/table_extensions.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/database_helper.dart';
+import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/note_model.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workout_category_model.dart';
+import 'package:gymvision/models/db_models/workout_set_model.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
+import 'package:gymvision/static_data/enums.dart';
 
 class WorkoutModel {
   static Future<List<Workout>> getWorkoutsForDay(DateTime date, {bool withSummary = false}) async {
@@ -162,13 +165,110 @@ class WorkoutModel {
     return (await (db.select(db.driftWorkouts).join([
       leftOuterJoin(db.driftWorkoutCategories, db.driftWorkoutCategories.workoutId.equalsExp(db.driftWorkouts.id))
     ])
-          ..orderBy([OrderingTerm.desc(db.driftWorkouts.id)])
+          ..orderBy([OrderingTerm.desc(db.driftWorkouts.date)])
           ..where(db.driftWorkoutCategories.category.equalsValue(wc.category))
-          ..where(db.driftWorkoutCategories.id.isNotValue(wc.id!))
           ..where(db.driftWorkouts.date.isSmallerThanValue(workout.date))
           ..limit(1))
         .map((row) => row.readTable(db.driftWorkouts).id)
-        .getSingle());
+        .getSingleOrNull());
+  }
+
+  static Future<bool> copyLastSimilarWorkout(int workoutId, List<Category> categories) async {
+    try {
+      final db = DatabaseHelper.db;
+      var currentWorkout = await getWorkout(workoutId);
+      if (currentWorkout == null) return false;
+
+      const maxWorkoutsToLoad = 50;
+      final workouts = await (db.select(db.driftWorkouts)
+            ..where((w) => w.date.isSmallerThanValue(currentWorkout.date))
+            ..orderBy([(w) => OrderingTerm.desc(w.date)])
+            ..limit(maxWorkoutsToLoad))
+          .get();
+
+      for (final workout in workouts) {
+        final wcs = await (db.select(db.driftWorkoutCategories)..where((wc) => wc.workoutId.equals(workout.id))).get();
+        final categoryList = wcs.map((wc) => wc.category).whereType<Category>().toSet();
+        if (categoryList.length != categories.length || !categoryList.containsAll(categories)) continue;
+        return await copyWorkout(currentWorkout, workout.toObject());
+      }
+    } catch (ex) {
+        // ignore
+    }
+
+    return false;
+  }
+
+  static Future<bool> copyLastWorkout(int workoutId) async {
+    try {
+      final db = DatabaseHelper.db;
+      var currentWorkout = await getWorkout(workoutId);
+      if (currentWorkout == null) return false;
+
+      final lastWorkout = (await (db.select(db.driftWorkouts)
+                ..orderBy([(w) => OrderingTerm.desc(w.date)])
+                ..where((w) => db.driftWorkouts.date.isSmallerThanValue(currentWorkout.date))
+                ..limit(1))
+              .getSingleOrNull())
+          ?.toObject();
+
+      return lastWorkout == null ? false : await copyWorkout(currentWorkout, lastWorkout);
+    } catch (ex) {
+      return false;
+    }
+  }
+
+  static Future<bool> copyWorkout(Workout workout, Workout workoutToCopy) async {
+    try {
+      if (workout.id == null) return false;
+
+      var toCopyWes = workoutToCopy.getWorkoutExercises();
+      if (toCopyWes.isEmpty) {
+        workoutToCopy.workoutExercises = await WorkoutExerciseModel.getWorkoutExercisesByWorkout(
+          workoutToCopy.id!,
+          withSets: true,
+        );
+
+        toCopyWes = workoutToCopy.getWorkoutExercises();
+      }
+
+      if (toCopyWes.isEmpty) return false;
+
+      for (var toCopyWeId in OrderingHelper.getOrderingIntList(workoutToCopy.exerciseOrder)) {
+        final toCopyWe = toCopyWes.firstWhereOrNull((we) => we.id == toCopyWeId);
+        if (toCopyWe == null) continue;
+
+        final newWe = WorkoutExercise(
+          workoutId: workout.id!,
+          exerciseIdentifier: toCopyWe.exerciseIdentifier,
+          setOrder: '',
+        );
+
+        newWe.id = await WorkoutExerciseModel.insert(newWe);
+        if (newWe.id == -1) continue;
+
+        final toCopySets = toCopyWe.getSets();
+        if (toCopySets.isEmpty) continue;
+
+        for (var toCopySetId in OrderingHelper.getOrderingIntList(toCopyWe.setOrder)) {
+          final toCopySet = toCopySets.firstWhereOrNull((s) => s.id == toCopySetId);
+          if (toCopySet == null) continue;
+
+          await WorkoutSetModel.insert(WorkoutSet(
+            workoutExerciseId: newWe.id!,
+            weight: toCopySet.weight,
+            reps: toCopySet.reps,
+            time: toCopySet.time,
+            distance: toCopySet.distance,
+            calsBurned: toCopySet.calsBurned,
+          ));
+        }
+      }
+
+      return true;
+    } catch (ex) {
+      return false;
+    }
   }
 
   static Future<String?> getWorkoutExportString(int id) async => '';

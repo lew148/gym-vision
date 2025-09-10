@@ -19,9 +19,9 @@ class WorkoutSetModel {
     return (await (db.select(db.driftWorkoutSets)..where((ws) => ws.id.equals(id))).getSingleOrNull())?.toObject();
   }
 
-  static Future insert(WorkoutSet set) async {
+  static Future<int> insert(WorkoutSet set) async {
     final workoutExercise = await WorkoutExerciseModel.getWorkoutExercise(set.workoutExerciseId);
-    if (workoutExercise == null) return;
+    if (workoutExercise == null) return -1;
 
     final db = DatabaseHelper.db;
     var now = DateTime.now();
@@ -39,6 +39,7 @@ class WorkoutSetModel {
 
     workoutExercise.setOrder = OrderingHelper.addToOrdering(workoutExercise.setOrder, setId);
     await WorkoutExerciseModel.update(workoutExercise);
+    return setId;
   }
 
   static Future<bool> update(WorkoutSet set) async {
