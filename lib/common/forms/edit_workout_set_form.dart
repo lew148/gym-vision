@@ -174,8 +174,6 @@ class _EditWorkoutSetFormState extends State<EditWorkoutSetForm> {
 
     return Column(
       children: [
-        CommonUI.getSectionTitleWithCloseButton(context, 'Edit Set'),
-        CommonUI.getDivider(),
         Form(
           key: formKey,
           child: Column(
@@ -196,12 +194,7 @@ class _EditWorkoutSetFormState extends State<EditWorkoutSetForm> {
                       ),
                     ),
                   ]),
-                  CommonUI.getTextButton(
-                    ButtonDetails(
-                      onTap: onSubmit,
-                      text: 'Save',
-                    ),
-                  ),
+                  CommonUI.getDoneButton(onSubmit),
                 ],
               ),
             ],

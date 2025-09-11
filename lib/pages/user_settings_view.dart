@@ -145,7 +145,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
               ),
               CommonUI.getElevatedPrimaryButton(
                 ButtonDetails(
-                  onTap: () => showCustomBottomSheet(context, const ImportWorkoutForm()),
+                  onTap: () => showCloseableBottomSheet(context, const ImportWorkoutForm()),
                   text: 'Import Workout',
                 ),
               ),

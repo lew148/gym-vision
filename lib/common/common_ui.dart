@@ -51,7 +51,7 @@ class ButtonDetails {
 
 class CommonUI {
   static Widget getSectionTitle(BuildContext context, String title) => Padding(
-        padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
+        padding: const EdgeInsets.fromLTRB(0, 10, 10, 5),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -72,17 +72,20 @@ class CommonUI {
     String title, {
     bool popCaller = false,
   }) =>
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          getSectionTitle(context, title),
-          CloseButton(
-            onPressed: () {
-              Navigator.pop(context);
-              if (popCaller) Navigator.pop(context);
-            },
-          ),
-        ],
+      Padding(
+        padding: const EdgeInsets.fromLTRB(0, 10, 10, 5),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            getSectionTitle(context, title),
+            CloseButton(
+              onPressed: () {
+                Navigator.pop(context);
+                if (popCaller) Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
       );
 
   static Widget getSectionTitleWithAction(BuildContext context, String title, ButtonDetails buttonDetails) =>
@@ -95,16 +98,19 @@ class CommonUI {
       getSectionWidgetWithActions(context, widget, [buttonDetail]);
 
   static Widget getSectionWidgetWithActions(BuildContext context, Widget widget, List<ButtonDetails> buttonDetails) =>
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          widget,
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: buttonDetails.map((ab) => getTextButton(ab)).toList(),
-          ),
-        ],
+      Padding(
+        padding: const EdgeInsets.fromLTRB(0, 10, 10, 5),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            widget,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: buttonDetails.map((ab) => getTextButton(ab)).toList(),
+            ),
+          ],
+        ),
       );
 
   static Widget getTextButton(ButtonDetails bd) => Padding(
@@ -165,9 +171,9 @@ class CommonUI {
         style: ButtonDetailsStyle(iconColor: Colors.red),
       );
 
-  static getDoneButton(Function() onSubmit) => CommonUI.getTextButton(ButtonDetails(
+  static getDoneButton(Function() onSubmit, {bool isAdd = false}) => CommonUI.getTextButton(ButtonDetails(
         onTap: onSubmit,
-        text: 'Done',
+        text: isAdd ? 'Add' : 'Done',
       ));
 
   static getDoneButtonRow(Function() onSubmit) => Row(
@@ -348,7 +354,7 @@ class CommonUI {
   static getDash() => const Text('-');
 
   static getModalMenu(BuildContext context, List<ButtonDetails> options, {String? modalName}) {
-    final List<Widget> items = [getSectionTitleWithCloseButton(context, modalName ?? 'Options')];
+    final List<Widget> items = [];
     items.add(const Padding(padding: EdgeInsets.all(5)));
 
     for (int i = 0; i < options.length; i++) {

@@ -28,8 +28,6 @@ class _ImportWorkoutFormState extends State<ImportWorkoutForm> {
     return Form(
       key: formKey,
       child: Column(children: [
-        CommonUI.getSectionTitleWithCloseButton(context, 'Import Workout'),
-        CommonUI.getDivider(),
         CustomFormFields.textArea(
           controller: inputController,
           label: 'Workout String',

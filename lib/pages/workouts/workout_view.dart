@@ -62,7 +62,7 @@ class _WorkoutViewState extends State<WorkoutView> {
     }
   }
 
-  void onAddCategoryClick(List<Category> existingWorkoutCategoryIds) => showCustomBottomSheet(
+  void onAddCategoryClick(List<Category> existingWorkoutCategoryIds) => showCloseableBottomSheet(
         context,
         CateogryPicker(
           selectedCategories: existingWorkoutCategoryIds,

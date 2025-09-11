@@ -40,8 +40,6 @@ class _ReportBugFormState extends State<ReportBugForm> {
     return Form(
       key: formKey,
       child: Column(children: [
-        CommonUI.getSectionTitleWithCloseButton(context, 'Bug/Feature Report'),
-        CommonUI.getDivider(),
         CustomFormFields.stringField(
           controller: titleController,
           label: 'Title',
@@ -69,7 +67,7 @@ class _ReportBugFormState extends State<ReportBugForm> {
           }),
         ),
         Padding(
-          padding: const EdgeInsetsGeometry.symmetric(vertical: 10),
+          padding: const EdgeInsetsGeometry.only(top: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [CommonUI.getTextButton(ButtonDetails(text: 'Report', onTap: onSubmit))],

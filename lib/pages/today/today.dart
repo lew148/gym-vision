@@ -46,7 +46,7 @@ class _TodayState extends State<Today> {
         todaysBodyweight = BodyweightModel.getBodyweightForDay(today);
       });
 
-  void onAddWeightTap() async => showCustomBottomSheet(
+  void onAddWeightTap() async => showCloseableBottomSheet(
         context,
         const AddBodyWeightForm(),
       ).then((x) => reloadState());

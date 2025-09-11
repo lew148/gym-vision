@@ -32,7 +32,6 @@ class _DateTimePickerState extends State<DateTimePicker> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommonUI.getSectionTitleWithCloseButton(context, widget.mode == CupertinoDatePickerMode.time ? 'Time' : 'Date'),
         SizedBox(
           height: 100,
           child: CupertinoDatePicker(

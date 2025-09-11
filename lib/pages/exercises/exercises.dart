@@ -142,7 +142,7 @@ class _ExercisesState extends State<Exercises> {
     });
   }
 
-  void showCategories() => showCustomBottomSheet(
+  void showCategories() => showCloseableBottomSheet(
         context,
         CateogryPicker(
           selectedCategories: filterCategories,

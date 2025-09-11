@@ -150,7 +150,7 @@ void showDateTimePicker(
   Function(DateTime) onChange, {
   DateTime? initialDateTime,
 }) =>
-    showCustomBottomSheet(
+    showCloseableBottomSheet(
       context,
       DateTimePicker(
         onChange: onChange,
@@ -166,36 +166,13 @@ void showDurationPicker(
   Duration? initialDuration,
   bool isTimer = false,
 }) =>
-    showCustomBottomSheet(
+    showCloseableBottomSheet(
       context,
       DurationPicker(
         onChange: onChange,
         mode: mode,
         initialValue: initialDuration,
         isTimer: isTimer,
-      ),
-    );
-
-Future showCustomBottomSheet(BuildContext context, Widget child) => showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-            child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: SafeArea(
-                top: false,
-                child: child,
-              ),
-            ),
-          ),
-        ],
-      ),
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
       ),
     );
 
@@ -239,7 +216,7 @@ Future showCloseableBottomSheet(BuildContext context, Widget child, {String? tit
     );
 
 Future showOptionsMenu(BuildContext context, List<ButtonDetails> list, {String? menuName}) =>
-    showCustomBottomSheet(context, CommonUI.getModalMenu(context, list, modalName: menuName));
+    showCloseableBottomSheet(context, CommonUI.getModalMenu(context, list, modalName: menuName));
 
 Future onAddWorkoutTap(
   BuildContext context,

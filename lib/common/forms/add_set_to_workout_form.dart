@@ -137,8 +137,6 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
       key: formKey,
       child: Column(
         children: [
-          CommonUI.getSectionTitleWithCloseButton(context, 'Add Set'),
-          CommonUI.getDivider(),
           ExercisePicker(
             exerciseIdentifier: widget.exerciseIdentifier,
             exercise: selectedExercise,
@@ -168,7 +166,7 @@ class _AddSetToWorkoutFormState extends State<AddSetToWorkoutForm> {
                   selectedExercise?.type != ExerciseType.cardio
                       ? CommonUI.getTextButton(ButtonDetails(onTap: () => onSubmit(addThree: true), text: 'Add 3'))
                       : const SizedBox.shrink(),
-                  CommonUI.getDoneButton(onSubmit),
+                  CommonUI.getDoneButton(onSubmit, isAdd: true),
                 ],
               ),
             ),

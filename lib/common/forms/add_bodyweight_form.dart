@@ -40,9 +40,7 @@ class _AddBodyWeightFormState extends State<AddBodyWeightForm> {
       key: formKey,
       child: Column(
         children: [
-          CommonUI.getSectionTitle(context, 'Record Bodyweight'),
-          CommonUI.getDivider(),
-          Row(children: [
+          Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
             Expanded(
               child: CustomFormFields.doubleField(
                 controller: weightController,
@@ -52,7 +50,8 @@ class _AddBodyWeightFormState extends State<AddBodyWeightForm> {
                 hideNone: true,
               ),
             ),
-            CommonUI.getDoneButton(onSubmit),
+            const Padding(padding: EdgeInsetsGeometry.all(20)),
+            CommonUI.getDoneButton(onSubmit, isAdd: true),
           ]),
         ],
       ),

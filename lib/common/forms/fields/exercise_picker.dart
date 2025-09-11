@@ -77,33 +77,33 @@ class _ExercisePickerState extends State<ExercisePicker> {
             ButtonDetails(
               onTap: () {
                 Navigator.pop(context);
-                showCustomBottomSheet(
-                  context,
-                  Column(
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          BackButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              setState(() {
-                                filteredExercises = DefaultExercisesModel.getExercises(
-                                    categories: filterCategories, excludedExerciseIds: widget.excludedExercises);
-                              });
-                            },
-                          ),
-                          CommonUI.getSectionTitle(context, 'Exercise Filters'),
-                        ],
-                      ),
-                      CommonUI.getDivider(),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.5,
-                        child: SingleChildScrollView(child: getFilterChips()),
-                      ),
-                    ],
-                  ),
-                );
+                // showCustomBottomSheet(
+                //   context,
+                //   Column(
+                //     children: [
+                //       Row(
+                //         crossAxisAlignment: CrossAxisAlignment.center,
+                //         children: [
+                //           BackButton(
+                //             onPressed: () {
+                //               Navigator.pop(context);
+                //               setState(() {
+                //                 filteredExercises = DefaultExercisesModel.getExercises(
+                //                     categories: filterCategories, excludedExerciseIds: widget.excludedExercises);
+                //               });
+                //             },
+                //           ),
+                //           CommonUI.getSectionTitle(context, 'Exercise Filters'),
+                //         ],
+                //       ),
+                //       CommonUI.getDivider(),
+                //       SizedBox(
+                //         height: MediaQuery.of(context).size.height * 0.5,
+                //         child: SingleChildScrollView(child: getFilterChips()),
+                //       ),
+                //     ],
+                //   ),
+                // );
               },
               text: 'Filters',
             ),

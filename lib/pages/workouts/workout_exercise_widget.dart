@@ -65,7 +65,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     widget.toggleDroppedParent(widget.workoutExercise.id!);
   }
 
-  void onEditWorkoutSetTap(WorkoutSet ws) => showCustomBottomSheet(
+  void onEditWorkoutSetTap(WorkoutSet ws) => showCloseableBottomSheet(
         context,
         EditWorkoutSetForm(
           workoutSet: ws,
@@ -97,7 +97,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   }
 
   void onAddSetsButtonTap() {
-    showCustomBottomSheet(
+    showCloseableBottomSheet(
       context,
       AddSetToWorkoutForm(
         exerciseIdentifier: exerciseIdentifier,
@@ -229,7 +229,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   }
 
   void showExerciseMenu() {
-    showCustomBottomSheet(
+    showCloseableBottomSheet(
       context,
       Column(
         children: [

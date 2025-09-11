@@ -34,7 +34,6 @@ class _DurationPickerState extends State<DurationPicker> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommonUI.getSectionTitleWithCloseButton(context, widget.isTimer ? 'Timer' : 'Duration'),
         SizedBox(
           height: 100,
           child: CupertinoTimerPicker(

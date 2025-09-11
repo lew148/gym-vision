@@ -182,10 +182,12 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
     return Row(children: [Expanded(child: widget)]);
   }
 
-  void addScheduleOnTap() => showCustomBottomSheet(context, ScheduleForm(reloadParent: reloadState));
+  void addScheduleOnTap() => showCloseableBottomSheet(context, ScheduleForm(reloadParent: reloadState));
 
-  void editScheduleOnTap(Schedule schedule) =>
-      showCustomBottomSheet(context, ScheduleForm(reloadParent: reloadState, schedule: schedule));
+  void editScheduleOnTap(Schedule schedule) => showCloseableBottomSheet(
+        context,
+        ScheduleForm(reloadParent: reloadState, schedule: schedule),
+      );
 
   void setActiveSchedule(int newActiveScheduleId, int? currentActiveScheduleId) async {
     Navigator.pop(context);

@@ -48,7 +48,6 @@ class _CateogryPickerState extends State<CateogryPicker> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CommonUI.getSectionTitleWithCloseButton(context, 'Categories'),
         Padding(
           padding: const EdgeInsets.all(10),
           child: Column(children: [
@@ -85,13 +84,10 @@ class _CateogryPickerState extends State<CateogryPicker> {
                     widget.onChange([]);
                   },
                 )),
-                CommonUI.getTextButton(ButtonDetails(
-                  text: 'Save',
-                  onTap: () {
-                    Navigator.pop(context);
-                    widget.onChange(selectedCategories);
-                  },
-                )),
+                CommonUI.getDoneButton(() {
+                  Navigator.pop(context);
+                  widget.onChange(selectedCategories);
+                }),
               ],
             ),
           ]),

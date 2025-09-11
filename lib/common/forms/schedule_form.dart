@@ -138,7 +138,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
       context,
       GestureDetector(
         behavior: HitTestBehavior.translucent,
-        onTap: () => showCustomBottomSheet(
+        onTap: () => showCloseableBottomSheet(
           context,
           CateogryPicker(
             selectedCategories: categoriesForDay,
@@ -195,8 +195,6 @@ class _ScheduleFormState extends State<ScheduleForm> {
       child: IntrinsicHeight(
         child: Column(
           children: [
-            CommonUI.getSectionTitleWithCloseButton(context, isEdit ? 'Edit Schedule' : 'Add Schedule'),
-            CommonUI.getDivider(),
             CustomFormFields.stringField(controller: nameController, label: 'Name', autofocus: !isEdit, maxLength: 25),
             const Padding(padding: EdgeInsetsGeometry.all(5)),
             selectedType == null
@@ -278,7 +276,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
                                 ),
                               ),
                           ]),
-                        CommonUI.getDoneButton(onSubmit),
+                        CommonUI.getDoneButton(onSubmit, isAdd: !isEdit),
                       ],
                     ),
                   ]),
