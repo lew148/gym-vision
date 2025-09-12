@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:gymvision/common/common_functions.dart';
+import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/providers/navigation_provider.dart';
 import 'package:gymvision/services/local_notification_service.dart';

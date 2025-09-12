@@ -7,12 +7,12 @@ import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/database_helper.dart';
 import 'package:gymvision/models/db_models/user_settings_model.dart';
 import 'package:gymvision/services/local_notification_service.dart';
-import 'package:gymvision/common/components/coming_soon.dart';
-import 'package:gymvision/common/components/debug_scaffold.dart';
-import 'package:gymvision/pages/exercises/exercises.dart';
-import 'package:gymvision/pages/progress/progress.dart';
-import 'package:gymvision/pages/today/today.dart';
-import 'package:gymvision/pages/workouts/workouts.dart';
+import 'package:gymvision/widgets/coming_soon.dart';
+import 'package:gymvision/widgets/debug_scaffold.dart';
+import 'package:gymvision/widgets/pages/exercises/exercises.dart';
+import 'package:gymvision/widgets/pages/progress/progress.dart';
+import 'package:gymvision/widgets/pages/today/today.dart';
+import 'package:gymvision/widgets/pages/workouts/workouts.dart';
 import 'package:gymvision/providers/navigation_provider.dart';
 import 'package:gymvision/providers/rest_timer_provider.dart';
 import 'package:provider/provider.dart';
@@ -26,7 +26,7 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  // const int maxTries = 1;
+  const int maxTries = 1;
 
   await SentryFlutter.init(
     (options) {
@@ -50,26 +50,26 @@ void main() async {
         return true;
       };
 
-      // for (var tries = 0; tries < maxTries; tries++) {
+      for (var tries = 0; tries < maxTries; tries++) {
       try {
         await start();
         return;
-        // } on DriftRemoteException catch (ex, st) {
-        //   // todo: REMOVE THIS AS SOON AS ALL IOS USERS HAVE MIGRATED!!!
-        //   await DatabaseHelper.resetDatabase();
-        //   await Future.delayed(const Duration(seconds: 3)); // small wait between retries
+      } on DriftRemoteException catch (ex, st) {
+        // todo: REMOVE THIS AS SOON AS ALL IOS USERS HAVE MIGRATED!!!
+        await DatabaseHelper.resetDatabase();
+        await Future.delayed(const Duration(seconds: 3)); // small wait between retries
 
-        //   if (tries == maxTries - 1) {
-        //     // last try
-        //     await Sentry.captureException(ex, stackTrace: st);
-        //     showErrorScreen();
-        //   }
+        if (tries == maxTries - 1) {
+          // last try
+          await Sentry.captureException(ex, stackTrace: st);
+          showErrorScreen();
+        }
       } catch (ex, st) {
         await Sentry.captureException(ex, stackTrace: st);
         showErrorScreen();
         return;
       }
-      // }
+      }
     },
   );
 }

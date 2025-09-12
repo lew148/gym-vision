@@ -16,16 +16,6 @@ class Bodyweight extends DBO {
     required this.units,
   });
 
-  @override
-  Map<String, dynamic> toMap() => {
-        'id': id,
-        'updatedAt': DateTime.now().toString(),
-        'createdAt': createdAt.toString(),
-        'date': date.toString(),
-        'weight': weight,
-        'units': units,
-      };
-
   String getTimeString() => DateFormat('Hm').format(date);
   String getWeightDisplay() => '${NumberHelper.truncateDouble(weight)}$units';
 }
