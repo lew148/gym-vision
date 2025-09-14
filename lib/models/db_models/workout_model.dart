@@ -105,6 +105,31 @@ class WorkoutModel {
     return workouts;
   }
 
+  static Future<Workout?> getActiveWorkout({bool withCategories = false, bool withWorkoutExercises = false}) async {
+    final db = DatabaseHelper.db;
+    final activeWorkout = (await (db.select(db.driftWorkouts)
+              ..orderBy([(w) => OrderingTerm.desc(w.date)])
+              ..where((w) => db.driftWorkouts.date.isSmallerThanValue(DateTime.now()))
+              ..where((w) => w.endDate.isNull())
+              ..limit(1))
+            .getSingleOrNull())
+        ?.toObject();
+    if (activeWorkout == null) return null;
+
+    if (withCategories) {
+      activeWorkout.workoutCategories = await WorkoutCategoryModel.getWorkoutCategoriesByWorkout(activeWorkout.id!);
+    }
+
+    if (withWorkoutExercises) {
+      activeWorkout.workoutExercises = await WorkoutExerciseModel.getWorkoutExercisesByWorkout(
+        activeWorkout.id!,
+        withSets: true,
+      );
+    }
+
+    return activeWorkout;
+  }
+
   static Future<Workout?> getWorkout(int id, {bool withCategories = false, bool withWorkoutExercises = false}) async {
     final db = DatabaseHelper.db;
     final workout = (await (db.select(db.driftWorkouts)..where((w) => w.id.equals(id))).getSingleOrNull())?.toObject();
@@ -193,7 +218,7 @@ class WorkoutModel {
         return await copyWorkout(currentWorkout, workout.toObject());
       }
     } catch (ex) {
-        // ignore
+      // ignore
     }
 
     return false;

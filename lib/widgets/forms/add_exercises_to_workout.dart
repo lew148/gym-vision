@@ -5,7 +5,7 @@ import 'package:gymvision/models/db_models/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/debug_scaffold.dart';
-import 'package:gymvision/widgets/pages/exercises/exercises.dart';
+import 'package:gymvision/widgets/pages/homepages/exercises/exercises.dart';
 
 class AddExercisesToWorkout extends StatefulWidget {
   final int workoutId;

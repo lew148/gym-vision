@@ -10,7 +10,8 @@ import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/models/db_models/schedule_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
-import 'package:gymvision/widgets/pages/workouts/flavour_text_card.dart';
+import 'package:gymvision/providers/active_workout_provider.dart';
+import 'package:gymvision/widgets/components/flavour_text_card.dart';
 import 'package:gymvision/widgets/forms/add_bodyweight_form.dart';
 import 'package:gymvision/widgets/common/common_ui.dart';
 import 'package:gymvision/providers/navigation_provider.dart';
@@ -27,7 +28,6 @@ class Today extends StatefulWidget {
 
 class _TodayState extends State<Today> {
   late DateTime today;
-  late Future<List<Workout>> todaysWorkouts;
   late Future<Bodyweight?> todaysBodyweight;
   late Future<Schedule?> schedule;
 
@@ -35,14 +35,12 @@ class _TodayState extends State<Today> {
   void initState() {
     super.initState();
     today = DateTime.now();
-    todaysWorkouts = WorkoutModel.getWorkoutsForDay(today, withSummary: true);
     todaysBodyweight = BodyweightModel.getBodyweightForDay(today);
     schedule = ScheduleModel.getActiveSchedule(withItems: true);
   }
 
   reloadState() => setState(() {
         today = DateTime.now();
-        todaysWorkouts = WorkoutModel.getWorkoutsForDay(today, withSummary: true);
         todaysBodyweight = BodyweightModel.getBodyweightForDay(today);
       });
 
@@ -238,7 +236,7 @@ class _TodayState extends State<Today> {
               textAlign: TextAlign.center,
             ),
             Text(
-              "Your workout today is...",
+              "Jump straight into your scheduled workout",
               style: TextStyle(color: Theme.of(context).colorScheme.shadow),
               textAlign: TextAlign.center,
             ),
@@ -445,25 +443,28 @@ class _TodayState extends State<Today> {
             ),
             ButtonDetails(
               icon: Icons.add_rounded,
+              style: ButtonDetailsStyle.noPadding,
               onTap: () => onAddWorkoutTap(context, reloadState, date: today),
             ),
           ),
         ),
         const FlavourTextCard(),
         Expanded(
-          child: FutureBuilder<List<Workout>>(
-              future: todaysWorkouts,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) return const SizedBox.shrink();
+          child: Consumer<ActiveWorkoutProvider>(builder: (context, activeWorkoutProvider, child) {
+            return FutureBuilder<List<Workout>>(
+                future: WorkoutModel.getWorkoutsForDay(today, withSummary: true), // todo: monitor this performance
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) return const SizedBox.shrink();
 
-                return Column(
-                  children: [
-                    SizedBox(height: 100, child: getCalsAndBodyweightRow(snapshot.data)),
-                    Expanded(child: getWorkoutsOrPlaceholder(snapshot.data)),
-                    const Padding(padding: EdgeInsetsGeometry.all(5)),
-                  ],
-                );
-              }),
+                  return Column(
+                    children: [
+                      SizedBox(height: 100, child: getCalsAndBodyweightRow(snapshot.data)),
+                      Expanded(child: getWorkoutsOrPlaceholder(snapshot.data)),
+                      const Padding(padding: EdgeInsetsGeometry.all(5)),
+                    ],
+                  );
+                });
+          }),
         ),
       ],
     );

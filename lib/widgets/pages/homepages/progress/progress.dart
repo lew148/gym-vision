@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gymvision/widgets/pages/progress/schedules_widget.dart';
+import 'package:gymvision/widgets/pages/homepages/progress/schedules_widget.dart';
 
 class Progress extends StatefulWidget {
   const Progress({super.key});

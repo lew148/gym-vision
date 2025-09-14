@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/helpers/common_functions.dart';
+import 'package:gymvision/widgets/active_workout_bar.dart';
 import 'package:gymvision/widgets/forms/report_bug_form.dart';
 import 'package:gymvision/widgets/pages/user_settings_view.dart';
 
@@ -9,6 +10,7 @@ class DebugScaffold extends StatefulWidget {
   final Widget? customAppBarTitle;
   final List<IconButton>? customAppBarActions;
   final bool ignoreDefaults;
+  final bool showActiveWorkout;
 
   const DebugScaffold({
     super.key,
@@ -17,6 +19,7 @@ class DebugScaffold extends StatefulWidget {
     this.customAppBarTitle,
     this.customAppBarActions,
     this.ignoreDefaults = false,
+    this.showActiveWorkout = false,
   });
 
   @override
@@ -71,6 +74,7 @@ class _DebugScaffoldState extends State<DebugScaffold> {
         child: Padding(padding: const EdgeInsets.symmetric(horizontal: 8), child: widget.body),
       ),
       resizeToAvoidBottomInset: false,
+      bottomSheet: widget.showActiveWorkout ? const ActiveWorkoutBar() : null,
     );
   }
 }

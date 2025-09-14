@@ -8,7 +8,7 @@ import 'package:gymvision/models/db_models/user_settings_model.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
-import 'package:gymvision/widgets/pages/exercises/exercise_view.dart';
+import 'package:gymvision/widgets/pages/exercise/exercise_view.dart';
 import 'package:gymvision/widgets/forms/add_set_to_workout_form.dart';
 import 'package:gymvision/widgets/forms/edit_workout_set_form.dart';
 import 'package:gymvision/widgets/common/common_ui.dart';

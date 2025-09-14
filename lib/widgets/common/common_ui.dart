@@ -27,6 +27,7 @@ class ButtonDetailsStyle {
         textColor: Theme.of(context).colorScheme.primary,
       );
 
+  static ButtonDetailsStyle noPadding = ButtonDetailsStyle(padding: EdgeInsets.zero);
   static ButtonDetailsStyle redIcon = ButtonDetailsStyle(iconColor: Colors.red);
   static ButtonDetailsStyle redIconAndText = ButtonDetailsStyle(iconColor: Colors.red, textColor: Colors.red);
 }
@@ -398,6 +399,15 @@ class CommonUI {
         child: child,
       );
 
-  static getElevatedButtonsMenu(BuildContext context, List<ButtonDetails> buttons) =>
+  static Widget getElevatedButtonsMenu(BuildContext context, List<ButtonDetails> buttons) =>
       Column(children: buttons.map<Widget>((bd) => getElevatedPrimaryButton(bd)).toList());
+
+  static Widget getDragHandle(BuildContext context) => SizedBox(
+        width: 100,
+        child: Divider(
+          color: Theme.of(context).colorScheme.shadow,
+          thickness: 4,
+          radius: const BorderRadius.all(Radius.circular(25)),
+        ),
+      );
 }

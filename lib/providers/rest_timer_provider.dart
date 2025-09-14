@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
+import 'package:gymvision/providers/active_workout_provider.dart';
 import 'package:gymvision/providers/navigation_provider.dart';
 import 'package:gymvision/services/local_notification_service.dart';
 import 'package:provider/provider.dart';
@@ -74,7 +75,13 @@ class RestTimerProvider extends ChangeNotifier {
             actions: [
               CupertinoDialogAction(
                 child: const Text("Let's go!"),
-                onPressed: () => Navigator.pop(globalContext),
+                onPressed: () {
+                  Navigator.pop(globalContext);
+                  final activeWorkoutProvider = Provider.of<ActiveWorkoutProvider>(globalContext, listen: false);
+                  if (!activeWorkoutProvider.isActiveWorkoutBarOpen) {
+                    activeWorkoutProvider.openActiveWorkout(globalContext);
+                  }
+                },
               ),
             ],
           );

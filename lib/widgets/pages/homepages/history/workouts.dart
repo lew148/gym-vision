@@ -5,7 +5,7 @@ import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/models/db_models/user_settings_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
-import 'package:gymvision/widgets/pages/workouts/workout_month_scroller.dart';
+import 'package:gymvision/widgets/pages/homepages/history/workout_month_scroller.dart';
 
 class Workouts extends StatefulWidget {
   const Workouts({super.key});

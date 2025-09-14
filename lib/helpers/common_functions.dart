@@ -4,10 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
+import 'package:gymvision/providers/active_workout_provider.dart';
 import 'package:gymvision/widgets/common/common_ui.dart';
+import 'package:gymvision/widgets/components/rest_timer.dart';
 import 'package:gymvision/widgets/forms/date_time_picker.dart';
 import 'package:gymvision/widgets/forms/duration_picker.dart';
-import 'package:gymvision/widgets/pages/workouts/workout_view.dart';
+import 'package:gymvision/widgets/pages/workout/workout_view.dart';
 import 'package:gymvision/providers/rest_timer_provider.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:provider/provider.dart';
@@ -178,33 +180,29 @@ void showDurationPicker(
 
 Future showCloseableBottomSheet(BuildContext context, Widget child, {String? title}) => showModalBottomSheet(
       context: context,
+      constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
+      useSafeArea: true,
       builder: (BuildContext context) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
-            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 5, 20, 20),
-              child: SafeArea(
-                top: false,
-                child: Column(children: [
-                  SizedBox(
-                    width: 100,
-                    child: Divider(
-                      color: Theme.of(context).colorScheme.shadow,
-                      thickness: 4,
-                      radius: const BorderRadius.all(Radius.circular(25)),
-                    ),
-                  ),
-                  if (title != null) ...[
-                    CommonUI.getSectionTitle(context, title),
-                    CommonUI.getDivider(),
-                  ] else
-                    const Padding(padding: EdgeInsetsGeometry.all(10)),
-                  child,
-                ]),
-              ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              20,
+              10,
+              20,
+              10 + MediaQuery.of(context).viewInsets.bottom, // add viewInsets.bottom for keyboard space
+            ),
+            child: SafeArea(
+              top: false,
+              child: Column(children: [
+                CommonUI.getDragHandle(context),
+                if (title != null) ...[
+                  CommonUI.getSectionTitle(context, title),
+                  CommonUI.getDivider(),
+                ] else
+                  const Padding(padding: EdgeInsetsGeometry.all(10)),
+                child,
+              ]),
             ),
           ),
         ],
@@ -214,6 +212,51 @@ Future showCloseableBottomSheet(BuildContext context, Widget child, {String? tit
         borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
       ),
     );
+
+Future showFullScreenBottomSheet(
+  BuildContext context,
+  Widget child, {
+  List<Widget> actions = const [],
+  Function? onClose,
+}) =>
+    showModalBottomSheet(
+      context: context,
+      useSafeArea: true,
+      isScrollControlled: true,
+      constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25))),
+      builder: (BuildContext context) => Container(
+        height: MediaQuery.of(context).size.height,
+        padding: EdgeInsets.fromLTRB(
+          10,
+          10,
+          10,
+          MediaQuery.of(context).viewInsets.bottom, // for keyboard space
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                CommonUI.getTextButton(ButtonDetails(
+                  icon: Icons.keyboard_arrow_down_rounded,
+                  style: ButtonDetailsStyle(padding: const EdgeInsets.symmetric(vertical: 10), iconSize: 30),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                )),
+                if (actions.isNotEmpty) Row(children: actions),
+              ],
+            ),
+            Expanded(child: child),
+          ],
+        ),
+      ),
+    ).then((x) {
+      if (onClose != null) onClose();
+    });
 
 Future showOptionsMenu(BuildContext context, List<ButtonDetails> list, {String? menuName}) =>
     showCloseableBottomSheet(context, CommonUI.getModalMenu(context, list, modalName: menuName));
@@ -243,14 +286,23 @@ Future onAddWorkoutTap(
   }
 }
 
-void openWorkoutView(BuildContext context, int workoutId, {Function? reloadState, bool autofocusNotes = false}) =>
-    Navigator.of(context)
-        .push(MaterialPageRoute(
-            builder: (context) =>
-                WorkoutView(workoutId: workoutId, reloadParent: reloadState, autofocusNotes: autofocusNotes)))
-        .then((value) {
+void openWorkoutView(BuildContext context, int workoutId, {Function? reloadState, bool autofocusNotes = false}) {
+  final provider = Provider.of<ActiveWorkoutProvider>(context, listen: false);
+  showFullScreenBottomSheet(
+    context,
+    WorkoutView(
+      workoutId: workoutId,
+      reloadParent: reloadState,
+      autofocusNotes: autofocusNotes,
+    ),
+    actions: [const RestTimer()],
+    onClose: () {
+      provider.closeActiveWorkout(); // always close active workout
+      provider.refreshActiveWorkout();
       if (reloadState != null) reloadState();
-    });
+    },
+  );
+}
 
 void closeKeyboard() => FocusManager.instance.primaryFocus?.unfocus();
 

@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_category.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
-import 'package:gymvision/widgets/notes.dart';
+import 'package:gymvision/widgets/components/notes.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
@@ -12,12 +12,11 @@ import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/debug_scaffold.dart';
-import 'package:gymvision/widgets/pages/workouts/rest_timer.dart';
+import 'package:gymvision/widgets/pages/workout/workout_exercise_widget.dart';
 import 'package:gymvision/widgets/forms/category_picker.dart';
 import 'package:gymvision/widgets/common/common_ui.dart';
 import 'package:gymvision/widgets/forms/add_exercises_to_workout.dart';
-import 'package:gymvision/widgets/pages/workouts/time_elapsed_widget.dart';
-import 'package:gymvision/widgets/pages/workouts/workout_exercise_widget.dart';
+import 'package:gymvision/widgets/components/time_elapsed_widget.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:reorderables/reorderables.dart';
 
@@ -313,150 +312,136 @@ class _WorkoutViewState extends State<WorkoutView> {
         final workout = snapshot.data!;
         final categories = workout.getCategories();
         final workoutExercises = workout.getWorkoutExercises();
-
         workoutIsFinished = workout.isFinished();
 
-        return DebugScaffold(
-          customAppBarTitle: const Text(
-            'Workout',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          customAppBarActions: [
-            IconButton(
-              icon: const Icon(Icons.more_vert_rounded),
-              onPressed: () => showMoreMenu(workout),
-            )
-          ],
-          body: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CommonUI.getDateWithIcon(context, workout.date),
-                      CommonUI.getTimeWithIcon(context, workout.date, dtEnd: workout.endDate),
-                      workout.isFinished()
-                          ? CommonUI.getTimeElapsedWithIcon(context, workout.getDuration())
-                          : TimeElapsed(
-                              since: workout.date,
-                              end: workout.endDate,
-                              color: Theme.of(context).colorScheme.shadow,
-                              labelForNegativeDuration: 'Starts in',
-                            ),
-                    ],
-                  ),
-                  if (!DateTimeHelper.isInFuture(workout.date))
-                    workoutIsFinished
-                        ? CommonUI.getElevatedPrimaryButton(
-                            ButtonDetails(
-                              text: 'Resume',
-                              onTap: () => onFinishOrResumeTap(context, workout, true),
-                            ),
-                          )
-                        : CommonUI.getElevatedPrimaryButton(
-                            ButtonDetails(
-                              text: 'Finish',
-                              onTap: () => onFinishOrResumeTap(context, workout, false),
-                              style: ButtonDetailsStyle(
-                                textColor: Colors.white,
-                                backgroundColor: const Color.fromARGB(255, 45, 121, 45),
-                              ),
+        return Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CommonUI.getDateWithIcon(context, workout.date),
+                    CommonUI.getTimeWithIcon(context, workout.date, dtEnd: workout.endDate),
+                    workout.isFinished()
+                        ? CommonUI.getTimeElapsedWithIcon(context, workout.getDuration())
+                        : TimeElapsed(
+                            since: workout.date,
+                            end: workout.endDate,
+                            color: Theme.of(context).colorScheme.shadow,
+                            labelForNegativeDuration: 'Starts in',
+                          ),
+                  ],
+                ),
+                if (!DateTimeHelper.isInFuture(workout.date))
+                  workoutIsFinished
+                      ? CommonUI.getElevatedPrimaryButton(
+                          ButtonDetails(
+                            text: 'Resume',
+                            onTap: () => onFinishOrResumeTap(context, workout, true),
+                          ),
+                        )
+                      : CommonUI.getElevatedPrimaryButton(
+                          ButtonDetails(
+                            text: 'Finish',
+                            onTap: () => onFinishOrResumeTap(context, workout, false),
+                            style: ButtonDetailsStyle(
+                              textColor: Colors.white,
+                              backgroundColor: const Color.fromARGB(255, 45, 121, 45),
                             ),
                           ),
-                ],
+                        ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsetsGeometry.symmetric(vertical: 5),
+              child: Notes(
+                type: NoteType.workout,
+                objectId: workout.id!.toString(),
+                autofocus: widget.autofocusNotes,
               ),
-              Padding(
-                padding: const EdgeInsetsGeometry.symmetric(vertical: 5),
-                child: Notes(
-                  type: NoteType.workout,
-                  objectId: workout.id!.toString(),
-                  autofocus: widget.autofocusNotes,
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  workout.hasCategories()
-                      ? getWorkoutCategoriesWidget(workout.workoutCategories!, categories)
-                      : CommonUI.getSectionTitle(context, 'Exercises'),
-                  Row(children: [
-                    RestTimer(workoutId: workout.id),
-                    CommonUI.getTextButton(ButtonDetails(
-                      icon: Icons.category_rounded,
-                      onTap: () => onAddCategoryClick(categories),
-                    )),
-                    CommonUI.getTextButton(ButtonDetails(
-                      icon: Icons.add_rounded,
-                      onTap: () => onAddExerciseClick(workout.id!),
-                    )),
-                  ]),
-                ],
-              ),
-              CommonUI.getDivider(),
-              Expanded(
-                child: workoutExercises.isEmpty
-                    ? Padding(
-                        padding:
-                            const EdgeInsetsGeometry.fromLTRB(30, 30, 30, 0), // b is 0 to avoid padding using keyboard
-                        child:
-                            // SingleChildScrollView(
-                            //   child:
-                            Column(
-                          children: [
-                            const Text(
-                              'What are you training today?',
-                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.center,
-                            ),
-                            Text(
-                              'One workout closer to your goals!',
-                              style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
-                              textAlign: TextAlign.center,
-                            ),
-                            const Padding(padding: EdgeInsetsGeometry.all(10)),
-                            if (!workout.hasCategories()) ...[
-                              CommonUI.getElevatedPrimaryButton(ButtonDetails(
-                                icon: Icons.category_rounded,
-                                text: 'Select categories',
-                                onTap: () => onAddCategoryClick(categories),
-                              )),
-                              Padding(
-                                padding: const EdgeInsetsGeometry.all(5),
-                                child: Text(
-                                  'OR',
-                                  style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
-                                  textAlign: TextAlign.center,
-                                ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                workout.hasCategories()
+                    ? getWorkoutCategoriesWidget(workout.workoutCategories!, categories)
+                    : CommonUI.getSectionTitle(context, 'Exercises'),
+                Row(children: [
+                  CommonUI.getTextButton(ButtonDetails(
+                    icon: Icons.category_rounded,
+                    onTap: () => onAddCategoryClick(categories),
+                  )),
+                  CommonUI.getTextButton(ButtonDetails(
+                    icon: Icons.add_rounded,
+                    onTap: () => onAddExerciseClick(workout.id!),
+                  )),
+                ]),
+              ],
+            ),
+            CommonUI.getDivider(),
+            Expanded(
+              child: workoutExercises.isEmpty
+                  ? Padding(
+                      padding:
+                          const EdgeInsetsGeometry.fromLTRB(30, 30, 30, 0), // b is 0 to avoid padding using keyboard
+                      child:
+                          // SingleChildScrollView(
+                          //   child:
+                          Column(
+                        children: [
+                          const Text(
+                            'What are you training today?',
+                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                          Text(
+                            'One workout closer to your goals!',
+                            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
+                            textAlign: TextAlign.center,
+                          ),
+                          const Padding(padding: EdgeInsetsGeometry.all(10)),
+                          if (!workout.hasCategories()) ...[
+                            CommonUI.getElevatedPrimaryButton(ButtonDetails(
+                              icon: Icons.category_rounded,
+                              text: 'Select categories',
+                              onTap: () => onAddCategoryClick(categories),
+                            )),
+                            Padding(
+                              padding: const EdgeInsetsGeometry.all(5),
+                              child: Text(
+                                'OR',
+                                style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
+                                textAlign: TextAlign.center,
                               ),
-                            ],
-                            CommonUI.getElevatedPrimaryButton(ButtonDetails(
-                              icon: Icons.add_rounded,
-                              text: 'Add exercises',
-                              onTap: () => onAddExerciseClick(workout.id!),
-                            )),
-                            CommonUI.getElevatedPrimaryButton(ButtonDetails(
-                              icon: Icons.copy_rounded,
-                              text: 'Copy Workout',
-                              onTap: () => onCopyPreviousWorkoutTap(workout.id!, categories),
-                            )),
+                            ),
                           ],
-                        ),
-                        // ),
-                      )
-                    : ClipRRect(
-                        borderRadius: BorderRadius.circular(15),
-                        child: ReorderableColumn(
-                          padding: const EdgeInsets.only(bottom: 20),
-                          onReorder: (i1, i2) => onWorkoutExerciseReorder(workout, i1, i2),
-                          children: getWorkoutExercisesWidget(workout, workoutExercises),
-                        ),
+                          CommonUI.getElevatedPrimaryButton(ButtonDetails(
+                            icon: Icons.add_rounded,
+                            text: 'Add exercises',
+                            onTap: () => onAddExerciseClick(workout.id!),
+                          )),
+                          CommonUI.getElevatedPrimaryButton(ButtonDetails(
+                            icon: Icons.copy_rounded,
+                            text: 'Copy Workout',
+                            onTap: () => onCopyPreviousWorkoutTap(workout.id!, categories),
+                          )),
+                        ],
                       ),
-              ),
-            ],
-          ),
+                      // ),
+                    )
+                  : ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: ReorderableColumn(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        onReorder: (i1, i2) => onWorkoutExerciseReorder(workout, i1, i2),
+                        children: getWorkoutExercisesWidget(workout, workoutExercises),
+                      ),
+                    ),
+            ),
+          ],
         );
       },
     );

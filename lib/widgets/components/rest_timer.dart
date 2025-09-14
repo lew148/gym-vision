@@ -2,18 +2,14 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/helpers/common_functions.dart';
+import 'package:gymvision/providers/active_workout_provider.dart';
 import 'package:gymvision/widgets/common/common_ui.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/providers/rest_timer_provider.dart';
 import 'package:provider/provider.dart';
 
 class RestTimer extends StatefulWidget {
-  final int? workoutId;
-
-  const RestTimer({
-    super.key,
-    this.workoutId,
-  });
+  const RestTimer({super.key});
 
   @override
   State<RestTimer> createState() => _RestTimerState();
@@ -21,15 +17,14 @@ class RestTimer extends StatefulWidget {
 
 class _RestTimerState extends State<RestTimer> {
   late RestTimerProvider restTimerProvider;
+  late ActiveWorkoutProvider activeWorkoutProvider;
   Timer? uiRefreshTimer;
   Duration? left;
-  int? workoutId;
   bool leftWorkoutScreen = false;
 
   @override
   void initState() {
     super.initState();
-    workoutId = widget.workoutId;
     uiRefreshTimer = Timer.periodic(
       const Duration(milliseconds: 500),
       (Timer t) {
