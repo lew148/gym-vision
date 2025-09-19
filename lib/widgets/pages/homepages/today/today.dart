@@ -156,7 +156,7 @@ class _TodayState extends State<Today> {
                             showDeleteConfirm(
                               context,
                               "workout",
-                              () => WorkoutModel.delete(workout.id!),
+                              () async => deleteWorkout(context, workout.id!),
                               reloadState,
                             );
                           },

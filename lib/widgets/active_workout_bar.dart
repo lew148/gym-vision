@@ -53,41 +53,34 @@ class _ActiveWorkoutBarState extends State<ActiveWorkoutBar> with SingleTickerPr
           final workout = snapshot.data!;
 
           return GestureDetector(
+            behavior: HitTestBehavior.translucent,
             onTap: () => provider.openActiveWorkout(context, workout: snapshot.data),
             onVerticalDragStart: (details) => provider.openActiveWorkout(context, workout: snapshot.data),
-            child: CommonUI.getCard(
-              context,
-              Padding(
-                padding: const EdgeInsetsGeometry.only(left: 20, right: 20, bottom: 20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AnimatedBuilder(
-                      animation: _animation,
-                      builder: (context, child) {
-                        return Transform.translate(
-                          offset: Offset(0, _animation.value),
-                          child: child,
-                        );
-                      },
-                      child: Icon(Icons.keyboard_arrow_up_rounded, color: Theme.of(context).colorScheme.shadow),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(children: [
-                          Text(
-                            workout.getWorkoutTitle(),
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                          ),
-                          const Padding(padding: EdgeInsetsGeometry.all(2.5)),
-                          CommonUI.getTimeWithIcon(context, workout.date),
-                        ]),
-                        TimeElapsed(since: workout.date, color: Theme.of(context).colorScheme.primary),
-                      ],
-                    ),
-                  ],
-                ),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AnimatedBuilder(
+                    animation: _animation,
+                    builder: (context, child) => Transform.translate(offset: Offset(0, _animation.value), child: child),
+                    child: Icon(Icons.keyboard_arrow_up_rounded, color: Theme.of(context).colorScheme.shadow),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(children: [
+                        Text(
+                          workout.getWorkoutTitle(),
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                        ),
+                        const Padding(padding: EdgeInsetsGeometry.all(2.5)),
+                        CommonUI.getTimeWithIcon(context, workout.date),
+                      ]),
+                      TimeElapsed(since: workout.date, color: Theme.of(context).colorScheme.primary),
+                    ],
+                  ),
+                ],
               ),
             ),
           );

@@ -113,10 +113,13 @@ class MyApp extends StatelessWidget {
   final primary = const Color.fromRGBO(41, 182, 246, 1);
   final secondary = const Color.fromARGB(255, 216, 160, 233);
   final tertiary = const Color.fromARGB(255, 255, 101, 101);
-  final shadow = const Color.fromRGBO(158, 158, 158, 1);
-  final lightBackground = const Color(0xFFF8F8F8);
-  final darkBackground = const Color.fromARGB(255, 35, 35, 35);
-  final darkCard = const Color.fromARGB(255, 46, 46, 46);
+  final shadow = const Color.fromARGB(255, 77, 77, 77);
+  final lightBackground = const Color.fromARGB(255, 245, 245, 245);
+  final lightSurface = Colors.white; //const Color.fromARGB(255, 245, 245, 245);
+  final darkBackground = const Color.fromARGB(255, 0, 0, 0);
+  final darkSurface = const Color.fromARGB(255, 15, 15, 15);
+  final darkCard = const Color.fromARGB(255, 22, 22, 22);
+  final darkBottomSheet = const Color.fromARGB(255, 26, 26, 26);
 
   List<Widget> widgetPages() => [
         const Today(),
@@ -142,42 +145,47 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         splashColor: Colors.transparent,
         scaffoldBackgroundColor: lightBackground,
-        bottomSheetTheme: BottomSheetThemeData(backgroundColor: lightBackground),
+        bottomSheetTheme: BottomSheetThemeData(backgroundColor: lightSurface),
         colorScheme: ColorScheme.light(
           primary: primary,
           secondary: secondary,
           tertiary: tertiary,
           shadow: shadow,
+          surface: lightSurface,
         ),
       ),
       darkTheme: ThemeData(
         splashColor: Colors.transparent,
         scaffoldBackgroundColor: darkBackground,
-        bottomSheetTheme: BottomSheetThemeData(backgroundColor: darkBackground),
+        bottomSheetTheme: BottomSheetThemeData(backgroundColor: darkBottomSheet),
+        cardTheme: CardThemeData(color: darkCard),
         colorScheme: ColorScheme.dark(
           primary: primary,
           secondary: secondary,
           tertiary: tertiary,
           shadow: shadow,
-          surface: darkCard,
+          surface: darkSurface,
         ),
       ),
       themeMode: EasyDynamicTheme.of(context).themeMode,
       home: DebugScaffold(
         showActiveWorkout: true,
         body: widgetPages().elementAt(navProvider.selectedIndex),
-        bottomNavigationBar: NavigationBar(
-          onDestinationSelected: navProvider.changeTab,
-          labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-          indicatorColor: Colors.transparent,
-          selectedIndex: navProvider.selectedIndex,
-          destinations: [
-            getNavItem('Today', Icons.today_rounded),
-            getNavItem('Workouts', Icons.format_list_bulleted_rounded),
-            getNavItem('Exercises', Icons.fitness_center_rounded),
-            getNavItem('Progress', Icons.timeline_rounded),
-            getNavItem('Profile', Icons.person_rounded),
-          ],
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(border: BoxBorder.fromLTRB(top: BorderSide(color: shadow, width: 0.25))),
+          child: NavigationBar(
+            onDestinationSelected: navProvider.changeTab,
+            labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+            indicatorColor: Colors.transparent,
+            selectedIndex: navProvider.selectedIndex,
+            destinations: [
+              getNavItem('Today', Icons.today_rounded),
+              getNavItem('Workouts', Icons.format_list_bulleted_rounded),
+              getNavItem('Exercises', Icons.fitness_center_rounded),
+              getNavItem('Progress', Icons.timeline_rounded),
+              getNavItem('Profile', Icons.person_rounded),
+            ],
+          ),
         ),
       ),
     );

@@ -6,7 +6,6 @@ import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/providers/active_workout_provider.dart';
 import 'package:gymvision/widgets/common/common_ui.dart';
-import 'package:gymvision/widgets/components/rest_timer.dart';
 import 'package:gymvision/widgets/forms/date_time_picker.dart';
 import 'package:gymvision/widgets/forms/duration_picker.dart';
 import 'package:gymvision/widgets/pages/workout/workout_view.dart';
@@ -89,7 +88,6 @@ Future<bool> showConfirm(
 }) async {
   HapticFeedback.heavyImpact();
   var confirmed = false;
-
   await showDialog(
     context: context,
     builder: (context) => CupertinoAlertDialog(
@@ -182,6 +180,8 @@ Future showCloseableBottomSheet(BuildContext context, Widget child, {String? tit
       context: context,
       constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
       useSafeArea: true,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
       builder: (BuildContext context) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -192,24 +192,17 @@ Future showCloseableBottomSheet(BuildContext context, Widget child, {String? tit
               20,
               10 + MediaQuery.of(context).viewInsets.bottom, // add viewInsets.bottom for keyboard space
             ),
-            child: SafeArea(
-              top: false,
-              child: Column(children: [
-                CommonUI.getDragHandle(context),
-                if (title != null) ...[
-                  CommonUI.getSectionTitle(context, title),
-                  CommonUI.getDivider(),
-                ] else
-                  const Padding(padding: EdgeInsetsGeometry.all(10)),
-                child,
-              ]),
-            ),
+            child: Column(children: [
+              CommonUI.getDragHandle(context),
+              if (title != null) ...[
+                CommonUI.getSectionTitle(context, title),
+                CommonUI.getDivider(),
+              ] else
+                const Padding(padding: EdgeInsetsGeometry.all(10)),
+              child,
+            ]),
           ),
         ],
-      ),
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
       ),
     );
 
@@ -240,13 +233,6 @@ Future showFullScreenBottomSheet(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                CommonUI.getTextButton(ButtonDetails(
-                  icon: Icons.keyboard_arrow_down_rounded,
-                  style: ButtonDetailsStyle(padding: const EdgeInsets.symmetric(vertical: 10), iconSize: 30),
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                )),
                 if (actions.isNotEmpty) Row(children: actions),
               ],
             ),
@@ -286,6 +272,13 @@ Future onAddWorkoutTap(
   }
 }
 
+Future deleteWorkout(BuildContext context, int workoutId) async {
+  final provider = Provider.of<ActiveWorkoutProvider>(context, listen: false);
+  await WorkoutModel.delete(workoutId);
+  provider.closeActiveWorkout();
+  provider.refreshActiveWorkout();
+}
+
 void openWorkoutView(BuildContext context, int workoutId, {Function? reloadState, bool autofocusNotes = false}) {
   final provider = Provider.of<ActiveWorkoutProvider>(context, listen: false);
   showFullScreenBottomSheet(
@@ -295,7 +288,6 @@ void openWorkoutView(BuildContext context, int workoutId, {Function? reloadState
       reloadParent: reloadState,
       autofocusNotes: autofocusNotes,
     ),
-    actions: [const RestTimer()],
     onClose: () {
       provider.closeActiveWorkout(); // always close active workout
       provider.refreshActiveWorkout();

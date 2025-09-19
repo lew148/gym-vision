@@ -6,7 +6,7 @@ import 'package:gymvision/widgets/pages/user_settings_view.dart';
 
 class DebugScaffold extends StatefulWidget {
   final Widget body;
-  final NavigationBar? bottomNavigationBar;
+  final Widget? bottomNavigationBar;
   final Widget? customAppBarTitle;
   final List<IconButton>? customAppBarActions;
   final bool ignoreDefaults;
@@ -70,7 +70,7 @@ class _DebugScaffoldState extends State<DebugScaffold> {
       ),
       bottomNavigationBar: widget.bottomNavigationBar,
       body: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
+        onTap: () => closeKeyboard(),
         child: Padding(padding: const EdgeInsets.symmetric(horizontal: 8), child: widget.body),
       ),
       resizeToAvoidBottomInset: false,

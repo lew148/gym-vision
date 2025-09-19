@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_category.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
+import 'package:gymvision/providers/active_workout_provider.dart';
 import 'package:gymvision/widgets/components/notes.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
@@ -11,6 +12,7 @@ import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
+import 'package:gymvision/widgets/components/rest_timer.dart';
 import 'package:gymvision/widgets/debug_scaffold.dart';
 import 'package:gymvision/widgets/pages/workout/workout_exercise_widget.dart';
 import 'package:gymvision/widgets/forms/category_picker.dart';
@@ -18,6 +20,7 @@ import 'package:gymvision/widgets/common/common_ui.dart';
 import 'package:gymvision/widgets/forms/add_exercises_to_workout.dart';
 import 'package:gymvision/widgets/components/time_elapsed_widget.dart';
 import 'package:gymvision/static_data/enums.dart';
+import 'package:provider/provider.dart';
 import 'package:reorderables/reorderables.dart';
 
 class WorkoutView extends StatefulWidget {
@@ -81,17 +84,15 @@ class _WorkoutViewState extends State<WorkoutView> {
     openWorkoutView(context, id, reloadState: reloadState);
   }
 
-  getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories, List<Category> existingCategories) => Expanded(
-        child: Wrap(
-          alignment: WrapAlignment.start,
-          children: workoutCategories //todo: sort
-              .map((wc) => CommonUI.getSmallPropDisplay(
-                    context,
-                    wc.getCategoryDisplayName(),
-                    onTap: () => goToMostRecentWorkout(wc),
-                  ))
-              .toList(),
-        ),
+  getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories, List<Category> existingCategories) => Wrap(
+        alignment: WrapAlignment.start,
+        children: workoutCategories //todo: sort
+            .map((wc) => CommonUI.getSmallPropDisplay(
+                  context,
+                  wc.getCategoryDisplayName(),
+                  onTap: () => goToMostRecentWorkout(wc),
+                ))
+            .toList(),
       );
 
   List<Widget> getWorkoutExercisesWidget(Workout workout, List<WorkoutExercise> workoutExercises) =>
@@ -159,7 +160,7 @@ class _WorkoutViewState extends State<WorkoutView> {
         },
       );
 
-  void showMoreMenu(Workout workout) => showOptionsMenu(
+  void showMoreMenu(Workout workout, bool workoutIsFinished) => showOptionsMenu(
         context,
         [
           //   ButtonDetails(
@@ -178,6 +179,23 @@ class _WorkoutViewState extends State<WorkoutView> {
           //     icon: Icons.share_rounded,
           //     text: 'Export Workout',
           //   ),
+          if (workoutIsFinished) ...[
+            ButtonDetails(
+              icon: Icons.play_circle_outline_rounded,
+              text: 'Resume Workout',
+              onTap: () => onFinishOrResumeTap(context, workout, true),
+              style: ButtonDetailsStyle.primaryIcon(context),
+            ),
+            ButtonDetails(
+              onTap: () {
+                Navigator.pop(context);
+                showEditEndTime(workout);
+              },
+              icon: Icons.access_time_rounded,
+              style: ButtonDetailsStyle.primaryIcon(context),
+              text: 'Change End Time',
+            ),
+          ],
           ButtonDetails(
             onTap: () {
               Navigator.pop(context);
@@ -196,24 +214,13 @@ class _WorkoutViewState extends State<WorkoutView> {
             style: ButtonDetailsStyle.primaryIcon(context),
             text: 'Change Start Time',
           ),
-          if (workoutIsFinished)
-            ButtonDetails(
-              onTap: () {
-                Navigator.pop(context);
-                showEditEndTime(workout);
-              },
-              icon: Icons.access_time_filled_rounded,
-              style: ButtonDetailsStyle.primaryIcon(context),
-              text: 'Change End Time',
-            ),
-
           ButtonDetails(
             onTap: () {
               Navigator.pop(context);
               showDeleteConfirm(
                 context,
                 "workout",
-                () => WorkoutModel.delete(workout.id!),
+                () async => deleteWorkout(context, workout.id!),
                 widget.reloadParent,
                 popCaller: true,
               );
@@ -306,7 +313,35 @@ class _WorkoutViewState extends State<WorkoutView> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) return const SizedBox.shrink();
         if (!snapshot.hasData || snapshot.data == null) {
-          return const DebugScaffold(body: Center(child: Text("Failed to load workout.")));
+          return Column(children: [
+            Row(children: [
+              CommonUI.getTextButton(ButtonDetails(
+                icon: Icons.keyboard_arrow_down_rounded,
+                style: ButtonDetailsStyle(padding: const EdgeInsets.symmetric(vertical: 10), iconSize: 30),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              )),
+            ]),
+            const Padding(padding: EdgeInsetsGeometry.all(20)),
+            Center(
+              child: Column(children: [
+                Icon(
+                  Icons.fmd_bad_rounded,
+                  size: 100,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                const Padding(padding: EdgeInsetsGeometry.all(10)),
+                const Text(
+                  "Failed to load workout",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+              ]),
+            ),
+          ]);
         }
 
         final workout = snapshot.data!;
@@ -318,7 +353,35 @@ class _WorkoutViewState extends State<WorkoutView> {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(children: [
+                  CommonUI.getTextButton(ButtonDetails(
+                    icon: Icons.keyboard_arrow_down_rounded,
+                    style: ButtonDetailsStyle(padding: const EdgeInsets.symmetric(vertical: 10), iconSize: 30),
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                  )),
+                  const RestTimer(),
+                ]),
+                Row(children: [
+                  if (!DateTimeHelper.isInFuture(workout.date) && !workoutIsFinished)
+                    CommonUI.getTextButton(
+                      ButtonDetails(
+                        icon: Icons.check_rounded,
+                        onTap: () => onFinishOrResumeTap(context, workout, false),
+                      ),
+                    ),
+                  CommonUI.getTextButton(ButtonDetails(
+                    onTap: () => showMoreMenu(workout, workoutIsFinished),
+                    icon: Icons.more_vert_rounded,
+                  )),
+                ]),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -335,62 +398,37 @@ class _WorkoutViewState extends State<WorkoutView> {
                           ),
                   ],
                 ),
-                if (!DateTimeHelper.isInFuture(workout.date))
-                  workoutIsFinished
-                      ? CommonUI.getElevatedPrimaryButton(
-                          ButtonDetails(
-                            text: 'Resume',
-                            onTap: () => onFinishOrResumeTap(context, workout, true),
-                          ),
-                        )
-                      : CommonUI.getElevatedPrimaryButton(
-                          ButtonDetails(
-                            text: 'Finish',
-                            onTap: () => onFinishOrResumeTap(context, workout, false),
-                            style: ButtonDetailsStyle(
-                              textColor: Colors.white,
-                              backgroundColor: const Color.fromARGB(255, 45, 121, 45),
-                            ),
-                          ),
-                        ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsetsGeometry.symmetric(vertical: 5),
-              child: Notes(
-                type: NoteType.workout,
-                objectId: workout.id!.toString(),
-                autofocus: widget.autofocusNotes,
+            if (workout.hasCategories())
+              Row(children: [
+                getWorkoutCategoriesWidget(workout.workoutCategories!, categories),
+              ]),
+            Row(children: [
+              Expanded(
+                child: Notes(
+                  type: NoteType.workout,
+                  objectId: workout.id!.toString(),
+                  autofocus: widget.autofocusNotes,
+                ),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                workout.hasCategories()
-                    ? getWorkoutCategoriesWidget(workout.workoutCategories!, categories)
-                    : CommonUI.getSectionTitle(context, 'Exercises'),
-                Row(children: [
-                  CommonUI.getTextButton(ButtonDetails(
-                    icon: Icons.category_rounded,
-                    onTap: () => onAddCategoryClick(categories),
-                  )),
-                  CommonUI.getTextButton(ButtonDetails(
-                    icon: Icons.add_rounded,
-                    onTap: () => onAddExerciseClick(workout.id!),
-                  )),
-                ]),
-              ],
-            ),
-            CommonUI.getDivider(),
+              Row(children: [
+                CommonUI.getTextButton(ButtonDetails(
+                  icon: Icons.category_rounded,
+                  onTap: () => onAddCategoryClick(categories),
+                )),
+                CommonUI.getTextButton(ButtonDetails(
+                  icon: Icons.add_rounded,
+                  onTap: () => onAddExerciseClick(workout.id!),
+                )),
+              ]),
+            ]),
             Expanded(
               child: workoutExercises.isEmpty
                   ? Padding(
                       padding:
                           const EdgeInsetsGeometry.fromLTRB(30, 30, 30, 0), // b is 0 to avoid padding using keyboard
-                      child:
-                          // SingleChildScrollView(
-                          //   child:
-                          Column(
+                      child: Column(
                         children: [
                           const Text(
                             'What are you training today?',
@@ -430,7 +468,6 @@ class _WorkoutViewState extends State<WorkoutView> {
                           )),
                         ],
                       ),
-                      // ),
                     )
                   : ClipRRect(
                       borderRadius: BorderRadius.circular(15),
