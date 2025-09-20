@@ -221,6 +221,7 @@ Future showFullScreenBottomSheet(
       constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25))),
       builder: (BuildContext context) => Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Container(
           height: MediaQuery.of(context).size.height,
           padding: EdgeInsets.fromLTRB(
