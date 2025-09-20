@@ -106,14 +106,32 @@ class WorkoutModel {
   }
 
   static Future<Workout?> getActiveWorkout({bool withCategories = false, bool withWorkoutExercises = false}) async {
+    const maxHoursToLook = 4;
     final db = DatabaseHelper.db;
-    final activeWorkout = (await (db.select(db.driftWorkouts)
+    final now = DateTime.now();
+    final lowerBound = now.add(const Duration(hours: -maxHoursToLook));
+
+    var activeWorkout = (await (db.select(db.driftWorkouts)
               ..orderBy([(w) => OrderingTerm.desc(w.date)])
-              ..where((w) => db.driftWorkouts.date.isSmallerThanValue(DateTime.now()))
+              ..where((w) => w.date.isSmallerThanValue(now))
+              ..where((w) => w.date.isBiggerThanValue(lowerBound))
               ..where((w) => w.endDate.isNull())
               ..limit(1))
             .getSingleOrNull())
         ?.toObject();
+
+    if (activeWorkout == null) {
+      final upperBound = now.add(const Duration(hours: maxHoursToLook));
+      activeWorkout = (await (db.select(db.driftWorkouts)
+                ..orderBy([(w) => OrderingTerm.desc(w.date)])
+                ..where((w) => w.date.isBiggerThanValue(now))
+                ..where((w) => w.date.isSmallerThanValue(upperBound))
+                ..where((w) => w.endDate.isNull())
+                ..limit(1))
+              .getSingleOrNull())
+          ?.toObject();
+    }
+
     if (activeWorkout == null) return null;
 
     if (withCategories) {

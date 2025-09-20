@@ -77,7 +77,12 @@ class _ActiveWorkoutBarState extends State<ActiveWorkoutBar> with SingleTickerPr
                         const Padding(padding: EdgeInsetsGeometry.all(2.5)),
                         CommonUI.getTimeWithIcon(context, workout.date),
                       ]),
-                      TimeElapsed(since: workout.date, color: Theme.of(context).colorScheme.primary),
+                      TimeElapsed(
+                        since: workout.date,
+                        color: Theme.of(context).colorScheme.primary,
+                        labelForNegativeDuration: 'Starts in',
+                        useIcon: false,
+                      ),
                     ],
                   ),
                 ],

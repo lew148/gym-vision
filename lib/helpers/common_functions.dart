@@ -188,9 +188,11 @@ Future showCloseableBottomSheet(BuildContext context, Widget child, {String? tit
           Padding(
             padding: EdgeInsets.fromLTRB(
               20,
-              10,
+              5,
               20,
-              10 + MediaQuery.of(context).viewInsets.bottom, // add viewInsets.bottom for keyboard space
+              MediaQuery.of(context).viewInsets.bottom > 0
+                  ? 10 + MediaQuery.of(context).viewInsets.bottom
+                  : 30, // add viewInsets.bottom for keyboard space
             ),
             child: Column(children: [
               CommonUI.getDragHandle(context),
@@ -218,26 +220,28 @@ Future showFullScreenBottomSheet(
       isScrollControlled: true,
       constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25))),
-      builder: (BuildContext context) => Container(
-        height: MediaQuery.of(context).size.height,
-        padding: EdgeInsets.fromLTRB(
-          10,
-          10,
-          10,
-          MediaQuery.of(context).viewInsets.bottom, // for keyboard space
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                if (actions.isNotEmpty) Row(children: actions),
-              ],
-            ),
-            Expanded(child: child),
-          ],
+      builder: (BuildContext context) => Scaffold(
+        body: Container(
+          height: MediaQuery.of(context).size.height,
+          padding: EdgeInsets.fromLTRB(
+            10,
+            10,
+            10,
+            MediaQuery.of(context).viewInsets.bottom, // for keyboard space
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  if (actions.isNotEmpty) Row(children: actions),
+                ],
+              ),
+              Expanded(child: child),
+            ],
+          ),
         ),
       ),
     ).then((x) {

@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_category.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
-import 'package:gymvision/providers/active_workout_provider.dart';
 import 'package:gymvision/widgets/components/notes.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
@@ -13,14 +12,12 @@ import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/components/rest_timer.dart';
-import 'package:gymvision/widgets/debug_scaffold.dart';
 import 'package:gymvision/widgets/pages/workout/workout_exercise_widget.dart';
 import 'package:gymvision/widgets/forms/category_picker.dart';
 import 'package:gymvision/widgets/common/common_ui.dart';
 import 'package:gymvision/widgets/forms/add_exercises_to_workout.dart';
 import 'package:gymvision/widgets/components/time_elapsed_widget.dart';
 import 'package:gymvision/static_data/enums.dart';
-import 'package:provider/provider.dart';
 import 'package:reorderables/reorderables.dart';
 
 class WorkoutView extends StatefulWidget {
@@ -101,10 +98,10 @@ class _WorkoutViewState extends State<WorkoutView> {
                 key: Key(we.id.toString()),
                 child: WorkoutExerciseWidget(
                   workoutExercise: we,
-                  reloadParent: reloadState,
-                  toggleDroppedParent: (int? wexId) {
-                    if (wexId != null) {
-                      droppedWes.contains(wexId) ? droppedWes.remove(wexId) : droppedWes.add(wexId);
+                  onDelete: (x) => reloadState(),
+                  toggleDroppedParent: (int? weId) {
+                    if (weId != null) {
+                      droppedWes.contains(weId) ? droppedWes.remove(weId) : droppedWes.add(weId);
                     }
                   },
                   dropped: droppedWes.contains(we.id),

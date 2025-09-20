@@ -7,6 +7,7 @@ class TimeElapsed extends StatefulWidget {
   final DateTime? end;
   final Color? color;
   final String? labelForNegativeDuration;
+  final bool useIcon;
 
   const TimeElapsed({
     super.key,
@@ -14,6 +15,7 @@ class TimeElapsed extends StatefulWidget {
     this.end,
     this.color,
     this.labelForNegativeDuration,
+    this.useIcon = true,
   });
 
   @override
@@ -50,8 +52,10 @@ class _TimeElapsedState extends State<TimeElapsed> {
   @override
   Widget build(BuildContext context) {
     return Row(children: [
-      Icon(Icons.hourglass_empty_rounded, size: 15, color: widget.color),
-      const Padding(padding: EdgeInsetsGeometry.all(2.5)),
+      if (widget.useIcon) ...[
+        Icon(Icons.hourglass_empty_rounded, size: 15, color: widget.color),
+        const Padding(padding: EdgeInsetsGeometry.all(2.5)),
+      ],
       Text(
         '${!timeSince.isNegative || widget.labelForNegativeDuration == null ? '' : '${widget.labelForNegativeDuration} '}${DateTimeHelper.getDurationString(timeSince, useNegativeSymbol: widget.labelForNegativeDuration == null)}',
         style: TextStyle(color: widget.color),

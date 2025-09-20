@@ -8,26 +8,27 @@ import 'package:gymvision/models/db_models/user_settings_model.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
+import 'package:gymvision/models/default_exercises_model.dart';
+import 'package:gymvision/widgets/forms/fields/custom_checkbox.dart';
 import 'package:gymvision/widgets/pages/exercise/exercise_view.dart';
 import 'package:gymvision/widgets/forms/add_set_to_workout_form.dart';
 import 'package:gymvision/widgets/forms/edit_workout_set_form.dart';
 import 'package:gymvision/widgets/common/common_ui.dart';
-import 'package:gymvision/widgets/forms/fields/custom_form_fields.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 
 class WorkoutExerciseWidget extends StatefulWidget {
   final WorkoutExercise workoutExercise;
-  final Function() reloadParent;
-  final Function(int wexId) toggleDroppedParent;
+  final Function(int weId)? onDelete;
+  final Function(int weId)? toggleDroppedParent;
   final bool dropped;
   final bool isInFuture;
 
   const WorkoutExerciseWidget({
     super.key,
     required this.workoutExercise,
-    required this.reloadParent,
-    required this.toggleDroppedParent,
+    this.onDelete,
+    this.toggleDroppedParent,
     this.dropped = false,
     this.isInFuture = false,
   });
@@ -37,39 +38,37 @@ class WorkoutExerciseWidget extends StatefulWidget {
 }
 
 class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
-  late int workoutId;
+  late Future<List<WorkoutSet>> workoutSetsFuture;
   late String exerciseIdentifier;
   late Exercise exercise;
-  late List<WorkoutSet> workoutSets;
   late bool dropped;
-  late bool isDroppable;
-  late bool isDone;
 
   @override
   void initState() {
     super.initState();
-    workoutId = widget.workoutExercise.workoutId;
+    workoutSetsFuture = WorkoutSetModel.getSetsForWorkoutExercise(widget.workoutExercise.id!);
     exerciseIdentifier = widget.workoutExercise.exerciseIdentifier;
-    exercise = widget.workoutExercise.exercise!;
-    workoutSets = widget.workoutExercise.workoutSets ?? [];
+    exercise = widget.workoutExercise.exercise ?? DefaultExercisesModel.getExerciseByIdentifier(exerciseIdentifier)!;
     dropped = widget.dropped;
-    isDroppable = workoutSets.isNotEmpty;
-    isDone = widget.workoutExercise.isDone();
   }
+
+  void reload() => setState(() {
+        workoutSetsFuture = WorkoutSetModel.getSetsForWorkoutExercise(widget.workoutExercise.id!);
+      });
 
   void toggleDropped() {
     setState(() {
       dropped = !dropped;
     });
 
-    widget.toggleDroppedParent(widget.workoutExercise.id!);
+    if (widget.toggleDroppedParent != null) widget.toggleDroppedParent!(widget.workoutExercise.id!);
   }
 
   void onEditWorkoutSetTap(WorkoutSet ws) => showCloseableBottomSheet(
         context,
         EditWorkoutSetForm(
           workoutSet: ws,
-          reloadState: widget.reloadParent,
+          reloadState: reload,
           exerciseWithDetails: exercise,
         ),
       );
@@ -93,7 +92,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       showSnackBar(context, 'Failed add set to workout: ${ex.toString()}');
     }
 
-    widget.reloadParent();
+    reload();
   }
 
   void onAddSetsButtonTap() {
@@ -101,8 +100,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       context,
       AddSetToWorkoutForm(
         exerciseIdentifier: exerciseIdentifier,
-        workoutId: workoutId,
-        reloadState: widget.reloadParent,
+        workoutId: widget.workoutExercise.workoutId,
+        reloadState: reload,
         onSuccess: () => dropped ? null : toggleDropped(),
       ),
     );
@@ -119,49 +118,39 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         Expanded(flex: 3, child: CommonUI.getCaloriesWithIcon(ws)),
       ];
 
-  List<Widget> getSetWidgets() {
+  List<Widget> getSetWidgets(List<WorkoutSet> sets) {
     final List<Widget> widgets = [];
 
-    final orderedSets = OrderingHelper.orderListById(workoutSets, widget.workoutExercise.setOrder);
+    final orderedSets = OrderingHelper.orderListById(sets, widget.workoutExercise.setOrder);
     for (int i = 0; i < orderedSets.length; i++) {
-      final ws = orderedSets[i];
+      final set = orderedSets[i];
       widgets.add(InkWell(
         enableFeedback: false,
         onLongPress: () {
           HapticFeedback.lightImpact();
-          showSetMenu(ws);
+          showSetMenu(set);
         },
-        onTap: () => onEditWorkoutSetTap(ws),
+        onTap: () => onEditWorkoutSetTap(set),
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Row(
             children: [
               Expanded(
                 flex: 2,
-                child: GestureDetector(
-                  onTap: () => onSetDoneTap(ws),
-                  child: Container(
-                    height: 25,
-                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                    decoration: BoxDecoration(
-                      border: BoxBorder.all(color: Theme.of(context).colorScheme.shadow),
-                      borderRadius: BorderRadius.circular(10),
-                      color: ws.done ? Theme.of(context).colorScheme.primary : null,
+                child: Row(children: [
+                  CustomCheckbox(value: set.done, onChange: (value) => onSetDoneTap(set, value)),
+                  const Padding(padding: EdgeInsetsGeometry.all(5)),
+                  Text(
+                    (i + 1).toString(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.shadow,
                     ),
-                    child: ws.done
-                        ? Icon(Icons.check_rounded, size: 20, color: Theme.of(context).colorScheme.surface)
-                        : Text(
-                            (i + 1).toString(),
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: ws.done ? Colors.black : null,
-                            ),
-                          ),
-                  ),
-                ),
+                  )
+                ]),
               ),
-              ...(widget.workoutExercise.isCardio() ? getCardioSetContents(ws) : getWeightedSetContents(ws))
+              ...(widget.workoutExercise.isCardio() ? getCardioSetContents(set) : getWeightedSetContents(set))
             ],
           ),
         ),
@@ -171,47 +160,38 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     return widgets;
   }
 
-  void onWorkoutExerciseDoneTap(bool done) async {
+  Future<bool> onWorkoutExerciseDoneTap(bool done, bool standalone) async {
     try {
       HapticFeedback.lightImpact();
 
-      if (workoutSets.isEmpty) {
+      if (widget.isInFuture && done) {
+        showSnackBar(context, 'Cannot complete sets in the future');
+        return false;
+      }
+
+      if (standalone) {
         widget.workoutExercise.done = done;
         final success = await WorkoutExerciseModel.update(widget.workoutExercise);
         if (!success) throw Exception();
-
-        setState(() {
-          isDone = done;
-        });
-      } else {
-        if (widget.isInFuture && done) {
-          showSnackBar(context, 'Cannot complete sets that are in the future.');
-          return;
-        }
-
-        final success = await WorkoutExerciseModel.markAllSetsDone(widget.workoutExercise.id!, done);
-        if (!success) throw Exception();
-
-        setState(() {
-          isDone = done;
-        });
+        return true;
       }
-    } catch (ex) {
-      if (mounted) showSnackBar(context, 'Failed to update exercise');
-      return;
-    }
 
-    widget.reloadParent();
+      final success = await WorkoutExerciseModel.markAllSetsDone(widget.workoutExercise.id!, done);
+      if (!success) throw Exception();
+
+      reload();
+      return true;
+    } catch (ex) {
+      return false;
+    }
   }
 
-  void onSetDoneTap(WorkoutSet set) async {
+  Future<bool> onSetDoneTap(WorkoutSet set, bool done) async {
     try {
       HapticFeedback.lightImpact();
-      final done = !set.done;
-
       if (widget.isInFuture && done) {
-        showSnackBar(context, 'Cannot complete set, as it is in the future.');
-        return;
+        showSnackBar(context, 'Cannot complete sets in the future');
+        return false;
       }
 
       set.done = done;
@@ -220,12 +200,10 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
 
       final settings = await UserSettingsModel.getUserSettings();
       if (done && settings.intraSetRestTimer != null && mounted) setRestTimer(context, settings.intraSetRestTimer!);
+      return true;
     } catch (ex) {
-      if (mounted) showSnackBar(context, 'Failed to update set');
-      return;
+      return false;
     }
-
-    widget.reloadParent();
   }
 
   void showExerciseMenu() {
@@ -240,7 +218,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                 Navigator.pop(context);
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (context) => ExerciseView(identifier: exerciseIdentifier)))
-                    .then((value) => widget.reloadParent());
+                    .then((value) => reload());
               },
               child: Row(
                 children: [
@@ -267,7 +245,9 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                   context,
                   "exercise from workout",
                   () => WorkoutExerciseModel.delete(widget.workoutExercise.id!),
-                  widget.reloadParent,
+                  () {
+                    if (widget.onDelete != null) widget.onDelete!(widget.workoutExercise.id!);
+                  },
                 );
               },
               child: Row(
@@ -317,7 +297,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
             context,
             "set",
             () => WorkoutSetModel.delete(ws.id!),
-            widget.reloadParent,
+            reload,
             popCaller: true,
           ),
         ),
@@ -325,71 +305,82 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     );
   }
 
+  Widget getHeader(bool standalone, bool isDone) => Padding(
+        padding: const EdgeInsets.all(8),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            CustomCheckbox(value: isDone, onChange: (value) => onWorkoutExerciseDoneTap(value, standalone)),
+            const Padding(padding: EdgeInsetsGeometry.all(5)),
+            Expanded(
+              child: Row(children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        exercise.name,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Row(children: [
+                        if (exercise.equipment != Equipment.other)
+                          Text(
+                            exercise.equipment.displayName,
+                            style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                          ),
+                      ]),
+                    ],
+                  ),
+                ),
+                if (!standalone)
+                  dropped ? const Icon(Icons.arrow_drop_up_rounded) : const Icon(Icons.arrow_drop_down_rounded),
+              ]),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                CommonUI.getTextButton(
+                  ButtonDetails(
+                    icon: Icons.add_rounded,
+                    onTap: onAddSetsButtonTap,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: showExerciseMenu,
+                  child: const Icon(Icons.more_vert_rounded),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     return CommonUI.getCard(
       context,
-      Column(
-        children: [
-          GestureDetector(
-            onTap: toggleDropped,
-            behavior: HitTestBehavior.translucent,
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CustomFormFields.checkbox(
-                    context,
-                    isDone,
-                    (bool? value) => onWorkoutExerciseDoneTap(value!),
-                  ),
-                  Expanded(
-                    child: Row(children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              exercise.name,
-                              style: const TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Row(children: [
-                              if (exercise.equipment != Equipment.other)
-                                Text(exercise.equipment.displayName,
-                                    style: TextStyle(color: Theme.of(context).colorScheme.shadow)),
-                            ]),
-                          ],
-                        ),
-                      ),
-                      if (isDroppable)
-                        dropped ? const Icon(Icons.arrow_drop_up_rounded) : const Icon(Icons.arrow_drop_down_rounded),
-                    ]),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      CommonUI.getTextButton(
-                        ButtonDetails(
-                          icon: Icons.add_rounded,
-                          onTap: onAddSetsButtonTap,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: showExerciseMenu,
-                        child: const Icon(Icons.more_vert_rounded),
-                      ),
-                    ],
-                  ),
-                ],
+      FutureBuilder(
+        future: workoutSetsFuture,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return const SizedBox.shrink();
+
+          final sets = snapshot.data!;
+          if (sets.isEmpty) return getHeader(true, widget.workoutExercise.done);
+
+          return Column(
+            children: [
+              GestureDetector(
+                onTap: toggleDropped,
+                behavior: HitTestBehavior.translucent,
+                child: getHeader(false, !(sets.any((ws) => !ws.done))),
               ),
-            ),
-          ),
-          if (isDroppable && dropped) ...[
-            CommonUI.getDivider(height: 0),
-            ...getSetWidgets(),
-          ],
-        ],
+              if (dropped) ...[
+                CommonUI.getShadowDivider(context, height: 0),
+                Column(children: getSetWidgets(sets)),
+              ],
+            ],
+          );
+        },
       ),
     );
   }

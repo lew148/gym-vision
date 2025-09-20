@@ -263,6 +263,11 @@ class CommonUI {
       );
 
   static getDivider({double? height}) => Divider(thickness: 0.25, height: height);
+  static getShadowDivider(BuildContext context, {double? height}) => Divider(
+        color: Theme.of(context).colorScheme.shadow,
+        thickness: 0.25,
+        height: height,
+      );
 
   static getVerticalDivider(BuildContext context, {double? thickness, Color? color}) =>
       VerticalDivider(thickness: thickness ?? 0.25, color: color ?? Theme.of(context).colorScheme.shadow);
