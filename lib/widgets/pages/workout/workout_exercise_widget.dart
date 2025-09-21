@@ -145,7 +145,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.shadow,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
                   )
                 ]),
@@ -200,6 +200,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
 
       final settings = await UserSettingsModel.getUserSettings();
       if (done && settings.intraSetRestTimer != null && mounted) setRestTimer(context, settings.intraSetRestTimer!);
+
+      reload();
       return true;
     } catch (ex) {
       return false;
@@ -326,7 +328,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                         if (exercise.equipment != Equipment.other)
                           Text(
                             exercise.equipment.displayName,
-                            style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                           ),
                       ]),
                     ],
@@ -339,16 +341,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                CommonUI.getTextButton(
-                  ButtonDetails(
-                    icon: Icons.add_rounded,
-                    onTap: onAddSetsButtonTap,
-                  ),
-                ),
-                GestureDetector(
-                  onTap: showExerciseMenu,
-                  child: const Icon(Icons.more_vert_rounded),
-                ),
+                CommonUI.getTextButton(ButtonDetails(icon: Icons.add_rounded, onTap: onAddSetsButtonTap)),
+                GestureDetector(onTap: showExerciseMenu, child: const Icon(Icons.more_vert_rounded)),
               ],
             ),
           ],

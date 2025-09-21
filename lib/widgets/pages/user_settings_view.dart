@@ -186,7 +186,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
               Center(
                 child: Text(
                   'Version: ${AppHelper.appVersion}',
-                  style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                  style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                 ),
               ),
             ],

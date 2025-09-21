@@ -90,7 +90,7 @@ class _ExerciseViewState extends State<ExerciseView> {
           child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Text(
               'PR (${DateTimeHelper.getDateStr(pr.getWorkout()!.date)})',
-              style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
             ),
             Row(
               children: [

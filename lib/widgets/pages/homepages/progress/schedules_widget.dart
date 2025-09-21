@@ -36,10 +36,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                text,
-                style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-              ),
+              Text(text, style: TextStyle(color: Theme.of(context).colorScheme.secondary)),
             ],
           ),
         ),
@@ -252,7 +249,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
                               ),
                               Text(
                                 'Started ${DateTimeHelper.getDateOrDayStr(activeScheduleSnapshot.data!.startDate)}',
-                                style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                                style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                               ),
                             ],
                           )

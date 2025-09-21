@@ -237,7 +237,7 @@ class _TodayState extends State<Today> {
             ),
             Text(
               "Jump straight into your scheduled workout",
-              style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
               textAlign: TextAlign.center,
             ),
           ],
@@ -264,7 +264,7 @@ class _TodayState extends State<Today> {
                         padding: const EdgeInsetsGeometry.all(5),
                         child: Text(
                           'OR',
-                          style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
+                          style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.secondary),
                           textAlign: TextAlign.center,
                         ),
                       ),
@@ -287,7 +287,7 @@ class _TodayState extends State<Today> {
                                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                             Text(
                               'Today is a scheduled rest day',
-                              style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                               textAlign: TextAlign.center,
                             ),
                           ],
@@ -349,7 +349,7 @@ class _TodayState extends State<Today> {
                       ),
                       Text(
                         'kcals',
-                        style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                       ),
                     ],
                   ),
@@ -409,7 +409,7 @@ class _TodayState extends State<Today> {
                                 ),
                                 Text(
                                   '@ ${bwsnapshot.data!.getTimeString()}',
-                                  style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                                  style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                                 ),
                               ],
                             ),
@@ -436,7 +436,7 @@ class _TodayState extends State<Today> {
               children: [
                 Text(
                   DateFormat('EEEE, MMMM d').format(today),
-                  style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                  style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                 ),
                 const Text('Today', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
               ],

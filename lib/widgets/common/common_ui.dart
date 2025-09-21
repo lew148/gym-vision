@@ -58,7 +58,7 @@ class CommonUI {
             Text(
               title,
               style: TextStyle(
-                color: Theme.of(context).colorScheme.shadow,
+                color: Theme.of(context).colorScheme.secondary,
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
               ),
@@ -279,7 +279,7 @@ class CommonUI {
           children: [
             Text(
               title,
-              style: TextStyle(fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.shadow),
+              style: TextStyle(fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.secondary),
             ),
             info ?? getDash()
           ],
@@ -287,39 +287,39 @@ class CommonUI {
       );
 
   static getDateTimeWithIcon(BuildContext context, DateTime dt) => Row(children: [
-        Icon(Icons.calendar_month_rounded, color: Theme.of(context).colorScheme.shadow, size: 15),
+        Icon(Icons.calendar_month_rounded, color: Theme.of(context).colorScheme.secondary, size: 15),
         const Padding(padding: EdgeInsetsGeometry.all(2.5)),
         Text(
           '${DateFormat(DateTimeHelper.dmyFormat).format(dt)} @ ${DateFormat(DateTimeHelper.hmFormat).format(dt)}',
-          style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
+          style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontSize: 15),
         ),
       ]);
 
   static getDateWithIcon(BuildContext context, DateTime dt) => Row(children: [
-        Icon(Icons.calendar_month_rounded, color: Theme.of(context).colorScheme.shadow, size: 15),
+        Icon(Icons.calendar_month_rounded, color: Theme.of(context).colorScheme.secondary, size: 15),
         const Padding(padding: EdgeInsetsGeometry.all(2.5)),
         Text(
           DateFormat(DateTimeHelper.dmyFormat).format(dt),
-          style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
+          style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontSize: 15),
         ),
       ]);
 
   static getTimeWithIcon(BuildContext context, DateTime dt, {DateTime? dtEnd}) => Row(children: [
-        Icon(Icons.access_time_rounded, color: Theme.of(context).colorScheme.shadow, size: 15),
+        Icon(Icons.access_time_rounded, color: Theme.of(context).colorScheme.secondary, size: 15),
         const Padding(padding: EdgeInsetsGeometry.all(2.5)),
         Text(
           '${DateFormat(DateTimeHelper.hmFormat).format(dt)}${dtEnd == null ? '' : ' - ${DateFormat(DateTimeHelper.hmFormat).format(dtEnd)}'}',
-          style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
+          style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontSize: 15),
         ),
       ]);
 
   static getTimeElapsedWithIcon(BuildContext context, Duration timeElapsed) => Row(children: [
-        Icon(Icons.hourglass_empty_rounded, color: Theme.of(context).colorScheme.shadow, size: 15),
+        Icon(Icons.hourglass_empty_rounded, color: Theme.of(context).colorScheme.secondary, size: 15),
         const Padding(padding: EdgeInsetsGeometry.all(2.5)),
         Text(
           DateTimeHelper.getHoursAndMinsDurationString(timeElapsed),
           style: TextStyle(
-            color: Theme.of(context).colorScheme.shadow,
+            color: Theme.of(context).colorScheme.secondary,
             fontSize: 15,
           ),
         ),

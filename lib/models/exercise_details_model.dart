@@ -46,6 +46,11 @@ class ExerciseDetailsModel {
 
     final heaviestWeight = allSets.first.weight;
     allSets.removeWhere((s) => s.weight != heaviestWeight);
+
+    allSets.sort((a, b) => b.reps!.compareTo(a.reps!));
+    final mostReps = allSets.first.reps;
+    allSets.removeWhere((s) => s.reps != mostReps);
+
     allSets.sort((a, b) => b.updatedAt!.compareTo(a.updatedAt!));
     return allSets.firstOrNull;
   }

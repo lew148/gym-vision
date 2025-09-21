@@ -111,13 +111,15 @@ class _ExercisesState extends State<Exercises> {
                     ),
                     Row(children: [
                       if (exercise.equipment != Equipment.other)
-                        Text(exercise.equipment.displayName,
-                            style: TextStyle(color: Theme.of(context).colorScheme.shadow)),
+                        Text(
+                          exercise.equipment.displayName,
+                          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                        ),
                       // if (exercise.primaryMuscleGroup != MuscleGroup.other && exercise.equipment != Equipment.other)
                       //   const Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: 5), child: Text('-')),
                       // if (exercise.primaryMuscleGroup != MuscleGroup.other)
                       //   Text(exercise.primaryMuscleGroup.displayNamePlain,
-                      //       style: TextStyle(color: Theme.of(context).colorScheme.shadow)),
+                      //       style: TextStyle(color: Theme.of(context).colorScheme.secondary)),
                     ]),
                   ],
                 ),
@@ -161,7 +163,8 @@ class _ExercisesState extends State<Exercises> {
         padding: const EdgeInsetsGeometry.all(10),
         child: Column(children: [
           Text('No results for: ${searchTextController.text}'),
-          Text('Create the Extercise: -> Coming Soon!', style: TextStyle(color: Theme.of(context).colorScheme.shadow)),
+          Text('Create the Extercise: -> Coming Soon!',
+              style: TextStyle(color: Theme.of(context).colorScheme.secondary)),
         ]),
       );
     }

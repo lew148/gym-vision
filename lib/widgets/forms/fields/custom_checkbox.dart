@@ -45,14 +45,16 @@ class _CustomCheckboxState extends State<CustomCheckbox> {
     return SizedBox(
       height: 24,
       width: 24,
-      child: Checkbox(
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        checkColor: Theme.of(context).colorScheme.surface,
-        activeColor: Theme.of(context).colorScheme.primary,
-        side: BorderSide(color: Theme.of(context).colorScheme.shadow, width: 2),
-        shape: const CircleBorder(),
-        value: value,
-        onChanged: onChange,
+      child: Transform.scale(
+        scale: 1.1,
+        child: Checkbox(
+          checkColor: Theme.of(context).colorScheme.surface,
+          activeColor: Theme.of(context).colorScheme.primary,
+          side: BorderSide(color: Theme.of(context).colorScheme.shadow, width: 2),
+          shape: const CircleBorder(),
+          value: value,
+          onChanged: onChange,
+        ),
       ),
     );
   }

@@ -33,7 +33,7 @@ class _ProfileState extends State<Profile> {
               'john.doe@example.com',
               style: TextStyle(
                 fontSize: 14,
-                color: Theme.of(context).colorScheme.shadow,
+                color: Theme.of(context).colorScheme.secondary,
               ),
             ),
           ])

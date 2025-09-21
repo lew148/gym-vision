@@ -6,11 +6,14 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class TodoistService {
   static const String url = 'https://api.todoist.com/api/v1/sync';
-  static const String uiTesterPhrase = 'ospuuq';
+  static const List<String> uiTesterPhrases = [
+    'ospuuq',
+    'fzelzz',
+  ];
 
   static Future<bool> createTask(String title, String description, String name, bool isBug) async {
     try {
-      if (title == uiTesterPhrase) return true;
+      if (uiTesterPhrases.contains(title)) return true;
 
       final requestUuid = const Uuid().v4();
       final tempId = const Uuid().v4();

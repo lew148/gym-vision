@@ -116,7 +116,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
       children: [
         ...SplitHelper.splitCategories.map(
           (e) => FilterChip(
-            side: BorderSide(color: Theme.of(context).colorScheme.shadow),
+            side: BorderSide(color: Theme.of(context).colorScheme.secondary),
             selectedColor: Theme.of(context).colorScheme.primary,
             label: Text(e.displayName),
             selected: filterCategories.contains(e),
@@ -126,7 +126,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
         CommonUI.getDivider(),
         ...SplitHelper.split2Categories.map(
           (e) => FilterChip(
-            side: BorderSide(color: Theme.of(context).colorScheme.shadow),
+            side: BorderSide(color: Theme.of(context).colorScheme.secondary),
             selectedColor: Theme.of(context).colorScheme.primary,
             label: Text(e.displayName),
             selected: filterCategories.contains(e),
@@ -136,7 +136,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
         CommonUI.getDivider(),
         ...SplitHelper.muscleGroupCategories.map(
           (e) => FilterChip(
-            side: BorderSide(color: Theme.of(context).colorScheme.shadow),
+            side: BorderSide(color: Theme.of(context).colorScheme.secondary),
             selectedColor: Theme.of(context).colorScheme.primary,
             label: Text(e.displayName),
             selected: filterCategories.contains(e),
@@ -146,7 +146,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
         CommonUI.getDivider(),
         ...SplitHelper.miscCategories.map(
           (e) => FilterChip(
-            side: BorderSide(color: Theme.of(context).colorScheme.shadow),
+            side: BorderSide(color: Theme.of(context).colorScheme.secondary),
             selectedColor: Theme.of(context).colorScheme.primary,
             label: Text(e.displayName),
             selected: filterCategories.contains(e),
@@ -250,8 +250,10 @@ class _ExercisePickerState extends State<ExercisePicker> {
                                           style: const TextStyle(fontWeight: FontWeight.w500),
                                         ),
                                         if (e.primaryMuscleGroup != MuscleGroup.other)
-                                          Text(e.primaryMuscleGroup.displayNamePlain,
-                                              style: TextStyle(color: Theme.of(context).colorScheme.shadow)),
+                                          Text(
+                                            e.primaryMuscleGroup.displayNamePlain,
+                                            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                                          ),
                                       ],
                                     ),
                                   ]),
@@ -364,9 +366,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                             Row(children: [
                               Text(
                                 exercise == null ? '' : 'Exercise',
-                                style: TextStyle(
-                                  color: Theme.of(context).colorScheme.shadow,
-                                ),
+                                style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                               ),
                             ]),
                             const Padding(padding: EdgeInsets.only(bottom: 5)),
@@ -377,7 +377,7 @@ class _ExercisePickerState extends State<ExercisePicker> {
                                   style: TextStyle(
                                     fontSize: 17,
                                     fontWeight: FontWeight.w400,
-                                    color: exercise == null ? Theme.of(context).colorScheme.shadow : null,
+                                    color: exercise == null ? Theme.of(context).colorScheme.secondary : null,
                                   ),
                                 ),
                               ],

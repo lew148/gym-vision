@@ -390,7 +390,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                         : TimeElapsed(
                             since: workout.date,
                             end: workout.endDate,
-                            color: Theme.of(context).colorScheme.shadow,
+                            color: Theme.of(context).colorScheme.secondary,
                             labelForNegativeDuration: 'Starts in',
                           ),
                   ],
@@ -434,7 +434,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                           ),
                           Text(
                             'One workout closer to your goals!',
-                            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
+                            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.secondary),
                             textAlign: TextAlign.center,
                           ),
                           const Padding(padding: EdgeInsetsGeometry.all(10)),
@@ -448,7 +448,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                               padding: const EdgeInsetsGeometry.all(5),
                               child: Text(
                                 'OR',
-                                style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.shadow),
+                                style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.secondary),
                                 textAlign: TextAlign.center,
                               ),
                             ),

@@ -114,7 +114,7 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   final primary = const Color.fromRGBO(41, 182, 246, 1);
-  final secondary = const Color.fromARGB(255, 216, 160, 233);
+  final secondary = const Color.fromARGB(255, 146, 146, 146);
   final tertiary = const Color.fromARGB(255, 255, 101, 101);
   final shadow = const Color.fromARGB(255, 77, 77, 77);
   final lightBackground = const Color.fromARGB(255, 245, 245, 245);

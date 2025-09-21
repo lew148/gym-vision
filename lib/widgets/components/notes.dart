@@ -110,7 +110,7 @@ class _NotesState extends State<Notes> {
                       ),
                     ),
                     placeholder: 'Add note...',
-                    style: TextStyle(color: Theme.of(context).colorScheme.shadow, fontSize: 15),
+                    style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontSize: 15),
                     decoration: const BoxDecoration(color: Colors.transparent),
                   );
                 }),
