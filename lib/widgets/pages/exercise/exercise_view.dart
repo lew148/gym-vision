@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/classes/exercise_details.dart';
@@ -9,10 +8,10 @@ import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/debug_scaffold.dart';
-import 'package:gymvision/widgets/pages/exercise/exercise_recent_uses_view.dart';
-import 'package:gymvision/widgets/common/common_ui.dart';
+import 'package:gymvision/widgets/common_ui.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
+import 'package:gymvision/widgets/pages/workout/workout_exercise_widget.dart';
 
 class ExerciseView extends StatefulWidget {
   final String identifier;
@@ -37,47 +36,43 @@ class _ExerciseViewState extends State<ExerciseView> {
 
   reloadState() => setState(() {});
 
-  Widget getNoRecentUsesWidget() => const Center(
-        child: Padding(
-          padding: EdgeInsets.all(10),
-          child: Text('No recent uses of this exercise.'),
+  Widget getNoUsesWidget() => Padding(
+        padding: const EdgeInsetsGeometry.symmetric(vertical: 15),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              "You have not yet used this exercise",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              "Add this to your next workout?",
+              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       );
 
   Widget getRecentUsesWidget(Exercise exercise, ExerciseDetails? details) {
-    if (details == null || (details.recentUses?.isEmpty ?? true)) return getNoRecentUsesWidget();
+    if (details == null || (details.workoutExercises?.isEmpty ?? true)) return getNoUsesWidget();
 
-    final recentUses = details.recentUses!;
-    recentUses.removeWhere((ws) {
-      final workout = ws.getWorkout();
-      return workout != null && DateTimeHelper.isInFuture(workout.date);
-    });
+    final workoutExercises = details.workoutExercises!;
+    workoutExercises.removeWhere((we) => we.workout != null && DateTimeHelper.isInFuture(we.workout!.date));
+    if (workoutExercises.isEmpty) return getNoUsesWidget();
 
-    if (recentUses.isEmpty) return getNoRecentUsesWidget();
-
-    recentUses.sort(((a, b) => b.getWorkout()!.date.compareTo(a.getWorkout()!.date)));
-
-    final Map<int, List<WorkoutSet>> setsGroupedByWorkoutExercise =
-        groupBy<WorkoutSet, int>(recentUses, (x) => x.workoutExerciseId);
-
-    List<Widget> weWidgets = [];
-    setsGroupedByWorkoutExercise.forEach((key, value) {
-      weWidgets.add(
-        GestureDetector(
-          onTap: () => openWorkoutView(context, value[0].getWorkout()!.id!, reloadState: reloadState),
-          child: ExerciseRecentUsesView(workoutSets: value, exercise: exercise),
-        ),
-      );
-    });
+    workoutExercises.sort(((a, b) => b.workout!.date.compareTo(a.workout!.date)));
 
     return Expanded(
       child: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            children: weWidgets,
-          ),
-        ),
+        child: Column(
+            children: workoutExercises
+                .map((we) => WorkoutExerciseWidget(
+                      workoutExercise: we,
+                      isDisplay: true,
+                    ))
+                .toList()),
       ),
     );
   }
@@ -135,8 +130,8 @@ class _ExerciseViewState extends State<ExerciseView> {
               CommonUI.getInfoWidget(context, 'Equipment', Text(exercise.equipment.displayName)),
               if (exercise.type == ExerciseType.strength && details?.pr != null) getPrSection(details!.pr!),
               Notes(type: NoteType.exercise, objectId: exercise.identifier),
-              CommonUI.getDivider(),
               CommonUI.getSectionTitle(context, 'History'),
+              CommonUI.getShadowDivider(context),
               getRecentUsesWidget(exercise, details),
             ],
           ),

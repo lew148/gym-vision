@@ -1,3 +1,4 @@
+import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/helpers/number_helper.dart';
 
@@ -5,13 +6,13 @@ class ExerciseDetails {
   String exerciseIdentifier;
   WorkoutSet? pr;
   WorkoutSet? last;
-  List<WorkoutSet>? recentUses;
+  List<WorkoutExercise>? workoutExercises;
 
   ExerciseDetails({
     required this.exerciseIdentifier,
     this.pr,
     this.last,
-    this.recentUses,
+    this.workoutExercises,
   });
 
   String? getPRAsString() {

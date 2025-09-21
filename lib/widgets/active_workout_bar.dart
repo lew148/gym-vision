@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/providers/active_workout_provider.dart';
-import 'package:gymvision/widgets/common/common_ui.dart';
+import 'package:gymvision/widgets/common_ui.dart';
 import 'package:gymvision/widgets/components/time_elapsed_widget.dart';
 import 'package:provider/provider.dart';
 

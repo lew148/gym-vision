@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/note.dart';
 import 'package:gymvision/helpers/common_functions.dart';
-import 'package:gymvision/widgets/common/common_ui.dart';
+import 'package:gymvision/widgets/common_ui.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/models/db_models/note_model.dart';
 

@@ -6,7 +6,7 @@ import 'package:gymvision/helpers/number_helper.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/forms/fields/custom_form_fields.dart';
-import 'package:gymvision/widgets/common/common_ui.dart';
+import 'package:gymvision/widgets/common_ui.dart';
 import 'package:gymvision/static_data/enums.dart';
 
 class EditWorkoutSetForm extends StatefulWidget {

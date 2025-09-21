@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/services/apis/todoist_service.dart';
-import 'package:gymvision/widgets/common/common_ui.dart';
+import 'package:gymvision/widgets/common_ui.dart';
 import 'package:gymvision/widgets/forms/fields/custom_form_fields.dart';
 
 class ReportBugForm extends StatefulWidget {

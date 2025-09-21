@@ -13,9 +13,10 @@ import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/providers/active_workout_provider.dart';
 import 'package:gymvision/widgets/components/flavour_text_card.dart';
 import 'package:gymvision/widgets/forms/add_bodyweight_form.dart';
-import 'package:gymvision/widgets/common/common_ui.dart';
+import 'package:gymvision/widgets/common_ui.dart';
 import 'package:gymvision/providers/navigation_provider.dart';
 import 'package:gymvision/static_data/helpers.dart';
+import 'package:gymvision/widgets/forms/fields/custom_checkbox.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -110,10 +111,8 @@ class _TodayState extends State<Today> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 15),
-                        child: CommonUI.getCompleteMark(context, workout.isFinished()),
-                      ),
+                      CommonUI.getCompleteMark(context, workout.isFinished()),
+                      const Padding(padding: EdgeInsetsGeometry.all(5)),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,

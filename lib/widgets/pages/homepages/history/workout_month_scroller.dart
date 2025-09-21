@@ -7,7 +7,8 @@ import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
-import 'package:gymvision/widgets/common/common_ui.dart';
+import 'package:gymvision/widgets/common_ui.dart';
+import 'package:gymvision/widgets/forms/fields/custom_checkbox.dart';
 import 'package:intl/intl.dart';
 
 class WorkoutMonthScoller extends StatefulWidget {
@@ -88,10 +89,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 5),
-                      child: CommonUI.getCompleteMark(context, !workout.isInFuture() && workout.isFinished()),
-                    ),
+                    CustomCheckbox(value: !workout.isInFuture() && workout.isFinished()),
                     Text(
                       workout.getWorkoutTitle(),
                       style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),

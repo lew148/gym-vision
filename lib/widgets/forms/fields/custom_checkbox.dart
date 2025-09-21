@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 class CustomCheckbox extends StatefulWidget {
   final bool value;
-  final Future<bool> Function(bool) onChange;
+  final Future<bool> Function(bool)? onChange;
 
   const CustomCheckbox({
     super.key,
     required this.value,
-    required this.onChange,
+    this.onChange,
   });
 
   @override
@@ -26,7 +26,7 @@ class _CustomCheckboxState extends State<CustomCheckbox> {
   void onChange(bool? newValue) async {
     if (newValue == null) return;
 
-    final success = await widget.onChange(newValue);
+    final success = await widget.onChange!(newValue);
     if (!success) return;
 
     setState(() {
@@ -53,7 +53,7 @@ class _CustomCheckboxState extends State<CustomCheckbox> {
           side: BorderSide(color: Theme.of(context).colorScheme.shadow, width: 2),
           shape: const CircleBorder(),
           value: value,
-          onChanged: onChange,
+          onChanged: widget.onChange == null ? null : onChange,
         ),
       ),
     );

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
-import 'package:gymvision/widgets/common/common_ui.dart';
+import 'package:gymvision/widgets/common_ui.dart';
 import 'package:gymvision/widgets/pages/exercise/exercise_view.dart';
 import 'package:gymvision/widgets/forms/category_picker.dart';
 import 'package:gymvision/static_data/enums.dart';

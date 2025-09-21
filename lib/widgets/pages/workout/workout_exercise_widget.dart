@@ -13,7 +13,7 @@ import 'package:gymvision/widgets/forms/fields/custom_checkbox.dart';
 import 'package:gymvision/widgets/pages/exercise/exercise_view.dart';
 import 'package:gymvision/widgets/forms/add_set_to_workout_form.dart';
 import 'package:gymvision/widgets/forms/edit_workout_set_form.dart';
-import 'package:gymvision/widgets/common/common_ui.dart';
+import 'package:gymvision/widgets/common_ui.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 
@@ -23,6 +23,7 @@ class WorkoutExerciseWidget extends StatefulWidget {
   final Function(int weId)? toggleDroppedParent;
   final bool dropped;
   final bool isInFuture;
+  final bool isDisplay;
 
   const WorkoutExerciseWidget({
     super.key,
@@ -31,6 +32,7 @@ class WorkoutExerciseWidget extends StatefulWidget {
     this.toggleDroppedParent,
     this.dropped = false,
     this.isInFuture = false,
+    this.isDisplay = false,
   });
 
   @override
@@ -42,6 +44,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   late String exerciseIdentifier;
   late Exercise exercise;
   late bool dropped;
+  late bool isDisplay;
 
   @override
   void initState() {
@@ -50,6 +53,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     exerciseIdentifier = widget.workoutExercise.exerciseIdentifier;
     exercise = widget.workoutExercise.exercise ?? DefaultExercisesModel.getExerciseByIdentifier(exerciseIdentifier)!;
     dropped = widget.dropped;
+    isDisplay = widget.isDisplay;
   }
 
   void reload() => setState(() {
@@ -118,43 +122,47 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         Expanded(flex: 3, child: CommonUI.getCaloriesWithIcon(ws)),
       ];
 
+  Widget getSetWidgetInner(int setNumber, WorkoutSet set) => Padding(
+        padding: const EdgeInsets.all(10),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 2,
+              child: Row(children: [
+                CustomCheckbox(value: set.done, onChange: isDisplay ? null : (value) => onSetDoneTap(set, value)),
+                const Padding(padding: EdgeInsetsGeometry.all(5)),
+                Text(
+                  setNumber.toString(),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                )
+              ]),
+            ),
+            ...(widget.workoutExercise.isCardio() ? getCardioSetContents(set) : getWeightedSetContents(set))
+          ],
+        ),
+      );
+
   List<Widget> getSetWidgets(List<WorkoutSet> sets) {
     final List<Widget> widgets = [];
 
     final orderedSets = OrderingHelper.orderListById(sets, widget.workoutExercise.setOrder);
     for (int i = 0; i < orderedSets.length; i++) {
       final set = orderedSets[i];
-      widgets.add(InkWell(
-        enableFeedback: false,
-        onLongPress: () {
-          HapticFeedback.lightImpact();
-          showSetMenu(set);
-        },
-        onTap: () => onEditWorkoutSetTap(set),
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Row(
-            children: [
-              Expanded(
-                flex: 2,
-                child: Row(children: [
-                  CustomCheckbox(value: set.done, onChange: (value) => onSetDoneTap(set, value)),
-                  const Padding(padding: EdgeInsetsGeometry.all(5)),
-                  Text(
-                    (i + 1).toString(),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-                  )
-                ]),
-              ),
-              ...(widget.workoutExercise.isCardio() ? getCardioSetContents(set) : getWeightedSetContents(set))
-            ],
-          ),
-        ),
-      ));
+      widgets.add(isDisplay
+          ? getSetWidgetInner(i + 1, set)
+          : InkWell(
+              enableFeedback: false,
+              onLongPress: () {
+                HapticFeedback.lightImpact();
+                showSetMenu(set);
+              },
+              onTap: () => onEditWorkoutSetTap(set),
+              child: getSetWidgetInner(i + 1, set),
+            ));
     }
 
     return widgets;
@@ -307,44 +315,62 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     );
   }
 
-  Widget getHeader(bool standalone, bool isDone) => Padding(
+  Widget getHeader({required bool standalone, required bool isDone}) => Padding(
         padding: const EdgeInsets.all(8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            CustomCheckbox(value: isDone, onChange: (value) => onWorkoutExerciseDoneTap(value, standalone)),
+            CustomCheckbox(
+              value: isDone,
+              onChange: isDisplay ? null : (value) => onWorkoutExerciseDoneTap(value, standalone),
+            ),
             const Padding(padding: EdgeInsetsGeometry.all(5)),
             Expanded(
               child: Row(children: [
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        exercise.name,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      Row(children: [
-                        if (exercise.equipment != Equipment.other)
-                          Text(
-                            exercise.equipment.displayName,
-                            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                  child: isDisplay
+                      ? Column(children: [
+                          CommonUI.getDateWithIcon(context, widget.workoutExercise.workout!.date, muted: false),
+                          CommonUI.getTimeWithIcon(
+                            context,
+                            widget.workoutExercise.workout!.date,
+                            dtEnd: widget.workoutExercise.workout?.endDate,
                           ),
-                      ]),
-                    ],
-                  ),
+                        ])
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              exercise.name,
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            if (exercise.equipment != Equipment.other)
+                              Text(
+                                exercise.equipment.displayName,
+                                style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                              ),
+                          ],
+                        ),
                 ),
                 if (!standalone)
                   dropped ? const Icon(Icons.arrow_drop_up_rounded) : const Icon(Icons.arrow_drop_down_rounded),
               ]),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                CommonUI.getTextButton(ButtonDetails(icon: Icons.add_rounded, onTap: onAddSetsButtonTap)),
-                GestureDetector(onTap: showExerciseMenu, child: const Icon(Icons.more_vert_rounded)),
-              ],
-            ),
+            isDisplay
+                ? CommonUI.getTextButton(ButtonDetails(
+                    icon: Icons.remove_red_eye_rounded,
+                    onTap: () => openWorkoutView(
+                          context,
+                          widget.workoutExercise.workoutId,
+                          reloadState: reload,
+                        )))
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      CommonUI.getTextButton(ButtonDetails(icon: Icons.add_rounded, onTap: onAddSetsButtonTap)),
+                      GestureDetector(onTap: showExerciseMenu, child: const Icon(Icons.more_vert_rounded)),
+                    ],
+                  ),
           ],
         ),
       );
@@ -359,14 +385,14 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           if (!snapshot.hasData) return const SizedBox.shrink();
 
           final sets = snapshot.data!;
-          if (sets.isEmpty) return getHeader(true, widget.workoutExercise.done);
+          if (sets.isEmpty) return getHeader(standalone: true, isDone: widget.workoutExercise.done);
 
           return Column(
             children: [
               GestureDetector(
                 onTap: toggleDropped,
                 behavior: HitTestBehavior.translucent,
-                child: getHeader(false, !(sets.any((ws) => !ws.done))),
+                child: getHeader(standalone: false, isDone: !(sets.any((ws) => !ws.done))),
               ),
               if (dropped) ...[
                 CommonUI.getShadowDivider(context, height: 0),

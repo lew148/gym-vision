@@ -5,7 +5,7 @@ import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/providers/active_workout_provider.dart';
-import 'package:gymvision/widgets/common/common_ui.dart';
+import 'package:gymvision/widgets/common_ui.dart';
 import 'package:gymvision/widgets/forms/date_time_picker.dart';
 import 'package:gymvision/widgets/forms/duration_picker.dart';
 import 'package:gymvision/widgets/pages/workout/workout_view.dart';

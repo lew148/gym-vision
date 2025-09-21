@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:gymvision/widgets/common/common_ui.dart';
+import 'package:gymvision/widgets/common_ui.dart';
 
 class DateTimePicker extends StatefulWidget {
   final void Function(DateTime dt) onChange;

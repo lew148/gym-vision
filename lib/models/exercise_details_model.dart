@@ -13,7 +13,13 @@ class ExerciseDetailsModel {
       exerciseIdentifier: exerciseIdentifier,
       pr: await getPr(exerciseIdentifier),
       last: await getLast(exerciseIdentifier),
-      recentUses: includeRecentUses ? await getSetsForExerciseWithWorkoutExerciseAndWorkout(exerciseIdentifier) : null,
+      workoutExercises: includeRecentUses
+          ? await WorkoutExerciseModel.getWorkoutExercisesForExercise(
+              exerciseIdentifier,
+              withSets: true,
+              withWorkout: true,
+            )
+          : null,
     );
   }
 
@@ -25,7 +31,11 @@ class ExerciseDetailsModel {
   */
   static Future<List<WorkoutSet>> getSetsForExerciseWithWorkoutExerciseAndWorkout(String exerciseIdentifier) async {
     final List<WorkoutSet> sets = [];
-    final workoutExercises = await WorkoutExerciseModel.getWorkoutExercisesForExercise(exerciseIdentifier);
+    final workoutExercises = await WorkoutExerciseModel.getWorkoutExercisesForExercise(
+      exerciseIdentifier,
+      withSets: true,
+      withWorkout: true,
+    );
 
     for (final we in workoutExercises) {
       we.workout = await WorkoutModel.getWorkout(we.workoutId);

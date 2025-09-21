@@ -14,7 +14,7 @@ import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/components/rest_timer.dart';
 import 'package:gymvision/widgets/pages/workout/workout_exercise_widget.dart';
 import 'package:gymvision/widgets/forms/category_picker.dart';
-import 'package:gymvision/widgets/common/common_ui.dart';
+import 'package:gymvision/widgets/common_ui.dart';
 import 'package:gymvision/widgets/forms/add_exercises_to_workout.dart';
 import 'package:gymvision/widgets/components/time_elapsed_widget.dart';
 import 'package:gymvision/static_data/enums.dart';

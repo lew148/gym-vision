@@ -295,21 +295,21 @@ class CommonUI {
         ),
       ]);
 
-  static getDateWithIcon(BuildContext context, DateTime dt) => Row(children: [
-        Icon(Icons.calendar_month_rounded, color: Theme.of(context).colorScheme.secondary, size: 15),
+  static getDateWithIcon(BuildContext context, DateTime dt, {bool muted = true}) => Row(children: [
+        Icon(Icons.calendar_month_rounded, color: muted ? Theme.of(context).colorScheme.secondary : null, size: 15),
         const Padding(padding: EdgeInsetsGeometry.all(2.5)),
         Text(
           DateFormat(DateTimeHelper.dmyFormat).format(dt),
-          style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontSize: 15),
+          style: TextStyle(color: muted ? Theme.of(context).colorScheme.secondary : null, fontSize: 15),
         ),
       ]);
 
-  static getTimeWithIcon(BuildContext context, DateTime dt, {DateTime? dtEnd}) => Row(children: [
-        Icon(Icons.access_time_rounded, color: Theme.of(context).colorScheme.secondary, size: 15),
+  static getTimeWithIcon(BuildContext context, DateTime dt, {DateTime? dtEnd, bool muted = true}) => Row(children: [
+        Icon(Icons.access_time_rounded, color: muted ? Theme.of(context).colorScheme.secondary : null, size: 15),
         const Padding(padding: EdgeInsetsGeometry.all(2.5)),
         Text(
           '${DateFormat(DateTimeHelper.hmFormat).format(dt)}${dtEnd == null ? '' : ' - ${DateFormat(DateTimeHelper.hmFormat).format(dtEnd)}'}',
-          style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontSize: 15),
+          style: TextStyle(color: muted ? Theme.of(context).colorScheme.secondary : null, fontSize: 15),
         ),
       ]);
 

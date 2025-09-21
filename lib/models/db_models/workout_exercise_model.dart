@@ -41,12 +41,31 @@ class WorkoutExerciseModel {
     return workoutExercises;
   }
 
-  static Future<List<WorkoutExercise>> getWorkoutExercisesForExercise(String exerciseIdentifier) async {
+  static Future<List<WorkoutExercise>> getWorkoutExercisesForExercise(
+    String exerciseIdentifier, {
+    bool withWorkout = false,
+    bool withSets = false,
+  }) async {
     final db = DatabaseHelper.db;
-    return (await (db.select(db.driftWorkoutExercises)..where((we) => we.exerciseIdentifier.equals(exerciseIdentifier)))
+    final workoutExercises = (await (db.select(db.driftWorkoutExercises)
+              ..where((we) => we.exerciseIdentifier.equals(exerciseIdentifier)))
             .get())
         .map((we) => we.toObject())
         .toList();
+
+    if (withWorkout) {
+      for (final we in workoutExercises) {
+        we.workout = await WorkoutModel.getWorkout(we.workoutId);
+      }
+    }
+
+    if (withSets) {
+      for (final we in workoutExercises) {
+        we.workoutSets = await WorkoutSetModel.getSetsForWorkoutExercise(we.id!);
+      }
+    }
+
+    return workoutExercises;
   }
 
   static Future<int> insert(WorkoutExercise workoutExercise) async {
