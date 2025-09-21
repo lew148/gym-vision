@@ -18,6 +18,7 @@ import 'package:gymvision/providers/navigation_provider.dart';
 import 'package:gymvision/providers/rest_timer_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // needed for calling async methods in main()
@@ -27,11 +28,13 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
+  await dotenv.load(fileName: ".env");
+
   const int maxTries = 1;
 
   await SentryFlutter.init(
     (options) {
-      options.dsn = 'https://2b42d972537c900eabae2739a88e994b@o4507913067823104.ingest.de.sentry.io/4507913074770000';
+      options.dsn = dotenv.env['SENTRY_DSN'];
       options.tracesSampleRate = 1.0;
       options.profilesSampleRate = 1.0;
     },

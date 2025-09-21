@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'package:gymvision/extensions.dart';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class TodoistService {
-  static const apiToken = '93abdf7e6284b40cec5c872a3cba557201939337';
   static const String url = 'https://api.todoist.com/api/v1/sync';
   static const String uiTesterPhrase = 'ospuuq';
 
@@ -15,6 +15,7 @@ class TodoistService {
       final requestUuid = const Uuid().v4();
       final tempId = const Uuid().v4();
 
+      final apiToken = dotenv.env['TODOIST_API_KEY'];
       final request = http.Request('POST', Uri.parse(url));
       request.headers.addAll({
         'Authorization': 'Bearer $apiToken',
