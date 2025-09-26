@@ -63,7 +63,7 @@ class _DebugScaffoldState extends State<DebugScaffold> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: widget.customAppBarTitle ?? (widget.ignoreDefaults ? null : const Text('Gymvision')),
+        title: widget.customAppBarTitle ?? (widget.ignoreDefaults ? null : const Text('Forged', style: TextStyle(fontStyle: FontStyle.italic),)),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         surfaceTintColor: Colors.transparent,
         actions: actions,
