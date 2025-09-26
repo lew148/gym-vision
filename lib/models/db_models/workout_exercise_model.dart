@@ -15,14 +15,29 @@ class WorkoutExerciseModel {
 
   static Future<WorkoutExercise?> getWorkoutExerciseByWorkoutAndExercise(
     int workoutId,
-    String exerciseIdentifier,
-  ) async {
+    String exerciseIdentifier, {
+    bool createIfNotFound = false,
+  }) async {
     final db = DatabaseHelper.db;
-    return (await (db.select(db.driftWorkoutExercises)
+    final workoutExericse = (await (db.select(db.driftWorkoutExercises)
               ..where((we) => we.workoutId.equals(workoutId))
               ..where((we) => we.exerciseIdentifier.equals(exerciseIdentifier)))
             .getSingleOrNull())
         ?.toObject();
+
+    if (createIfNotFound && workoutExericse == null) {
+      final newWe = WorkoutExercise(
+        workoutId: workoutId,
+        exerciseIdentifier: exerciseIdentifier,
+        setOrder: '',
+      );
+
+      final weId = await WorkoutExerciseModel.insert(newWe);
+      newWe.id = weId;
+      return newWe;
+    }
+
+    return workoutExericse;
   }
 
   static Future<List<WorkoutExercise>> getWorkoutExercisesByWorkout(int workoutId, {bool withSets = false}) async {

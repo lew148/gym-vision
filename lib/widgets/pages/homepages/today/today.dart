@@ -16,7 +16,6 @@ import 'package:gymvision/widgets/forms/add_bodyweight_form.dart';
 import 'package:gymvision/widgets/common_ui.dart';
 import 'package:gymvision/providers/navigation_provider.dart';
 import 'package:gymvision/static_data/helpers.dart';
-import 'package:gymvision/widgets/forms/fields/custom_checkbox.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -53,21 +52,26 @@ class _TodayState extends State<Today> {
   Widget getWorkoutSummary(WorkoutSummary? summary) => summary == null || summary.totalExercises == 0
       ? const SizedBox.shrink()
       : Column(children: [
-          CommonUI.getDivider(),
+          CommonUI.getShadowDivider(context),
           Container(
             padding: const EdgeInsets.all(5),
             height: 30,
             child: Row(
-              children: [
-                Expanded(flex: 4, child: Center(child: Text(summary.getTotalExercisesString()))),
-                CommonUI.getVerticalDivider(context),
-                Expanded(flex: 4, child: Center(child: Text(summary.getTotalSetsString()))),
-                CommonUI.getVerticalDivider(context),
-                Expanded(flex: 4, child: Center(child: Text(summary.getTotalRepsString()))),
-              ],
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: summary.totalReps + summary.totalSets == 0
+                  ? [
+                      Center(child: Text(summary.getTotalExercisesString())),
+                    ]
+                  : [
+                      Expanded(flex: 4, child: Center(child: Text(summary.getTotalExercisesString()))),
+                      CommonUI.getVerticalDivider(context),
+                      Expanded(flex: 4, child: Center(child: Text(summary.getTotalSetsString()))),
+                      CommonUI.getVerticalDivider(context),
+                      Expanded(flex: 4, child: Center(child: Text(summary.getTotalRepsString()))),
+                    ],
             ),
           ),
-          CommonUI.getDivider(),
+          CommonUI.getShadowDivider(context),
           if (summary.bestSet != null && summary.bestSetExercise != null)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),

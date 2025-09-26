@@ -60,6 +60,7 @@ class WorkoutModel {
     if (workout.workoutExercises == null || workout.workoutExercises!.isEmpty) return summary;
 
     final allSets = [for (var we in workout.getWorkoutExercises()) ...we.getSets()];
+    allSets.removeWhere((s) => !s.done);
     summary.totalExercises = workout.getWorkoutExercises().length;
     summary.totalSets = allSets.length;
     summary.totalReps = allSets.map((s) => s.reps ?? 0).sum;

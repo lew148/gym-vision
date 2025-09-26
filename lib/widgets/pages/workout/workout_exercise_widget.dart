@@ -10,9 +10,8 @@ import 'package:gymvision/models/db_models/workout_set_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/widgets/forms/fields/custom_checkbox.dart';
+import 'package:gymvision/widgets/forms/workout_set_form.dart';
 import 'package:gymvision/widgets/pages/exercise/exercise_view.dart';
-import 'package:gymvision/widgets/forms/add_set_to_workout_form.dart';
-import 'package:gymvision/widgets/forms/edit_workout_set_form.dart';
 import 'package:gymvision/widgets/common_ui.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
@@ -70,10 +69,11 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
 
   void onEditWorkoutSetTap(WorkoutSet ws) => showCloseableBottomSheet(
         context,
-        EditWorkoutSetForm(
+        WorkoutSetForm(
+          exerciseIdentifier: exerciseIdentifier,
+          workoutId: widget.workoutExercise.workoutId,
+          onSuccess: reload,
           workoutSet: ws,
-          reloadState: reload,
-          exerciseWithDetails: exercise,
         ),
       );
 
@@ -102,11 +102,13 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   void onAddSetsButtonTap() {
     showCloseableBottomSheet(
       context,
-      AddSetToWorkoutForm(
+      WorkoutSetForm(
         exerciseIdentifier: exerciseIdentifier,
         workoutId: widget.workoutExercise.workoutId,
-        reloadState: reload,
-        onSuccess: () => dropped ? null : toggleDropped(),
+        onSuccess: () {
+          dropped ? null : toggleDropped();
+          reload();
+        },
       ),
     );
   }
