@@ -7,6 +7,7 @@ import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
+import 'package:gymvision/widgets/components/splash_text.dart';
 import 'package:gymvision/widgets/debug_scaffold.dart';
 import 'package:gymvision/widgets/common_ui.dart';
 import 'package:gymvision/static_data/enums.dart';
@@ -103,38 +104,40 @@ class _ExerciseViewState extends State<ExerciseView> {
     return FutureBuilder<Exercise?>(
       future: _exercise,
       builder: (context, snapshot) {
-        if (!snapshot.hasData) return const SizedBox.shrink();
+        if (snapshot.connectionState == ConnectionState.waiting) return const SizedBox.shrink();
 
-        var exercise = snapshot.data!;
-        var details = exercise.exerciseDetails;
+        var exercise = snapshot.data;
 
         return DebugScaffold(
           ignoreDefaults: true,
           customAppBarTitle: Text(
-            exercise.name,
+            exercise?.name ?? '',
             softWrap: true,
             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
-          body: Column(
-            children: [
-              // if (god)
-              CommonUI.getInfoWidget(
-                  context,
-                  'ID',
-                  SelectableText(
-                    exercise.identifier,
-                    style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-                  )),
-              CommonUI.getInfoWidget(context, 'Type', Text(exercise.type.displayName)),
-              CommonUI.getInfoWidget(context, 'Primary Muscle', Text(exercise.primaryMuscleGroup.displayName)),
-              CommonUI.getInfoWidget(context, 'Equipment', Text(exercise.equipment.displayName)),
-              if (exercise.type == ExerciseType.strength && details?.pr != null) getPrSection(details!.pr!),
-              Notes(type: NoteType.exercise, objectId: exercise.identifier),
-              CommonUI.getSectionTitle(context, 'History'),
-              CommonUI.getShadowDivider(context),
-              getRecentUsesWidget(exercise, details),
-            ],
-          ),
+          body: exercise == null
+              ? SplashText.notFound(item: 'exercise')
+              : Column(
+                  children: [
+                    // if (god)
+                    CommonUI.getInfoWidget(
+                        context,
+                        'ID',
+                        SelectableText(
+                          exercise.identifier,
+                          style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                        )),
+                    CommonUI.getInfoWidget(context, 'Type', Text(exercise.type.displayName)),
+                    CommonUI.getInfoWidget(context, 'Primary Muscle', Text(exercise.primaryMuscleGroup.displayName)),
+                    CommonUI.getInfoWidget(context, 'Equipment', Text(exercise.equipment.displayName)),
+                    if (exercise.type == ExerciseType.strength && exercise.exerciseDetails?.pr != null)
+                      getPrSection(exercise.exerciseDetails!.pr!),
+                    Notes(type: NoteType.exercise, objectId: exercise.identifier),
+                    CommonUI.getSectionTitle(context, 'History'),
+                    CommonUI.getShadowDivider(context),
+                    getRecentUsesWidget(exercise, exercise.exerciseDetails),
+                  ],
+                ),
         );
       },
     );

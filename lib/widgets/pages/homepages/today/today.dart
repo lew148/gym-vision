@@ -12,6 +12,7 @@ import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/providers/active_workout_provider.dart';
 import 'package:gymvision/widgets/components/flavour_text_card.dart';
+import 'package:gymvision/widgets/components/splash_text.dart';
 import 'package:gymvision/widgets/forms/add_bodyweight_form.dart';
 import 'package:gymvision/widgets/common_ui.dart';
 import 'package:gymvision/providers/navigation_provider.dart';
@@ -60,7 +61,7 @@ class _TodayState extends State<Today> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: summary.totalReps + summary.totalSets == 0
                   ? [
-                      Center(child: Text(summary.getTotalExercisesString())),
+                      Text(summary.getTotalExercisesString()),
                     ]
                   : [
                       Expanded(flex: 4, child: Center(child: Text(summary.getTotalExercisesString()))),
@@ -213,40 +214,6 @@ class _TodayState extends State<Today> {
         ),
       );
 
-  Widget getPlaceholderSplashText() => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.sports_gymnastics_rounded, size: 60, color: Theme.of(context).colorScheme.primary),
-          const Padding(
-            padding: EdgeInsetsGeometry.all(10),
-            child: Text(
-              'Ready to crush your goals?',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ],
-      );
-
-  Widget getScheduledDaySplashText() => Padding(
-        padding: const EdgeInsetsGeometry.symmetric(vertical: 15),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              "You scheduled it. Let's do it!",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-            Text(
-              "Jump straight into your scheduled workout",
-              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      );
-
   Widget getPlaceholder() => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -257,7 +224,11 @@ class _TodayState extends State<Today> {
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return Column(children: [
-                      getPlaceholderSplashText(),
+                      const SplashText(
+                        icon: Icons.sports_gymnastics_rounded,
+                        title: 'Ready to crush your goals?',
+                        description: 'One step closer to greatness!',
+                      ),
                       CommonUI.getElevatedPrimaryButton(ButtonDetails(
                         icon: Icons.add_rounded,
                         text: 'Start a workout',
@@ -282,18 +253,10 @@ class _TodayState extends State<Today> {
                   final schedule = snapshot.data!;
                   final todayCategories = schedule.getCategoriesForDay(today);
                   return todayCategories.isEmpty
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.hotel_rounded, size: 60, color: Theme.of(context).colorScheme.primary),
-                            const Text('Relax and take a breath...',
-                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                            Text(
-                              'Today is a scheduled rest day',
-                              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
+                      ? const SplashText(
+                          icon: Icons.hotel_rounded,
+                          title: 'Relax and take a breath...',
+                          description: 'Today is a scheduled rest day',
                         )
                       : Column(children: [
                           Wrap(
@@ -301,7 +264,10 @@ class _TodayState extends State<Today> {
                             children:
                                 todayCategories.map((c) => CommonUI.getBigPropDisplay(context, c.displayName)).toList(),
                           ),
-                          getScheduledDaySplashText(),
+                          const SplashText(
+                            title: "You scheduled it. Let's do it!",
+                            description: 'Jump straight into your scheduled workout',
+                          ),
                           CommonUI.getElevatedPrimaryButton(ButtonDetails(
                             icon: Icons.add_rounded,
                             text: 'Start scheduled workout',
@@ -321,7 +287,10 @@ class _TodayState extends State<Today> {
   Widget getWorkoutsOrPlaceholder(List<Workout>? workouts) {
     if (workouts == null || workouts.isEmpty) return getPlaceholder();
     workouts.sort((a, b) => a.date.compareTo(b.date)); // sort by date asc
-    return SingleChildScrollView(child: Column(children: workouts.map((w) => getWorkoutDisplay(w)).toList()));
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(15),
+      child: SingleChildScrollView(child: Column(children: workouts.map((w) => getWorkoutDisplay(w)).toList())),
+    );
   }
 
   String getTodayTotalCalsString(List<Workout>? workouts) =>

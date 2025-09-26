@@ -69,9 +69,19 @@ class _DebugScaffoldState extends State<DebugScaffold> {
         actions: actions,
       ),
       bottomNavigationBar: widget.bottomNavigationBar,
-      body: GestureDetector(
-        onTap: () => closeKeyboard(),
-        child: Padding(padding: const EdgeInsets.symmetric(horizontal: 8), child: widget.body),
+      body: SafeArea(
+        bottom: true,
+        child: GestureDetector(
+          onTap: () => closeKeyboard(),
+          child: Padding(
+              padding: EdgeInsets.fromLTRB(
+                10,
+                10,
+                10,
+                (widget.showActiveWorkout ? ActiveWorkoutBar.height : 0),
+              ),
+              child: widget.body),
+        ),
       ),
       resizeToAvoidBottomInset: false,
       bottomSheet: widget.showActiveWorkout ? const ActiveWorkoutBar() : null,

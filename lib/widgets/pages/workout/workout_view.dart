@@ -16,7 +16,7 @@ import 'package:gymvision/widgets/pages/workout/workout_exercise_widget.dart';
 import 'package:gymvision/widgets/forms/category_picker.dart';
 import 'package:gymvision/widgets/common_ui.dart';
 import 'package:gymvision/widgets/forms/add_exercises_to_workout.dart';
-import 'package:gymvision/widgets/components/time_elapsed_widget.dart';
+import 'package:gymvision/widgets/components/time_elapsed.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:reorderables/reorderables.dart';
 
@@ -24,12 +24,14 @@ class WorkoutView extends StatefulWidget {
   final int workoutId;
   final bool autofocusNotes;
   final Function? reloadParent;
+  final List<int>? droppedWes;
 
   const WorkoutView({
     super.key,
     required this.workoutId,
     this.autofocusNotes = false,
     this.reloadParent,
+    this.droppedWes,
   });
 
   @override
@@ -38,13 +40,14 @@ class WorkoutView extends StatefulWidget {
 
 class _WorkoutViewState extends State<WorkoutView> {
   late Future<Workout?> workoutFuture;
-  List<int> droppedWes = [];
+  late List<int> droppedWes;
   late bool workoutIsFinished;
 
   @override
   void initState() {
     super.initState();
     workoutFuture = WorkoutModel.getWorkout(widget.workoutId, withCategories: true, withWorkoutExercises: true);
+    droppedWes = widget.droppedWes ?? [];
   }
 
   void reloadState() => setState(() {

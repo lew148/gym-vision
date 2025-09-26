@@ -9,6 +9,7 @@ import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/widgets/common_ui.dart';
 import 'package:gymvision/static_data/enums.dart';
+import 'package:gymvision/widgets/components/splash_text.dart';
 import 'fields/custom_form_fields.dart';
 
 class WorkoutSetForm extends StatefulWidget {
@@ -227,7 +228,14 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
     return FutureBuilder<Exercise?>(
       future: exerciseFuture,
       builder: (context, snapshot) {
-        if (!snapshot.hasData) return const Center(child: Text('This exercise cannot be found.'));
+        if (snapshot.connectionState == ConnectionState.waiting) return const SizedBox.shrink();
+
+        if (!snapshot.hasData) {
+          return const SplashText(
+            title: 'This exercise cannot be found',
+            icon: Icons.question_mark_rounded,
+          );
+        }
 
         final exercise = snapshot.data!;
 

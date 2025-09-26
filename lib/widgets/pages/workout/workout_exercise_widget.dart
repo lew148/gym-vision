@@ -365,6 +365,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                           context,
                           widget.workoutExercise.workoutId,
                           reloadState: reload,
+                          droppedWes: [widget.workoutExercise.id!],
                         )))
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.end,

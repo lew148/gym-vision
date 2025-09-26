@@ -284,7 +284,13 @@ Future deleteWorkout(BuildContext context, int workoutId) async {
   provider.refreshActiveWorkout();
 }
 
-void openWorkoutView(BuildContext context, int workoutId, {Function? reloadState, bool autofocusNotes = false}) {
+void openWorkoutView(
+  BuildContext context,
+  int workoutId, {
+  Function? reloadState,
+  bool autofocusNotes = false,
+  List<int>? droppedWes,
+}) {
   final provider = Provider.of<ActiveWorkoutProvider>(context, listen: false);
   showFullScreenBottomSheet(
     context,
@@ -292,6 +298,7 @@ void openWorkoutView(BuildContext context, int workoutId, {Function? reloadState
       workoutId: workoutId,
       reloadParent: reloadState,
       autofocusNotes: autofocusNotes,
+      droppedWes: droppedWes,
     ),
     onClose: () {
       provider.closeActiveWorkout(); // always close active workout
