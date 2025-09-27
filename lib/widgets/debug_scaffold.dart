@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/active_workout_bar.dart';
+import 'package:gymvision/widgets/components/logo.dart';
 import 'package:gymvision/widgets/forms/report_bug_form.dart';
 import 'package:gymvision/widgets/pages/user_settings_view.dart';
 
@@ -63,7 +64,7 @@ class _DebugScaffoldState extends State<DebugScaffold> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: widget.customAppBarTitle ?? (widget.ignoreDefaults ? null : const Text('Forged', style: TextStyle(fontStyle: FontStyle.italic),)),
+        title: widget.customAppBarTitle ?? (widget.ignoreDefaults ? null : const Logo()),
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         surfaceTintColor: Colors.transparent,
         actions: actions,
@@ -74,13 +75,9 @@ class _DebugScaffoldState extends State<DebugScaffold> {
         child: GestureDetector(
           onTap: () => closeKeyboard(),
           child: Padding(
-              padding: EdgeInsets.fromLTRB(
-                10,
-                10,
-                10,
-                (widget.showActiveWorkout ? ActiveWorkoutBar.height : 0),
-              ),
-              child: widget.body),
+            padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
+            child: widget.body,
+          ),
         ),
       ),
       resizeToAvoidBottomInset: false,

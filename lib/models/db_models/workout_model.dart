@@ -36,9 +36,12 @@ class WorkoutModel {
       workout.workoutExercises = await WorkoutExerciseModel.getWorkoutExercisesByWorkout(workout.id!, withSets: true);
     }
 
-    if (withSummary && workouts.length <= maxWorkoutsForSummaryCalc) {
+    if (withSummary) {
       for (final workout in workouts) {
-        workout.summary = await getWorkoutSummary(workout: workout);
+        workout.summary = await getWorkoutSummary(
+          workout: workout,
+          fullSummary: workouts.length <= maxWorkoutsForSummaryCalc,
+        );
       }
     }
 
@@ -46,7 +49,7 @@ class WorkoutModel {
   }
 
   // prioritises workout over id
-  static Future<WorkoutSummary?> getWorkoutSummary({int? id, Workout? workout}) async {
+  static Future<WorkoutSummary?> getWorkoutSummary({int? id, Workout? workout, bool fullSummary = true}) async {
     if (workout == null && id != null) {
       workout = await getWorkout(id, withWorkoutExercises: true);
     }
@@ -66,7 +69,7 @@ class WorkoutModel {
     summary.totalReps = allSets.map((s) => s.reps ?? 0).sum;
     summary.totalCalsBurned = allSets.map((s) => s.calsBurned ?? 0).sum;
 
-    if (allSets.isEmpty) return summary;
+    if (!fullSummary || allSets.isEmpty) return summary;
 
     WorkoutSet? bestSet;
     final setsGroupedByWeight = groupBy(allSets, (s) => s.weight);

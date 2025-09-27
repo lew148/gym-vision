@@ -5,6 +5,7 @@ import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/common_ui.dart';
+import 'package:gymvision/widgets/components/scroll_bottom_padding.dart';
 import 'package:gymvision/widgets/pages/exercise/exercise_view.dart';
 import 'package:gymvision/widgets/forms/category_picker.dart';
 import 'package:gymvision/static_data/enums.dart';
@@ -200,7 +201,11 @@ class _ExercisesState extends State<Exercises> {
       );
     }
 
-    return SingleChildScrollView(child: Column(children: sections));
+    return SingleChildScrollView(
+        child: Column(children: [
+      ...sections,
+      const ScrollBottomPadding(),
+    ]));
   }
 
   @override

@@ -88,6 +88,7 @@ class _ActiveWorkoutBarState extends State<ActiveWorkoutBar> with SingleTickerPr
                           color: Theme.of(context).colorScheme.primary,
                           labelForNegativeDuration: 'Starts in',
                           useIcon: false,
+                          bold: true,
                         ),
                       ],
                     ),

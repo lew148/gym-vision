@@ -12,6 +12,7 @@ import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/providers/active_workout_provider.dart';
 import 'package:gymvision/widgets/components/flavour_text_card.dart';
+import 'package:gymvision/widgets/components/scroll_bottom_padding.dart';
 import 'package:gymvision/widgets/components/splash_text.dart';
 import 'package:gymvision/widgets/forms/add_bodyweight_form.dart';
 import 'package:gymvision/widgets/common_ui.dart';
@@ -289,7 +290,11 @@ class _TodayState extends State<Today> {
     workouts.sort((a, b) => a.date.compareTo(b.date)); // sort by date asc
     return ClipRRect(
       borderRadius: BorderRadius.circular(15),
-      child: SingleChildScrollView(child: Column(children: workouts.map((w) => getWorkoutDisplay(w)).toList())),
+      child: SingleChildScrollView(
+          child: Column(children: [
+        ...workouts.map((w) => getWorkoutDisplay(w)),
+        const ScrollBottomPadding(),
+      ])),
     );
   }
 
@@ -431,8 +436,12 @@ class _TodayState extends State<Today> {
                   return Column(
                     children: [
                       SizedBox(height: 100, child: getCalsAndBodyweightRow(snapshot.data)),
-                      Expanded(child: getWorkoutsOrPlaceholder(snapshot.data)),
-                      const Padding(padding: EdgeInsetsGeometry.all(5)),
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsetsGeometry.symmetric(vertical: 5),
+                          child: getWorkoutsOrPlaceholder(snapshot.data),
+                        ),
+                      ),
                     ],
                   );
                 });
