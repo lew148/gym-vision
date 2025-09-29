@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:gymvision/widgets/common_ui.dart';
+import 'package:gymvision/widgets/components/stateless/button.dart';
 
 class DurationPicker extends StatefulWidget {
   final void Function(Duration d) onChange;
@@ -48,14 +48,14 @@ class _DurationPickerState extends State<DurationPicker> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            CommonUI.getTextButton(ButtonDetails(
+            Button(
               text: 'Reset',
               onTap: () => setState(() {
                 key = GlobalKey(); // prevent persisting state
                 value = Duration.zero;
               }),
-            )),
-            CommonUI.getDoneButton(() {
+            ),
+            Button.done(onTap: () {
               Navigator.pop(context);
               widget.onChange(value);
             }),

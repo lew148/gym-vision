@@ -53,7 +53,6 @@
 //         workoutFuture = WorkoutModel.getWorkout(widget.workoutId, withCategories: true, withWorkoutExercises: true);
 //       });
 
-
 //   void showEditDate(Workout workout) => showDateTimePicker(
 //         context,
 //         initialDateTime: workout.date,
@@ -104,7 +103,7 @@
 //   void showMoreMenu(Workout workout) => showOptionsMenu(
 //         context,
 //         [
-//           //   ButtonDetails(
+//           //   Button
 //           //     onTap: () async {
 //           //       Navigator.pop(context);
 
@@ -120,7 +119,7 @@
 //           //     icon: Icons.share_rounded,
 //           //     text: 'Export Workout',
 //           //   ),
-//           ButtonDetails(
+//           Button
 //             onTap: () {
 //               Navigator.pop(context);
 //               showEditDate(workout);
@@ -129,7 +128,7 @@
 //             icon: Icons.calendar_today_rounded,
 //             text: 'Change Date',
 //           ),
-//           ButtonDetails(
+//           Button
 //             onTap: () {
 //               Navigator.pop(context);
 //               showEditTime(workout);
@@ -139,7 +138,7 @@
 //             text: 'Change Start Time',
 //           ),
 //           if (workoutIsFinished)
-//             ButtonDetails(
+//             Button
 //               onTap: () {
 //                 Navigator.pop(context);
 //                 showEditEndTime(workout);
@@ -149,7 +148,7 @@
 //               text: 'Change End Time',
 //             ),
 
-//           ButtonDetails(
+//           Button
 //             onTap: () {
 //               Navigator.pop(context);
 //               showDeleteConfirm(

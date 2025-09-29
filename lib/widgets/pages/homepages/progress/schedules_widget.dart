@@ -6,7 +6,11 @@ import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/models/db_models/schedule_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
-import 'package:gymvision/widgets/common_ui.dart';
+import 'package:gymvision/widgets/components/stateless/button.dart';
+import 'package:gymvision/widgets/components/stateless/custom_card.dart';
+import 'package:gymvision/widgets/components/stateless/header.dart';
+import 'package:gymvision/widgets/components/stateless/options_menu.dart';
+import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
 import 'package:gymvision/widgets/forms/schedule_form.dart';
 import 'package:gymvision/static_data/helpers.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -29,9 +33,8 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
         schedules = ScheduleModel.getAllSchedules();
       });
 
-  Widget getTextDisplayWidget(String text) => CommonUI.getCard(
-        context,
-        Padding(
+  Widget getTextDisplayWidget(String text) => CustomCard(
+        child: Padding(
           padding: const EdgeInsetsGeometry.all(10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -42,16 +45,22 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
         ),
       );
 
-  Widget getScheduleItemWidget(String title, ScheduleItem? si, {bool active = false}) => CommonUI.getCard(
-        context,
-        CommonUI.getSelectedContainer(
-          context,
+  Widget getScheduleItemWidget(String title, ScheduleItem? si, {bool active = false}) => CustomCard(
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            border: Border.all(
+              width: 2,
+              color: active ? Theme.of(context).colorScheme.primary : Colors.transparent,
+            ),
+          ),
+          padding: const EdgeInsets.all(10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
               si?.scheduleCategories == null || si!.scheduleCategories!.isEmpty
-                  ? CommonUI.getRestWidget()
+                  ? TextWithIcon.rest()
                   : Expanded(
                       child: Wrap(
                         alignment: WrapAlignment.end,
@@ -65,7 +74,6 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
                     ),
             ],
           ),
-          selected: active,
         ),
       );
 
@@ -200,44 +208,76 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
     reloadState();
   }
 
-  void showMoreMenu(Schedule activeSchedule) {
-    showOptionsMenu(context, [
-      ButtonDetails(
-        icon: Icons.edit_rounded,
-        text: 'Edit Schedule',
-        style: ButtonDetailsStyle(iconColor: Theme.of(context).colorScheme.primary),
-        onTap: () {
-          Navigator.pop(context);
-          editScheduleOnTap(activeSchedule);
-        },
-      ),
-      CommonUI.getDeleteButtonDetails(
-        () => showDeleteConfirm(
-          context,
-          'Schedule',
-          () async => await ScheduleModel.delete(activeSchedule.id!),
-          reloadState,
-          popCaller: true,
-        ),
-        text: 'Delete Schedule',
-      ),
-    ]);
-  }
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: activeSchedule,
       builder: (context, activeScheduleSnapshot) {
+        if (activeScheduleSnapshot.connectionState == ConnectionState.waiting) return const SizedBox.shrink();
+
         return FutureBuilder(
             future: schedules,
             builder: (context, schedulesSnapshot) {
+              if (schedulesSnapshot.connectionState == ConnectionState.waiting) return const SizedBox.shrink();
+              final schedules = schedulesSnapshot.data ?? [];
+
+              final actions = [
+                OptionsMenu(
+                  icon: Icons.menu_rounded,
+                  title: 'Schedules',
+                  buttons: [
+                    Button(
+                      text: 'Add Schedule',
+                      icon: Icons.add_rounded,
+                      onTap: () {
+                        Navigator.pop(context);
+                        addScheduleOnTap();
+                      },
+                      style: ButtonCustomStyle.primaryIconAndText(),
+                    ),
+                    ...schedules.map(
+                      (s) => Button(
+                        text: s.name,
+                        icon: s.active ? Icons.chevron_right_rounded : null,
+                        onTap: () => setActiveSchedule(s.id!, activeScheduleSnapshot.data?.id),
+                        style: s.active ? ButtonCustomStyle.primaryIcon() : null,
+                      ),
+                    ),
+                  ],
+                ),
+                if (activeScheduleSnapshot.hasData)
+                  OptionsMenu(
+                    title: activeScheduleSnapshot.data!.name,
+                    buttons: [
+                      Button(
+                        icon: Icons.edit_rounded,
+                        text: 'Edit Schedule',
+                        style: ButtonCustomStyle(iconColor: Theme.of(context).colorScheme.primary),
+                        onTap: () {
+                          Navigator.pop(context);
+                          editScheduleOnTap(activeScheduleSnapshot.data!);
+                        },
+                      ),
+                      Button.delete(
+                        onTap: () => showDeleteConfirm(
+                          context,
+                          'Schedule',
+                          () async => await ScheduleModel.delete(activeScheduleSnapshot.data!.id!),
+                          reloadState,
+                          popCaller: true,
+                        ),
+                        text: 'Delete Schedule',
+                      ),
+                    ],
+                  )
+              ];
+
               return Column(
                 children: [
-                  CommonUI.getSectionWidgetWithActions(
-                    context,
-                    activeScheduleSnapshot.hasData
-                        ? Column(
+                  schedules.isEmpty
+                      ? Header(title: 'Schedule', actions: actions)
+                      : Header(
+                          widget: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
@@ -252,50 +292,17 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
                                 style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                               ),
                             ],
-                          )
-                        : const Text('Schedule'),
-                    [
-                      ButtonDetails(
-                        icon: Icons.menu_rounded,
-                        onTap: () => showOptionsMenu(
-                            context,
-                            [
-                              ButtonDetails(
-                                text: 'Add Schedule',
-                                icon: Icons.add_rounded,
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  addScheduleOnTap();
-                                },
-                                style: ButtonDetailsStyle.primaryIconAndText(context),
-                              ),
-                              if (schedulesSnapshot.hasData && schedulesSnapshot.data!.isNotEmpty)
-                                ...schedulesSnapshot.data!.map(
-                                  (s) => ButtonDetails(
-                                    text: s.name,
-                                    icon: s.active ? Icons.chevron_right_rounded : null,
-                                    onTap: () => setActiveSchedule(s.id!, activeScheduleSnapshot.data?.id),
-                                    style: s.active ? ButtonDetailsStyle.primaryIcon(context) : null,
-                                  ),
-                                ),
-                            ],
-                            menuName: 'Schedules'),
-                      ),
-                      if (activeScheduleSnapshot.hasData)
-                        ButtonDetails(
-                          onTap: () => showMoreMenu(activeScheduleSnapshot.data!),
-                          icon: Icons.more_vert_rounded,
+                          ),
+                          actions: actions,
                         ),
-                    ],
-                  ),
                   const Padding(padding: EdgeInsets.all(5)),
                   activeScheduleSnapshot.hasData
                       ? getScheduleDisplay(activeScheduleSnapshot.data!)
-                      : CommonUI.getElevatedPrimaryButton(ButtonDetails(
+                      : Button(
                           icon: Icons.add_rounded,
                           text: 'Add a Schedule',
                           onTap: addScheduleOnTap,
-                        )),
+                        ),
                 ],
               );
             });

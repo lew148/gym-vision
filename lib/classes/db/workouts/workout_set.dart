@@ -2,8 +2,6 @@ import 'package:gymvision/classes/db/_dbo.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/classes/exercise.dart';
-import 'package:gymvision/helpers/datetime_helper.dart';
-import 'package:gymvision/helpers/number_helper.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 
 class WorkoutSet extends DBO {
@@ -31,24 +29,6 @@ class WorkoutSet extends DBO {
     this.calsBurned,
     this.workoutExercise,
   });
-
-  void setTime(String? str) => time = str == null ? null : DateTimeHelper.tryParseDuration(str);
-
-  bool hasWeight() => weight != null && weight != 0;
-  double getWeight() => hasWeight() ? weight! : 0;
-  String getWeightDisplay() => '${NumberHelper.truncateDouble(weight)}kg';
-
-  bool hasReps() => reps != null && reps! > 0;
-  String getRepsDisplay() => hasReps() ? '$reps rep${reps == 1 ? '' : 's'}' : 'No Reps';
-
-  bool hasTime() => time != null && time!.inSeconds > 0;
-  String getTimeDisplay() => hasTime() ? time.toString().split('.').first.padLeft(8, "0") : "00.00.00";
-
-  bool hasDistance() => distance != null && distance! > 0;
-  String getDistanceDisplay() => '${hasDistance() ? distance!.toStringAsFixed(2) : 0}km';
-
-  bool hasCalsBurned() => calsBurned != null && calsBurned! > 0;
-  String getCalsBurnedDisplay() => '${hasCalsBurned() ? calsBurned : 0}kcal';
 
   Exercise? getExercise() {
     if (workoutExercise == null) return null;

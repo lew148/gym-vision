@@ -12,10 +12,17 @@ import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/providers/active_workout_provider.dart';
 import 'package:gymvision/widgets/components/flavour_text_card.dart';
-import 'package:gymvision/widgets/components/scroll_bottom_padding.dart';
-import 'package:gymvision/widgets/components/splash_text.dart';
+import 'package:gymvision/widgets/components/stateless/button.dart';
+import 'package:gymvision/widgets/components/stateless/custom_card.dart';
+import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
+import 'package:gymvision/widgets/components/stateless/custom_vertical_divider.dart';
+import 'package:gymvision/widgets/components/stateless/options_menu.dart';
+import 'package:gymvision/widgets/components/stateless/prop_display.dart';
+import 'package:gymvision/widgets/components/stateless/scroll_bottom_padding.dart';
+import 'package:gymvision/widgets/components/stateless/header.dart';
+import 'package:gymvision/widgets/components/stateless/splash_text.dart';
+import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
 import 'package:gymvision/widgets/forms/add_bodyweight_form.dart';
-import 'package:gymvision/widgets/common_ui.dart';
 import 'package:gymvision/providers/navigation_provider.dart';
 import 'package:gymvision/static_data/helpers.dart';
 import 'package:intl/intl.dart';
@@ -48,13 +55,13 @@ class _TodayState extends State<Today> {
 
   void onAddWeightTap() async => showCloseableBottomSheet(
         context,
-        const AddBodyWeightForm(),
+        AddBodyWeightForm(),
       ).then((x) => reloadState());
 
   Widget getWorkoutSummary(WorkoutSummary? summary) => summary == null || summary.totalExercises == 0
       ? const SizedBox.shrink()
       : Column(children: [
-          CommonUI.getShadowDivider(context),
+          const CustomDivider(shadow: true),
           Container(
             padding: const EdgeInsets.all(5),
             height: 30,
@@ -66,14 +73,14 @@ class _TodayState extends State<Today> {
                     ]
                   : [
                       Expanded(flex: 4, child: Center(child: Text(summary.getTotalExercisesString()))),
-                      CommonUI.getVerticalDivider(context),
+                      const CustomVerticalDivider(),
                       Expanded(flex: 4, child: Center(child: Text(summary.getTotalSetsString()))),
-                      CommonUI.getVerticalDivider(context),
+                      const CustomVerticalDivider(),
                       Expanded(flex: 4, child: Center(child: Text(summary.getTotalRepsString()))),
                     ],
             ),
           ),
-          CommonUI.getShadowDivider(context),
+          const CustomDivider(shadow: true),
           if (summary.bestSet != null && summary.bestSetExercise != null)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 10),
@@ -95,18 +102,17 @@ class _TodayState extends State<Today> {
                     ],
                   ),
                   Row(children: [
-                    CommonUI.getWeightWithIcon(summary.bestSet!),
+                    TextWithIcon.weight(summary.bestSet!.weight),
                     const Padding(padding: EdgeInsets.symmetric(horizontal: 15)),
-                    CommonUI.getRepsWithIcon(summary.bestSet!)
+                    TextWithIcon.reps(summary.bestSet!.reps),
                   ]),
                 ]),
               ]),
             ),
         ]);
 
-  Widget getWorkoutDisplay(Workout workout) => CommonUI.getCard(
-        context,
-        Padding(
+  Widget getWorkoutDisplay(Workout workout) => CustomCard(
+        child: Padding(
           padding: const EdgeInsets.all(15),
           child: GestureDetector(
             behavior: HitTestBehavior.translucent,
@@ -117,7 +123,11 @@ class _TodayState extends State<Today> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(children: [
-                      CommonUI.getCompleteMark(context, workout.isFinished()),
+                      Icon(
+                        workout.isFinished() ? Icons.check_circle_rounded : Icons.circle_outlined,
+                        color: workout.isFinished() ? Theme.of(context).colorScheme.primary : Colors.grey,
+                        size: 22,
+                      ),
                       const Padding(padding: EdgeInsetsGeometry.all(5)),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -128,50 +138,48 @@ class _TodayState extends State<Today> {
                             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                           ),
                           Row(children: [
-                            CommonUI.getTimeWithIcon(context, workout.date, dtEnd: workout.endDate),
+                            TextWithIcon.time(workout.date, dtEnd: workout.endDate),
                             if (workout.isFinished()) ...[
                               const Padding(padding: EdgeInsetsGeometry.all(5)),
-                              CommonUI.getTimeElapsedWithIcon(context, workout.getDuration()),
+                              TextWithIcon.timeElapsed(workout.getDuration()),
                             ],
                           ]),
                         ],
                       ),
                     ]),
-                    GestureDetector(
-                      onTap: () => showOptionsMenu(context, [
-                        ButtonDetails(
-                          onTap: () async {
-                            Navigator.pop(context);
+                    OptionsMenu(buttons: [
+                      Button(
+                        onTap: () async {
+                          Navigator.pop(context);
 
-                            try {
-                              final exportString = await WorkoutModel.getWorkoutExportString(workout.id!);
-                              if (exportString == null) throw Exception();
-                              await Clipboard.setData(ClipboardData(text: exportString));
-                              if (mounted) showSnackBar(context, 'Workout copied to clipboard!');
-                            } catch (ex) {
-                              if (mounted) showSnackBar(context, 'Failed to export workout.');
-                            }
-                          },
-                          icon: Icons.share_rounded,
-                          text: 'Export Workout',
-                        ),
-                        ButtonDetails(
-                          onTap: () {
-                            Navigator.pop(context);
-                            showDeleteConfirm(
-                              context,
-                              "workout",
-                              () async => deleteWorkout(context, workout.id!),
-                              reloadState,
-                            );
-                          },
-                          icon: Icons.delete_rounded,
-                          text: 'Delete Workout',
-                          style: ButtonDetailsStyle.redIcon,
-                        ),
-                      ]),
-                      child: const Icon(Icons.more_vert_rounded),
-                    ),
+                          try {
+                            final exportString = await WorkoutModel.getWorkoutExportString(workout.id!);
+                            if (exportString == null) throw Exception();
+                            await Clipboard.setData(ClipboardData(text: exportString));
+                            if (mounted) showSnackBar(context, 'Workout copied to clipboard!');
+                          } catch (ex) {
+                            if (mounted) showSnackBar(context, 'Failed to export workout.');
+                          }
+                        },
+                        icon: Icons.share_rounded,
+                        text: 'Export Workout',
+                        style: ButtonCustomStyle.primaryIcon(),
+                      ),
+                      Button(
+                        onTap: () {
+                          Navigator.pop(context);
+                          showDeleteConfirm(
+                            context,
+                            "workout",
+                            () async => deleteWorkout(context, workout.id!),
+                            reloadState,
+                          );
+                        },
+                        icon: Icons.delete_rounded,
+                        text: 'Delete Workout',
+                        style: ButtonCustomStyle.redIcon(),
+                      ),
+                    ]),
                   ],
                 ),
                 const Padding(padding: EdgeInsets.all(2.5)),
@@ -181,9 +189,8 @@ class _TodayState extends State<Today> {
                       child: Wrap(
                         children: workout
                             .getCategories()
-                            .map((c) => CommonUI.getPropDisplay(
-                                  context,
-                                  c.displayName,
+                            .map((c) => PropDisplay(
+                                  text: c.displayName,
                                   color: AppHelper.isDarkMode(context) ? AppHelper.darkPropOnCardColor : null,
                                 ))
                             .toList(),
@@ -195,19 +202,17 @@ class _TodayState extends State<Today> {
                   if (workout.summary?.note == null)
                     Padding(
                       padding: const EdgeInsetsGeometry.only(right: 5),
-                      child: CommonUI.getTextButton(ButtonDetails(
+                      child: Button(
                         text: 'Add Note',
                         icon: Icons.add_rounded,
-                        style: ButtonDetailsStyle(iconSize: 20),
                         onTap: () => openWorkoutView(context, workout.id!, autofocusNotes: true),
-                      )),
+                      ),
                     ),
-                  CommonUI.getTextButton(ButtonDetails(
+                  Button(
                     text: 'Add Progress Pic',
                     icon: Icons.add_rounded,
-                    style: ButtonDetailsStyle(iconSize: 20),
                     onTap: () => null,
-                  )),
+                  ),
                 ]),
               ],
             ),
@@ -230,11 +235,11 @@ class _TodayState extends State<Today> {
                         title: 'Ready to crush your goals?',
                         description: 'One step closer to greatness!',
                       ),
-                      CommonUI.getElevatedPrimaryButton(ButtonDetails(
+                      Button(
                         icon: Icons.add_rounded,
                         text: 'Start a workout',
                         onTap: () => onAddWorkoutTap(context, reloadState, date: today),
-                      )),
+                      ),
                       Padding(
                         padding: const EdgeInsetsGeometry.all(5),
                         child: Text(
@@ -243,11 +248,11 @@ class _TodayState extends State<Today> {
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      CommonUI.getElevatedPrimaryButton(ButtonDetails(
+                      Button(
                         icon: Icons.calendar_month_rounded,
                         text: 'Create a Schedule',
                         onTap: () => Provider.of<NavigationProvider>(context, listen: false).changeTab(3),
-                      )),
+                      ),
                     ]);
                   }
 
@@ -262,14 +267,18 @@ class _TodayState extends State<Today> {
                       : Column(children: [
                           Wrap(
                             alignment: WrapAlignment.center,
-                            children:
-                                todayCategories.map((c) => CommonUI.getBigPropDisplay(context, c.displayName)).toList(),
+                            children: todayCategories
+                                .map((c) => PropDisplay(
+                                      text: c.displayName,
+                                      size: PropDisplaySize.large,
+                                    ))
+                                .toList(),
                           ),
                           const SplashText(
                             title: "You scheduled it. Let's do it!",
                             description: 'Jump straight into your scheduled workout',
                           ),
-                          CommonUI.getElevatedPrimaryButton(ButtonDetails(
+                          Button(
                             icon: Icons.add_rounded,
                             text: 'Start scheduled workout',
                             onTap: () => onAddWorkoutTap(
@@ -278,7 +287,8 @@ class _TodayState extends State<Today> {
                               date: today,
                               categories: todayCategories,
                             ),
-                          )),
+                            elevated: true,
+                          ),
                         ]);
                 }),
           ),
@@ -306,9 +316,8 @@ class _TodayState extends State<Today> {
         children: [
           Expanded(
             flex: 6,
-            child: CommonUI.getCard(
-              context,
-              Column(
+            child: CustomCard(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Column(
@@ -324,10 +333,7 @@ class _TodayState extends State<Today> {
                           )
                         ],
                       ),
-                      Text(
-                        'kcals',
-                        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                      ),
+                      Text('kcals', style: TextStyle(color: Theme.of(context).colorScheme.secondary)),
                     ],
                   ),
                 ],
@@ -337,9 +343,8 @@ class _TodayState extends State<Today> {
           const Padding(padding: EdgeInsetsGeometry.all(2.5)),
           Expanded(
             flex: 6,
-            child: CommonUI.getCard(
-              context,
-              Column(
+            child: CustomCard(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
@@ -351,11 +356,11 @@ class _TodayState extends State<Today> {
                             return Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                CommonUI.getTextButton(ButtonDetails(
+                                Button(
                                   onTap: onAddWeightTap,
                                   text: 'Add BW',
                                   icon: Icons.monitor_weight_rounded,
-                                )),
+                                ),
                               ],
                             );
                           }
@@ -406,9 +411,8 @@ class _TodayState extends State<Today> {
       children: [
         Padding(
           padding: const EdgeInsets.all(10),
-          child: CommonUI.getSectionWidgetWithAction(
-            context,
-            Column(
+          child: Header(
+            widget: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
@@ -418,11 +422,13 @@ class _TodayState extends State<Today> {
                 const Text('Today', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
               ],
             ),
-            ButtonDetails(
-              icon: Icons.add_rounded,
-              style: ButtonDetailsStyle.noPadding,
-              onTap: () => onAddWorkoutTap(context, reloadState, date: today),
-            ),
+            actions: [
+              Button(
+                icon: Icons.add_rounded,
+                style: ButtonCustomStyle.noPadding(),
+                onTap: () => onAddWorkoutTap(context, reloadState, date: today),
+              ),
+            ],
           ),
         ),
         const FlavourTextCard(),

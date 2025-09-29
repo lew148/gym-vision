@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/services/apis/todoist_service.dart';
-import 'package:gymvision/widgets/common_ui.dart';
+import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/forms/fields/custom_form_fields.dart';
 
 class ReportBugForm extends StatefulWidget {
@@ -70,7 +70,7 @@ class _ReportBugFormState extends State<ReportBugForm> {
           padding: const EdgeInsetsGeometry.only(top: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
-            children: [CommonUI.getTextButton(ButtonDetails(text: 'Report', onTap: onSubmit))],
+            children: [Button(text: 'Report', onTap: onSubmit)],
           ),
         ),
       ]),

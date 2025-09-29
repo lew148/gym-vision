@@ -5,7 +5,8 @@ import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/providers/active_workout_provider.dart';
-import 'package:gymvision/widgets/common_ui.dart';
+import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
+import 'package:gymvision/widgets/components/stateless/header.dart';
 import 'package:gymvision/widgets/forms/date_time_picker.dart';
 import 'package:gymvision/widgets/forms/duration_picker.dart';
 import 'package:gymvision/widgets/pages/workout/workout_view.dart';
@@ -195,10 +196,17 @@ Future showCloseableBottomSheet(BuildContext context, Widget child, {String? tit
                   : 30, // add viewInsets.bottom for keyboard space
             ),
             child: Column(children: [
-              CommonUI.getDragHandle(context),
+              SizedBox(
+                width: 100,
+                child: Divider(
+                  color: Theme.of(context).colorScheme.shadow,
+                  thickness: 4,
+                  radius: const BorderRadius.all(Radius.circular(25)),
+                ),
+              ),
               if (title != null) ...[
-                CommonUI.getSectionTitle(context, title),
-                CommonUI.getDivider(),
+                Header(title: title),
+                const CustomDivider(),
               ] else
                 const Padding(padding: EdgeInsetsGeometry.all(10)),
               child,
@@ -248,9 +256,6 @@ Future showFullScreenBottomSheet(
     ).then((x) {
       if (onClose != null) onClose();
     });
-
-Future showOptionsMenu(BuildContext context, List<ButtonDetails> list, {String? menuName}) =>
-    showCloseableBottomSheet(context, CommonUI.getModalMenu(context, list, modalName: menuName));
 
 Future onAddWorkoutTap(
   BuildContext context,

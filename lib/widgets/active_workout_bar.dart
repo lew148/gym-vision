@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/providers/active_workout_provider.dart';
-import 'package:gymvision/widgets/common_ui.dart';
+import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
 import 'package:gymvision/widgets/components/time_elapsed.dart';
 import 'package:provider/provider.dart';
 
@@ -81,7 +81,7 @@ class _ActiveWorkoutBarState extends State<ActiveWorkoutBar> with SingleTickerPr
                             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                           ),
                           const Padding(padding: EdgeInsetsGeometry.all(2.5)),
-                          CommonUI.getTimeWithIcon(context, workout.date),
+                          TextWithIcon.time(workout.date),
                         ]),
                         TimeElapsed(
                           since: workout.date,

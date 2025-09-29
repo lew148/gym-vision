@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class SplashText extends StatefulWidget {
+class SplashText extends StatelessWidget {
   final IconData? icon;
   final String title;
   final String? description;
@@ -12,16 +12,12 @@ class SplashText extends StatefulWidget {
     this.description,
   });
 
-  @override
-  State<SplashText> createState() => _SplashTextState();
-
-  static SplashText notFound({String? item}) => SplashText(
-        title: 'This ${item == null ? '' : '$item '}could not be found',
+  factory SplashText.notFound({String? item, String? description}) => SplashText(
+        title: 'This ${item == null ? '' : '$item '}could not be found...',
         icon: Icons.question_mark_rounded,
+        description: description ?? 'Go back and try again',
       );
-}
 
-class _SplashTextState extends State<SplashText> {
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -33,19 +29,19 @@ class _SplashTextState extends State<SplashText> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              if (widget.icon != null) ...[
-                Icon(widget.icon, size: 60, color: Theme.of(context).colorScheme.primary),
+              if (icon != null) ...[
+                Icon(icon, size: 60, color: Theme.of(context).colorScheme.primary),
                 const Padding(padding: EdgeInsetsGeometry.all(10)),
               ],
               Text(
-                widget.title,
+                title,
                 style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
                 softWrap: true,
               ),
-              if (widget.description != null)
+              if (description != null)
                 Text(
-                  widget.description!,
+                  description!,
                   style: TextStyle(color: Theme.of(context).colorScheme.shadow),
                   textAlign: TextAlign.center,
                   softWrap: true,

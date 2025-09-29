@@ -2,8 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/helpers/common_functions.dart';
-import 'package:gymvision/providers/active_workout_provider.dart';
-import 'package:gymvision/widgets/common_ui.dart';
+import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/providers/rest_timer_provider.dart';
 import 'package:provider/provider.dart';
@@ -16,59 +15,61 @@ class RestTimer extends StatefulWidget {
 }
 
 class _RestTimerState extends State<RestTimer> {
-  late RestTimerProvider restTimerProvider;
-  late ActiveWorkoutProvider activeWorkoutProvider;
+  late RestTimerProvider provider;
   Timer? uiRefreshTimer;
-  Duration? left;
-  bool leftWorkoutScreen = false;
 
   @override
   void initState() {
     super.initState();
-    uiRefreshTimer = Timer.periodic(
-      const Duration(milliseconds: 500),
-      (Timer t) {
-        setState(() {});
-      },
-    );
   }
 
   @override
   void dispose() {
     uiRefreshTimer?.cancel();
     super.dispose();
-    leftWorkoutScreen = true;
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    restTimerProvider = Provider.of<RestTimerProvider>(context);
+    provider = Provider.of<RestTimerProvider>(context);
+    if (provider.getTimeLeft().inSeconds != 0) {
+      uiRefreshTimer ??= Timer.periodic(const Duration(milliseconds: 500), (Timer t) {
+        setState(() {});
+        if (provider.getTimeLeft() == Duration.zero) {
+          t.cancel();
+          uiRefreshTimer = null;
+        }
+      });
+    } else {
+      uiRefreshTimer = null;
+    }
   }
 
   void showPicker() => showDurationPicker(
         context,
         CupertinoTimerPickerMode.ms,
-        (Duration d) => restTimerProvider.setTimer(context: context, duration: d),
+        (Duration d) => provider.setTimer(context: context, duration: d),
         isTimer: true,
       );
 
-  void onTimerDelete() => restTimerProvider.clearTimer();
+  void onTimerDelete() => provider.clearTimer();
 
   @override
   Widget build(BuildContext context) {
-    return restTimerProvider.timer == null
-        ? CommonUI.getTextButton(ButtonDetails(
+    return provider.timer == null
+        ? Button(
             icon: Icons.alarm_add_rounded,
             onTap: showPicker,
-          ))
+          )
         : GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: () => showDeleteConfirm(context, 'Timer', onTimerDelete, null),
             child: Stack(children: [
-              Container(
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
                 height: 25,
-                width: 60 * (restTimerProvider.getPercentageLeft() / 100),
+                width: 60 * (provider.getPercentageLeft() / 100),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primary,
                   borderRadius: const BorderRadius.all(Radius.circular(5)),
@@ -83,7 +84,7 @@ class _RestTimerState extends State<RestTimer> {
                 width: 60,
                 child: Center(
                   child: Text(DateTimeHelper.getDurationString(
-                    restTimerProvider.getTimeLeft(),
+                    provider.getTimeLeft(),
                     noHours: true,
                   )),
                 ),

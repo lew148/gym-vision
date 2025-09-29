@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
-import 'package:gymvision/widgets/common_ui.dart';
-import 'package:gymvision/widgets/components/scroll_bottom_padding.dart';
+import 'package:gymvision/widgets/components/stateless/button.dart';
+import 'package:gymvision/widgets/components/stateless/scroll_bottom_padding.dart';
 import 'package:gymvision/widgets/pages/exercise/exercise_view.dart';
 import 'package:gymvision/widgets/forms/category_picker.dart';
 import 'package:gymvision/static_data/enums.dart';
@@ -129,11 +129,9 @@ class _ExercisesState extends State<Exercises> {
           ),
         ),
         if (widget.onAddTap != null)
-          CommonUI.getTextButton(
-            ButtonDetails(
-              icon: Icons.add_rounded,
-              onTap: () => widget.onAddTap!(exercise.identifier),
-            ),
+          Button(
+            icon: Icons.add_rounded,
+            onTap: () => widget.onAddTap!(exercise.identifier),
           ),
       ]);
 
@@ -252,11 +250,11 @@ class _ExercisesState extends State<Exercises> {
       ]),
       if (selectedType != ExerciseType.cardio)
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          CommonUI.getTextButton(ButtonDetails(
+          Button(
             text: 'Categories',
             onTap: showCategories,
-            style: ButtonDetailsStyle(padding: const EdgeInsets.all(10)),
-          )),
+            style: ButtonCustomStyle(padding: const EdgeInsets.all(10)),
+          ),
         ]),
       Expanded(child: getExercisesScrollView()),
     ]);

@@ -7,9 +7,11 @@ import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
-import 'package:gymvision/widgets/components/splash_text.dart';
+import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
+import 'package:gymvision/widgets/components/stateless/header.dart';
+import 'package:gymvision/widgets/components/stateless/splash_text.dart';
+import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
 import 'package:gymvision/widgets/debug_scaffold.dart';
-import 'package:gymvision/widgets/common_ui.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 import 'package:gymvision/widgets/pages/workout/workout_exercise_widget.dart';
@@ -90,9 +92,9 @@ class _ExerciseViewState extends State<ExerciseView> {
             ),
             Row(
               children: [
-                CommonUI.getWeightWithIcon(pr),
+                TextWithIcon.weight(pr.weight),
                 const Padding(padding: EdgeInsets.all(5)),
-                CommonUI.getRepsWithIcon(pr),
+                TextWithIcon.reps(pr.reps),
               ],
             ),
           ]),
@@ -101,6 +103,20 @@ class _ExerciseViewState extends State<ExerciseView> {
 
   @override
   Widget build(BuildContext context) {
+    Widget getInfoWidget(BuildContext context, String title, Widget? info) => Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: TextStyle(fontWeight: FontWeight.w500, color: Theme.of(context).colorScheme.secondary),
+              ),
+              info ?? const Text('-')
+            ],
+          ),
+        );
+
     return FutureBuilder<Exercise?>(
       future: _exercise,
       builder: (context, snapshot) {
@@ -120,21 +136,21 @@ class _ExerciseViewState extends State<ExerciseView> {
               : Column(
                   children: [
                     // if (god)
-                    CommonUI.getInfoWidget(
+                    getInfoWidget(
                         context,
                         'ID',
                         SelectableText(
                           exercise.identifier,
                           style: TextStyle(color: Theme.of(context).colorScheme.shadow),
                         )),
-                    CommonUI.getInfoWidget(context, 'Type', Text(exercise.type.displayName)),
-                    CommonUI.getInfoWidget(context, 'Primary Muscle', Text(exercise.primaryMuscleGroup.displayName)),
-                    CommonUI.getInfoWidget(context, 'Equipment', Text(exercise.equipment.displayName)),
+                    getInfoWidget(context, 'Type', Text(exercise.type.displayName)),
+                    getInfoWidget(context, 'Primary Muscle', Text(exercise.primaryMuscleGroup.displayName)),
+                    getInfoWidget(context, 'Equipment', Text(exercise.equipment.displayName)),
                     if (exercise.type == ExerciseType.strength && exercise.exerciseDetails?.pr != null)
                       getPrSection(exercise.exerciseDetails!.pr!),
                     Notes(type: NoteType.exercise, objectId: exercise.identifier),
-                    CommonUI.getSectionTitle(context, 'History'),
-                    CommonUI.getShadowDivider(context),
+                    const Header(title: 'History'),
+                    const CustomDivider(shadow: true),
                     getRecentUsesWidget(exercise, exercise.exerciseDetails),
                   ],
                 ),

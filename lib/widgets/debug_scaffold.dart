@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/active_workout_bar.dart';
-import 'package:gymvision/widgets/components/logo.dart';
+import 'package:gymvision/widgets/components/stateless/logo.dart';
 import 'package:gymvision/widgets/forms/report_bug_form.dart';
 import 'package:gymvision/widgets/pages/user_settings_view.dart';
 

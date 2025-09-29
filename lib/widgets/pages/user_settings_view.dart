@@ -9,7 +9,9 @@ import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/services/local_notification_service.dart';
 import 'package:gymvision/models/db_models/flavour_text_schedule_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
-import 'package:gymvision/widgets/common_ui.dart';
+import 'package:gymvision/widgets/components/stateless/button.dart';
+import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
+import 'package:gymvision/widgets/components/stateless/header.dart';
 import 'package:gymvision/widgets/debug_scaffold.dart';
 import 'package:gymvision/widgets/forms/import_workout_form.dart';
 import '../../models/db_models/user_settings_model.dart';
@@ -92,8 +94,8 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text('Intra-set Rest Timer'),
-                  CommonUI.getElevatedPrimaryButton(ButtonDetails(
-                    style: ButtonDetailsStyle(padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5)),
+                  Button(
+                    style: ButtonCustomStyle(padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5)),
                     text: settings.intraSetRestTimer == null
                         ? 'Set Timer'
                         : DateTimeHelper.getDurationString(settings.intraSetRestTimer!, noHours: true),
@@ -112,74 +114,68 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                         reloadState();
                       },
                     ),
-                  )),
+                  ),
                 ],
               ),
-              CommonUI.getSectionTitle(context, 'Developer Settings'),
-              CommonUI.getDivider(),
-              CommonUI.getElevatedPrimaryButton(
-                ButtonDetails(
-                  onTap: () async {
-                    await FlavourTextScheduleModel.setRecentFlavourTextScheduleNotDismissed();
+              const Header(title: 'Developer Settings'),
+              const CustomDivider(),
+              Button(
+                onTap: () async {
+                  await FlavourTextScheduleModel.setRecentFlavourTextScheduleNotDismissed();
+                  if (!context.mounted) return;
+                  showSnackBar(context, 'Flavour Text Un-dismissed!');
+                },
+                text: 'Un-Dismiss Flavour Text',
+                elevated: true,
+              ),
+              Button(
+                onTap: () => runSafe(
+                  () => throw Exception(),
+                  sentryMessage: '(IGNORE) This error was sent manually by a developer!',
+                  fallback: null,
+                ),
+                text: 'Send Error to Sentry',
+                elevated: true,
+              ),
+              Button(
+                onTap: () => LocalNotificationService.showTestNotification(),
+                text: 'Show Test Notification',
+                elevated: true,
+              ),
+              Button(
+                onTap: () => showCloseableBottomSheet(context, const ImportWorkoutForm()),
+                text: 'Import Workout',
+                elevated: true,
+              ),
+              const Header(title: 'Database Settings'),
+              const CustomDivider(),
+              Button(
+                elevated: true,
+                text: 'Update Database',
+                onTap: () => showConfirm(
+                  context,
+                  'Update Database',
+                  'This will persist existing data',
+                  onConfirm: () async {
+                    final success = await DatabaseHelper.resetWhilePersistingData();
                     if (!context.mounted) return;
-                    showSnackBar(context, 'Flavour Text Un-dismissed!');
+                    showSnackBar(context, success ? 'Successfully updated database' : 'Failed to update database');
                   },
-                  text: 'Un-Dismiss Flavour Text',
                 ),
               ),
-              CommonUI.getElevatedPrimaryButton(
-                ButtonDetails(
-                  onTap: () => runSafe(
-                    () => throw Exception(),
-                    sentryMessage: '(IGNORE) This error was sent manually by a developer!',
-                    fallback: null,
-                  ),
-                  text: 'Send Error to Sentry',
-                ),
-              ),
-              CommonUI.getElevatedPrimaryButton(
-                ButtonDetails(
-                  onTap: () => LocalNotificationService.showTestNotification(),
-                  text: 'Show Test Notification',
-                ),
-              ),
-              CommonUI.getElevatedPrimaryButton(
-                ButtonDetails(
-                  onTap: () => showCloseableBottomSheet(context, const ImportWorkoutForm()),
-                  text: 'Import Workout',
-                ),
-              ),
-              CommonUI.getSectionTitle(context, 'Database Settings'),
-              CommonUI.getDivider(),
-              CommonUI.getElevatedPrimaryButton(
-                ButtonDetails(
-                  onTap: () => showConfirm(
-                    context,
-                    'Update Database',
-                    'This will persist existing data',
-                    onConfirm: () async {
-                      final success = await DatabaseHelper.resetWhilePersistingData();
-                      if (!context.mounted) return;
-                      showSnackBar(context, success ? 'Successfully updated database' : 'Failed to update database');
-                    },
-                  ),
-                  text: 'Update Database',
-                ),
-              ),
-              CommonUI.getElevatedPrimaryButton(
-                ButtonDetails(
-                  onTap: () => showDeleteConfirm(
-                    context,
-                    "database",
-                    () async {
-                      await DatabaseHelper.resetDatabase();
-                      if (!context.mounted) return;
-                      showSnackBar(context, 'Successfully reset database');
-                    },
-                    () => null,
-                  ),
-                  text: 'Reset Database',
-                  style: ButtonDetailsStyle.redIconAndText,
+              Button(
+                elevated: true,
+                text: 'Reset Database',
+                style: ButtonCustomStyle.redIconAndText(),
+                onTap: () => showDeleteConfirm(
+                  context,
+                  "database",
+                  () async {
+                    await DatabaseHelper.resetDatabase();
+                    if (!context.mounted) return;
+                    showSnackBar(context, 'Successfully reset database');
+                  },
+                  () => null,
                 ),
               ),
               const Padding(padding: EdgeInsets.all(10)),

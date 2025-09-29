@@ -113,7 +113,7 @@ Future start() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  final primary = const Color(0xFFE65100);
+  final primary = const Color.fromARGB(255, 252, 150, 55);
   final secondary = const Color.fromARGB(255, 146, 146, 146);
   final tertiary = const Color.fromARGB(255, 255, 101, 101);
   final shadow = const Color.fromARGB(255, 77, 77, 77);

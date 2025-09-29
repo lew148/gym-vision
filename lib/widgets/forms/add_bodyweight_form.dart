@@ -2,37 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/bodyweight.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
-import 'package:gymvision/widgets/common_ui.dart';
+import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'fields/custom_form_fields.dart';
 
-class AddBodyWeightForm extends StatefulWidget {
-  const AddBodyWeightForm({super.key});
-
-  @override
-  State<AddBodyWeightForm> createState() => _AddBodyWeightFormState();
-}
-
-class _AddBodyWeightFormState extends State<AddBodyWeightForm> {
+class AddBodyWeightForm extends StatelessWidget {
   final formKey = GlobalKey<FormState>();
-  TextEditingController weightController = TextEditingController();
+  final TextEditingController weightController = TextEditingController();
 
-  void onSubmit() async {
-    try {
-      if (!formKey.currentState!.validate()) return;
-
-      var now = DateTime.now();
-      var weight = double.tryParse(weightController.text);
-      if (weight != null) {
-        await BodyweightModel.insert(Bodyweight(date: now, weight: weight, units: 'kg'));
-      }
-    } catch (ex) {
-      if (!mounted) return;
-      showSnackBar(context, 'Failed to add Bodyweight');
-    }
-
-    if (!mounted) return;
-    Navigator.pop(context);
-  }
+  AddBodyWeightForm({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +28,26 @@ class _AddBodyWeightFormState extends State<AddBodyWeightForm> {
               ),
             ),
             const Padding(padding: EdgeInsetsGeometry.all(20)),
-            CommonUI.getDoneButton(onSubmit, isAdd: true),
+            Button.done(
+              onTap: () async {
+                try {
+                  if (!formKey.currentState!.validate()) return;
+
+                  var now = DateTime.now();
+                  var weight = double.tryParse(weightController.text);
+                  if (weight != null) {
+                    await BodyweightModel.insert(Bodyweight(date: now, weight: weight, units: 'kg'));
+                  }
+                } catch (ex) {
+                  if (!context.mounted) return;
+                  showSnackBar(context, 'Failed to add Bodyweight');
+                }
+
+                if (!context.mounted) return;
+                Navigator.pop(context);
+              },
+              isAdd: true,
+            ),
           ]),
         ],
       ),

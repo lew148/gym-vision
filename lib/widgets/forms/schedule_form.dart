@@ -5,7 +5,10 @@ import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/models/db_models/schedule_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
-import 'package:gymvision/widgets/common_ui.dart';
+import 'package:gymvision/widgets/components/stateless/button.dart';
+import 'package:gymvision/widgets/components/stateless/custom_card.dart';
+import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
+import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
 import 'package:gymvision/widgets/forms/category_picker.dart';
 import 'package:gymvision/widgets/forms/fields/custom_form_fields.dart';
 import 'package:gymvision/static_data/enums.dart';
@@ -134,9 +137,8 @@ class _ScheduleFormState extends State<ScheduleForm> {
 
   Widget getDayField(int day) {
     final categoriesForDay = categoriesByDay[day];
-    return CommonUI.getCard(
-      context,
-      GestureDetector(
+    return CustomCard(
+      child: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () => showCloseableBottomSheet(
           context,
@@ -157,7 +159,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
               children: [
                 Text(selectedType == ScheduleType.split ? 'Day $day' : DateTimeHelper.dayStrings[day - 1]),
                 categoriesForDay == null || categoriesForDay.isEmpty
-                    ? CommonUI.getRestWidget()
+                    ? TextWithIcon.rest()
                     : Expanded(
                         child: Padding(
                           padding: const EdgeInsetsGeometry.only(left: 10),
@@ -175,7 +177,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
               ],
             ),
             const Padding(padding: EdgeInsetsGeometry.all(5)),
-            CommonUI.getDivider(height: 0)
+            const CustomDivider(height: 0),
           ]),
         ),
       ),
@@ -202,9 +204,8 @@ class _ScheduleFormState extends State<ScheduleForm> {
                     height: 80,
                     child: Row(children: [
                       Expanded(
-                        child: CommonUI.getCard(
-                          context,
-                          GestureDetector(
+                        child: CustomCard(
+                          child: GestureDetector(
                             behavior: HitTestBehavior.translucent,
                             onTap: () => onTypeTap(ScheduleType.weekly),
                             child: const Padding(
@@ -222,9 +223,8 @@ class _ScheduleFormState extends State<ScheduleForm> {
                         ),
                       ),
                       Expanded(
-                        child: CommonUI.getCard(
-                          context,
-                          GestureDetector(
+                        child: CustomCard(
+                          child: GestureDetector(
                             behavior: HitTestBehavior.translucent,
                             onTap: () => onTypeTap(ScheduleType.split),
                             child: const Padding(
@@ -252,31 +252,27 @@ class _ScheduleFormState extends State<ScheduleForm> {
                       children: [
                         if (selectedType == ScheduleType.split)
                           Row(children: [
-                            CommonUI.getTextButton(
-                              ButtonDetails(
-                                disabled: categoriesByDay.length >= weeklyDays,
-                                onTap: () {
-                                  setState(() {
-                                    categoriesByDay[categoriesByDay.length + 1] = [];
-                                  });
-                                },
-                                icon: Icons.add_rounded,
-                              ),
+                            Button(
+                              disabled: categoriesByDay.length >= weeklyDays,
+                              onTap: () {
+                                setState(() {
+                                  categoriesByDay[categoriesByDay.length + 1] = [];
+                                });
+                              },
+                              icon: Icons.add_rounded,
                             ),
                             if (categoriesByDay.length > splitMinDays)
-                              CommonUI.getTextButton(
-                                ButtonDetails(
-                                  onTap: () {
-                                    setState(() {
-                                      categoriesByDay.remove(categoriesByDay.entries.last.key);
-                                    });
-                                  },
-                                  icon: Icons.horizontal_rule_rounded,
-                                  style: ButtonDetailsStyle.redIcon,
-                                ),
+                              Button(
+                                onTap: () {
+                                  setState(() {
+                                    categoriesByDay.remove(categoriesByDay.entries.last.key);
+                                  });
+                                },
+                                icon: Icons.horizontal_rule_rounded,
+                                style: ButtonCustomStyle.redIcon(),
                               ),
                           ]),
-                        CommonUI.getDoneButton(onSubmit, isAdd: !isEdit),
+                        Button.done(onTap: onSubmit, isAdd: !isEdit),
                       ],
                     ),
                   ]),

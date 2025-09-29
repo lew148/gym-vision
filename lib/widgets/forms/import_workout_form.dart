@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
-import 'package:gymvision/widgets/common_ui.dart';
+import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/forms/fields/custom_form_fields.dart';
 
 class ImportWorkoutForm extends StatefulWidget {
@@ -37,15 +37,16 @@ class _ImportWorkoutFormState extends State<ImportWorkoutForm> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              CommonUI.getTextButton(ButtonDetails(
-                  text: 'Paste',
-                  onTap: () async {
-                    final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-                    setState(() {
-                      inputController.text = clipboardData?.text ?? '';
-                    });
-                  })),
-              CommonUI.getTextButton(ButtonDetails(text: 'Import', onTap: onSubmit)),
+              Button(
+                text: 'Paste',
+                onTap: () async {
+                  final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+                  setState(() {
+                    inputController.text = clipboardData?.text ?? '';
+                  });
+                },
+              ),
+              Button(text: 'Import', onTap: onSubmit),
             ],
           ),
         ),

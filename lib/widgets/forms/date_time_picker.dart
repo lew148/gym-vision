@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:gymvision/widgets/common_ui.dart';
+import 'package:gymvision/widgets/components/stateless/button.dart';
 
 class DateTimePicker extends StatefulWidget {
   final void Function(DateTime dt) onChange;
@@ -47,14 +47,14 @@ class _DateTimePickerState extends State<DateTimePicker> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            CommonUI.getTextButton(ButtonDetails(
+            Button(
               text: 'Now',
               onTap: () => setState(() {
                 key = GlobalKey(); // prevent persisting state
                 value = DateTime.now();
               }),
-            )),
-            CommonUI.getDoneButton(() {
+            ),
+            Button.done(onTap: () {
               Navigator.pop(context);
               widget.onChange(value);
             }),

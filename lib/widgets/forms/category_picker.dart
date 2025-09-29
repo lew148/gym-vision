@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:gymvision/widgets/common_ui.dart';
+import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
+import 'package:gymvision/widgets/components/stateless/custom_card.dart';
+import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 
 class CateogryPicker extends StatefulWidget {
   final List<Category>? selectedCategories;
@@ -34,12 +36,18 @@ class _CateogryPickerState extends State<CateogryPicker> {
               ? selectedCategories.remove(category)
               : selectedCategories.add(category);
         }),
-        child: CommonUI.getCard(
-          context,
-          CommonUI.getSelectedContainer(
-            context,
+        child: CustomCard(
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
+              border: Border.all(
+                width: 2,
+                color:
+                    selectedCategories.contains(category) ? Theme.of(context).colorScheme.primary : Colors.transparent,
+              ),
+            ),
+            padding: const EdgeInsets.all(10),
             child: Text(category.displayName),
-            selected: selectedCategories.contains(category),
           ),
         ),
       );
@@ -56,18 +64,18 @@ class _CateogryPickerState extends State<CateogryPicker> {
                 alignment: WrapAlignment.center,
                 children: SplitHelper.splitCategories.map((c) => getCategoryDisplay(c)).toList(),
               ),
-              CommonUI.getDivider(),
+              const CustomDivider(),
               Wrap(
                 alignment: WrapAlignment.center,
                 children: SplitHelper.split2Categories.map((c) => getCategoryDisplay(c)).toList(),
               ),
-              CommonUI.getDivider(),
+              const CustomDivider(),
               Wrap(
                 alignment: WrapAlignment.center,
                 children: SplitHelper.muscleGroupCategories.map((c) => getCategoryDisplay(c)).toList(),
               ),
               if (widget.includeMiscCategories) ...[
-                CommonUI.getDivider(),
+                const CustomDivider(),
                 Wrap(
                   alignment: WrapAlignment.center,
                   children: SplitHelper.miscCategories.map((c) => getCategoryDisplay(c)).toList(),
@@ -77,14 +85,14 @@ class _CateogryPickerState extends State<CateogryPicker> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CommonUI.getTextButton(ButtonDetails(
+                Button(
                   text: 'Clear',
                   onTap: () {
                     Navigator.pop(context);
                     widget.onChange([]);
                   },
-                )),
-                CommonUI.getDoneButton(() {
+                ),
+                Button.done(onTap: () {
                   Navigator.pop(context);
                   widget.onChange(selectedCategories);
                 }),

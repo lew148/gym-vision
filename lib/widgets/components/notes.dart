@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/note.dart';
 import 'package:gymvision/helpers/common_functions.dart';
-import 'package:gymvision/widgets/common_ui.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/models/db_models/note_model.dart';
+import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 
 class Notes extends StatefulWidget {
   final NoteType type;
@@ -35,7 +35,7 @@ class _NotesState extends State<Notes> {
     note = NoteModel.getNoteForObject(widget.type, widget.objectId);
   }
 
-  void reloadState() => setState(() {
+  void reload() => setState(() {
         note = NoteModel.getNoteForObject(widget.type, widget.objectId);
       });
 
@@ -58,7 +58,7 @@ class _NotesState extends State<Notes> {
         }
       }
 
-      reloadState();
+      reload();
     } catch (ex) {
       if (!mounted) return;
       showSnackBar(context, 'Failed to save note');
@@ -67,53 +67,53 @@ class _NotesState extends State<Notes> {
 
   @override
   Widget build(BuildContext context) {
-    return CommonUI.getCard(
-      context,
-      Padding(
+    return CustomCard(
+      child: Padding(
         padding: const EdgeInsetsGeometry.symmetric(horizontal: 5),
         child: Row(children: [
           Expanded(
             child: FutureBuilder(
-                future: note,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData && widget.notesOverride == null) {
-                    controller.text = snapshot.data!.note;
-                  }
+              future: note,
+              builder: (context, snapshot) {
+                if (snapshot.hasData && widget.notesOverride == null) {
+                  controller.text = snapshot.data!.note;
+                }
 
-                  return CupertinoTextField(
-                    controller: controller,
-                    keyboardType: TextInputType.multiline,
-                    autofocus: widget.autofocus,
-                    textInputAction: TextInputAction.done,
-                    onEditingComplete: () => onSave(snapshot.data),
-                    padding: const EdgeInsetsGeometry.all(10),
-                    minLines: 1,
-                    maxLines: 3,
-                    suffixMode: OverlayVisibilityMode.editing,
-                    suffix: GestureDetector(
-                      child: Padding(
-                        padding: const EdgeInsetsGeometry.all(5),
-                        child: Icon(
-                          Icons.clear_rounded,
-                          size: 16,
-                          color: Theme.of(context).colorScheme.shadow,
-                        ),
-                      ),
-                      onTap: () => showDeleteConfirm(
-                        context,
-                        'note',
-                        () {
-                          controller.clear();
-                          onSave(snapshot.data);
-                        },
-                        reloadState,
+                return CupertinoTextField(
+                  controller: controller,
+                  keyboardType: TextInputType.multiline,
+                  autofocus: widget.autofocus,
+                  textInputAction: TextInputAction.done,
+                  onEditingComplete: () => onSave(snapshot.data),
+                  padding: const EdgeInsetsGeometry.all(10),
+                  minLines: 1,
+                  maxLines: 3,
+                  suffixMode: OverlayVisibilityMode.editing,
+                  suffix: GestureDetector(
+                    child: Padding(
+                      padding: const EdgeInsetsGeometry.all(5),
+                      child: Icon(
+                        Icons.clear_rounded,
+                        size: 16,
+                        color: Theme.of(context).colorScheme.shadow,
                       ),
                     ),
-                    placeholder: 'Add note...',
-                    style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontSize: 15),
-                    decoration: const BoxDecoration(color: Colors.transparent),
-                  );
-                }),
+                    onTap: () => showDeleteConfirm(
+                      context,
+                      'note',
+                      () {
+                        controller.clear();
+                        onSave(snapshot.data);
+                      },
+                      reload,
+                    ),
+                  ),
+                  placeholder: 'Add note...',
+                  style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontSize: 15),
+                  decoration: const BoxDecoration(color: Colors.transparent),
+                );
+              },
+            ),
           ),
         ]),
       ),

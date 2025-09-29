@@ -7,9 +7,11 @@ import 'package:gymvision/models/db_models/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
-import 'package:gymvision/widgets/common_ui.dart';
+import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/static_data/enums.dart';
-import 'package:gymvision/widgets/components/splash_text.dart';
+import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
+import 'package:gymvision/widgets/components/stateless/header.dart';
+import 'package:gymvision/widgets/components/stateless/splash_text.dart';
 import 'fields/custom_form_fields.dart';
 
 class WorkoutSetForm extends StatefulWidget {
@@ -243,8 +245,8 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
           key: formKey,
           child: Column(
             children: [
-              CommonUI.getSectionTitle(context, exercise.getFullName()),
-              CommonUI.getDivider(),
+              Header(title: exercise.getFullName()),
+              const CustomDivider(),
               if (exercise.type == ExerciseType.strength) ...getWeightFields(exercise),
               if (exercise.type == ExerciseType.cardio) ...getCardioFields(exercise),
               Padding(
@@ -254,20 +256,16 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
                   children: isEdit
                       ? [
                           Row(children: [
-                            CommonUI.getDeleteButton(onDeleteButtonTap),
-                            CommonUI.getTextButton(
-                              ButtonDetails(icon: Icons.copy_rounded, onTap: onCopySetButtonTap),
-                            ),
+                            Button.delete(onTap: onDeleteButtonTap),
+                            Button(icon: Icons.copy_rounded, onTap: onCopySetButtonTap),
                           ]),
-                          CommonUI.getDoneButton(onEditSubmit),
+                          Button.done(onTap: onEditSubmit),
                         ]
                       : [
                           exercise.type != ExerciseType.cardio
-                              ? CommonUI.getTextButton(
-                                  ButtonDetails(onTap: () => onAddSubmit(exercise, addThree: true), text: 'Add 3'),
-                                )
+                              ? Button(onTap: () => onAddSubmit(exercise, addThree: true), text: 'Add 3')
                               : const SizedBox.shrink(),
-                          CommonUI.getDoneButton(() => onAddSubmit(exercise), isAdd: true),
+                          Button.done(onTap: () => onAddSubmit(exercise), isAdd: true),
                         ],
                 ),
               ),

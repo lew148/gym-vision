@@ -9,10 +9,14 @@ import 'package:gymvision/models/db_models/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
+import 'package:gymvision/widgets/components/stateless/button.dart';
+import 'package:gymvision/widgets/components/stateless/custom_card.dart';
+import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
+import 'package:gymvision/widgets/components/stateless/options_menu.dart';
+import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
 import 'package:gymvision/widgets/forms/fields/custom_checkbox.dart';
 import 'package:gymvision/widgets/forms/workout_set_form.dart';
 import 'package:gymvision/widgets/pages/exercise/exercise_view.dart';
-import 'package:gymvision/widgets/common_ui.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 
@@ -59,14 +63,6 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         workoutSetsFuture = WorkoutSetModel.getSetsForWorkoutExercise(widget.workoutExercise.id!);
       });
 
-  void toggleDropped() {
-    setState(() {
-      dropped = !dropped;
-    });
-
-    if (widget.toggleDroppedParent != null) widget.toggleDroppedParent!(widget.workoutExercise.id!);
-  }
-
   void onEditWorkoutSetTap(WorkoutSet ws) => showCloseableBottomSheet(
         context,
         WorkoutSetForm(
@@ -106,22 +102,26 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         exerciseIdentifier: exerciseIdentifier,
         workoutId: widget.workoutExercise.workoutId,
         onSuccess: () {
-          dropped ? null : toggleDropped();
-          reload();
+          setState(() {
+            if (!dropped) dropped = true;
+            workoutSetsFuture = WorkoutSetModel.getSetsForWorkoutExercise(widget.workoutExercise.id!);
+          });
+
+          if (widget.toggleDroppedParent != null) widget.toggleDroppedParent!(widget.workoutExercise.id!);
         },
       ),
     );
   }
 
   List<Widget> getWeightedSetContents(WorkoutSet ws) => [
-        Expanded(flex: 5, child: CommonUI.getWeightWithIcon(ws)),
-        Expanded(flex: 5, child: CommonUI.getRepsWithIcon(ws)),
+        Expanded(flex: 4, child: TextWithIcon.weight(ws.weight, alignment: MainAxisAlignment.center)),
+        Expanded(flex: 4, child: TextWithIcon.reps(ws.reps, alignment: MainAxisAlignment.center)),
       ];
 
   List<Widget> getCardioSetContents(WorkoutSet ws) => [
-        Expanded(flex: 4, child: CommonUI.getSetTimeWithIcon(ws)),
-        Expanded(flex: 3, child: CommonUI.getDistanceWithIcon(ws)),
-        Expanded(flex: 3, child: CommonUI.getCaloriesWithIcon(ws)),
+        Expanded(flex: 4, child: TextWithIcon.setTime(ws.time, alignment: MainAxisAlignment.center)),
+        Expanded(flex: 4, child: TextWithIcon.distance(ws.distance, alignment: MainAxisAlignment.center)),
+        Expanded(flex: 3, child: TextWithIcon.caloriesBurned(ws.calsBurned, alignment: MainAxisAlignment.center)),
       ];
 
   Widget getSetWidgetInner(int setNumber, WorkoutSet set) => Padding(
@@ -158,10 +158,38 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           ? getSetWidgetInner(i + 1, set)
           : InkWell(
               enableFeedback: false,
-              onLongPress: () {
-                HapticFeedback.lightImpact();
-                showSetMenu(set);
-              },
+              onLongPress: () => OptionsMenu.showOptionsMenu(
+                context,
+                buttons: [
+                  Button(
+                    text: 'Copy Set',
+                    icon: Icons.content_copy_rounded,
+                    style: ButtonCustomStyle.primaryIcon(),
+                    onTap: () => onCopySetButtonTap(set),
+                  ),
+                  Button(
+                    text: 'Edit Set',
+                    icon: Icons.edit_rounded,
+                    style: ButtonCustomStyle.primaryIcon(),
+                    onTap: () {
+                      Navigator.pop(context);
+                      onEditWorkoutSetTap(set);
+                    },
+                  ),
+                  Button(
+                    text: 'Delete Set',
+                    icon: Icons.delete_rounded,
+                    style: ButtonCustomStyle.redIcon(),
+                    onTap: () => showDeleteConfirm(
+                      context,
+                      "set",
+                      () => WorkoutSetModel.delete(set.id!),
+                      reload,
+                      popCaller: true,
+                    ),
+                  ),
+                ],
+              ),
               onTap: () => onEditWorkoutSetTap(set),
               child: getSetWidgetInner(i + 1, set),
             ));
@@ -218,105 +246,6 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     }
   }
 
-  void showExerciseMenu() {
-    showCloseableBottomSheet(
-      context,
-      Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 10),
-            child: InkWell(
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) => ExerciseView(identifier: exerciseIdentifier)))
-                    .then((value) => reload());
-              },
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.visibility_rounded,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  const Padding(padding: EdgeInsets.all(5)),
-                  const Text(
-                    'View Exercise',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          CommonUI.getDivider(),
-          Padding(
-            padding: const EdgeInsets.only(top: 10, bottom: 10),
-            child: InkWell(
-              onTap: () {
-                Navigator.pop(context);
-                showDeleteConfirm(
-                  context,
-                  "exercise from workout",
-                  () => WorkoutExerciseModel.delete(widget.workoutExercise.id!),
-                  () {
-                    if (widget.onDelete != null) widget.onDelete!(widget.workoutExercise.id!);
-                  },
-                );
-              },
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.delete_rounded,
-                    color: Theme.of(context).colorScheme.tertiary,
-                  ),
-                  const Padding(padding: EdgeInsets.all(5)),
-                  const Text(
-                    'Delete Exercise',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void showSetMenu(WorkoutSet ws) {
-    showOptionsMenu(
-      context,
-      [
-        ButtonDetails(
-          text: 'Copy Set',
-          icon: Icons.content_copy_rounded,
-          style: ButtonDetailsStyle.primaryIcon(context),
-          onTap: () => onCopySetButtonTap(ws),
-        ),
-        ButtonDetails(
-          text: 'Edit Set',
-          icon: Icons.edit_rounded,
-          style: ButtonDetailsStyle.primaryIcon(context),
-          onTap: () {
-            Navigator.pop(context);
-            onEditWorkoutSetTap(ws);
-          },
-        ),
-        ButtonDetails(
-          text: 'Delete Set',
-          icon: Icons.delete_rounded,
-          style: ButtonDetailsStyle.redIcon,
-          onTap: () => showDeleteConfirm(
-            context,
-            "set",
-            () => WorkoutSetModel.delete(ws.id!),
-            reload,
-            popCaller: true,
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget getHeader({required bool standalone, required bool isDone}) => Padding(
         padding: const EdgeInsets.all(8),
         child: Row(
@@ -332,9 +261,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                 Expanded(
                   child: isDisplay
                       ? Column(children: [
-                          CommonUI.getDateWithIcon(context, widget.workoutExercise.workout!.date, muted: false),
-                          CommonUI.getTimeWithIcon(
-                            context,
+                          TextWithIcon.date(widget.workoutExercise.workout!.date, muted: false),
+                          TextWithIcon.time(
                             widget.workoutExercise.workout!.date,
                             dtEnd: widget.workoutExercise.workout?.endDate,
                           ),
@@ -342,10 +270,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                       : Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              exercise.name,
-                              style: const TextStyle(fontWeight: FontWeight.bold),
-                            ),
+                            Text(exercise.name, style: const TextStyle(fontWeight: FontWeight.bold)),
                             if (exercise.equipment != Equipment.other)
                               Text(
                                 exercise.equipment.displayName,
@@ -359,19 +284,51 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
               ]),
             ),
             isDisplay
-                ? CommonUI.getTextButton(ButtonDetails(
+                ? Button(
                     icon: Icons.remove_red_eye_rounded,
                     onTap: () => openWorkoutView(
-                          context,
-                          widget.workoutExercise.workoutId,
-                          reloadState: reload,
-                          droppedWes: [widget.workoutExercise.id!],
-                        )))
+                      context,
+                      widget.workoutExercise.workoutId,
+                      reloadState: reload,
+                      droppedWes: [widget.workoutExercise.id!],
+                    ),
+                  )
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      CommonUI.getTextButton(ButtonDetails(icon: Icons.add_rounded, onTap: onAddSetsButtonTap)),
-                      GestureDetector(onTap: showExerciseMenu, child: const Icon(Icons.more_vert_rounded)),
+                      Button(icon: Icons.add_rounded, onTap: onAddSetsButtonTap),
+                      OptionsMenu(
+                        title: exercise.getFullName(),
+                        buttons: [
+                          Button(
+                            icon: Icons.visibility_rounded,
+                            text: 'View Exercise',
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.of(context)
+                                  .push(MaterialPageRoute(
+                                    builder: (context) => ExerciseView(identifier: exerciseIdentifier),
+                                  ))
+                                  .then((value) => reload());
+                            },
+                            style: ButtonCustomStyle.primaryIcon(),
+                          ),
+                          Button.delete(
+                            onTap: () {
+                              Navigator.pop(context);
+                              showDeleteConfirm(
+                                context,
+                                "exercise from workout",
+                                () => WorkoutExerciseModel.delete(widget.workoutExercise.id!),
+                                () {
+                                  if (widget.onDelete != null) widget.onDelete!(widget.workoutExercise.id!);
+                                },
+                              );
+                            },
+                            text: 'Delete Exercise',
+                          )
+                        ],
+                      ),
                     ],
                   ),
           ],
@@ -380,9 +337,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return CommonUI.getCard(
-      context,
-      FutureBuilder(
+    return CustomCard(
+      child: FutureBuilder(
         future: workoutSetsFuture,
         builder: (context, snapshot) {
           if (!snapshot.hasData) return const SizedBox.shrink();
@@ -393,12 +349,14 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           return Column(
             children: [
               GestureDetector(
-                onTap: toggleDropped,
+                onTap: () => setState(() {
+                  dropped = !dropped;
+                }),
                 behavior: HitTestBehavior.translucent,
                 child: getHeader(standalone: false, isDone: !(sets.any((ws) => !ws.done))),
               ),
               if (dropped) ...[
-                CommonUI.getShadowDivider(context, height: 0),
+                const CustomDivider(shadow: true, height: 0),
                 Column(children: getSetWidgets(sets)),
               ],
             ],

@@ -7,7 +7,10 @@ import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
-import 'package:gymvision/widgets/common_ui.dart';
+import 'package:gymvision/widgets/components/stateless/button.dart';
+import 'package:gymvision/widgets/components/stateless/custom_vertical_divider.dart';
+import 'package:gymvision/widgets/components/stateless/prop_display.dart';
+import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
 import 'package:gymvision/widgets/forms/fields/custom_checkbox.dart';
 import 'package:intl/intl.dart';
 
@@ -105,7 +108,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                       child: Wrap(
                         alignment: WrapAlignment.start,
                         children: workout.workoutCategories!
-                            .map((wc) => CommonUI.getPropDisplay(context, wc.getCategoryDisplayName()))
+                            .map((wc) => PropDisplay(text: wc.getCategoryDisplayName()))
                             .toList(),
                       ),
                     ),
@@ -186,8 +189,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                     ),
                   ),
                 ),
-                CommonUI.getVerticalDivider(
-                  context,
+                CustomVerticalDivider(
                   thickness: isToday ? 5 : null,
                   color: isToday ? Theme.of(context).colorScheme.primary : null,
                 ),
@@ -201,15 +203,14 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                           ]
                         : [
                             GestureDetector(
-                              behavior: HitTestBehavior.translucent,
-                              onTap: () => onAddWorkoutTap(context, reloadState, date: currentDate)
-                                  .then((x) => widget.reloadParent()),
-                              child: DateTimeHelper.dateXIsAfterDateY(widget.userSettings.createdAt!, currentDate) ||
-                                      DateTimeHelper.isInFuture(currentDate) ||
-                                      isToday
-                                  ? Row(mainAxisAlignment: MainAxisAlignment.start, children: [CommonUI.getDash()])
-                                  : CommonUI.getRestWidget(color: Theme.of(context).colorScheme.shadow),
-                            ),
+                                behavior: HitTestBehavior.translucent,
+                                onTap: () => onAddWorkoutTap(context, reloadState, date: currentDate)
+                                    .then((x) => widget.reloadParent()),
+                                child: DateTimeHelper.dateXIsAfterDateY(widget.userSettings.createdAt!, currentDate) ||
+                                        DateTimeHelper.isInFuture(currentDate) ||
+                                        isToday
+                                    ? const Row(mainAxisAlignment: MainAxisAlignment.start, children: [Text('-')])
+                                    : TextWithIcon.rest()),
                           ],
                   ),
                 ),
@@ -320,7 +321,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                     size: 40,
                   ),
                 ),
-                CommonUI.getTextButton(ButtonDetails(icon: Icons.today_outlined, onTap: reloadState)),
+                Button(icon: Icons.today_outlined, onTap: reloadState),
               ],
             ),
           ),
