@@ -1,11 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/bodyweight.dart';
 import 'package:gymvision/classes/db/schedules/schedule.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
-import 'package:gymvision/classes/workout_summary.dart';
-import 'package:gymvision/helpers/app_helper.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/models/db_models/schedule_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
@@ -14,14 +11,11 @@ import 'package:gymvision/providers/active_workout_provider.dart';
 import 'package:gymvision/widgets/components/flavour_text_card.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
-import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
-import 'package:gymvision/widgets/components/stateless/custom_vertical_divider.dart';
-import 'package:gymvision/widgets/components/stateless/options_menu.dart';
 import 'package:gymvision/widgets/components/stateless/prop_display.dart';
 import 'package:gymvision/widgets/components/stateless/scroll_bottom_padding.dart';
 import 'package:gymvision/widgets/components/stateless/header.dart';
 import 'package:gymvision/widgets/components/stateless/splash_text.dart';
-import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
+import 'package:gymvision/widgets/components/workout_summary_card.dart';
 import 'package:gymvision/widgets/forms/add_bodyweight_form.dart';
 import 'package:gymvision/providers/navigation_provider.dart';
 import 'package:gymvision/static_data/helpers.dart';
@@ -57,168 +51,6 @@ class _TodayState extends State<Today> {
         context,
         AddBodyWeightForm(),
       ).then((x) => reloadState());
-
-  Widget getWorkoutSummary(WorkoutSummary? summary) => summary == null || summary.totalExercises == 0
-      ? const SizedBox.shrink()
-      : Column(children: [
-          const CustomDivider(shadow: true),
-          Container(
-            padding: const EdgeInsets.all(5),
-            height: 30,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: summary.totalReps + summary.totalSets == 0
-                  ? [
-                      Text(summary.getTotalExercisesString()),
-                    ]
-                  : [
-                      Expanded(flex: 4, child: Center(child: Text(summary.getTotalExercisesString()))),
-                      const CustomVerticalDivider(),
-                      Expanded(flex: 4, child: Center(child: Text(summary.getTotalSetsString()))),
-                      const CustomVerticalDivider(),
-                      Expanded(flex: 4, child: Center(child: Text(summary.getTotalRepsString()))),
-                    ],
-            ),
-          ),
-          const CustomDivider(shadow: true),
-          if (summary.bestSet != null && summary.bestSetExercise != null)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Row(children: [
-                Column(children: [
-                  Row(
-                    children: [
-                      Icon(Icons.emoji_events_rounded, color: Colors.amber[300]),
-                      const Padding(padding: EdgeInsets.all(5)),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            summary.bestSetExercise!.getFullName(),
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Row(children: [
-                    TextWithIcon.weight(summary.bestSet!.weight),
-                    const Padding(padding: EdgeInsets.symmetric(horizontal: 15)),
-                    TextWithIcon.reps(summary.bestSet!.reps),
-                  ]),
-                ]),
-              ]),
-            ),
-        ]);
-
-  Widget getWorkoutDisplay(Workout workout) => CustomCard(
-        child: Padding(
-          padding: const EdgeInsets.all(15),
-          child: GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onTap: () => openWorkoutView(context, workout.id!, reloadState: reloadState),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(children: [
-                      Icon(
-                        workout.isFinished() ? Icons.check_circle_rounded : Icons.circle_outlined,
-                        color: workout.isFinished() ? Theme.of(context).colorScheme.primary : Colors.grey,
-                        size: 22,
-                      ),
-                      const Padding(padding: EdgeInsetsGeometry.all(5)),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            workout.getWorkoutTitle(),
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                          ),
-                          Row(children: [
-                            TextWithIcon.time(workout.date, dtEnd: workout.endDate),
-                            if (workout.isFinished()) ...[
-                              const Padding(padding: EdgeInsetsGeometry.all(5)),
-                              TextWithIcon.timeElapsed(workout.getDuration()),
-                            ],
-                          ]),
-                        ],
-                      ),
-                    ]),
-                    OptionsMenu(buttons: [
-                      Button(
-                        onTap: () async {
-                          Navigator.pop(context);
-
-                          try {
-                            final exportString = await WorkoutModel.getWorkoutExportString(workout.id!);
-                            if (exportString == null) throw Exception();
-                            await Clipboard.setData(ClipboardData(text: exportString));
-                            if (mounted) showSnackBar(context, 'Workout copied to clipboard!');
-                          } catch (ex) {
-                            if (mounted) showSnackBar(context, 'Failed to export workout.');
-                          }
-                        },
-                        icon: Icons.share_rounded,
-                        text: 'Export Workout',
-                        style: ButtonCustomStyle.primaryIcon(),
-                      ),
-                      Button(
-                        onTap: () {
-                          Navigator.pop(context);
-                          showDeleteConfirm(
-                            context,
-                            "workout",
-                            () async => deleteWorkout(context, workout.id!),
-                            reloadState,
-                          );
-                        },
-                        icon: Icons.delete_rounded,
-                        text: 'Delete Workout',
-                        style: ButtonCustomStyle.redIcon(),
-                      ),
-                    ]),
-                  ],
-                ),
-                const Padding(padding: EdgeInsets.all(2.5)),
-                if (workout.workoutCategories != null && workout.workoutCategories!.isNotEmpty)
-                  Row(children: [
-                    Expanded(
-                      child: Wrap(
-                        children: workout
-                            .getCategories()
-                            .map((c) => PropDisplay(
-                                  text: c.displayName,
-                                  color: AppHelper.isDarkMode(context) ? AppHelper.darkPropOnCardColor : null,
-                                ))
-                            .toList(),
-                      ),
-                    ),
-                  ]),
-                getWorkoutSummary(workout.summary),
-                Row(children: [
-                  if (workout.summary?.note == null)
-                    Padding(
-                      padding: const EdgeInsetsGeometry.only(right: 5),
-                      child: Button(
-                        text: 'Add Note',
-                        icon: Icons.add_rounded,
-                        onTap: () => openWorkoutView(context, workout.id!, autofocusNotes: true),
-                      ),
-                    ),
-                  Button(
-                    text: 'Add Progress Pic',
-                    icon: Icons.add_rounded,
-                    onTap: () => null,
-                  ),
-                ]),
-              ],
-            ),
-          ),
-        ),
-      );
 
   Widget getPlaceholder() => Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -302,7 +134,7 @@ class _TodayState extends State<Today> {
       borderRadius: BorderRadius.circular(15),
       child: SingleChildScrollView(
           child: Column(children: [
-        ...workouts.map((w) => getWorkoutDisplay(w)),
+        ...workouts.map((w) => WorkoutSummaryCard(workoutId: w.id!)),
         const ScrollBottomPadding(),
       ])),
     );
@@ -410,20 +242,16 @@ class _TodayState extends State<Today> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(10),
-          child: Header(
-            widget: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  DateFormat('EEEE, MMMM d').format(today),
-                  style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                ),
-                const Text('Today', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
-              ],
-            ),
-            actions: [
-              Button(icon: Icons.add_rounded, onTap: () => onAddWorkoutTap(context, reloadState, date: today)),
+          padding: const EdgeInsets.only(left: 5, bottom: 5),
+          child: Column(
+            children: [
+              Header(title: DateFormat('EEEE, MMMM d').format(today)),
+              Header.large(
+                'Today',
+                actions: [
+                  Button(icon: Icons.add_rounded, onTap: () => onAddWorkoutTap(context, reloadState, date: today)),
+                ],
+              ),
             ],
           ),
         ),
@@ -431,7 +259,7 @@ class _TodayState extends State<Today> {
         Expanded(
           child: Consumer<ActiveWorkoutProvider>(builder: (context, activeWorkoutProvider, child) {
             return FutureBuilder<List<Workout>>(
-                future: WorkoutModel.getWorkoutsForDay(today, withSummary: true), // todo: monitor this performance
+                future: WorkoutModel.getWorkoutsForDay(today),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) return const SizedBox.shrink();
 

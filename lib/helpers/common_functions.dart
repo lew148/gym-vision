@@ -276,7 +276,7 @@ Future onAddWorkoutTap(
     }
 
     if (!context.mounted) return;
-    openWorkoutView(context, newWorkoutId, reloadState: reloadState);
+    openWorkoutView(context, newWorkoutId, onClose: reloadState);
   } catch (ex) {
     showSnackBar(context, 'Failed to add workout');
   }
@@ -289,26 +289,25 @@ Future deleteWorkout(BuildContext context, int workoutId) async {
   provider.refreshActiveWorkout();
 }
 
-void openWorkoutView(
+Future openWorkoutView(
   BuildContext context,
   int workoutId, {
-  Function? reloadState,
+  Function? onClose,
   bool autofocusNotes = false,
   List<int>? droppedWes,
-}) {
+}) async {
   final provider = Provider.of<ActiveWorkoutProvider>(context, listen: false);
   showFullScreenBottomSheet(
     context,
     WorkoutView(
       workoutId: workoutId,
-      reloadParent: reloadState,
       autofocusNotes: autofocusNotes,
       droppedWes: droppedWes,
     ),
     onClose: () {
       provider.closeActiveWorkout(); // always close active workout
       provider.refreshActiveWorkout();
-      if (reloadState != null) reloadState();
+      if (onClose != null) onClose();
     },
   );
 }

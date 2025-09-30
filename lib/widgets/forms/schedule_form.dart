@@ -269,7 +269,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
                                   });
                                 },
                                 icon: Icons.horizontal_rule_rounded,
-                                style: ButtonCustomStyle.redIcon(),
+                                style: ButtonCustomStyle.redIconOnly(),
                               ),
                           ]),
                         Button.done(onTap: onSubmit, isAdd: !isEdit),

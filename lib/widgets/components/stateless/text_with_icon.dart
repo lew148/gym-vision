@@ -41,18 +41,18 @@ class TextWithIcon extends StatelessWidget {
         text: DateTimeHelper.getHoursAndMinsDurationString(timeElapsed),
       );
 
-  factory TextWithIcon.weight(double? weight, {MainAxisAlignment? alignment}) => TextWithIcon(
+  factory TextWithIcon.weight(double? weight, {MainAxisAlignment? alignment, bool muted = false}) => TextWithIcon(
         icon: Icons.fitness_center_rounded,
         text: weight == null ? null : '${NumberHelper.truncateDouble(weight)}kg',
         alignment: alignment,
-        muted: false,
+        muted: muted,
       );
 
-  factory TextWithIcon.reps(int? reps, {MainAxisAlignment? alignment}) => TextWithIcon(
+  factory TextWithIcon.reps(int? reps, {MainAxisAlignment? alignment, bool muted = false}) => TextWithIcon(
         icon: Icons.repeat_rounded,
         text: reps == null || reps == 0 ? 'No Reps' : '$reps rep${reps == 1 ? '' : 's'}',
         alignment: alignment,
-        muted: false,
+        muted: muted,
       );
 
   factory TextWithIcon.setTime(Duration? time, {MainAxisAlignment? alignment}) => TextWithIcon(

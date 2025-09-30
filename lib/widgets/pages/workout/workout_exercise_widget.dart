@@ -164,13 +164,13 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                   Button(
                     text: 'Copy Set',
                     icon: Icons.content_copy_rounded,
-                    style: ButtonCustomStyle.primaryIcon(),
+                    style: ButtonCustomStyle.primaryIconOnly(),
                     onTap: () => onCopySetButtonTap(set),
                   ),
                   Button(
                     text: 'Edit Set',
                     icon: Icons.edit_rounded,
-                    style: ButtonCustomStyle.primaryIcon(),
+                    style: ButtonCustomStyle.primaryIconOnly(),
                     onTap: () {
                       Navigator.pop(context);
                       onEditWorkoutSetTap(set);
@@ -179,7 +179,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                   Button(
                     text: 'Delete Set',
                     icon: Icons.delete_rounded,
-                    style: ButtonCustomStyle.redIcon(),
+                    style: ButtonCustomStyle.redIconOnly(),
                     onTap: () => showDeleteConfirm(
                       context,
                       "set",
@@ -289,8 +289,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                     onTap: () => openWorkoutView(
                       context,
                       widget.workoutExercise.workoutId,
-                      reloadState: reload,
                       droppedWes: [widget.workoutExercise.id!],
+                      onClose: reload,
                     ),
                   )
                 : Row(
@@ -311,7 +311,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                                   ))
                                   .then((value) => reload());
                             },
-                            style: ButtonCustomStyle.primaryIcon(),
+                            style: ButtonCustomStyle.primaryIconOnly(),
                           ),
                           Button.delete(
                             onTap: () {

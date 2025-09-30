@@ -51,7 +51,7 @@ class WorkoutModel {
   // prioritises workout over id
   static Future<WorkoutSummary?> getWorkoutSummary({int? id, Workout? workout, bool fullSummary = true}) async {
     if (workout == null && id != null) {
-      workout = await getWorkout(id, withWorkoutExercises: true);
+      workout = await getWorkout(id, withExercises: true);
     }
 
     if (workout == null) return null;
@@ -152,7 +152,12 @@ class WorkoutModel {
     return activeWorkout;
   }
 
-  static Future<Workout?> getWorkout(int id, {bool withCategories = false, bool withWorkoutExercises = false}) async {
+  static Future<Workout?> getWorkout(
+    int id, {
+    bool withCategories = false,
+    bool withExercises = false,
+    bool withSummary = false,
+  }) async {
     final db = DatabaseHelper.db;
     final workout = (await (db.select(db.driftWorkouts)..where((w) => w.id.equals(id))).getSingleOrNull())?.toObject();
     if (workout == null) return null;
@@ -161,8 +166,13 @@ class WorkoutModel {
       workout.workoutCategories = await WorkoutCategoryModel.getWorkoutCategoriesByWorkout(workout.id!);
     }
 
-    if (withWorkoutExercises) {
+    // summary requires exercises
+    if (withExercises || withSummary) {
       workout.workoutExercises = await WorkoutExerciseModel.getWorkoutExercisesByWorkout(workout.id!, withSets: true);
+    }
+
+    if (withSummary) {
+      workout.summary = await getWorkoutSummary(workout: workout);
     }
 
     return workout;

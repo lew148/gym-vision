@@ -11,9 +11,9 @@ import 'package:gymvision/services/local_notification_service.dart';
 import 'package:gymvision/widgets/coming_soon.dart';
 import 'package:gymvision/widgets/debug_scaffold.dart';
 import 'package:gymvision/widgets/pages/homepages/exercises/exercises.dart';
+import 'package:gymvision/widgets/pages/homepages/history/history.dart';
 import 'package:gymvision/widgets/pages/homepages/progress/progress.dart';
 import 'package:gymvision/widgets/pages/homepages/today/today.dart';
-import 'package:gymvision/widgets/pages/homepages/history/workouts.dart';
 import 'package:gymvision/providers/navigation_provider.dart';
 import 'package:gymvision/providers/rest_timer_provider.dart';
 import 'package:provider/provider.dart';
@@ -126,7 +126,7 @@ class MyApp extends StatelessWidget {
 
   List<Widget> widgetPages() => [
         const Today(),
-        const Workouts(),
+        const History(),
         const Exercises(),
         const Progress(),
         const ComingSoon(),
@@ -144,7 +144,7 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       navigatorKey: navProvider.navKey,
-      title: 'Gym Vision',
+      title: 'Forged',
       theme: ThemeData(
         splashColor: Colors.transparent,
         scaffoldBackgroundColor: lightBackground,
@@ -183,7 +183,7 @@ class MyApp extends StatelessWidget {
             selectedIndex: navProvider.selectedIndex,
             destinations: [
               getNavItem('Today', Icons.today_rounded),
-              getNavItem('Workouts', Icons.format_list_bulleted_rounded),
+              getNavItem('History', Icons.format_list_bulleted_rounded),
               getNavItem('Exercises', Icons.fitness_center_rounded),
               getNavItem('Progress', Icons.timeline_rounded),
               getNavItem('Profile', Icons.person_rounded),

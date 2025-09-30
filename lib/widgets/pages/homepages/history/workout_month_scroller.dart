@@ -82,7 +82,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
           () => WorkoutModel.delete(workout.id!),
           widget.reloadParent,
         ),
-        onTap: () => openWorkoutView(context, workout.id!, reloadState: widget.reloadParent),
+        onTap: () => openWorkoutView(context, workout.id!, onClose: widget.reloadParent),
         child: Container(
           padding: const EdgeInsets.all(10),
           child: Row(

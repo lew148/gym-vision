@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 class ButtonCustomStyle {
   bool primaryText;
-  bool primaryIcon;
   Color? textColor;
   Color? iconColor;
   double? iconSize;
@@ -10,8 +9,7 @@ class ButtonCustomStyle {
   EdgeInsetsGeometry? padding;
 
   ButtonCustomStyle({
-    this.primaryText = false,
-    this.primaryIcon = false,
+    this.primaryText = true,
     this.textColor,
     this.iconColor,
     this.iconSize,
@@ -19,10 +17,10 @@ class ButtonCustomStyle {
     this.padding,
   });
 
-  factory ButtonCustomStyle.primaryIcon() => ButtonCustomStyle(primaryIcon: true, primaryText: false);
-  factory ButtonCustomStyle.primaryIconAndText() => ButtonCustomStyle(primaryText: true, primaryIcon: true);
-  factory ButtonCustomStyle.redIcon() => ButtonCustomStyle(iconColor: Colors.red, primaryText: false);
+  factory ButtonCustomStyle.primaryIconOnly() => ButtonCustomStyle(primaryText: false);
+  factory ButtonCustomStyle.redIconOnly() => ButtonCustomStyle(iconColor: Colors.red, primaryText: false);
   factory ButtonCustomStyle.redIconAndText() => ButtonCustomStyle(iconColor: Colors.red, textColor: Colors.red);
+  factory ButtonCustomStyle.noPadding() => ButtonCustomStyle(padding: EdgeInsets.zero);
 }
 
 class Button extends StatelessWidget {
@@ -49,7 +47,7 @@ class Button extends StatelessWidget {
         onTap: onTap,
         icon: Icons.delete_rounded,
         text: text,
-        style: ButtonCustomStyle(iconColor: Colors.red),
+        style: ButtonCustomStyle.redIconOnly(),
       );
 
   factory Button.done({required Function() onTap, bool isAdd = false, String? customTitle}) => Button(
@@ -79,17 +77,14 @@ class Button extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  if (icon != null)
-                    Icon(
-                      icon,
-                      size: 25,
-                      color: style?.iconColor ?? (style?.primaryIcon ?? true ? null : onSurface),
-                    ),
+                  if (icon != null) Icon(icon, size: 25, color: style?.iconColor),
                   if (icon != null && text != null) const Padding(padding: EdgeInsets.all(5)),
                   if (text != null)
                     Text(
                       text!,
-                      style: TextStyle(color: style?.textColor ?? (style?.primaryText ?? true ? null : onSurface)),
+                      style: TextStyle(
+                        color: style == null ? null : style!.textColor ?? (style!.primaryText ? null : onSurface),
+                      ),
                     ),
                 ],
               ),
@@ -109,17 +104,14 @@ class Button extends StatelessWidget {
             onLongPress: disabled ? null : onLongTap,
             child: Row(
               children: [
-                if (icon != null)
-                  Icon(
-                    icon,
-                    size: style?.iconSize ?? 25,
-                    color: style?.iconColor ?? (style?.primaryIcon ?? true ? null : onSurface),
-                  ),
+                if (icon != null) Icon(icon, size: style?.iconSize ?? 25, color: style?.iconColor),
                 if (icon != null && text != null) const Padding(padding: EdgeInsets.all(5)),
                 if (text != null)
                   Text(
                     text!,
-                    style: TextStyle(color: style?.textColor ?? (style?.primaryText ?? true ? null : onSurface)),
+                    style: TextStyle(
+                      color: style == null ? null : style!.textColor ?? (style!.primaryText ? null : onSurface),
+                    ),
                   ),
               ],
             ),
