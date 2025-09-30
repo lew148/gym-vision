@@ -233,14 +233,14 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
                         Navigator.pop(context);
                         addScheduleOnTap();
                       },
-                      style: ButtonCustomStyle.primaryIconAndText(),
+                      style: ButtonCustomStyle.primaryIconOnly(),
                     ),
                     ...schedules.map(
                       (s) => Button(
                         text: s.name,
                         icon: s.active ? Icons.chevron_right_rounded : null,
                         onTap: () => setActiveSchedule(s.id!, activeScheduleSnapshot.data?.id),
-                        style: s.active ? ButtonCustomStyle.primaryIcon() : null,
+                        style: s.active ? null : ButtonCustomStyle.primaryIconOnly(),
                       ),
                     ),
                   ],
@@ -252,11 +252,11 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
                       Button(
                         icon: Icons.edit_rounded,
                         text: 'Edit Schedule',
-                        style: ButtonCustomStyle(iconColor: Theme.of(context).colorScheme.primary),
                         onTap: () {
                           Navigator.pop(context);
                           editScheduleOnTap(activeScheduleSnapshot.data!);
                         },
+                        style: ButtonCustomStyle.primaryIconOnly(),
                       ),
                       Button.delete(
                         onTap: () => showDeleteConfirm(

@@ -14,7 +14,6 @@ import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/components/rest_timer.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
-import 'package:gymvision/widgets/components/stateless/options_menu.dart';
 import 'package:gymvision/widgets/components/stateless/prop_display.dart';
 import 'package:gymvision/widgets/components/stateless/splash_text.dart';
 import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
@@ -23,19 +22,18 @@ import 'package:gymvision/widgets/forms/category_picker.dart';
 import 'package:gymvision/widgets/forms/add_exercises_to_workout.dart';
 import 'package:gymvision/widgets/components/time_elapsed.dart';
 import 'package:gymvision/static_data/enums.dart';
+import 'package:gymvision/widgets/pages/workout/workout_options_menu.dart';
 import 'package:reorderables/reorderables.dart';
 
 class WorkoutView extends StatefulWidget {
   final int workoutId;
   final bool autofocusNotes;
-  final Function? reloadParent;
   final List<int>? droppedWes;
 
   const WorkoutView({
     super.key,
     required this.workoutId,
     this.autofocusNotes = false,
-    this.reloadParent,
     this.droppedWes,
   });
 
@@ -46,23 +44,22 @@ class WorkoutView extends StatefulWidget {
 class _WorkoutViewState extends State<WorkoutView> {
   late Future<Workout?> workoutFuture;
   late List<int> droppedWes;
-  late bool workoutIsFinished;
 
   @override
   void initState() {
     super.initState();
-    workoutFuture = WorkoutModel.getWorkout(widget.workoutId, withCategories: true, withWorkoutExercises: true);
+    workoutFuture = WorkoutModel.getWorkout(widget.workoutId, withCategories: true, withExercises: true);
     droppedWes = widget.droppedWes ?? [];
   }
 
-  void reloadState() => setState(() {
-        workoutFuture = WorkoutModel.getWorkout(widget.workoutId, withCategories: true, withWorkoutExercises: true);
+  void reload() => setState(() {
+        workoutFuture = WorkoutModel.getWorkout(widget.workoutId, withCategories: true, withExercises: true);
       });
 
   void onCategoriesChange(List<Category> newCategories) async {
     try {
       await WorkoutCategoryModel.setWorkoutCategories(widget.workoutId, newCategories);
-      reloadState();
+      reload();
     } catch (ex) {
       if (!mounted) return;
       showSnackBar(context, 'Failed to add Categories to workout.');
@@ -86,7 +83,7 @@ class _WorkoutViewState extends State<WorkoutView> {
       return;
     }
 
-    openWorkoutView(context, id, reloadState: reloadState);
+    openWorkoutView(context, id, onClose: reload);
   }
 
   getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories, List<Category> existingCategories) => Wrap(
@@ -106,7 +103,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                 key: Key(we.id.toString()),
                 child: WorkoutExerciseWidget(
                   workoutExercise: we,
-                  onDelete: (x) => reloadState(),
+                  onDelete: (x) => reload(),
                   toggleDroppedParent: (int? weId) {
                     if (weId != null) {
                       droppedWes.contains(weId) ? droppedWes.remove(weId) : droppedWes.add(weId);
@@ -118,56 +115,9 @@ class _WorkoutViewState extends State<WorkoutView> {
               ))
           .toList();
 
-  void showEditDate(Workout workout) => showDateTimePicker(
-        context,
-        initialDateTime: workout.date,
-        CupertinoDatePickerMode.date,
-        (DateTime dt) async {
-          try {
-            workout.date =
-                DateTime(dt.year, dt.month, dt.day, workout.date.hour, workout.date.minute, workout.date.second);
-            await WorkoutModel.update(workout);
-            reloadState();
-          } catch (ex) {
-            // do nothing
-          }
-        },
-      );
-
-  void showEditTime(Workout workout) => showDateTimePicker(
-        context,
-        initialDateTime: workout.date,
-        CupertinoDatePickerMode.time,
-        (DateTime dt) async {
-          try {
-            workout.date =
-                DateTime(workout.date.year, workout.date.month, workout.date.day, dt.hour, dt.minute, dt.second);
-            await WorkoutModel.update(workout);
-            reloadState();
-          } catch (ex) {
-            // do nothing
-          }
-        },
-      );
-
-  void showEditEndTime(Workout workout) => showDateTimePicker(
-        context,
-        initialDateTime: workout.endDate,
-        CupertinoDatePickerMode.dateAndTime,
-        (DateTime dt) async {
-          try {
-            workout.endDate = dt;
-            await WorkoutModel.update(workout);
-            reloadState();
-          } catch (ex) {
-            // do nothing
-          }
-        },
-      );
-
   void onAddExerciseClick(int workoutId) => Navigator.of(context)
       .push(MaterialPageRoute(builder: (context) => AddExercisesToWorkout(workoutId: workoutId)))
-      .then((x) => reloadState());
+      .then((x) => reload());
 
   void onCopyPreviousWorkoutTap(int workoutId, List<Category> categories) => showCloseableBottomSheet(
       context,
@@ -179,7 +129,7 @@ class _WorkoutViewState extends State<WorkoutView> {
             Navigator.pop(context);
             final success = await WorkoutModel.copyLastSimilarWorkout(workoutId, categories);
             if (success) {
-              reloadState();
+              reload();
               return;
             }
 
@@ -193,7 +143,7 @@ class _WorkoutViewState extends State<WorkoutView> {
             Navigator.pop(context);
             final success = await WorkoutModel.copyLastWorkout(workoutId);
             if (success) {
-              reloadState();
+              reload();
               return;
             }
 
@@ -211,7 +161,7 @@ class _WorkoutViewState extends State<WorkoutView> {
       // do nothing
     }
 
-    reloadState();
+    reload();
   }
 
   void onFinishOrResumeTap(BuildContext context, Workout workout, bool resuming) async {
@@ -234,7 +184,7 @@ class _WorkoutViewState extends State<WorkoutView> {
         return;
       }
 
-      reloadState();
+      reload();
     } catch (e) {
       if (!context.mounted) return;
       showSnackBar(context, 'Failed to ${resuming ? 'resume' : 'finish'} workout.');
@@ -267,7 +217,6 @@ class _WorkoutViewState extends State<WorkoutView> {
         final workout = snapshot.data!;
         final categories = workout.getCategories();
         final workoutExercises = workout.getWorkoutExercises();
-        workoutIsFinished = workout.isFinished();
 
         return Column(
           children: [
@@ -285,78 +234,51 @@ class _WorkoutViewState extends State<WorkoutView> {
                   const RestTimer(),
                 ]),
                 Row(children: [
-                  if (!DateTimeHelper.isInFuture(workout.date) && !workoutIsFinished)
+                  if (!DateTimeHelper.isInFuture(workout.date) && !workout.isFinished())
                     Button(
                       icon: Icons.check_rounded,
                       onTap: () => onFinishOrResumeTap(context, workout, false),
                     ),
-                  OptionsMenu(
-                    buttons: [
-                      //   Button
-                      //     onTap: () async {
-                      //       Navigator.pop(context);
-
-                      //       try {
-                      //         final exportString = await WorkoutModel.getWorkoutExportString(workout.id!);
-                      //         if (exportString == null) throw Exception();
-                      //         await Clipboard.setData(ClipboardData(text: exportString));
-                      //         if (mounted) showSnackBar(context, 'Workout copied to clipboard!');
-                      //       } catch (ex) {
-                      //         if (mounted) showSnackBar(context, 'Failed to export workout.');
-                      //       }
-                      //     },
-                      //     icon: Icons.share_rounded,
-                      //     text: 'Export Workout',
-                      //   ),
-                      if (workoutIsFinished) ...[
+                  WorkoutOptionsMenu(
+                    workout: workout,
+                    onChange: reload,
+                    popCallerOnDelete: true,
+                    extraButtons: [
+                      if (workout.isFinished())
                         Button(
                           icon: Icons.play_circle_outline_rounded,
                           text: 'Resume Workout',
                           onTap: () => onFinishOrResumeTap(context, workout, true),
-                          style: ButtonCustomStyle.primaryIcon(),
+                          style: ButtonCustomStyle.primaryIconOnly(),
                         ),
-                        Button(
-                          onTap: () {
-                            Navigator.pop(context);
-                            showEditEndTime(workout);
-                          },
-                          icon: Icons.access_time_rounded,
-                          style: ButtonCustomStyle.primaryIcon(),
-                          text: 'Change End Time',
-                        ),
-                      ],
                       Button(
                         onTap: () {
                           Navigator.pop(context);
-                          showEditDate(workout);
-                        },
-                        style: ButtonCustomStyle.primaryIcon(),
-                        icon: Icons.calendar_today_rounded,
-                        text: 'Change Date',
-                      ),
-                      Button(
-                        onTap: () {
-                          Navigator.pop(context);
-                          showEditTime(workout);
-                        },
-                        icon: Icons.access_time_rounded,
-                        style: ButtonCustomStyle.primaryIcon(),
-                        text: 'Change Start Time',
-                      ),
-                      Button(
-                        onTap: () {
-                          Navigator.pop(context);
-                          showDeleteConfirm(
+                          showDateTimePicker(
                             context,
-                            "workout",
-                            () async => deleteWorkout(context, workout.id!),
-                            widget.reloadParent,
-                            popCaller: true,
+                            initialDateTime: workout.date,
+                            CupertinoDatePickerMode.date,
+                            (DateTime dt) async {
+                              try {
+                                workout.date = DateTime(
+                                  dt.year,
+                                  dt.month,
+                                  dt.day,
+                                  workout.date.hour,
+                                  workout.date.minute,
+                                  workout.date.second,
+                                );
+                                await WorkoutModel.update(workout);
+                                reload();
+                              } catch (ex) {
+                                // do nothing
+                              }
+                            },
                           );
                         },
-                        icon: Icons.delete_rounded,
-                        text: 'Delete Workout',
-                        style: ButtonCustomStyle.redIcon(),
+                        style: ButtonCustomStyle.primaryIconOnly(),
+                        icon: Icons.calendar_today_rounded,
+                        text: 'Change Date',
                       ),
                     ],
                   ),

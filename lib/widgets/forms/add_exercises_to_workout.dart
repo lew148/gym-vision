@@ -14,7 +14,7 @@ class AddExercisesToWorkout extends StatefulWidget {
     super.key,
     required this.workoutId,
   });
-  
+
   @override
   State<AddExercisesToWorkout> createState() => _AddExercisesToWorkoutState();
 }
@@ -23,7 +23,7 @@ class _AddExercisesToWorkoutState extends State<AddExercisesToWorkout> {
   late Future<Workout?> workout = WorkoutModel.getWorkout(
     widget.workoutId,
     withCategories: true,
-    withWorkoutExercises: true,
+    withExercises: true,
   );
 
   void onExerciseAdd(String exerciseIdentifier) async {

@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 
 class CustomCard extends StatelessWidget {
   final Widget child;
+  final Function()? onTap;
   final Color? color;
 
   const CustomCard({
     super.key,
     required this.child,
+    this.onTap,
     this.color,
   });
 
@@ -19,7 +21,11 @@ class CustomCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         side: BorderSide(color: Theme.of(context).colorScheme.shadow, width: 0.25),
       ),
-      child: child,
+      child: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: onTap,
+        child: child,
+      ),
     );
   }
 }
