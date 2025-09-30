@@ -21,7 +21,6 @@ class ButtonCustomStyle {
 
   factory ButtonCustomStyle.primaryIcon() => ButtonCustomStyle(primaryIcon: true, primaryText: false);
   factory ButtonCustomStyle.primaryIconAndText() => ButtonCustomStyle(primaryText: true, primaryIcon: true);
-  factory ButtonCustomStyle.noPadding() => ButtonCustomStyle(padding: EdgeInsets.zero);
   factory ButtonCustomStyle.redIcon() => ButtonCustomStyle(iconColor: Colors.red, primaryText: false);
   factory ButtonCustomStyle.redIconAndText() => ButtonCustomStyle(iconColor: Colors.red, textColor: Colors.red);
 }

@@ -423,11 +423,7 @@ class _TodayState extends State<Today> {
               ],
             ),
             actions: [
-              Button(
-                icon: Icons.add_rounded,
-                style: ButtonCustomStyle.noPadding(),
-                onTap: () => onAddWorkoutTap(context, reloadState, date: today),
-              ),
+              Button(icon: Icons.add_rounded, onTap: () => onAddWorkoutTap(context, reloadState, date: today)),
             ],
           ),
         ),
