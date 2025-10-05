@@ -10,6 +10,7 @@ import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/custom_vertical_divider.dart';
 import 'package:gymvision/widgets/components/stateless/prop_display.dart';
+import 'package:gymvision/widgets/components/stateless/shimmer_load.dart';
 import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
 import 'package:gymvision/widgets/pages/workout/workout_options_menu.dart';
 
@@ -120,7 +121,7 @@ class _WorkoutSummaryCardState extends State<WorkoutSummaryCard> {
                 ),
               ),
             ),
-          if (summary.note != null)
+          if (summary.isNote())
             Padding(
               padding: const EdgeInsetsGeometry.symmetric(vertical: 5),
               child: Align(
@@ -137,17 +138,17 @@ class _WorkoutSummaryCardState extends State<WorkoutSummaryCard> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomCard(
-      child: Padding(
-        padding: const EdgeInsets.all(15),
-        child: FutureBuilder(
-          future: workoutFuture,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) return const Row(children: [SizedBox(height: 120)]); // todo: shimmer loader
+    return FutureBuilder(
+      future: workoutFuture,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return const SizedBox.shrink();
 
-            final workout = snapshot.data!;
+        final workout = snapshot.data!;
 
-            return GestureDetector(
+        return CustomCard(
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: GestureDetector(
               behavior: HitTestBehavior.translucent,
               onTap: () => openWorkoutView(context, workout.id!, onClose: reload),
               child: Column(
@@ -208,7 +209,7 @@ class _WorkoutSummaryCardState extends State<WorkoutSummaryCard> {
                   Padding(
                     padding: const EdgeInsetsGeometry.only(top: 10),
                     child: Row(children: [
-                      if (workout.summary?.note == null)
+                      if (workout.summary == null || !workout.summary!.isNote())
                         Padding(
                           padding: const EdgeInsetsGeometry.only(right: 20),
                           child: Button(
@@ -228,10 +229,10 @@ class _WorkoutSummaryCardState extends State<WorkoutSummaryCard> {
                   ),
                 ],
               ),
-            );
-          },
-        ),
-      ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

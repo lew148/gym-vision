@@ -23,4 +23,5 @@ class WorkoutSummary {
   String getTotalExercisesString() => '$totalExercises exercise${totalExercises == 1 ? '' : 's'}';
   String getTotalSetsString() => '$totalSets set${totalExercises == 1 ? '' : 's'}';
   String getTotalRepsString() => '$totalReps rep${totalReps == 1 ? '' : 's'}';
+  bool isNote() => note?.isNotEmpty ?? false;
 }

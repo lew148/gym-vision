@@ -5,19 +5,18 @@ import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/models/db_models/note_model.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
+import 'package:gymvision/widgets/components/stateless/shimmer_load.dart';
 
 class Notes extends StatefulWidget {
   final NoteType type;
   final String objectId;
   final bool autofocus;
-  final String? notesOverride;
 
   const Notes({
     super.key,
     required this.type,
     required this.objectId,
     this.autofocus = false,
-    this.notesOverride,
   });
 
   @override
@@ -25,37 +24,45 @@ class Notes extends StatefulWidget {
 }
 
 class _NotesState extends State<Notes> {
-  late Future<Note?> note;
+  bool firstLoad = true;
+  late Future<Note?> noteFuture;
   TextEditingController controller = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    controller.text = widget.notesOverride ?? '';
-    note = NoteModel.getNoteForObject(widget.type, widget.objectId);
+    noteFuture = loadNote();
   }
 
   void reload() => setState(() {
-        note = NoteModel.getNoteForObject(widget.type, widget.objectId);
+        noteFuture = loadNote();
       });
 
-  void onSave(Note? note) async {
+  Future<Note?> loadNote() async {
+    final note = await NoteModel.getNoteForObject(widget.type, widget.objectId);
+    controller.text = note?.note ?? '';
+    return note;
+  }
+
+  Future onSave(Note? note, {bool delete = false}) async {
     try {
       closeKeyboard();
 
+      if (delete || controller.text.isEmpty) {
+        if (note != null) {
+          await NoteModel.delete(note.id!);
+          controller.clear();
+          reload();
+        }
+
+        return;
+      }
+
       if (note == null) {
-        await NoteModel.insert(Note(
-          objectId: widget.objectId,
-          type: widget.type,
-          note: controller.text,
-        ));
+        await NoteModel.insert(Note(objectId: widget.objectId, type: widget.type, note: controller.text));
       } else {
         note.note = controller.text;
-        if (note.note == '') {
-          await NoteModel.delete(note.id!);
-        } else {
-          await NoteModel.update(note);
-        }
+        await NoteModel.update(note);
       }
 
       reload();
@@ -67,19 +74,20 @@ class _NotesState extends State<Notes> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomCard(
-      child: Padding(
-        padding: const EdgeInsetsGeometry.symmetric(horizontal: 5),
-        child: Row(children: [
-          Expanded(
-            child: FutureBuilder(
-              future: note,
-              builder: (context, snapshot) {
-                if (snapshot.hasData && widget.notesOverride == null) {
-                  controller.text = snapshot.data!.note;
-                }
+    return FutureBuilder(
+      future: noteFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting && firstLoad) {
+          firstLoad = false;
+          return const ShimmerLoad(height: 25);
+        }
 
-                return CupertinoTextField(
+        return CustomCard(
+          child: Padding(
+            padding: const EdgeInsetsGeometry.symmetric(horizontal: 5),
+            child: Row(children: [
+              Expanded(
+                child: CupertinoTextField(
                   controller: controller,
                   keyboardType: TextInputType.multiline,
                   autofocus: widget.autofocus,
@@ -92,11 +100,7 @@ class _NotesState extends State<Notes> {
                   suffix: GestureDetector(
                     child: Padding(
                       padding: const EdgeInsetsGeometry.all(5),
-                      child: Icon(
-                        Icons.clear_rounded,
-                        size: 16,
-                        color: Theme.of(context).colorScheme.shadow,
-                      ),
+                      child: Icon(Icons.clear_rounded, size: 16, color: Theme.of(context).colorScheme.shadow),
                     ),
                     onTap: () => showDeleteConfirm(
                       context,
@@ -111,12 +115,12 @@ class _NotesState extends State<Notes> {
                   placeholder: 'Add note...',
                   style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontSize: 15),
                   decoration: const BoxDecoration(color: Colors.transparent),
-                );
-              },
-            ),
+                ),
+              ),
+            ]),
           ),
-        ]),
-      ),
+        );
+      },
     );
   }
 }
