@@ -85,8 +85,7 @@ class _CateogryPickerState extends State<CateogryPicker> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Button(
-                  text: 'Clear',
+                Button.clear(
                   onTap: () {
                     Navigator.pop(context);
                     widget.onChange([]);

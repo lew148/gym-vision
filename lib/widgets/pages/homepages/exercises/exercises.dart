@@ -249,13 +249,16 @@ class _ExercisesState extends State<Exercises> {
         ),
       ]),
       if (selectedType != ExerciseType.cardio)
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Button(
-            text: 'Categories',
-            onTap: showCategories,
-            style: ButtonCustomStyle(padding: const EdgeInsets.all(10)),
-          ),
-        ]),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Button(
+              icon: Icons.category_rounded,
+              onTap: showCategories,
+              style: ButtonCustomStyle(padding: const EdgeInsets.all(10)),
+            ),
+          ],
+        ),
       Expanded(child: getExercisesScrollView()),
     ]);
   }

@@ -15,7 +15,7 @@ import 'package:gymvision/widgets/components/stateless/prop_display.dart';
 import 'package:gymvision/widgets/components/stateless/scroll_bottom_padding.dart';
 import 'package:gymvision/widgets/components/stateless/header.dart';
 import 'package:gymvision/widgets/components/stateless/splash_text.dart';
-import 'package:gymvision/widgets/components/workout_summary_card.dart';
+import 'package:gymvision/widgets/components/stateless/workout_summary_card.dart';
 import 'package:gymvision/widgets/forms/add_bodyweight_form.dart';
 import 'package:gymvision/providers/navigation_provider.dart';
 import 'package:gymvision/static_data/helpers.dart';
@@ -42,7 +42,7 @@ class _TodayState extends State<Today> {
     schedule = ScheduleModel.getActiveSchedule(withItems: true);
   }
 
-  reloadState() => setState(() {
+  reload() => setState(() {
         today = DateTime.now();
         todaysBodyweight = BodyweightModel.getBodyweightForDay(today);
       });
@@ -50,7 +50,7 @@ class _TodayState extends State<Today> {
   void onAddWeightTap() async => showCloseableBottomSheet(
         context,
         AddBodyWeightForm(),
-      ).then((x) => reloadState());
+      ).then((x) => reload());
 
   Widget getPlaceholder() => Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -70,7 +70,7 @@ class _TodayState extends State<Today> {
                       Button(
                         icon: Icons.add_rounded,
                         text: 'Start a workout',
-                        onTap: () => onAddWorkoutTap(context, reloadState, date: today),
+                        onTap: () => onAddWorkoutTap(context, reload, date: today),
                       ),
                       Padding(
                         padding: const EdgeInsetsGeometry.all(5),
@@ -115,7 +115,7 @@ class _TodayState extends State<Today> {
                             text: 'Start scheduled workout',
                             onTap: () => onAddWorkoutTap(
                               context,
-                              reloadState,
+                              reload,
                               date: today,
                               categories: todayCategories,
                             ),
@@ -134,7 +134,7 @@ class _TodayState extends State<Today> {
       borderRadius: BorderRadius.circular(15),
       child: SingleChildScrollView(
           child: Column(children: [
-        ...workouts.map((w) => WorkoutSummaryCard(workoutId: w.id!)),
+        ...workouts.map((w) => WorkoutSummaryCard(workout: w, reload: reload)),
         const ScrollBottomPadding(),
       ])),
     );
@@ -202,7 +202,7 @@ class _TodayState extends State<Today> {
                               context,
                               'bodyweight',
                               () => BodyweightModel.delete(bwsnapshot.data!.id!),
-                              reloadState,
+                              reload,
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -249,7 +249,7 @@ class _TodayState extends State<Today> {
               Header.large(
                 'Today',
                 actions: [
-                  Button(icon: Icons.add_rounded, onTap: () => onAddWorkoutTap(context, reloadState, date: today)),
+                  Button(icon: Icons.add_rounded, onTap: () => onAddWorkoutTap(context, reload, date: today)),
                 ],
               ),
             ],

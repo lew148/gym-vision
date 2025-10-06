@@ -5,6 +5,7 @@ import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/providers/active_workout_provider.dart';
+import 'package:gymvision/widgets/components/stateless/calendar_view.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/header.dart';
 import 'package:gymvision/widgets/forms/date_time_picker.dart';
@@ -145,20 +146,20 @@ Future showCustomDialog(
   );
 }
 
+void showCalendarView(
+  BuildContext context, {
+  required Map<DateTime, List<CalendarViewEvent>> events,
+  void Function(DateTime? selectedDay)? onDateSelected,
+}) =>
+    showCloseableBottomSheet(context, CalendarView(events: events, onDateSelected: onDateSelected));
+
 void showDateTimePicker(
   BuildContext context,
   CupertinoDatePickerMode mode,
   Function(DateTime) onChange, {
   DateTime? initialDateTime,
 }) =>
-    showCloseableBottomSheet(
-      context,
-      DateTimePicker(
-        onChange: onChange,
-        mode: mode,
-        initialValue: initialDateTime,
-      ),
-    );
+    showCloseableBottomSheet(context, DateTimePicker(onChange: onChange, mode: mode, initialValue: initialDateTime));
 
 void showDurationPicker(
   BuildContext context,
@@ -169,12 +170,7 @@ void showDurationPicker(
 }) =>
     showCloseableBottomSheet(
       context,
-      DurationPicker(
-        onChange: onChange,
-        mode: mode,
-        initialValue: initialDuration,
-        isTimer: isTimer,
-      ),
+      DurationPicker(onChange: onChange, mode: mode, initialValue: initialDuration, isTimer: isTimer),
     );
 
 Future showCloseableBottomSheet(BuildContext context, Widget child, {String? title}) => showModalBottomSheet(

@@ -43,7 +43,7 @@ class TextWithIcon extends StatelessWidget {
 
   factory TextWithIcon.weight(double? weight, {MainAxisAlignment? alignment, bool muted = false}) => TextWithIcon(
         icon: Icons.fitness_center_rounded,
-        text: weight == null ? null : '${NumberHelper.truncateDouble(weight)}kg',
+        text: weight == null || weight == 0 ? null : '${NumberHelper.truncateDouble(weight)}kg',
         alignment: alignment,
         muted: muted,
       );

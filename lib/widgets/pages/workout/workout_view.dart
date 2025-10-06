@@ -235,10 +235,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                 ]),
                 Row(children: [
                   if (!DateTimeHelper.isInFuture(workout.date) && !workout.isFinished())
-                    Button(
-                      icon: Icons.check_rounded,
-                      onTap: () => onFinishOrResumeTap(context, workout, false),
-                    ),
+                    Button(icon: Icons.check_rounded, onTap: () => onFinishOrResumeTap(context, workout, false)),
                   WorkoutOptionsMenu(
                     workout: workout,
                     onChange: reload,
@@ -248,7 +245,10 @@ class _WorkoutViewState extends State<WorkoutView> {
                         Button(
                           icon: Icons.play_circle_outline_rounded,
                           text: 'Resume Workout',
-                          onTap: () => onFinishOrResumeTap(context, workout, true),
+                          onTap: () {
+                            Navigator.pop(context);
+                            onFinishOrResumeTap(context, workout, true);
+                          },
                           style: ButtonCustomStyle.primaryIconOnly(),
                         ),
                       Button(
@@ -307,9 +307,7 @@ class _WorkoutViewState extends State<WorkoutView> {
               ],
             ),
             if (workout.hasCategories())
-              Row(children: [
-                getWorkoutCategoriesWidget(workout.workoutCategories!, categories),
-              ]),
+              Row(children: [getWorkoutCategoriesWidget(workout.workoutCategories!, categories)]),
             Row(children: [
               Expanded(
                 child: Notes(

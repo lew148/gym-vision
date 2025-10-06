@@ -19,6 +19,8 @@ class DateTimeHelper {
 
   static DateTime parseDateTime(String s) => DateTime.parse(s);
 
+  static DateTime roundToDay(DateTime dt) => DateTime.utc(dt.year, dt.month, dt.day);
+
   static String getDateStr(DateTime dt) =>
       dt.year != DateTime.now().year ? DateFormat(dmyFormat).format(dt) : DateFormat(dmFormat).format(dt);
 

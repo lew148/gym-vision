@@ -94,17 +94,39 @@ class WorkoutModel {
     return summary;
   }
 
-  static Future<List<Workout>> getAllWorkouts() async {
+  static Future<List<Workout>> getAllWorkouts({
+    bool withSummary = false,
+    List<Category>? filterCategories,
+    DateTime? date,
+  }) async {
     final db = DatabaseHelper.db;
-    final workouts = (await (db.select(db.driftWorkouts)
-              ..orderBy([(w) => OrderingTerm(expression: w.date, mode: OrderingMode.desc)]))
-            .get())
-        .map((w) => w.toObject())
-        .toList();
 
-    for (final workout in workouts) {
-      workout.workoutCategories = await WorkoutCategoryModel.getWorkoutCategoriesByWorkout(workout.id!);
+    var query = db.select(db.driftWorkouts).join(
+        [leftOuterJoin(db.driftWorkoutCategories, db.driftWorkoutCategories.workoutId.equalsExp(db.driftWorkouts.id))])
+      ..orderBy([OrderingTerm.desc(db.driftWorkouts.date)]);
+
+    if (filterCategories != null && filterCategories.isNotEmpty) {
+      query = query..where(db.driftWorkoutCategories.category.isInValues(filterCategories));
     }
+
+    if (date != null) {
+      final startOfDay = DateTime(date.year, date.month, date.day);
+      final endOfDay = startOfDay.add(const Duration(days: 1));
+      query = query
+        ..where(db.driftWorkouts.date.isBiggerOrEqualValue(startOfDay))
+        ..where(db.driftWorkouts.date.isSmallerThanValue(endOfDay));
+    }
+
+    final workouts =
+        (await (query).map((row) => row.readTable(db.driftWorkouts)).get()).map((w) => w.toObject()).toList();
+
+    await Future.wait(workouts.map((workout) async {
+      workout.workoutCategories = await WorkoutCategoryModel.getWorkoutCategoriesByWorkout(workout.id!);
+      if (withSummary) {
+        workout.workoutExercises = await WorkoutExerciseModel.getWorkoutExercisesByWorkout(workout.id!, withSets: true);
+        workout.summary = await getWorkoutSummary(workout: workout);
+      }
+    }));
 
     return workouts;
   }

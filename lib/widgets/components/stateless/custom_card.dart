@@ -4,12 +4,14 @@ class CustomCard extends StatelessWidget {
   final Widget child;
   final Function()? onTap;
   final Color? color;
+  final EdgeInsets? padding;
 
   const CustomCard({
     super.key,
     required this.child,
     this.onTap,
     this.color,
+    this.padding,
   });
 
   @override
@@ -24,7 +26,10 @@ class CustomCard extends StatelessWidget {
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: onTap,
-        child: child,
+        child: Padding(
+          padding: padding ?? EdgeInsets.zero,
+          child: child,
+        ),
       ),
     );
   }

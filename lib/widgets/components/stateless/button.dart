@@ -55,6 +55,10 @@ class Button extends StatelessWidget {
         text: customTitle ?? (isAdd ? 'Add' : 'Done'),
       );
 
+  factory Button.x({required Function() onTap}) => Button(icon: Icons.close_rounded, onTap: onTap);
+  factory Button.calendar({required Function() onTap}) => Button(icon: Icons.calendar_today_rounded, onTap: onTap);
+  factory Button.clear({required Function() onTap}) => Button(text: 'Clear', onTap: onTap);
+
   @override
   Widget build(BuildContext context) {
     final onSurface = Theme.of(context).colorScheme.onSurface;
