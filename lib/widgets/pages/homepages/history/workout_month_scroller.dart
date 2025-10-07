@@ -204,7 +204,7 @@ class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
                         : [
                             GestureDetector(
                                 behavior: HitTestBehavior.translucent,
-                                onTap: () => onAddWorkoutTap(context, reloadState, date: currentDate)
+                                onTap: () => addWorkout(context, reloadState, date: currentDate)
                                     .then((x) => widget.reloadParent()),
                                 child: DateTimeHelper.dateXIsAfterDateY(widget.userSettings.createdAt!, currentDate) ||
                                         DateTimeHelper.isInFuture(currentDate) ||

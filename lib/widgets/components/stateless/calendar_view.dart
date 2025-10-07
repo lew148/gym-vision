@@ -62,7 +62,14 @@ class CalendarView extends StatelessWidget {
         ),
         onDaySelected: (selectedDay, focusedDay) => onDateSelect(selectedDay),
       ),
-      Row(mainAxisAlignment: MainAxisAlignment.end, children: [Button.clear(onTap: () => onDateSelect(null))]),
+      const Padding(padding: EdgeInsetsGeometry.all(5)),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Button.clear(onTap: () => onDateSelect(null)),
+          Button(text: 'Today', onTap: () => onDateSelect(DateTimeHelper.roundToDay(DateTime.now()))),
+        ],
+      ),
     ]);
   }
 }

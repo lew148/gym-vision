@@ -13,6 +13,7 @@ import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/options_menu.dart';
+import 'package:gymvision/widgets/components/stateless/shimmer_load.dart';
 import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
 import 'package:gymvision/widgets/forms/fields/custom_checkbox.dart';
 import 'package:gymvision/widgets/forms/workout_set_form.dart';
@@ -337,32 +338,33 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomCard(
-      child: FutureBuilder(
-        future: workoutSetsFuture,
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) return const SizedBox.shrink();
+    return FutureBuilder(
+      future: workoutSetsFuture,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return const ShimmerLoad(height: 50);
 
-          final sets = snapshot.data!;
-          if (sets.isEmpty) return getHeader(standalone: true, isDone: widget.workoutExercise.done);
+        final sets = snapshot.data!;
 
-          return Column(
-            children: [
-              GestureDetector(
-                onTap: () => setState(() {
-                  dropped = !dropped;
-                }),
-                behavior: HitTestBehavior.translucent,
-                child: getHeader(standalone: false, isDone: !(sets.any((ws) => !ws.done))),
-              ),
-              if (dropped) ...[
-                const CustomDivider(shadow: true, height: 0),
-                Column(children: getSetWidgets(sets)),
-              ],
-            ],
-          );
-        },
-      ),
+        return CustomCard(
+          child: sets.isEmpty
+              ? getHeader(standalone: true, isDone: widget.workoutExercise.done)
+              : Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () => setState(() {
+                        dropped = !dropped;
+                      }),
+                      behavior: HitTestBehavior.translucent,
+                      child: getHeader(standalone: false, isDone: !(sets.any((ws) => !ws.done))),
+                    ),
+                    if (dropped) ...[
+                      const CustomDivider(shadow: true, height: 0),
+                      Column(children: getSetWidgets(sets)),
+                    ],
+                  ],
+                ),
+        );
+      },
     );
   }
 }

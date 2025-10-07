@@ -101,8 +101,14 @@ class WorkoutModel {
   }) async {
     final db = DatabaseHelper.db;
 
-    var query = db.select(db.driftWorkouts).join(
-        [leftOuterJoin(db.driftWorkoutCategories, db.driftWorkoutCategories.workoutId.equalsExp(db.driftWorkouts.id))])
+    var query = db.select(db.driftWorkouts).join([
+      leftOuterJoin(
+        db.driftWorkoutCategories,
+        db.driftWorkoutCategories.workoutId.equalsExp(db.driftWorkouts.id),
+        useColumns: false,
+      )
+    ])
+      ..groupBy([db.driftWorkouts.id])
       ..orderBy([OrderingTerm.desc(db.driftWorkouts.date)]);
 
     if (filterCategories != null && filterCategories.isNotEmpty) {
@@ -132,31 +138,20 @@ class WorkoutModel {
   }
 
   static Future<Workout?> getActiveWorkout({bool withCategories = false, bool withWorkoutExercises = false}) async {
-    const maxHoursToLook = 4;
+    const maxHoursToLook = 24;
     final db = DatabaseHelper.db;
     final now = DateTime.now();
     final lowerBound = now.add(const Duration(hours: -maxHoursToLook));
+    final upperBound = now.add(const Duration(hours: maxHoursToLook));
 
     var activeWorkout = (await (db.select(db.driftWorkouts)
               ..orderBy([(w) => OrderingTerm.desc(w.date)])
-              ..where((w) => w.date.isSmallerThanValue(now))
+              ..where((w) => w.date.isSmallerThanValue(upperBound))
               ..where((w) => w.date.isBiggerThanValue(lowerBound))
-              ..where((w) => w.endDate.isNull())
+              ..where((w) => w.endDate.isNull()) // ongoing
               ..limit(1))
             .getSingleOrNull())
         ?.toObject();
-
-    if (activeWorkout == null) {
-      final upperBound = now.add(const Duration(hours: maxHoursToLook));
-      activeWorkout = (await (db.select(db.driftWorkouts)
-                ..orderBy([(w) => OrderingTerm.desc(w.date)])
-                ..where((w) => w.date.isBiggerThanValue(now))
-                ..where((w) => w.date.isSmallerThanValue(upperBound))
-                ..where((w) => w.endDate.isNull())
-                ..limit(1))
-              .getSingleOrNull())
-          ?.toObject();
-    }
 
     if (activeWorkout == null) return null;
 
@@ -242,8 +237,13 @@ class WorkoutModel {
     var workout = await getWorkout(wc.workoutId);
     if (workout == null) return null;
     return (await (db.select(db.driftWorkouts).join([
-      leftOuterJoin(db.driftWorkoutCategories, db.driftWorkoutCategories.workoutId.equalsExp(db.driftWorkouts.id))
+      leftOuterJoin(
+        db.driftWorkoutCategories,
+        db.driftWorkoutCategories.workoutId.equalsExp(db.driftWorkouts.id),
+        useColumns: false,
+      )
     ])
+          ..groupBy([db.driftWorkouts.id])
           ..orderBy([OrderingTerm.desc(db.driftWorkouts.date)])
           ..where(db.driftWorkoutCategories.category.equalsValue(wc.category))
           ..where(db.driftWorkouts.date.isSmallerThanValue(workout.date))

@@ -154,8 +154,8 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                 text: 'Update Database',
                 onTap: () => showConfirm(
                   context,
-                  'Update Database',
-                  'This will persist existing data',
+                  title: 'Update Database',
+                  content: 'This will persist existing data',
                   onConfirm: () async {
                     final success = await DatabaseHelper.resetWhilePersistingData();
                     if (!context.mounted) return;

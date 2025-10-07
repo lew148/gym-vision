@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
+import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/providers/active_workout_provider.dart';
@@ -83,10 +84,10 @@ void showDeleteConfirm(
 }
 
 Future<bool> showConfirm(
-  BuildContext context,
-  String title,
-  String content, {
+  BuildContext context, {
+  required String title,
   Function? onConfirm,
+  String? content,
 }) async {
   HapticFeedback.heavyImpact();
   var confirmed = false;
@@ -94,7 +95,7 @@ Future<bool> showConfirm(
     context: context,
     builder: (context) => CupertinoAlertDialog(
       title: Text(title),
-      content: Text(content),
+      content: content == null ? null : Text(content),
       actions: [
         CupertinoDialogAction(
           child: const Text('Cancel', style: TextStyle(color: Colors.red)),
@@ -173,7 +174,8 @@ void showDurationPicker(
       DurationPicker(onChange: onChange, mode: mode, initialValue: initialDuration, isTimer: isTimer),
     );
 
-Future showCloseableBottomSheet(BuildContext context, Widget child, {String? title}) => showModalBottomSheet(
+Future showCloseableBottomSheet(BuildContext context, Widget child, {String? title, Function? onClose}) =>
+    showModalBottomSheet(
       context: context,
       constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
       useSafeArea: true,
@@ -210,7 +212,9 @@ Future showCloseableBottomSheet(BuildContext context, Widget child, {String? tit
           ),
         ],
       ),
-    );
+    ).then((x) {
+      if (onClose != null) onClose();
+    });
 
 Future showFullScreenBottomSheet(
   BuildContext context,
@@ -253,17 +257,22 @@ Future showFullScreenBottomSheet(
       if (onClose != null) onClose();
     });
 
-Future onAddWorkoutTap(
+Future addWorkout(
   BuildContext context,
   Function reloadState, {
   DateTime? date,
   List<Category>? categories,
 }) async {
   try {
-    var now = DateTime.now();
+    final now = DateTime.now();
 
-    if (date != null) {
+    if (date != null && DateTimeHelper.roundToDay(date) != DateTimeHelper.roundToDay(now)) {
       date = DateTime(date.year, date.month, date.day, now.hour, now.minute, now.second, now.millisecond);
+    } else {
+      if ((await WorkoutModel.getActiveWorkout() != null)) {
+        if (context.mounted) showSnackBar(context, 'Finish the active workout before creating another.');
+        return;
+      }
     }
 
     final newWorkoutId = await WorkoutModel.insert(Workout(date: date ?? now, exerciseOrder: ''));
@@ -278,13 +287,6 @@ Future onAddWorkoutTap(
   }
 }
 
-Future deleteWorkout(BuildContext context, int workoutId) async {
-  final provider = Provider.of<ActiveWorkoutProvider>(context, listen: false);
-  await WorkoutModel.delete(workoutId);
-  provider.closeActiveWorkout();
-  provider.refreshActiveWorkout();
-}
-
 Future openWorkoutView(
   BuildContext context,
   int workoutId, {
@@ -293,6 +295,10 @@ Future openWorkoutView(
   List<int>? droppedWes,
 }) async {
   final provider = Provider.of<ActiveWorkoutProvider>(context, listen: false);
+  final isActiveWorkout = await provider.isActiveWorkout(workoutId);
+  if (!context.mounted) return;
+  if (isActiveWorkout) provider.setOpen();
+
   showFullScreenBottomSheet(
     context,
     WorkoutView(
@@ -301,7 +307,7 @@ Future openWorkoutView(
       droppedWes: droppedWes,
     ),
     onClose: () {
-      provider.closeActiveWorkout(); // always close active workout
+      if (isActiveWorkout) provider.setClosed();
       provider.refreshActiveWorkout();
       if (onClose != null) onClose();
     },
@@ -311,6 +317,7 @@ Future openWorkoutView(
 void closeKeyboard() => FocusManager.instance.primaryFocus?.unfocus();
 
 void showSnackBar(BuildContext context, String text) {
+  if (!context.mounted) return;
   ScaffoldMessenger.of(context).hideCurrentSnackBar();
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
 }

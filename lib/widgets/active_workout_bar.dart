@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/providers/active_workout_provider.dart';
 import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
 import 'package:gymvision/widgets/components/time_elapsed.dart';
@@ -58,8 +59,8 @@ class _ActiveWorkoutBarState extends State<ActiveWorkoutBar> with SingleTickerPr
 
             return GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onTap: () => provider.openActiveWorkout(context, workout: snapshot.data),
-              onVerticalDragStart: (details) => provider.openActiveWorkout(context, workout: snapshot.data),
+              onTap: () => openWorkoutView(context, workout.id!),
+              onVerticalDragStart: (details) => openWorkoutView(context, workout.id!),
               child: Padding(
                 padding: const EdgeInsets.only(left: 20, right: 20),
                 child: Column(

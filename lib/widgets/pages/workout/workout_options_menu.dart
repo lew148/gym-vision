@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
+import 'package:gymvision/providers/active_workout_provider.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/options_menu.dart';
+import 'package:provider/provider.dart';
 
 class WorkoutOptionsMenu extends StatelessWidget {
   final Workout workout;
@@ -102,7 +104,12 @@ class WorkoutOptionsMenu extends StatelessWidget {
           showDeleteConfirm(
             context,
             "workout",
-            () async => deleteWorkout(context, workout.id!),
+            () async {
+              final provider = Provider.of<ActiveWorkoutProvider>(context, listen: false);
+              await WorkoutModel.delete(workout.id!);
+              provider.refreshActiveWorkout();
+              if (onChange != null) onChange!();
+            },
             null,
             popCaller: popCallerOnDelete,
           );

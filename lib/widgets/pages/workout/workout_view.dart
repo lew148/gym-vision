@@ -168,8 +168,8 @@ class _WorkoutViewState extends State<WorkoutView> {
     try {
       var confirmed = await showConfirm(
         context,
-        resuming ? 'Resume Workout?' : 'Finish Workout?',
-        resuming
+        title: resuming ? 'Resume Workout?' : 'Finish Workout?',
+        content: resuming
             ? 'Are you sure you would like to resume this workout?'
             : 'Are you sure you are finished with this workout?',
       );

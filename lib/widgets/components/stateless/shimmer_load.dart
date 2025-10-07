@@ -13,15 +13,18 @@ class ShimmerLoad extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Shimmer.fromColors(
-      baseColor: AppHelper.isDarkMode(context) ? Colors.grey.shade800 : Colors.grey.shade300,
-      highlightColor: AppHelper.isDarkMode(context) ? Colors.grey.shade600 : Colors.grey.shade100,
-      child: CustomCard(
-        child: Container(
-          height: height ?? 15,
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: BorderRadius.circular(5),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 2.5, vertical: 5),
+      child: Shimmer.fromColors(
+        baseColor: AppHelper.isDarkMode(context) ? Colors.grey.shade800 : Colors.grey.shade300,
+        highlightColor: AppHelper.isDarkMode(context) ? Colors.grey.shade600 : Colors.grey.shade100,
+        child: CustomCard(
+          child: Container(
+            height: height ?? 15,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(5),
+            ),
           ),
         ),
       ),

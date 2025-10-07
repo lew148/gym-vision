@@ -31,26 +31,35 @@ class Today extends StatefulWidget {
 
 class _TodayState extends State<Today> {
   late DateTime today;
-  late Future<Bodyweight?> todaysBodyweight;
-  late Future<Schedule?> schedule;
+  late Future<List<Workout>> workoutsFuture;
+  late Future<Bodyweight?> todaysBodyweightFuture;
+  late Future<Schedule?> scheduleFuture;
 
   @override
   void initState() {
     super.initState();
-    today = DateTime.now();
-    todaysBodyweight = BodyweightModel.getBodyweightForDay(today);
-    schedule = ScheduleModel.getActiveSchedule(withItems: true);
+    loadData();
   }
 
-  reload() => setState(() {
-        today = DateTime.now();
-        todaysBodyweight = BodyweightModel.getBodyweightForDay(today);
+  void reload({bool justBodyWeights = false}) => setState(() {
+        loadData();
       });
 
-  void onAddWeightTap() async => showCloseableBottomSheet(
+  void loadData({bool justBodyWeights = false}) {
+    today = DateTime.now();
+    todaysBodyweightFuture = BodyweightModel.getBodyweightForDay(today);
+
+    if (!justBodyWeights) {
+      workoutsFuture = WorkoutModel.getWorkoutsForDay(today, withSummary: true);
+      scheduleFuture = ScheduleModel.getActiveSchedule(withItems: true);
+    }
+  }
+
+  void onAddWeightTap() => showCloseableBottomSheet(
         context,
         AddBodyWeightForm(),
-      ).then((x) => reload());
+        onClose: () => reload(justBodyWeights: true),
+      );
 
   Widget getPlaceholder() => Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -58,7 +67,7 @@ class _TodayState extends State<Today> {
           Padding(
             padding: const EdgeInsetsGeometry.symmetric(horizontal: 30),
             child: FutureBuilder(
-                future: schedule,
+                future: scheduleFuture,
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     return Column(children: [
@@ -70,7 +79,7 @@ class _TodayState extends State<Today> {
                       Button(
                         icon: Icons.add_rounded,
                         text: 'Start a workout',
-                        onTap: () => onAddWorkoutTap(context, reload, date: today),
+                        onTap: () => addWorkout(context, reload),
                       ),
                       Padding(
                         padding: const EdgeInsetsGeometry.all(5),
@@ -113,12 +122,7 @@ class _TodayState extends State<Today> {
                           Button(
                             icon: Icons.add_rounded,
                             text: 'Start scheduled workout',
-                            onTap: () => onAddWorkoutTap(
-                              context,
-                              reload,
-                              date: today,
-                              categories: todayCategories,
-                            ),
+                            onTap: () => addWorkout(context, reload, categories: todayCategories),
                             elevated: true,
                           ),
                         ]);
@@ -182,7 +186,7 @@ class _TodayState extends State<Today> {
                   Padding(
                     padding: const EdgeInsetsGeometry.all(15),
                     child: FutureBuilder<Bodyweight?>(
-                        future: todaysBodyweight,
+                        future: todaysBodyweightFuture,
                         builder: (context, bwsnapshot) {
                           if (!bwsnapshot.hasData) {
                             return Row(
@@ -248,9 +252,7 @@ class _TodayState extends State<Today> {
               Header(title: DateFormat('EEEE, MMMM d').format(today)),
               Header.large(
                 'Today',
-                actions: [
-                  Button(icon: Icons.add_rounded, onTap: () => onAddWorkoutTap(context, reload, date: today)),
-                ],
+                actions: [Button(icon: Icons.add_rounded, onTap: () => addWorkout(context, reload))],
               ),
             ],
           ),
@@ -259,7 +261,7 @@ class _TodayState extends State<Today> {
         Expanded(
           child: Consumer<ActiveWorkoutProvider>(builder: (context, activeWorkoutProvider, child) {
             return FutureBuilder<List<Workout>>(
-                future: WorkoutModel.getWorkoutsForDay(today),
+                future: workoutsFuture,
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) return const SizedBox.shrink();
 

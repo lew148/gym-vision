@@ -10,7 +10,6 @@ import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/widgets/components/stateless/calendar_view.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/category_filter.dart';
-import 'package:gymvision/widgets/components/stateless/header.dart';
 import 'package:gymvision/widgets/components/stateless/scroll_bottom_padding.dart';
 import 'package:gymvision/widgets/components/stateless/shimmer_load.dart';
 import 'package:gymvision/widgets/components/stateless/splash_text.dart';
@@ -88,12 +87,7 @@ class _HistoryState extends State<History> {
             return ListView(
               children: [
                 getFilterRow([]),
-                ...List.generate(
-                    5,
-                    (i) => const Padding(
-                          padding: EdgeInsetsGeometry.only(bottom: 5),
-                          child: ShimmerLoad(height: 100),
-                        )),
+                ...List.generate(5, (i) => const ShimmerLoad(height: 100)),
                 const ScrollBottomPadding(),
               ],
             );
@@ -110,10 +104,12 @@ class _HistoryState extends State<History> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(5),
-                    child: Header(title: date == null ? 'All Time' : DateTimeHelper.getDateStr(date!)),
-                  ),
+                  date == null
+                      ? const Button(text: 'All Time')
+                      : Button(
+                          text: DateTimeHelper.getDateStr(date!),
+                          onTap: () =>
+                              showConfirm(context, title: 'Remove date filter?', onConfirm: () => setDate(null))),
                 ],
               ),
               workoutsToDisplay.isEmpty

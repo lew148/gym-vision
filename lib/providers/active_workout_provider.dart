@@ -6,23 +6,24 @@ import 'package:gymvision/providers/navigation_provider.dart';
 import 'package:provider/provider.dart';
 
 class ActiveWorkoutProvider extends ChangeNotifier {
-  bool _isActiveWorkoutBarOpen = false;
+  bool _activeWorkoutIsOpen = false;
   Future<Workout?> _activeWorkoutFuture = WorkoutModel.getActiveWorkout();
 
-  bool get isActiveWorkoutBarOpen => _isActiveWorkoutBarOpen;
+  bool get activeWorkoutIsOpen => _activeWorkoutIsOpen;
   Future<Workout?> get activeWorkoutFuture => _activeWorkoutFuture;
 
-  void openActiveWorkout(BuildContext context, {Workout? workout}) async {
+  void setOpen() => _activeWorkoutIsOpen = true;
+  void setClosed() => _activeWorkoutIsOpen = false;
+
+  void openActiveWorkout(BuildContext context) async {
     final globalContext = Provider.of<NavigationProvider>(context, listen: false).getGlobalContext();
-
-    workout ??= await WorkoutModel.getActiveWorkout();
-    if (workout == null || globalContext == null || !globalContext.mounted) return;
-
-    openWorkoutView(globalContext, workout.id!);
-    _isActiveWorkoutBarOpen = true;
+    final activeWorkout = await WorkoutModel.getActiveWorkout();
+    if (activeWorkout == null || globalContext == null || !globalContext.mounted) return;
+    setOpen();
+    openWorkoutView(globalContext, activeWorkout.id!);
   }
 
-  void closeActiveWorkout() => _isActiveWorkoutBarOpen = false;
+  Future<bool> isActiveWorkout(int workoutId) async => (await WorkoutModel.getActiveWorkout())?.id == workoutId;
 
   void refreshActiveWorkout() {
     _activeWorkoutFuture = WorkoutModel.getActiveWorkout();

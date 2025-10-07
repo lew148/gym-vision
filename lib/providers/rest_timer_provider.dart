@@ -78,7 +78,7 @@ class RestTimerProvider extends ChangeNotifier {
                 onPressed: () {
                   Navigator.pop(globalContext);
                   final activeWorkoutProvider = Provider.of<ActiveWorkoutProvider>(globalContext, listen: false);
-                  if (!activeWorkoutProvider.isActiveWorkoutBarOpen) {
+                  if (!activeWorkoutProvider.activeWorkoutIsOpen) {
                     activeWorkoutProvider.openActiveWorkout(globalContext);
                   }
                 },
