@@ -231,7 +231,7 @@ class _WorkoutViewState extends State<WorkoutView> {
                       Navigator.pop(context);
                     },
                   ),
-                  const RestTimer(),
+                  if (!workout.isFinished()) const RestTimer(),
                 ]),
                 Row(children: [
                   if (!DateTimeHelper.isInFuture(workout.date) && !workout.isFinished())

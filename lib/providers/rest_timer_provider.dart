@@ -52,6 +52,7 @@ class RestTimerProvider extends ChangeNotifier {
         clearTimer();
 
         if (SchedulerBinding.instance.lifecycleState != AppLifecycleState.resumed) {
+          // IOS has been set on a timer
           if (Platform.isAndroid) {
             LocalNotificationService.showNotification(title: restTimerTitle, body: restTimerBody);
           }
@@ -63,26 +64,29 @@ class RestTimerProvider extends ChangeNotifier {
           }
 
           if (!globalContext.mounted) return;
+          final activeWorkoutProvider = Provider.of<ActiveWorkoutProvider>(globalContext, listen: false);
 
           showCustomDialog(
             globalContext,
-            const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Icon(Icons.alarm_on_rounded),
-              Padding(padding: EdgeInsetsGeometry.all(2.5)),
-              Text(restTimerTitle),
-            ]),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.alarm_on_rounded),
+                Padding(padding: EdgeInsetsGeometry.all(2.5)),
+                Text(restTimerTitle),
+              ],
+            ),
             const Text(restTimerBody),
             actions: [
-              CupertinoDialogAction(
-                child: const Text("Let's go!"),
-                onPressed: () {
-                  Navigator.pop(globalContext);
-                  final activeWorkoutProvider = Provider.of<ActiveWorkoutProvider>(globalContext, listen: false);
-                  if (!activeWorkoutProvider.activeWorkoutIsOpen) {
+              CupertinoDialogAction(child: const Text("I'm Ready!"), onPressed: () => Navigator.pop(globalContext)),
+              if (!activeWorkoutProvider.activeWorkoutIsOpen)
+                CupertinoDialogAction(
+                  child: const Text("Go to Workout!"),
+                  onPressed: () {
+                    Navigator.pop(globalContext);
                     activeWorkoutProvider.openActiveWorkout(globalContext);
-                  }
-                },
-              ),
+                  },
+                ),
             ],
           );
         }
