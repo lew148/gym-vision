@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:gymvision/extensions.dart';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -10,6 +9,8 @@ class TodoistService {
     'ospuuq',
     'fzelzz',
   ];
+
+  static const String _projectId = '6f4676JVMm8w5Xvp';
 
   static Future<bool> createTask(String title, String description, String name, bool isBug) async {
     try {
@@ -25,12 +26,10 @@ class TodoistService {
         'Content-Type': 'application/x-www-form-urlencoded',
       });
 
-      if (name.isNotEmpty) {
-        title = '${name.capitalize()} - $title';
-      }
+      if (name.isNotEmpty) description = description.isEmpty ? name : '$name: $description';
 
       request.body =
-          'commands=[{"type": "item_add","uuid": "${requestUuid.toString()}","temp_id": "${tempId.toString()}","args": {"project_id": "6M54c44jm5c5P8p9","section_id": "6Xv7m8gpVG6CW24h","content": ${jsonEncode(title)},"description": ${jsonEncode(description)},"labels": ${isBug ? '["bug"]' : '[]'}}}]';
+          'commands=[{"type": "item_add","uuid": "${requestUuid.toString()}","temp_id": "${tempId.toString()}","args": {"project_id": "$_projectId","content": ${jsonEncode(title)},"description": ${jsonEncode(description)},"labels": ${isBug ? '["bug"]' : '[]'}}}]';
 
       final response = await request.send();
       return response.statusCode == 200;

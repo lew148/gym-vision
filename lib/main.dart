@@ -42,10 +42,7 @@ void main() async {
       // framework errors
       FlutterError.onError = (FlutterErrorDetails details) async {
         FlutterError.presentError(details);
-        await Sentry.captureException(
-          details.exception,
-          stackTrace: details.stack,
-        );
+        await Sentry.captureException(details.exception, stackTrace: details.stack);
       };
 
       // async errors

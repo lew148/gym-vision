@@ -14,6 +14,7 @@ import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/header.dart';
 import 'package:gymvision/widgets/debug_scaffold.dart';
 import 'package:gymvision/widgets/forms/import_workout_form.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import '../../models/db_models/user_settings_model.dart';
 
 class UserSettingsView extends StatefulWidget {
@@ -129,11 +130,10 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                 elevated: true,
               ),
               Button(
-                onTap: () => runSafe(
-                  () => throw Exception(),
-                  sentryMessage: '(IGNORE) This error was sent manually by a developer!',
-                  fallback: null,
-                ),
+                onTap: () async {
+                  await Sentry.captureMessage('(Ignore) This message was sent manually by a developer.');
+                  if (context.mounted) showSnackBar(context, 'Sentry message sent!');
+                },
                 text: 'Send Error to Sentry',
                 elevated: true,
               ),

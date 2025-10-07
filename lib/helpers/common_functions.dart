@@ -15,32 +15,6 @@ import 'package:gymvision/widgets/pages/workout/workout_view.dart';
 import 'package:gymvision/providers/rest_timer_provider.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:provider/provider.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
-
-Future<T> runSafe<T>(
-  Function f, {
-  required T fallback,
-  bool logToSentry = false,
-  String? sentryMessage,
-  BuildContext? context,
-  String? snackBarMessage,
-}) async {
-  try {
-    return await f();
-  } catch (ex, stack) {
-    if (context != null && context.mounted) {
-      showSnackBar(context, snackBarMessage ?? 'An error has occured.');
-    }
-
-    if (logToSentry || sentryMessage != null) {
-      sentryMessage == null
-          ? await Sentry.captureException(ex, stackTrace: stack)
-          : await Sentry.captureMessage(sentryMessage);
-    }
-  }
-
-  return fallback;
-}
 
 void showDeleteConfirm(
   BuildContext context,
@@ -203,10 +177,11 @@ Future showCloseableBottomSheet(BuildContext context, Widget child, {String? tit
                 ),
               ),
               if (title != null) ...[
+                const Padding(padding: EdgeInsetsGeometry.all(10)),
                 Header(title: title),
                 const CustomDivider(),
               ] else
-                const Padding(padding: EdgeInsetsGeometry.all(10)),
+                const Padding(padding: EdgeInsetsGeometry.all(5)),
               child,
             ]),
           ),
