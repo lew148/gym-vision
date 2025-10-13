@@ -15,15 +15,10 @@ class ExerciseDetails {
     this.workoutExercises,
   });
 
-  String? getPRAsString() {
-    if (pr == null) return null;
-    if (pr!.weight! <= 0) return null;
-    return NumberHelper.truncateDouble(pr!.weight);
-  }
+  String? getPRAsString() => pr == null || pr!.weight! <= 0 ? null : NumberHelper.truncateDouble(pr!.weight);
+  
+  String? getLastWeightAsString() =>
+      last == null || last!.weight! <= 0 ? null : NumberHelper.truncateDouble(last!.weight);
 
-  String? getLastAsString() {
-    if (last == null) return null;
-    if (last!.weight! <= 0) return null;
-    return NumberHelper.truncateDouble(last!.weight);
-  }
+  String? getLastRepsAsString() => last == null || last!.reps! <= 0 ? null : last!.reps.toString();
 }

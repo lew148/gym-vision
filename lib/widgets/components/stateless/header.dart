@@ -14,7 +14,7 @@ class Header extends StatelessWidget {
     this.large = false,
   }) : assert(
           (title != null || widget != null) || (title == null || widget == null),
-          'You must provide EITHER title OR widget to a Header',
+          'Must provide EITHER title OR widget to Header',
         );
 
   factory Header.large(String title, {List<Widget>? actions}) => Header(title: title, large: true, actions: actions);

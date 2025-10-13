@@ -104,7 +104,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                       context,
                       initialDuration: settings.intraSetRestTimer,
                       CupertinoTimerPickerMode.ms,
-                      (Duration d) async {
+                      onSubmit: (Duration d) async {
                         try {
                           settings.intraSetRestTimer = d.inSeconds == 0 ? null : d;
                           await UserSettingsModel.update(settings);
@@ -120,37 +120,32 @@ class _UserSettingsViewState extends State<UserSettingsView> {
               ),
               const Header(title: 'Developer Settings'),
               const CustomDivider(),
-              Button(
+              Button.elevated(
                 onTap: () async {
                   await FlavourTextScheduleModel.setRecentFlavourTextScheduleNotDismissed();
                   if (!context.mounted) return;
                   showSnackBar(context, 'Flavour Text Un-dismissed!');
                 },
                 text: 'Un-Dismiss Flavour Text',
-                elevated: true,
               ),
-              Button(
+              Button.elevated(
                 onTap: () async {
                   await Sentry.captureMessage('(Ignore) This message was sent manually by a developer.');
                   if (context.mounted) showSnackBar(context, 'Sentry message sent!');
                 },
                 text: 'Send Error to Sentry',
-                elevated: true,
               ),
-              Button(
+              Button.elevated(
                 onTap: () => LocalNotificationService.showTestNotification(),
                 text: 'Show Test Notification',
-                elevated: true,
               ),
-              Button(
+              Button.elevated(
                 onTap: () => showCloseableBottomSheet(context, const ImportWorkoutForm()),
                 text: 'Import Workout',
-                elevated: true,
               ),
               const Header(title: 'Database Settings'),
               const CustomDivider(),
-              Button(
-                elevated: true,
+              Button.elevated(
                 text: 'Update Database',
                 onTap: () => showConfirm(
                   context,
@@ -163,8 +158,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                   },
                 ),
               ),
-              Button(
-                elevated: true,
+              Button.elevated(
                 text: 'Reset Database',
                 style: ButtonCustomStyle.redIconAndText(),
                 onTap: () => showDeleteConfirm(

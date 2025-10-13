@@ -8,9 +8,11 @@ class TodoistService {
   static const List<String> uiTesterPhrases = [
     'ospuuq',
     'fzelzz',
+    'akqndp',
   ];
 
   static const String _projectId = '6f4676JVMm8w5Xvp';
+  static const String _bugTag = 'Bug';
 
   static Future<bool> createTask(String title, String description, String name, bool isBug) async {
     try {
@@ -29,7 +31,7 @@ class TodoistService {
       if (name.isNotEmpty) description = description.isEmpty ? name : '$name: $description';
 
       request.body =
-          'commands=[{"type": "item_add","uuid": "${requestUuid.toString()}","temp_id": "${tempId.toString()}","args": {"project_id": "$_projectId","content": ${jsonEncode(title)},"description": ${jsonEncode(description)},"labels": ${isBug ? '["bug"]' : '[]'}}}]';
+          'commands=[{"type": "item_add","uuid": "${requestUuid.toString()}","temp_id": "${tempId.toString()}","args": {"project_id": "$_projectId","content": ${jsonEncode(title)},"description": ${jsonEncode(description)},"labels": ${isBug ? '["$_bugTag"]' : '[]'}}}]';
 
       final response = await request.send();
       return response.statusCode == 200;

@@ -12,7 +12,8 @@ import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/header.dart';
 import 'package:gymvision/widgets/components/stateless/splash_text.dart';
-import 'fields/custom_form_fields.dart';
+import 'package:gymvision/widgets/forms/fields/custom_form_field.dart';
+import 'package:gymvision/widgets/forms/fields/duration_field.dart';
 
 class WorkoutSetForm extends StatefulWidget {
   final int workoutId;
@@ -68,39 +69,55 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
     duration = widget.workoutSet?.time ?? const Duration();
   }
 
-  List<Widget> getWeightFields(Exercise ex) => [
-        CustomFormFields.doubleField(
-          controller: weightController,
-          label: 'Weight',
-          unit: 'kg',
-          last: ex.exerciseDetails?.getLastAsString(),
-          max: ex.exerciseDetails?.getPRAsString(),
-        ),
-        CustomFormFields.intField(
-          controller: repsController,
-          label: 'Reps',
-          selectableValues: [1, 8, 10, 12],
-          canBeBlank: false,
-        ),
-      ];
+  List<Widget> getWeightFields(Exercise ex) {
+    final last = ex.exerciseDetails?.getLastWeightAsString();
+    final pr = ex.exerciseDetails?.getPRAsString();
+    final lastReps = ex.exerciseDetails?.getLastRepsAsString();
+
+    return [
+      CustomFormField.double(
+        controller: weightController,
+        label: 'Weight',
+        unit: 'kg',
+        buttons: [
+          if (last != null)
+            Button(text: 'Last', onTap: () => weightController.text = last, style: ButtonCustomStyle.noPrimary()),
+          if (pr != null)
+            Button(text: 'Max', onTap: () => weightController.text = pr, style: ButtonCustomStyle.noPrimary()),
+        ],
+      ),
+      CustomFormField.int(
+        controller: repsController,
+        label: 'Reps',
+        canBeBlank: false,
+        buttons: [
+          lastReps != null
+              ? Button(text: 'Last', onTap: () => repsController.text = lastReps, style: ButtonCustomStyle.noPrimary())
+              : Button(text: '1', onTap: () => repsController.text = '1', style: ButtonCustomStyle.noPrimary()),
+          Button(text: '8', onTap: () => repsController.text = '8', style: ButtonCustomStyle.noPrimary()),
+          Button(text: '12', onTap: () => repsController.text = '12', style: ButtonCustomStyle.noPrimary()),
+        ],
+      ),
+    ];
+  }
 
   List<Widget> getCardioFields(Exercise ex) => [
-        CustomFormFields.durationField(
-          'Time',
-          context,
-          duration,
-          (Duration newDuration) => setState(() => duration = newDuration),
+        DurationField(
+          label: 'Time',
+          duration: duration,
+          onChange: (Duration newDuration) => setState(() => duration = newDuration),
         ),
-        CustomFormFields.doubleField(
+        CustomFormField.double(
           controller: distanceController,
           label: 'Distance',
           unit: 'km',
+          buttons: [Button.clear(onTap: () => distanceController.clear())],
         ),
-        CustomFormFields.intField(
+        CustomFormField.int(
           controller: calsBurnedController,
           label: 'Cals Burned',
           unit: 'kcal',
-          showNone: true,
+          buttons: [Button.clear(onTap: () => calsBurnedController.clear())],
         ),
       ];
 
@@ -180,12 +197,11 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
         if (!hasChanges) return;
 
         await WorkoutSetModel.update(set);
+        widget.onSuccess();
       } catch (ex) {
         if (!mounted) return;
         showSnackBar(context, 'Failed to edit workout set');
       }
-
-      widget.onSuccess();
     }
   }
 
@@ -250,7 +266,7 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
               if (exercise.type == ExerciseType.strength) ...getWeightFields(exercise),
               if (exercise.type == ExerciseType.cardio) ...getCardioFields(exercise),
               Padding(
-                padding: const EdgeInsets.only(top: 20),
+                padding: const EdgeInsets.only(top: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: isEdit

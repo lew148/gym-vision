@@ -10,7 +10,7 @@ import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
 import 'package:gymvision/widgets/forms/category_picker.dart';
-import 'package:gymvision/widgets/forms/fields/custom_form_fields.dart';
+import 'package:gymvision/widgets/forms/fields/custom_form_field.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 
@@ -197,7 +197,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
       child: IntrinsicHeight(
         child: Column(
           children: [
-            CustomFormFields.stringField(controller: nameController, label: 'Name', autofocus: !isEdit, maxLength: 25),
+            CustomFormField.string(controller: nameController, label: 'Name', autofocus: !isEdit, maxLength: 25),
             const Padding(padding: EdgeInsetsGeometry.all(5)),
             selectedType == null
                 ? SizedBox(

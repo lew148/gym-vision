@@ -132,7 +132,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
             Expanded(
               flex: 2,
               child: Row(children: [
-                CustomCheckbox(value: set.done, onChange: isDisplay ? null : (value) => onSetDoneTap(set, value)),
+                CustomCheckbox(value: set.done, onChangeAsync: isDisplay ? null : (value) => onSetDoneTap(set, value)),
                 const Padding(padding: EdgeInsetsGeometry.all(5)),
                 Text(
                   setNumber.toString(),
@@ -254,7 +254,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           children: [
             CustomCheckbox(
               value: isDone,
-              onChange: isDisplay ? null : (value) => onWorkoutExerciseDoneTap(value, standalone),
+              onChangeAsync: isDisplay ? null : (value) => onWorkoutExerciseDoneTap(value, standalone),
             ),
             const Padding(padding: EdgeInsetsGeometry.all(5)),
             Expanded(

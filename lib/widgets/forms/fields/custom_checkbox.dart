@@ -2,13 +2,18 @@ import 'package:flutter/material.dart';
 
 class CustomCheckbox extends StatefulWidget {
   final bool value;
-  final Future<bool> Function(bool)? onChange;
+  final void Function(bool)? onChange;
+  final Future<bool> Function(bool)? onChangeAsync;
 
   const CustomCheckbox({
     super.key,
     required this.value,
     this.onChange,
-  });
+    this.onChangeAsync,
+  }) : assert(
+          (onChange != null || onChangeAsync != null) || (onChange == null || onChangeAsync == null),
+          'Must provide EITHER onChange OR asyncOnChange to CustomCheckbox',
+        );
 
   @override
   State<CustomCheckbox> createState() => _CustomCheckboxState();
@@ -23,11 +28,15 @@ class _CustomCheckboxState extends State<CustomCheckbox> {
     value = widget.value;
   }
 
-  void onChange(bool? newValue) async {
+  void onCheckChange(bool? newValue) async {
     if (newValue == null) return;
 
-    final success = await widget.onChange!(newValue);
-    if (!success) return;
+    if (widget.onChange != null) {
+      widget.onChange!(newValue);
+    } else if (widget.onChangeAsync != null) {
+      final success = await widget.onChangeAsync!(newValue);
+      if (!success) return;
+    }
 
     setState(() {
       value = newValue;
@@ -53,7 +62,7 @@ class _CustomCheckboxState extends State<CustomCheckbox> {
           side: BorderSide(color: Theme.of(context).colorScheme.shadow, width: 2),
           shape: const CircleBorder(),
           value: value,
-          onChanged: widget.onChange == null ? null : onChange,
+          onChanged: widget.onChange == null && widget.onChangeAsync == null ? null : onCheckChange,
         ),
       ),
     );

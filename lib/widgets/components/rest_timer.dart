@@ -49,7 +49,7 @@ class _RestTimerState extends State<RestTimer> {
   void showPicker() => showDurationPicker(
         context,
         CupertinoTimerPickerMode.ms,
-        (Duration d) => provider.setTimer(context: context, duration: d),
+        onSubmit: (Duration d) => provider.setTimer(context: context, duration: d),
         isTimer: true,
       );
 

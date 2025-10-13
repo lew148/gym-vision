@@ -1,21 +1,32 @@
 import 'package:flutter/material.dart';
 
 class ButtonCustomStyle {
-  bool primaryText;
-  Color? textColor;
-  Color? iconColor;
-  double? iconSize;
-  Color? backgroundColor;
-  EdgeInsetsGeometry? padding;
+  final bool primaryText;
+  final bool primaryIcon;
+  final Color? textColor;
+  final Color? iconColor;
+  final double? iconSize;
+  final double? textSize;
+  final Color? backgroundColor;
+  final EdgeInsetsGeometry? padding;
 
   ButtonCustomStyle({
     this.primaryText = true,
+    this.primaryIcon = true,
     this.textColor,
     this.iconColor,
     this.iconSize,
+    this.textSize,
     this.backgroundColor,
     this.padding,
   });
+
+  factory ButtonCustomStyle.noPrimary({double? textSize, EdgeInsets? padding}) => ButtonCustomStyle(
+        primaryText: false,
+        primaryIcon: false,
+        textSize: textSize,
+        padding: padding,
+      );
 
   factory ButtonCustomStyle.primaryIconOnly() => ButtonCustomStyle(primaryText: false);
   factory ButtonCustomStyle.redIconOnly() => ButtonCustomStyle(iconColor: Colors.red, primaryText: false);
@@ -43,6 +54,24 @@ class Button extends StatelessWidget {
     this.disabled = false,
   }) : assert(text != null || icon != null, 'Must provide text and/or icon to Button');
 
+  factory Button.elevated({
+    String? text,
+    IconData? icon,
+    ButtonCustomStyle? style,
+    Function()? onTap,
+    Function()? onLongTap,
+    bool disabled = false,
+  }) =>
+      Button(
+        elevated: true,
+        onTap: onTap,
+        onLongTap: onLongTap,
+        icon: icon,
+        text: text,
+        style: style,
+        disabled: disabled,
+      );
+
   factory Button.delete({required Function() onTap, String? text}) => Button(
         onTap: onTap,
         icon: Icons.delete_rounded,
@@ -61,7 +90,28 @@ class Button extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final onSurface = Theme.of(context).colorScheme.onSurface;
+    final altColour = Theme.of(context).colorScheme.secondary;
+
+    Widget getInner() => Row(
+          mainAxisAlignment: elevated ? MainAxisAlignment.center : MainAxisAlignment.start,
+          children: [
+            if (icon != null)
+              Icon(
+                icon,
+                size: style?.iconSize ?? 25,
+                color: style == null ? null : style?.iconColor ?? (style!.primaryIcon ? null : altColour),
+              ),
+            if (icon != null && text != null) const Padding(padding: EdgeInsets.all(5)),
+            if (text != null)
+              Text(
+                text!,
+                style: TextStyle(
+                  color: style == null ? null : style!.textColor ?? (style!.primaryText ? null : altColour),
+                  fontSize: style?.textSize,
+                ),
+              ),
+          ],
+        );
 
     return elevated
         ? Padding(
@@ -78,20 +128,7 @@ class Button extends StatelessWidget {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 overlayColor: Colors.grey,
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (icon != null) Icon(icon, size: 25, color: style?.iconColor),
-                  if (icon != null && text != null) const Padding(padding: EdgeInsets.all(5)),
-                  if (text != null)
-                    Text(
-                      text!,
-                      style: TextStyle(
-                        color: style == null ? null : style!.textColor ?? (style!.primaryText ? null : onSurface),
-                      ),
-                    ),
-                ],
-              ),
+              child: getInner(),
             ),
           )
         : TextButton(
@@ -106,19 +143,7 @@ class Button extends StatelessWidget {
             ),
             onPressed: disabled ? null : onTap,
             onLongPress: disabled ? null : onLongTap,
-            child: Row(
-              children: [
-                if (icon != null) Icon(icon, size: style?.iconSize ?? 25, color: style?.iconColor),
-                if (icon != null && text != null) const Padding(padding: EdgeInsets.all(5)),
-                if (text != null)
-                  Text(
-                    text!,
-                    style: TextStyle(
-                      color: style == null ? null : style!.textColor ?? (style!.primaryText ? null : onSurface),
-                    ),
-                  ),
-              ],
-            ),
+            child: getInner(),
           );
   }
 }

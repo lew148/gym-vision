@@ -122,8 +122,7 @@ class _WorkoutViewState extends State<WorkoutView> {
   void onCopyPreviousWorkoutTap(int workoutId, List<Category> categories) => showCloseableBottomSheet(
       context,
       Column(children: [
-        Button(
-          elevated: true,
+        Button.elevated(
           text: 'Last Similar Workout',
           onTap: () async {
             Navigator.pop(context);
@@ -136,8 +135,7 @@ class _WorkoutViewState extends State<WorkoutView> {
             if (mounted) showSnackBar(context, 'There is nothing to copy');
           },
         ),
-        Button(
-          elevated: true,
+        Button.elevated(
           text: 'Last Workout',
           onTap: () async {
             Navigator.pop(context);
@@ -251,35 +249,6 @@ class _WorkoutViewState extends State<WorkoutView> {
                           },
                           style: ButtonCustomStyle.primaryIconOnly(),
                         ),
-                      Button(
-                        onTap: () {
-                          Navigator.pop(context);
-                          showDateTimePicker(
-                            context,
-                            initialDateTime: workout.date,
-                            CupertinoDatePickerMode.date,
-                            (DateTime dt) async {
-                              try {
-                                workout.date = DateTime(
-                                  dt.year,
-                                  dt.month,
-                                  dt.day,
-                                  workout.date.hour,
-                                  workout.date.minute,
-                                  workout.date.second,
-                                );
-                                await WorkoutModel.update(workout);
-                                reload();
-                              } catch (ex) {
-                                // do nothing
-                              }
-                            },
-                          );
-                        },
-                        style: ButtonCustomStyle.primaryIconOnly(),
-                        icon: Icons.calendar_today_rounded,
-                        text: 'Change Date',
-                      ),
                     ],
                   ),
                 ]),
@@ -339,11 +308,10 @@ class _WorkoutViewState extends State<WorkoutView> {
                             description: 'One workout closer to your goals!',
                           ),
                           if (!workout.hasCategories()) ...[
-                            Button(
+                            Button.elevated(
                               icon: Icons.category_rounded,
                               text: 'Select categories',
                               onTap: () => onAddCategoryClick(categories),
-                              elevated: true,
                             ),
                             Padding(
                               padding: const EdgeInsetsGeometry.all(5),
@@ -354,17 +322,15 @@ class _WorkoutViewState extends State<WorkoutView> {
                               ),
                             ),
                           ],
-                          Button(
+                          Button.elevated(
                             icon: Icons.add_rounded,
                             text: 'Add exercises',
                             onTap: () => onAddExerciseClick(workout.id!),
-                            elevated: true,
                           ),
-                          Button(
+                          Button.elevated(
                             icon: Icons.copy_rounded,
                             text: 'Copy Workout',
                             onTap: () => onCopyPreviousWorkoutTap(workout.id!, categories),
-                            elevated: true,
                           ),
                         ],
                       ),

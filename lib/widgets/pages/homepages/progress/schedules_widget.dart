@@ -298,7 +298,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
                   const Padding(padding: EdgeInsets.all(5)),
                   activeScheduleSnapshot.hasData
                       ? getScheduleDisplay(activeScheduleSnapshot.data!)
-                      : Button(
+                      : Button.elevated(
                           icon: Icons.add_rounded,
                           text: 'Add a Schedule',
                           onTap: addScheduleOnTap,

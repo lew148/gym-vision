@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
-import 'package:gymvision/widgets/forms/fields/custom_form_fields.dart';
+import 'package:gymvision/widgets/forms/fields/custom_form_field.dart';
 
 class ImportWorkoutForm extends StatefulWidget {
   const ImportWorkoutForm({super.key});
@@ -28,10 +28,7 @@ class _ImportWorkoutFormState extends State<ImportWorkoutForm> {
     return Form(
       key: formKey,
       child: Column(children: [
-        CustomFormFields.textArea(
-          controller: inputController,
-          label: 'Workout String',
-        ),
+        CustomFormField.textArea(controller: inputController, label: 'Workout String', maxLines: 5),
         Padding(
           padding: const EdgeInsetsGeometry.only(top: 20),
           child: Row(

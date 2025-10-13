@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'package:drift/remote.dart';
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -30,13 +29,13 @@ void main() async {
 
   await dotenv.load(fileName: ".env");
 
-  const int maxTries = 1;
-
   await SentryFlutter.init(
     (options) {
       options.dsn = dotenv.env['SENTRY_DSN'];
       options.tracesSampleRate = 1.0;
       options.profilesSampleRate = 1.0;
+      // options.replay.sessionSampleRate = 1.0; //
+      options.replay.onErrorSampleRate = 1.0;
     },
     appRunner: () async {
       // framework errors
@@ -51,25 +50,13 @@ void main() async {
         return true;
       };
 
-      for (var tries = 0; tries < maxTries; tries++) {
-        try {
-          await start();
-          return;
-        } on DriftRemoteException catch (ex, st) {
-          // todo: REMOVE THIS AS SOON AS ALL IOS USERS HAVE MIGRATED!!!
-          await DatabaseHelper.resetDatabase();
-          await Future.delayed(const Duration(seconds: 3)); // small wait between retries
-
-          if (tries == maxTries - 1) {
-            // last try
-            await Sentry.captureException(ex, stackTrace: st);
-            showErrorScreen();
-          }
-        } catch (ex, st) {
-          await Sentry.captureException(ex, stackTrace: st);
-          showErrorScreen();
-          return;
-        }
+      try {
+        await start();
+        return;
+      } catch (ex, st) {
+        await Sentry.captureException(ex, stackTrace: st);
+        showErrorScreen();
+        return;
       }
     },
   );
@@ -92,19 +79,23 @@ Future start() async {
   await DatabaseHelper.initialiseDatabase();
 
   final settings = await UserSettingsModel.getUserSettings();
-  runApp(EasyDynamicThemeWidget(
-    initialThemeMode: settings.theme == UserTheme.system
-        ? ThemeMode.system
-        : (settings.theme == UserTheme.dark ? ThemeMode.dark : ThemeMode.light),
-    child: MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => NavigationProvider()),
-        ChangeNotifierProvider(create: (_) => RestTimerProvider()),
-        ChangeNotifierProvider(create: (_) => ActiveWorkoutProvider()),
-      ],
-      child: const MyApp(),
+  runApp(
+    SentryWidget(
+      child: EasyDynamicThemeWidget(
+        initialThemeMode: settings.theme == UserTheme.system
+            ? ThemeMode.system
+            : (settings.theme == UserTheme.dark ? ThemeMode.dark : ThemeMode.light),
+        child: MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (_) => NavigationProvider()),
+            ChangeNotifierProvider(create: (_) => RestTimerProvider()),
+            ChangeNotifierProvider(create: (_) => ActiveWorkoutProvider()),
+          ],
+          child: const MyApp(),
+        ),
+      ),
     ),
-  ));
+  );
 }
 
 class MyApp extends StatelessWidget {

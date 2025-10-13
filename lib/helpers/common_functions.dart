@@ -138,14 +138,21 @@ void showDateTimePicker(
 
 void showDurationPicker(
   BuildContext context,
-  CupertinoTimerPickerMode mode,
-  Function(Duration) onChange, {
+  CupertinoTimerPickerMode mode, {
+  Function(Duration)? onChange,
+  Function(Duration)? onSubmit,
   Duration? initialDuration,
   bool isTimer = false,
 }) =>
     showCloseableBottomSheet(
       context,
-      DurationPicker(onChange: onChange, mode: mode, initialValue: initialDuration, isTimer: isTimer),
+      DurationPicker(
+        onChange: onChange,
+        onSubmit: onSubmit,
+        mode: mode,
+        initialValue: initialDuration,
+        isTimer: isTimer,
+      ),
     );
 
 Future showCloseableBottomSheet(BuildContext context, Widget child, {String? title, Function? onClose}) =>

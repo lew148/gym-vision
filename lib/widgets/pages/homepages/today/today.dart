@@ -59,6 +59,7 @@ class _TodayState extends State<Today> {
         context,
         AddBodyWeightForm(),
         onClose: () => reload(justBodyWeights: true),
+        title: 'Add Bodyweight'
       );
 
   Widget getPlaceholder() => Column(
@@ -76,7 +77,7 @@ class _TodayState extends State<Today> {
                         title: 'Ready to crush your goals?',
                         description: 'One step closer to greatness!',
                       ),
-                      Button(
+                      Button.elevated(
                         icon: Icons.add_rounded,
                         text: 'Start a workout',
                         onTap: () => addWorkout(context, reload),
@@ -89,7 +90,7 @@ class _TodayState extends State<Today> {
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      Button(
+                      Button.elevated(
                         icon: Icons.calendar_month_rounded,
                         text: 'Create a Schedule',
                         onTap: () => Provider.of<NavigationProvider>(context, listen: false).changeTab(3),
@@ -119,11 +120,10 @@ class _TodayState extends State<Today> {
                             title: "You scheduled it. Let's do it!",
                             description: 'Jump straight into your scheduled workout',
                           ),
-                          Button(
+                          Button.elevated(
                             icon: Icons.add_rounded,
                             text: 'Start scheduled workout',
                             onTap: () => addWorkout(context, reload, categories: todayCategories),
-                            elevated: true,
                           ),
                         ]);
                 }),

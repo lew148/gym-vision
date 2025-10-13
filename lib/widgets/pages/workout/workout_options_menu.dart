@@ -27,18 +27,12 @@ class WorkoutOptionsMenu extends StatelessWidget {
     void showEditTime(Workout workout) => showDateTimePicker(
           context,
           initialDateTime: workout.date,
-          CupertinoDatePickerMode.time,
+          CupertinoDatePickerMode.dateAndTime,
           (DateTime dt) async {
             try {
-              workout.date = DateTime(
-                workout.date.year,
-                workout.date.month,
-                workout.date.day,
-                dt.hour,
-                dt.minute,
-                dt.second,
-              );
+              workout.date = dt;
               await WorkoutModel.update(workout);
+              if (context.mounted) Provider.of<ActiveWorkoutProvider>(context, listen: false).refreshActiveWorkout();
               if (onChange != null) onChange!();
             } catch (ex) {
               // do nothing
@@ -86,7 +80,7 @@ class WorkoutOptionsMenu extends StatelessWidget {
         },
         icon: Icons.access_time_rounded,
         style: ButtonCustomStyle.primaryIconOnly(),
-        text: 'Change Start Time',
+        text: 'Change Start Date/Time',
       ),
       if (workout.isFinished())
         Button(
