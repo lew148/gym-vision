@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
@@ -83,7 +82,8 @@ class _WorkoutViewState extends State<WorkoutView> {
       return;
     }
 
-    openWorkoutView(context, id, onClose: reload);
+    await openWorkoutView(context, id)
+    .then((x) => reload());
   }
 
   getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories, List<Category> existingCategories) => Wrap(
@@ -115,9 +115,9 @@ class _WorkoutViewState extends State<WorkoutView> {
               ))
           .toList();
 
-  void onAddExerciseClick(int workoutId) => Navigator.of(context)
-      .push(MaterialPageRoute(builder: (context) => AddExercisesToWorkout(workoutId: workoutId)))
-      .then((x) => reload());
+  void onAddExerciseClick(int workoutId) =>
+      Navigator.push(context, MaterialPageRoute(builder: (context) => AddExercisesToWorkout(workoutId: workoutId)))
+          .then((x) => reload());
 
   void onCopyPreviousWorkoutTap(int workoutId, List<Category> categories) => showCloseableBottomSheet(
       context,

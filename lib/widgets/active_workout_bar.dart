@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/helpers/common_functions.dart';
+import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/providers/active_workout_provider.dart';
 import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
 import 'package:gymvision/widgets/components/time_elapsed.dart';
 import 'package:provider/provider.dart';
 
 class ActiveWorkoutBar extends StatefulWidget {
-  static const double height = 65;
+  static const double height = 100;
 
   const ActiveWorkoutBar({super.key});
 
@@ -62,7 +63,7 @@ class _ActiveWorkoutBarState extends State<ActiveWorkoutBar> with SingleTickerPr
               onTap: () => openWorkoutView(context, workout.id!),
               onVerticalDragStart: (details) => openWorkoutView(context, workout.id!),
               child: Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Column(
                   children: [
                     AnimatedBuilder(
@@ -71,19 +72,26 @@ class _ActiveWorkoutBarState extends State<ActiveWorkoutBar> with SingleTickerPr
                         offset: Offset(0, _animation.value),
                         child: child,
                       ),
-                      child: Icon(Icons.keyboard_arrow_up_rounded, color: Theme.of(context).colorScheme.shadow),
+                      child: Icon(
+                        Icons.keyboard_arrow_up_rounded,
+                        color: Theme.of(context).colorScheme.shadow,
+                        size: 25,
+                      ),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(children: [
-                          Text(
-                            workout.getWorkoutTitle(),
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                          ),
-                          const Padding(padding: EdgeInsetsGeometry.all(2.5)),
-                          TextWithIcon.time(workout.date),
-                        ]),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              workout.getWorkoutTitle(),
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                            ),
+                            if (!DateTimeHelper.isToday(workout.date)) TextWithIcon.date(workout.date),
+                            TextWithIcon.time(workout.date),
+                          ],
+                        ),
                         TimeElapsed(
                           since: workout.date,
                           color: Theme.of(context).colorScheme.primary,

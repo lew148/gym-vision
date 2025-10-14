@@ -16,15 +16,15 @@ import 'package:gymvision/providers/rest_timer_provider.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:provider/provider.dart';
 
-void showDeleteConfirm(
+Future showDeleteConfirm(
   BuildContext context,
   String objectName,
   Function onDelete,
   Function? reloadState, {
   bool popCaller = false,
-}) {
+}) async {
   HapticFeedback.heavyImpact();
-  showDialog(
+  await showDialog(
     context: context,
     builder: (context) => CupertinoAlertDialog(
       title: Text("Delete $objectName?"),
@@ -121,30 +121,33 @@ Future showCustomDialog(
   );
 }
 
-void showCalendarView(
+Future showCalendarView(
   BuildContext context, {
   required Map<DateTime, List<CalendarViewEvent>> events,
   void Function(DateTime? selectedDay)? onDateSelected,
-}) =>
-    showCloseableBottomSheet(context, CalendarView(events: events, onDateSelected: onDateSelected));
+}) async =>
+    await showCloseableBottomSheet(context, CalendarView(events: events, onDateSelected: onDateSelected));
 
-void showDateTimePicker(
+Future showDateTimePicker(
   BuildContext context,
   CupertinoDatePickerMode mode,
   Function(DateTime) onChange, {
   DateTime? initialDateTime,
-}) =>
-    showCloseableBottomSheet(context, DateTimePicker(onChange: onChange, mode: mode, initialValue: initialDateTime));
+}) async =>
+    await showCloseableBottomSheet(
+      context,
+      DateTimePicker(onChange: onChange, mode: mode, initialValue: initialDateTime),
+    );
 
-void showDurationPicker(
+Future showDurationPicker(
   BuildContext context,
   CupertinoTimerPickerMode mode, {
   Function(Duration)? onChange,
   Function(Duration)? onSubmit,
   Duration? initialDuration,
   bool isTimer = false,
-}) =>
-    showCloseableBottomSheet(
+}) async =>
+    await showCloseableBottomSheet(
       context,
       DurationPicker(
         onChange: onChange,
@@ -155,8 +158,8 @@ void showDurationPicker(
       ),
     );
 
-Future showCloseableBottomSheet(BuildContext context, Widget child, {String? title, Function? onClose}) =>
-    showModalBottomSheet(
+Future showCloseableBottomSheet(BuildContext context, Widget child, {String? title, Function? onClose}) async =>
+    await showModalBottomSheet(
       context: context,
       constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
       useSafeArea: true,
@@ -203,8 +206,8 @@ Future showFullScreenBottomSheet(
   Widget child, {
   List<Widget> actions = const [],
   Function? onClose,
-}) =>
-    showModalBottomSheet(
+}) async =>
+    await showModalBottomSheet(
       context: context,
       useSafeArea: true,
       isScrollControlled: true,
@@ -281,7 +284,7 @@ Future openWorkoutView(
   if (!context.mounted) return;
   if (isActiveWorkout) provider.setOpen();
 
-  showFullScreenBottomSheet(
+  await showFullScreenBottomSheet(
     context,
     WorkoutView(
       workoutId: workoutId,

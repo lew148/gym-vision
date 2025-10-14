@@ -141,13 +141,11 @@ class WorkoutModel {
     const maxHoursToLook = 24;
     final db = DatabaseHelper.db;
     final now = DateTime.now();
-    final lowerBound = now.add(const Duration(hours: -maxHoursToLook));
     final upperBound = now.add(const Duration(hours: maxHoursToLook));
 
     var activeWorkout = (await (db.select(db.driftWorkouts)
               ..orderBy([(w) => OrderingTerm.desc(w.date)])
               ..where((w) => w.date.isSmallerThanValue(upperBound))
-              ..where((w) => w.date.isBiggerThanValue(lowerBound))
               ..where((w) => w.endDate.isNull()) // ongoing
               ..limit(1))
             .getSingleOrNull())
@@ -160,10 +158,8 @@ class WorkoutModel {
     }
 
     if (withWorkoutExercises) {
-      activeWorkout.workoutExercises = await WorkoutExerciseModel.getWorkoutExercisesByWorkout(
-        activeWorkout.id!,
-        withSets: true,
-      );
+      activeWorkout.workoutExercises =
+          await WorkoutExerciseModel.getWorkoutExercisesByWorkout(activeWorkout.id!, withSets: true);
     }
 
     return activeWorkout;
