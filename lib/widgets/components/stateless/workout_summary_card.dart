@@ -14,25 +14,34 @@ import 'package:gymvision/widgets/pages/workout/workout_options_menu.dart';
 class WorkoutSummaryCard extends StatelessWidget {
   final Workout workout;
   final bool isDisplay;
-  final Function()? reload;
+  final Function()? reloadParent; // parent needs this class to be stateless for preformance reasons
 
   const WorkoutSummaryCard({
     super.key,
     required this.workout,
     this.isDisplay = false,
-    this.reload,
+    this.reloadParent,
   });
 
   @override
   Widget build(BuildContext context) {
     final summary = workout.summary;
 
+    void openWorkout({bool autofocusNotes = false, List<int>? droppedWes}) => openWorkoutView(
+          context,
+          workout.id!,
+          autofocusNotes: autofocusNotes,
+          droppedWes: droppedWes,
+        ).then((x) {
+          if (reloadParent != null) reloadParent!();
+        });
+
     return CustomCard(
       child: Padding(
         padding: const EdgeInsets.all(15),
         child: GestureDetector(
           behavior: HitTestBehavior.translucent,
-          onTap: () => openWorkoutView(context, workout.id!, onClose: reload),
+          onTap: openWorkout,
           child: Column(
             children: [
               Row(
@@ -64,7 +73,7 @@ class WorkoutSummaryCard extends StatelessWidget {
                       ],
                     ),
                   ]),
-                  WorkoutOptionsMenu(workout: workout, onChange: reload),
+                  WorkoutOptionsMenu(workout: workout, onChange: reloadParent),
                 ],
               ),
               if (workout.workoutCategories != null && workout.workoutCategories!.isNotEmpty)
@@ -136,12 +145,7 @@ class WorkoutSummaryCard extends StatelessWidget {
                       const CustomDivider(shadow: true),
                       if (summary.bestSet != null && summary.bestSetExercise != null)
                         CustomCard(
-                          onTap: () => openWorkoutView(
-                            context,
-                            workout.id!,
-                            droppedWes: [summary.bestSet!.workoutExerciseId],
-                            onClose: reload,
-                          ),
+                          onTap: () => openWorkout(droppedWes: [summary.bestSet!.workoutExerciseId]),
                           color: AppHelper.isDarkMode(context) ? AppHelper.darkPropOnCardColor : null,
                           child: Padding(
                             padding: const EdgeInsets.all(5),
@@ -189,7 +193,7 @@ class WorkoutSummaryCard extends StatelessWidget {
                           text: 'Add Note',
                           icon: Icons.add_rounded,
                           style: ButtonCustomStyle.noPadding(),
-                          onTap: () => openWorkoutView(context, workout.id!, autofocusNotes: true, onClose: reload),
+                          onTap: () => openWorkout(autofocusNotes: true),
                         ),
                       ),
                     Button(

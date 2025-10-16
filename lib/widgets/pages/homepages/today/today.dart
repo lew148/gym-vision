@@ -55,12 +55,8 @@ class _TodayState extends State<Today> {
     }
   }
 
-  void onAddWeightTap() => showCloseableBottomSheet(
-        context,
-        AddBodyWeightForm(),
-        onClose: () => reload(justBodyWeights: true),
-        title: 'Add Bodyweight'
-      );
+  void onAddWeightTap() => showCloseableBottomSheet(context, AddBodyWeightForm(), title: 'Add Bodyweight')
+      .then((x) => reload(justBodyWeights: true));
 
   Widget getPlaceholder() => Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -80,7 +76,7 @@ class _TodayState extends State<Today> {
                       Button.elevated(
                         icon: Icons.add_rounded,
                         text: 'Start a workout',
-                        onTap: () => addWorkout(context, reload),
+                        onTap: () => addWorkout(context).then((x) => reload()),
                       ),
                       Padding(
                         padding: const EdgeInsetsGeometry.all(5),
@@ -123,7 +119,7 @@ class _TodayState extends State<Today> {
                           Button.elevated(
                             icon: Icons.add_rounded,
                             text: 'Start scheduled workout',
-                            onTap: () => addWorkout(context, reload, categories: todayCategories),
+                            onTap: () => addWorkout(context, categories: todayCategories).then((x) => reload()),
                           ),
                         ]);
                 }),
@@ -138,7 +134,7 @@ class _TodayState extends State<Today> {
       borderRadius: BorderRadius.circular(15),
       child: SingleChildScrollView(
           child: Column(children: [
-        ...workouts.map((w) => WorkoutSummaryCard(workout: w, reload: reload)),
+        ...workouts.map((w) => WorkoutSummaryCard(workout: w, reloadParent: reload)),
         const ScrollBottomPadding(),
       ])),
     );
@@ -206,8 +202,7 @@ class _TodayState extends State<Today> {
                               context,
                               'bodyweight',
                               () => BodyweightModel.delete(bwsnapshot.data!.id!),
-                              reload,
-                            ),
+                            ).then((x) => reload()),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
@@ -252,7 +247,12 @@ class _TodayState extends State<Today> {
               Header(title: DateFormat('EEEE, MMMM d').format(today)),
               Header.large(
                 'Today',
-                actions: [Button(icon: Icons.add_rounded, onTap: () => addWorkout(context, reload))],
+                actions: [
+                  Button(
+                    icon: Icons.add_rounded,
+                    onTap: () => addWorkout(context).then((x) => reload()),
+                  )
+                ],
               ),
             ],
           ),

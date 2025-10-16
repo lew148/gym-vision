@@ -129,7 +129,10 @@ class _HistoryState extends State<History> {
                                 : Padding(
                                     padding: const EdgeInsetsGeometry.only(bottom: 5),
                                     child: WorkoutSummaryCard(
-                                        workout: workoutsToDisplay[i], isDisplay: true, reload: reload),
+                                      workout: workoutsToDisplay[i],
+                                      isDisplay: true,
+                                      reloadParent: reload,
+                                    ),
                                   );
                           },
                         ),

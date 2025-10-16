@@ -37,7 +37,7 @@ class _ExerciseViewState extends State<ExerciseView> {
     _exercise = DefaultExercisesModel.getExerciseWithDetails(identifier: widget.identifier, includeRecentUses: true);
   }
 
-  reload() => setState(() {
+  void reload() => setState(() {
         _exercise = DefaultExercisesModel.getExerciseWithDetails(
           identifier: widget.identifier,
           includeRecentUses: true,
@@ -87,7 +87,7 @@ class _ExerciseViewState extends State<ExerciseView> {
 
   Widget getPrSection(WorkoutSet pr) => GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () => openWorkoutView(context, pr.getWorkout()!.id!, onClose: reload),
+        onTap: () => openWorkoutView(context, pr.getWorkout()!.id!).then((x) => reload()),
         child: Padding(
           padding: const EdgeInsetsGeometry.symmetric(vertical: 5),
           child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [

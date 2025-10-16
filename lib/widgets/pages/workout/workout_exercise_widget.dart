@@ -185,9 +185,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                       context,
                       "set",
                       () => WorkoutSetModel.delete(set.id!),
-                      reload,
                       popCaller: true,
-                    ),
+                    ).then((x) => reload()),
                   ),
                 ],
               ),
@@ -291,8 +290,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                       context,
                       widget.workoutExercise.workoutId,
                       droppedWes: [widget.workoutExercise.id!],
-                      onClose: reload,
-                    ),
+                    ).then((x) => reload()),
                   )
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -321,10 +319,9 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                                 context,
                                 "exercise from workout",
                                 () => WorkoutExerciseModel.delete(widget.workoutExercise.id!),
-                                () {
-                                  if (widget.onDelete != null) widget.onDelete!(widget.workoutExercise.id!);
-                                },
-                              );
+                              ).then((x) {
+                                if (widget.onDelete != null) widget.onDelete!(widget.workoutExercise.id!);
+                              });
                             },
                             text: 'Delete Exercise',
                           )

@@ -109,8 +109,7 @@ class _NotesState extends State<Notes> {
                         controller.clear();
                         onSave(snapshot.data);
                       },
-                      reload,
-                    ),
+                    ).then((x) => reload()),
                   ),
                   placeholder: 'Add note...',
                   style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontSize: 15),

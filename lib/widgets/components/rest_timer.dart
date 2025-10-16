@@ -64,7 +64,7 @@ class _RestTimerState extends State<RestTimer> {
           )
         : GestureDetector(
             behavior: HitTestBehavior.translucent,
-            onTap: () => showDeleteConfirm(context, 'Timer', onTimerDelete, null),
+            onTap: () => showDeleteConfirm(context, 'Timer', onTimerDelete),
             child: Stack(children: [
               AnimatedContainer(
                 duration: const Duration(milliseconds: 300),

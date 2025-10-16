@@ -93,9 +93,9 @@ class WorkoutOptionsMenu extends StatelessWidget {
           text: 'Change End Time',
         ),
       Button.delete(
-        onTap: () {
+        onTap: () async {
           Navigator.pop(context);
-          showDeleteConfirm(
+          await showDeleteConfirm(
             context,
             "workout",
             () async {
@@ -104,7 +104,6 @@ class WorkoutOptionsMenu extends StatelessWidget {
               provider.refreshActiveWorkout();
               if (onChange != null) onChange!();
             },
-            null,
             popCaller: popCallerOnDelete,
           );
         },

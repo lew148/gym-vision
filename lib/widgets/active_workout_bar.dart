@@ -7,7 +7,7 @@ import 'package:gymvision/widgets/components/time_elapsed.dart';
 import 'package:provider/provider.dart';
 
 class ActiveWorkoutBar extends StatefulWidget {
-  static const double height = 100;
+  static const double height = 65;
 
   const ActiveWorkoutBar({super.key});
 
@@ -81,14 +81,16 @@ class _ActiveWorkoutBarState extends State<ActiveWorkoutBar> with SingleTickerPr
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Column(
+                        Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              workout.getWorkoutTitle(),
+                              !DateTimeHelper.isToday(workout.date)
+                                  ? DateTimeHelper.getDateOrDayStr(workout.date)
+                                  : workout.getWorkoutTitle(),
                               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                             ),
-                            if (!DateTimeHelper.isToday(workout.date)) TextWithIcon.date(workout.date),
+                            const Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: 5)),
                             TextWithIcon.time(workout.date),
                           ],
                         ),

@@ -25,10 +25,9 @@ class SchedulesWidget extends StatefulWidget {
 class _SchedulesWidgetState extends State<SchedulesWidget> {
   late Future<Schedule?> activeSchedule = ScheduleModel.getActiveSchedule(withItems: true);
   late Future<List<Schedule>> schedules = ScheduleModel.getAllSchedules();
-
   final biweeklyPageController = PageController(viewportFraction: 0.8, keepPage: true);
 
-  void reloadState() => setState(() {
+  void reload() => setState(() {
         activeSchedule = ScheduleModel.getActiveSchedule(withItems: true);
         schedules = ScheduleModel.getAllSchedules();
       });
@@ -187,11 +186,11 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
     return Row(children: [Expanded(child: widget)]);
   }
 
-  void addScheduleOnTap() => showCloseableBottomSheet(context, ScheduleForm(reloadParent: reloadState));
+  void addScheduleOnTap() => showCloseableBottomSheet(context, ScheduleForm(reloadParent: reload));
 
   void editScheduleOnTap(Schedule schedule) => showCloseableBottomSheet(
         context,
-        ScheduleForm(reloadParent: reloadState, schedule: schedule),
+        ScheduleForm(reloadParent: reload, schedule: schedule),
       );
 
   void setActiveSchedule(int newActiveScheduleId, int? currentActiveScheduleId) async {
@@ -205,7 +204,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
       showSnackBar(context, 'Failed to set active Schedule');
     }
 
-    reloadState();
+    reload();
   }
 
   @override
@@ -263,9 +262,8 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
                           context,
                           'Schedule',
                           () async => await ScheduleModel.delete(activeScheduleSnapshot.data!.id!),
-                          reloadState,
                           popCaller: true,
-                        ),
+                        ).then((x) => reload()),
                         text: 'Delete Schedule',
                       ),
                     ],

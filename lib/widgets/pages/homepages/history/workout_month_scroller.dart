@@ -1,340 +1,340 @@
-import 'dart:async';
-import 'package:flutter/material.dart';
-import 'package:gymvision/classes/db/bodyweight.dart';
-import 'package:gymvision/classes/db/user_settings.dart';
-import 'package:gymvision/classes/db/workouts/workout.dart';
-import 'package:gymvision/helpers/datetime_helper.dart';
-import 'package:gymvision/models/db_models/bodyweight_model.dart';
-import 'package:gymvision/models/db_models/workout_model.dart';
-import 'package:gymvision/helpers/common_functions.dart';
-import 'package:gymvision/widgets/components/stateless/button.dart';
-import 'package:gymvision/widgets/components/stateless/custom_vertical_divider.dart';
-import 'package:gymvision/widgets/components/stateless/prop_display.dart';
-import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
-import 'package:gymvision/widgets/forms/fields/custom_checkbox.dart';
-import 'package:intl/intl.dart';
+// import 'dart:async';
+// import 'package:flutter/material.dart';
+// import 'package:gymvision/classes/db/bodyweight.dart';
+// import 'package:gymvision/classes/db/user_settings.dart';
+// import 'package:gymvision/classes/db/workouts/workout.dart';
+// import 'package:gymvision/helpers/datetime_helper.dart';
+// import 'package:gymvision/models/db_models/bodyweight_model.dart';
+// import 'package:gymvision/models/db_models/workout_model.dart';
+// import 'package:gymvision/helpers/common_functions.dart';
+// import 'package:gymvision/widgets/components/stateless/button.dart';
+// import 'package:gymvision/widgets/components/stateless/custom_vertical_divider.dart';
+// import 'package:gymvision/widgets/components/stateless/prop_display.dart';
+// import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
+// import 'package:gymvision/widgets/forms/fields/custom_checkbox.dart';
+// import 'package:intl/intl.dart';
 
-class WorkoutMonthScoller extends StatefulWidget {
-  final List<Workout> workouts;
-  final List<Bodyweight> bodyweights;
-  final UserSettings userSettings;
-  final Function reloadParent;
+// class WorkoutMonthScoller extends StatefulWidget {
+//   final List<Workout> workouts;
+//   final List<Bodyweight> bodyweights;
+//   final UserSettings userSettings;
+//   final Function reloadParent;
 
-  const WorkoutMonthScoller({
-    super.key,
-    required this.workouts,
-    required this.bodyweights,
-    required this.userSettings,
-    required this.reloadParent,
-  });
+//   const WorkoutMonthScoller({
+//     super.key,
+//     required this.workouts,
+//     required this.bodyweights,
+//     required this.userSettings,
+//     required this.reloadParent,
+//   });
 
-  @override
-  State<WorkoutMonthScoller> createState() => _WorkoutMonthScollerState();
-}
+//   @override
+//   State<WorkoutMonthScoller> createState() => _WorkoutMonthScollerState();
+// }
 
-class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
-  final todayKey = GlobalKey();
-  final lastDayInMonthKey = GlobalKey();
-  final trueDate = DateTime.now();
-  late DateTime selectedMonth;
-  late Timer timer;
+// class _WorkoutMonthScollerState extends State<WorkoutMonthScoller> {
+//   final todayKey = GlobalKey();
+//   final lastDayInMonthKey = GlobalKey();
+//   final trueDate = DateTime.now();
+//   late DateTime selectedMonth;
+//   late Timer timer;
 
-  var right = 0.0;
-  var left = 0.0;
-  var animationInMotion = false;
+//   var right = 0.0;
+//   var left = 0.0;
+//   var animationInMotion = false;
 
-  void ensureTodayVisible() => Scrollable.ensureVisible(todayKey.currentContext!,
-      alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd);
+//   void ensureTodayVisible() => Scrollable.ensureVisible(todayKey.currentContext!,
+//       alignmentPolicy: ScrollPositionAlignmentPolicy.keepVisibleAtEnd);
 
-  void reloadState() => setState(() {
-        selectedMonth = trueDate;
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          ensureTodayVisible();
-        });
-      });
+//   void reloadState() => setState(() {
+//         selectedMonth = trueDate;
+//         WidgetsBinding.instance.addPostFrameCallback((_) {
+//           ensureTodayVisible();
+//         });
+//       });
 
-  void timerReload() {
-    if (!mounted) return;
-    setState(() {
-      timer.cancel();
-      timer = Timer.periodic(const Duration(seconds: 60), (timer) => timerReload());
-    });
-  }
+//   void timerReload() {
+//     if (!mounted) return;
+//     setState(() {
+//       timer.cancel();
+//       timer = Timer.periodic(const Duration(seconds: 60), (timer) => timerReload());
+//     });
+//   }
 
-  @override
-  void initState() {
-    super.initState();
-    selectedMonth = trueDate;
+//   @override
+//   void initState() {
+//     super.initState();
+//     selectedMonth = trueDate;
 
-    final timeToNextMin = Duration(seconds: 60 - trueDate.second);
-    timer = Timer.periodic(timeToNextMin, (Timer t) => timerReload());
+//     final timeToNextMin = Duration(seconds: 60 - trueDate.second);
+//     timer = Timer.periodic(timeToNextMin, (Timer t) => timerReload());
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ensureTodayVisible();
-    });
-  }
+//     WidgetsBinding.instance.addPostFrameCallback((_) {
+//       ensureTodayVisible();
+//     });
+//   }
 
-  Widget getWorkoutDisplay(Workout workout) => GestureDetector(
-        behavior: HitTestBehavior.translucent,
-        onLongPress: () => showDeleteConfirm(
-          context,
-          "workout",
-          () => WorkoutModel.delete(workout.id!),
-          widget.reloadParent,
-        ),
-        onTap: () => openWorkoutView(context, workout.id!, onClose: widget.reloadParent),
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          child: Row(
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(children: [
-                    CustomCheckbox(value: !workout.isInFuture() && workout.isFinished()),
-                    Text(
-                      workout.getWorkoutTitle(),
-                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                    ),
-                  ]),
-                  Text(
-                    workout.getTimeStr(),
-                    style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-                  ),
-                  if (workout.workoutCategories != null && workout.workoutCategories!.isNotEmpty)
-                    SizedBox(
-                      width: 250, // hardcoded width to prevent overflow. could break on different screen sizes
-                      child: Wrap(
-                        alignment: WrapAlignment.start,
-                        children: workout.workoutCategories!
-                            .map((wc) => PropDisplay(text: wc.getCategoryDisplayName()))
-                            .toList(),
-                      ),
-                    ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
+//   Widget getWorkoutDisplay(Workout workout) => GestureDetector(
+//         behavior: HitTestBehavior.translucent,
+//         onLongPress: () => showDeleteConfirm(
+//           context,
+//           "workout",
+//           () => WorkoutModel.delete(workout.id!),
+//           widget.reloadParent,
+//         ),
+//         onTap: () => openWorkoutView(context, workout.id!, onClose: widget.reloadParent),
+//         child: Container(
+//           padding: const EdgeInsets.all(10),
+//           child: Row(
+//             children: [
+//               Column(
+//                 mainAxisAlignment: MainAxisAlignment.center,
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   Row(children: [
+//                     CustomCheckbox(value: !workout.isInFuture() && workout.isFinished()),
+//                     Text(
+//                       workout.getWorkoutTitle(),
+//                       style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+//                     ),
+//                   ]),
+//                   Text(
+//                     workout.getTimeStr(),
+//                     style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+//                   ),
+//                   if (workout.workoutCategories != null && workout.workoutCategories!.isNotEmpty)
+//                     SizedBox(
+//                       width: 250, // hardcoded width to prevent overflow. could break on different screen sizes
+//                       child: Wrap(
+//                         alignment: WrapAlignment.start,
+//                         children: workout.workoutCategories!
+//                             .map((wc) => PropDisplay(text: wc.getCategoryDisplayName()))
+//                             .toList(),
+//                       ),
+//                     ),
+//                 ],
+//               ),
+//             ],
+//           ),
+//         ),
+//       );
 
-  Widget getBodyweightDisplay(Bodyweight bw) => GestureDetector(
-        onLongPress: () => showDeleteConfirm(
-          context,
-          'bodyweight',
-          () => BodyweightModel.delete(bw.id!),
-          widget.reloadParent,
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    '${bw.getWeightDisplay()} @ ${bw.getTimeString()}',
-                    style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
+//   Widget getBodyweightDisplay(Bodyweight bw) => GestureDetector(
+//         onLongPress: () => showDeleteConfirm(
+//           context,
+//           'bodyweight',
+//           () => BodyweightModel.delete(bw.id!),
+//           widget.reloadParent,
+//         ),
+//         child: Container(
+//           padding: const EdgeInsets.all(10),
+//           child: Row(
+//             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//             children: [
+//               Row(
+//                 children: [
+//                   Text(
+//                     '${bw.getWeightDisplay()} @ ${bw.getTimeString()}',
+//                     style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+//                   ),
+//                 ],
+//               ),
+//             ],
+//           ),
+//         ),
+//       );
 
-  List<Widget> getWorkoutsWidget(List<Workout> workouts, List<Bodyweight> bws) {
-    var selectedMonthIsTrueMonth = selectedMonth.year == trueDate.year && selectedMonth.month == trueDate.month;
-    var daysInCurrentMonth = DateTimeHelper.getDaysInMonth(selectedMonth.year, selectedMonth.month);
+//   List<Widget> getWorkoutsWidget(List<Workout> workouts, List<Bodyweight> bws) {
+//     var selectedMonthIsTrueMonth = selectedMonth.year == trueDate.year && selectedMonth.month == trueDate.month;
+//     var daysInCurrentMonth = DateTimeHelper.getDaysInMonth(selectedMonth.year, selectedMonth.month);
 
-    List<Widget> widgets = [];
+//     List<Widget> widgets = [];
 
-    for (int day = 1; day <= daysInCurrentMonth; day++) {
-      var currentDate = DateTime(selectedMonth.year, selectedMonth.month, day);
-      var isToday = selectedMonthIsTrueMonth && trueDate.day == day;
-      var isLastDayInMonth = day == daysInCurrentMonth;
+//     for (int day = 1; day <= daysInCurrentMonth; day++) {
+//       var currentDate = DateTime(selectedMonth.year, selectedMonth.month, day);
+//       var isToday = selectedMonthIsTrueMonth && trueDate.day == day;
+//       var isLastDayInMonth = day == daysInCurrentMonth;
 
-      var workoutsForDay = workouts
-          .where((w) => w.date.year == selectedMonth.year && w.date.month == selectedMonth.month && w.date.day == day)
-          .toList();
-      workoutsForDay.sort((w1, w2) => w1.date.compareTo(w2.date));
+//       var workoutsForDay = workouts
+//           .where((w) => w.date.year == selectedMonth.year && w.date.month == selectedMonth.month && w.date.day == day)
+//           .toList();
+//       workoutsForDay.sort((w1, w2) => w1.date.compareTo(w2.date));
 
-      var bwsForDay = bws
-          .where((w) => w.date.year == selectedMonth.year && w.date.month == selectedMonth.month && w.date.day == day)
-          .toList();
-      bwsForDay.sort((w1, w2) => w2.date.compareTo(w1.date));
+//       var bwsForDay = bws
+//           .where((w) => w.date.year == selectedMonth.year && w.date.month == selectedMonth.month && w.date.day == day)
+//           .toList();
+//       bwsForDay.sort((w1, w2) => w2.date.compareTo(w1.date));
 
-      GlobalKey getKey() {
-        if (isToday) return todayKey;
-        if (isLastDayInMonth) return lastDayInMonthKey;
-        return GlobalKey();
-      }
+//       GlobalKey getKey() {
+//         if (isToday) return todayKey;
+//         if (isLastDayInMonth) return lastDayInMonthKey;
+//         return GlobalKey();
+//       }
 
-      String getDateDisplay(DateTime dt) => isToday ? "Today" : DateFormat('EEE d').format(dt);
+//       String getDateDisplay(DateTime dt) => isToday ? "Today" : DateFormat('EEE d').format(dt);
 
-      widgets.add(
-        Column(children: [
-          IntrinsicHeight(
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Text(
-                    getDateDisplay(currentDate),
-                    textAlign: TextAlign.end,
-                    style: TextStyle(
-                      color: isToday ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.shadow,
-                      fontWeight: isToday ? FontWeight.bold : FontWeight.w400,
-                    ),
-                  ),
-                ),
-                CustomVerticalDivider(
-                  thickness: isToday ? 5 : null,
-                  color: isToday ? Theme.of(context).colorScheme.primary : null,
-                ),
-                Expanded(
-                  flex: 5,
-                  child: Column(
-                    children: workoutsForDay.isNotEmpty || bwsForDay.isNotEmpty
-                        ? [
-                            ...workoutsForDay.map<Widget>((workout) => getWorkoutDisplay(workout)),
-                            if (bwsForDay.isNotEmpty) getBodyweightDisplay(bwsForDay.first),
-                          ]
-                        : [
-                            GestureDetector(
-                                behavior: HitTestBehavior.translucent,
-                                onTap: () => addWorkout(context, reloadState, date: currentDate)
-                                    .then((x) => widget.reloadParent()),
-                                child: DateTimeHelper.dateXIsAfterDateY(widget.userSettings.createdAt!, currentDate) ||
-                                        DateTimeHelper.isInFuture(currentDate) ||
-                                        isToday
-                                    ? const Row(mainAxisAlignment: MainAxisAlignment.start, children: [Text('-')])
-                                    : TextWithIcon.rest()),
-                          ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            key: getKey(),
-            padding: const EdgeInsetsGeometry.all(5),
-          ),
-        ]),
-      );
-    }
+//       widgets.add(
+//         Column(children: [
+//           IntrinsicHeight(
+//             child: Row(
+//               children: [
+//                 Expanded(
+//                   flex: 1,
+//                   child: Text(
+//                     getDateDisplay(currentDate),
+//                     textAlign: TextAlign.end,
+//                     style: TextStyle(
+//                       color: isToday ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.shadow,
+//                       fontWeight: isToday ? FontWeight.bold : FontWeight.w400,
+//                     ),
+//                   ),
+//                 ),
+//                 CustomVerticalDivider(
+//                   thickness: isToday ? 5 : null,
+//                   color: isToday ? Theme.of(context).colorScheme.primary : null,
+//                 ),
+//                 Expanded(
+//                   flex: 5,
+//                   child: Column(
+//                     children: workoutsForDay.isNotEmpty || bwsForDay.isNotEmpty
+//                         ? [
+//                             ...workoutsForDay.map<Widget>((workout) => getWorkoutDisplay(workout)),
+//                             if (bwsForDay.isNotEmpty) getBodyweightDisplay(bwsForDay.first),
+//                           ]
+//                         : [
+//                             GestureDetector(
+//                                 behavior: HitTestBehavior.translucent,
+//                                 onTap: () => addWorkout(context, reloadState, date: currentDate)
+//                                     .then((x) => widget.reloadParent()),
+//                                 child: DateTimeHelper.dateXIsAfterDateY(widget.userSettings.createdAt!, currentDate) ||
+//                                         DateTimeHelper.isInFuture(currentDate) ||
+//                                         isToday
+//                                     ? const Row(mainAxisAlignment: MainAxisAlignment.start, children: [Text('-')])
+//                                     : TextWithIcon.rest()),
+//                           ],
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//           Padding(
+//             key: getKey(),
+//             padding: const EdgeInsetsGeometry.all(5),
+//           ),
+//         ]),
+//       );
+//     }
 
-    return widgets;
-  }
+//     return widgets;
+//   }
 
-  void onArrowTap(int i) {
-    setState(() {
-      right = i > 0 ? -300 : 300;
-      left = i < 0 ? -300 : 300;
-      animationInMotion = true;
-      selectedMonth = DateTime(selectedMonth.year, selectedMonth.month + i);
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (todayKey.currentContext != null) {
-          ensureTodayVisible();
-        } else if (lastDayInMonthKey.currentContext != null) {
-          Scrollable.ensureVisible(lastDayInMonthKey.currentContext!);
-        }
-      });
-    });
-  }
+//   void onArrowTap(int i) {
+//     setState(() {
+//       right = i > 0 ? -300 : 300;
+//       left = i < 0 ? -300 : 300;
+//       animationInMotion = true;
+//       selectedMonth = DateTime(selectedMonth.year, selectedMonth.month + i);
+//       WidgetsBinding.instance.addPostFrameCallback((_) {
+//         if (todayKey.currentContext != null) {
+//           ensureTodayVisible();
+//         } else if (lastDayInMonthKey.currentContext != null) {
+//           Scrollable.ensureVisible(lastDayInMonthKey.currentContext!);
+//         }
+//       });
+//     });
+//   }
 
-  void rebuildAfterLoad() => WidgetsBinding.instance.addPostFrameCallback((_) {
-        setState(() {});
-      });
+//   void rebuildAfterLoad() => WidgetsBinding.instance.addPostFrameCallback((_) {
+//         setState(() {});
+//       });
 
-  @override
-  Widget build(BuildContext context) {
-    const swipeSpeed = 30;
+//   @override
+//   Widget build(BuildContext context) {
+//     const swipeSpeed = 30;
 
-    if (animationInMotion) {
-      if (right > swipeSpeed && left < swipeSpeed) {
-        right -= swipeSpeed;
-        left += swipeSpeed;
-        rebuildAfterLoad();
-      } else if (right < swipeSpeed && left > swipeSpeed) {
-        right += swipeSpeed;
-        left -= swipeSpeed;
-        rebuildAfterLoad();
-      } else {
-        right = 0;
-        left = 0;
-        animationInMotion = false;
-        rebuildAfterLoad();
-      }
-    }
+//     if (animationInMotion) {
+//       if (right > swipeSpeed && left < swipeSpeed) {
+//         right -= swipeSpeed;
+//         left += swipeSpeed;
+//         rebuildAfterLoad();
+//       } else if (right < swipeSpeed && left > swipeSpeed) {
+//         right += swipeSpeed;
+//         left -= swipeSpeed;
+//         rebuildAfterLoad();
+//       } else {
+//         right = 0;
+//         left = 0;
+//         animationInMotion = false;
+//         rebuildAfterLoad();
+//       }
+//     }
 
-    return GestureDetector(
-      onPanUpdate: (details) {
-        animationInMotion = false;
-        right = right - details.delta.dx;
-        left = left + details.delta.dx;
-        setState(() {});
-      },
-      onPanEnd: (details) {
-        animationInMotion = true;
-        if (right >= MediaQuery.of(context).size.width / 3 || details.velocity.pixelsPerSecond.dx < -500) {
-          return onArrowTap(1);
-        }
+//     return GestureDetector(
+//       onPanUpdate: (details) {
+//         animationInMotion = false;
+//         right = right - details.delta.dx;
+//         left = left + details.delta.dx;
+//         setState(() {});
+//       },
+//       onPanEnd: (details) {
+//         animationInMotion = true;
+//         if (right >= MediaQuery.of(context).size.width / 3 || details.velocity.pixelsPerSecond.dx < -500) {
+//           return onArrowTap(1);
+//         }
 
-        if (left >= MediaQuery.of(context).size.width / 3 || details.velocity.pixelsPerSecond.dx > 500) {
-          return onArrowTap(-1);
-        }
+//         if (left >= MediaQuery.of(context).size.width / 3 || details.velocity.pixelsPerSecond.dx > 500) {
+//           return onArrowTap(-1);
+//         }
 
-        setState(() {});
-      },
-      child: Stack(
-        children: [
-          SizedBox(
-            height: 40,
-            child: Row(
-              children: [
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  splashRadius: 15,
-                  onPressed: () => onArrowTap(-1),
-                  icon: const Icon(
-                    Icons.arrow_left_rounded,
-                    size: 40,
-                  ),
-                ),
-                Expanded(
-                  flex: 4,
-                  child: Center(
-                    child: Text(
-                      DateTimeHelper.getMonthAndYearString(selectedMonth),
-                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  splashRadius: 15,
-                  onPressed: () => onArrowTap(1),
-                  icon: const Icon(
-                    Icons.arrow_right_rounded,
-                    size: 40,
-                  ),
-                ),
-                Button(icon: Icons.today_outlined, onTap: reloadState),
-              ],
-            ),
-          ),
-          Positioned.fill(
-            top: 50,
-            right: right,
-            left: left,
-            child: SingleChildScrollView(
-              child: Column(children: getWorkoutsWidget(widget.workouts, widget.bodyweights)),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+//         setState(() {});
+//       },
+//       child: Stack(
+//         children: [
+//           SizedBox(
+//             height: 40,
+//             child: Row(
+//               children: [
+//                 IconButton(
+//                   padding: EdgeInsets.zero,
+//                   splashRadius: 15,
+//                   onPressed: () => onArrowTap(-1),
+//                   icon: const Icon(
+//                     Icons.arrow_left_rounded,
+//                     size: 40,
+//                   ),
+//                 ),
+//                 Expanded(
+//                   flex: 4,
+//                   child: Center(
+//                     child: Text(
+//                       DateTimeHelper.getMonthAndYearString(selectedMonth),
+//                       style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+//                     ),
+//                   ),
+//                 ),
+//                 IconButton(
+//                   padding: EdgeInsets.zero,
+//                   splashRadius: 15,
+//                   onPressed: () => onArrowTap(1),
+//                   icon: const Icon(
+//                     Icons.arrow_right_rounded,
+//                     size: 40,
+//                   ),
+//                 ),
+//                 Button(icon: Icons.today_outlined, onTap: reloadState),
+//               ],
+//             ),
+//           ),
+//           Positioned.fill(
+//             top: 50,
+//             right: right,
+//             left: left,
+//             child: SingleChildScrollView(
+//               child: Column(children: getWorkoutsWidget(widget.workouts, widget.bodyweights)),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }

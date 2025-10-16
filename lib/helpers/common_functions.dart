@@ -19,8 +19,7 @@ import 'package:provider/provider.dart';
 Future showDeleteConfirm(
   BuildContext context,
   String objectName,
-  Function onDelete,
-  Function? reloadState, {
+  Function onDelete, {
   bool popCaller = false,
 }) async {
   HapticFeedback.heavyImpact();
@@ -39,9 +38,6 @@ Future showDeleteConfirm(
         CupertinoDialogAction(
           child: const Text("Delete", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
           onPressed: () async {
-            Navigator.pop(context);
-            if (popCaller) Navigator.pop(context);
-
             try {
               await onDelete();
             } catch (ex) {
@@ -49,7 +45,10 @@ Future showDeleteConfirm(
               showSnackBar(context, 'Failed to delete $objectName: ${ex.toString()}');
             }
 
-            if (reloadState != null) reloadState();
+            if (context.mounted) {
+              Navigator.pop(context);
+              if (popCaller) Navigator.pop(context);
+            }
           },
         ),
       ],
@@ -158,7 +157,7 @@ Future showDurationPicker(
       ),
     );
 
-Future showCloseableBottomSheet(BuildContext context, Widget child, {String? title, Function? onClose}) async =>
+Future showCloseableBottomSheet(BuildContext context, Widget child, {String? title}) async =>
     await showModalBottomSheet(
       context: context,
       constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
@@ -197,15 +196,12 @@ Future showCloseableBottomSheet(BuildContext context, Widget child, {String? tit
           ),
         ],
       ),
-    ).then((x) {
-      if (onClose != null) onClose();
-    });
+    );
 
 Future showFullScreenBottomSheet(
   BuildContext context,
   Widget child, {
   List<Widget> actions = const [],
-  Function? onClose,
 }) async =>
     await showModalBottomSheet(
       context: context,
@@ -238,13 +234,10 @@ Future showFullScreenBottomSheet(
           ),
         ),
       ),
-    ).then((x) {
-      if (onClose != null) onClose();
-    });
+    );
 
 Future addWorkout(
-  BuildContext context,
-  Function reloadState, {
+  BuildContext context, {
   DateTime? date,
   List<Category>? categories,
 }) async {
@@ -266,16 +259,15 @@ Future addWorkout(
     }
 
     if (!context.mounted) return;
-    openWorkoutView(context, newWorkoutId, onClose: reloadState);
+    await openWorkoutView(context, newWorkoutId);
   } catch (ex) {
-    showSnackBar(context, 'Failed to add workout');
+    if (context.mounted) showSnackBar(context, 'Failed to add workout');
   }
 }
 
 Future openWorkoutView(
   BuildContext context,
   int workoutId, {
-  Function? onClose,
   bool autofocusNotes = false,
   List<int>? droppedWes,
 }) async {
@@ -291,12 +283,10 @@ Future openWorkoutView(
       autofocusNotes: autofocusNotes,
       droppedWes: droppedWes,
     ),
-    onClose: () {
-      if (isActiveWorkout) provider.setClosed();
-      provider.refreshActiveWorkout();
-      if (onClose != null) onClose();
-    },
-  );
+  ).then((x) {
+    if (isActiveWorkout) provider.setClosed();
+    provider.refreshActiveWorkout();
+  });
 }
 
 void closeKeyboard() => FocusManager.instance.primaryFocus?.unfocus();

@@ -169,7 +169,6 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                     if (!context.mounted) return;
                     showSnackBar(context, 'Successfully reset database');
                   },
-                  () => null,
                 ),
               ),
               const Padding(padding: EdgeInsets.all(10)),
