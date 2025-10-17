@@ -16,12 +16,7 @@ import 'package:gymvision/providers/rest_timer_provider.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:provider/provider.dart';
 
-Future showDeleteConfirm(
-  BuildContext context,
-  String objectName,
-  Function onDelete, {
-  bool popCaller = false,
-}) async {
+Future showDeleteConfirm(BuildContext context, String objectName, Function onDelete) async {
   HapticFeedback.heavyImpact();
   await showDialog(
     context: context,
@@ -45,10 +40,7 @@ Future showDeleteConfirm(
               showSnackBar(context, 'Failed to delete $objectName: ${ex.toString()}');
             }
 
-            if (context.mounted) {
-              Navigator.pop(context);
-              if (popCaller) Navigator.pop(context);
-            }
+            if (context.mounted) Navigator.pop(context);
           },
         ),
       ],

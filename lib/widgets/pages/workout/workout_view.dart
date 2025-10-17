@@ -51,27 +51,28 @@ class _WorkoutViewState extends State<WorkoutView> {
     droppedWes = widget.droppedWes ?? [];
   }
 
-  void reload() => setState(() {
-        workoutFuture = WorkoutModel.getWorkout(widget.workoutId, withCategories: true, withExercises: true);
-      });
+  void reload() {
+    if (!mounted) return;
+    setState(() {
+      workoutFuture = WorkoutModel.getWorkout(widget.workoutId, withCategories: true, withExercises: true);
+    });
+  }
 
   void onCategoriesChange(List<Category> newCategories) async {
     try {
       await WorkoutCategoryModel.setWorkoutCategories(widget.workoutId, newCategories);
-      reload();
     } catch (ex) {
-      if (!mounted) return;
-      showSnackBar(context, 'Failed to add Categories to workout.');
+      if (mounted) showSnackBar(context, 'Failed to add Categories to workout.');
     }
   }
 
-  void onAddCategoryClick(List<Category> existingWorkoutCategoryIds) => showCloseableBottomSheet(
+  Future onAddCategoryClick(List<Category> existingWorkoutCategoryIds) async => await showCloseableBottomSheet(
         context,
         CateogryPicker(
           selectedCategories: existingWorkoutCategoryIds,
           onChange: onCategoriesChange,
         ),
-      );
+      ).then((x) => reload());
 
   goToMostRecentWorkout(WorkoutCategory wc) async {
     var id = await WorkoutModel.getMostRecentWorkoutIdForCategory(wc);
@@ -82,8 +83,7 @@ class _WorkoutViewState extends State<WorkoutView> {
       return;
     }
 
-    await openWorkoutView(context, id)
-    .then((x) => reload());
+    await openWorkoutView(context, id).then((x) => reload());
   }
 
   getWorkoutCategoriesWidget(List<WorkoutCategory> workoutCategories, List<Category> existingCategories) => Wrap(
@@ -194,7 +194,7 @@ class _WorkoutViewState extends State<WorkoutView> {
     return FutureBuilder<Workout?>(
       future: workoutFuture,
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) return const SizedBox.shrink();
+        // if (snapshot.connectionState == ConnectionState.waiting) return const SizedBox.shrink();
         if (!snapshot.hasData || snapshot.data == null) {
           return Column(children: [
             Row(children: [
@@ -288,7 +288,7 @@ class _WorkoutViewState extends State<WorkoutView> {
               Row(children: [
                 Button(
                   icon: Icons.category_rounded,
-                  onTap: () => onAddCategoryClick(categories),
+                  onTap: () => onAddCategoryClick(categories).then,
                 ),
                 Button(
                   icon: Icons.add_rounded,

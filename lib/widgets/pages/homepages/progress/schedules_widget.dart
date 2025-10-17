@@ -262,8 +262,10 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
                           context,
                           'Schedule',
                           () async => await ScheduleModel.delete(activeScheduleSnapshot.data!.id!),
-                          popCaller: true,
-                        ).then((x) => reload()),
+                        ).then((x) {
+                          if (context.mounted) Navigator.pop(context);
+                          reload();
+                        }),
                         text: 'Delete Schedule',
                       ),
                     ],

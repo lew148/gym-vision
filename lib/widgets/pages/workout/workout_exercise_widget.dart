@@ -185,8 +185,10 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                       context,
                       "set",
                       () => WorkoutSetModel.delete(set.id!),
-                      popCaller: true,
-                    ).then((x) => reload()),
+                    ).then((x) {
+                      if (mounted) Navigator.pop(context);
+                      reload();
+                    }),
                   ),
                 ],
               ),

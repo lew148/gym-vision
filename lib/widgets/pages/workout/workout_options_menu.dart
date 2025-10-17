@@ -104,8 +104,9 @@ class WorkoutOptionsMenu extends StatelessWidget {
               provider.refreshActiveWorkout();
               if (onChange != null) onChange!();
             },
-            popCaller: popCallerOnDelete,
-          );
+          ).then((x) {
+            if (context.mounted) Navigator.pop(context);
+          });
         },
         text: 'Delete Workout',
       ),
