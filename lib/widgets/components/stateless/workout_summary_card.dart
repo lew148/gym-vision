@@ -27,11 +27,11 @@ class WorkoutSummaryCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final summary = workout.summary;
 
-    void openWorkout({bool autofocusNotes = false, List<int>? droppedWes}) => openWorkoutView(
+    void openWorkout({bool autofocusNotes = false, int? focusWe}) => openWorkoutView(
           context,
           workout.id!,
           autofocusNotes: autofocusNotes,
-          droppedWes: droppedWes,
+          focusedWorkoutExerciseId: focusWe,
         ).then((x) {
           if (reloadParent != null) reloadParent!();
         });
@@ -145,7 +145,7 @@ class WorkoutSummaryCard extends StatelessWidget {
                       const CustomDivider(shadow: true),
                       if (summary.bestSet != null && summary.bestSetExercise != null)
                         CustomCard(
-                          onTap: () => openWorkout(droppedWes: [summary.bestSet!.workoutExerciseId]),
+                          onTap: () => openWorkout(focusWe: summary.bestSet!.workoutExerciseId),
                           color: AppHelper.isDarkMode(context) ? AppHelper.darkPropOnCardColor : null,
                           child: Padding(
                             padding: const EdgeInsets.all(5),

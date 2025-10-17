@@ -9,6 +9,7 @@ import 'package:gymvision/models/db_models/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
+import 'package:gymvision/providers/workout_provider.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
@@ -20,12 +21,11 @@ import 'package:gymvision/widgets/forms/workout_set_form.dart';
 import 'package:gymvision/widgets/pages/exercise/exercise_view.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
+import 'package:provider/provider.dart';
 
 class WorkoutExerciseWidget extends StatefulWidget {
   final WorkoutExercise workoutExercise;
   final Function(int weId)? onDelete;
-  final Function(int weId)? toggleDroppedParent;
-  final bool dropped;
   final bool isInFuture;
   final bool isDisplay;
 
@@ -33,8 +33,6 @@ class WorkoutExerciseWidget extends StatefulWidget {
     super.key,
     required this.workoutExercise,
     this.onDelete,
-    this.toggleDroppedParent,
-    this.dropped = false,
     this.isInFuture = false,
     this.isDisplay = false,
   });
@@ -47,8 +45,9 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   late Future<List<WorkoutSet>> workoutSetsFuture;
   late String exerciseIdentifier;
   late Exercise exercise;
-  late bool dropped;
   late bool isDisplay;
+  late WorkoutProvider provider;
+  late bool dropped;
 
   @override
   void initState() {
@@ -56,15 +55,21 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     workoutSetsFuture = WorkoutSetModel.getSetsForWorkoutExercise(widget.workoutExercise.id!);
     exerciseIdentifier = widget.workoutExercise.exerciseIdentifier;
     exercise = widget.workoutExercise.exercise ?? DefaultExercisesModel.getExerciseByIdentifier(exerciseIdentifier)!;
-    dropped = widget.dropped;
     isDisplay = widget.isDisplay;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    provider = context.read<WorkoutProvider>();
+    dropped = provider.droppedWorkoutExerciseIds.contains(widget.workoutExercise.id!);
   }
 
   void reload() => setState(() {
         workoutSetsFuture = WorkoutSetModel.getSetsForWorkoutExercise(widget.workoutExercise.id!);
       });
 
-  void onEditWorkoutSetTap(WorkoutSet ws) => showCloseableBottomSheet(
+  void onEditWorkoutSetTap(WorkoutSet ws) async => await showCloseableBottomSheet(
         context,
         WorkoutSetForm(
           exerciseIdentifier: exerciseIdentifier,
@@ -96,8 +101,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     reload();
   }
 
-  void onAddSetsButtonTap() {
-    showCloseableBottomSheet(
+  void onAddSetsButtonTap() async {
+    await showCloseableBottomSheet(
       context,
       WorkoutSetForm(
         exerciseIdentifier: exerciseIdentifier,
@@ -108,7 +113,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
             workoutSetsFuture = WorkoutSetModel.getSetsForWorkoutExercise(widget.workoutExercise.id!);
           });
 
-          if (widget.toggleDroppedParent != null) widget.toggleDroppedParent!(widget.workoutExercise.id!);
+          provider.toggleDroppedExercise(widget.workoutExercise.id!);
         },
       ),
     );
@@ -159,39 +164,39 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           ? getSetWidgetInner(i + 1, set)
           : InkWell(
               enableFeedback: false,
-              onLongPress: () => OptionsMenu.showOptionsMenu(
-                context,
-                buttons: [
-                  Button(
-                    text: 'Copy Set',
-                    icon: Icons.content_copy_rounded,
-                    style: ButtonCustomStyle.primaryIconOnly(),
-                    onTap: () => onCopySetButtonTap(set),
-                  ),
-                  Button(
-                    text: 'Edit Set',
-                    icon: Icons.edit_rounded,
-                    style: ButtonCustomStyle.primaryIconOnly(),
-                    onTap: () {
-                      Navigator.pop(context);
-                      onEditWorkoutSetTap(set);
-                    },
-                  ),
-                  Button(
-                    text: 'Delete Set',
-                    icon: Icons.delete_rounded,
-                    style: ButtonCustomStyle.redIconOnly(),
-                    onTap: () => showDeleteConfirm(
-                      context,
-                      "set",
-                      () => WorkoutSetModel.delete(set.id!),
-                    ).then((x) {
-                      if (mounted) Navigator.pop(context);
-                      reload();
-                    }),
-                  ),
-                ],
-              ),
+              // onLongPress: () => OptionsMenu.showOptionsMenu(
+              //   context,
+              //   buttons: [
+              //     Button(
+              //       text: 'Copy Set',
+              //       icon: Icons.content_copy_rounded,
+              //       style: ButtonCustomStyle.primaryIconOnly(),
+              //       onTap: () => onCopySetButtonTap(set),
+              //     ),
+              //     Button(
+              //       text: 'Edit Set',
+              //       icon: Icons.edit_rounded,
+              //       style: ButtonCustomStyle.primaryIconOnly(),
+              //       onTap: () {
+              //         Navigator.pop(context);
+              //         onEditWorkoutSetTap(set);
+              //       },
+              //     ),
+              //     Button(
+              //       text: 'Delete Set',
+              //       icon: Icons.delete_rounded,
+              //       style: ButtonCustomStyle.redIconOnly(),
+              //       onTap: () => showDeleteConfirm(
+              //         context,
+              //         "set",
+              //         () => WorkoutSetModel.delete(set.id!),
+              //       ).then((x) {
+              //         if (mounted) Navigator.pop(context);
+              //         reload();
+              //       }),
+              //     ),
+              //   ],
+              // ),
               onTap: () => onEditWorkoutSetTap(set),
               child: getSetWidgetInner(i + 1, set),
             ));
@@ -291,7 +296,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                     onTap: () => openWorkoutView(
                       context,
                       widget.workoutExercise.workoutId,
-                      droppedWes: [widget.workoutExercise.id!],
+                      focusedWorkoutExerciseId: widget.workoutExercise.id!,
                     ).then((x) => reload()),
                   )
                 : Row(
@@ -340,28 +345,32 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     return FutureBuilder(
       future: workoutSetsFuture,
       builder: (context, snapshot) {
-        if (!snapshot.hasData) return const ShimmerLoad(height: 50);
-
-        final sets = snapshot.data!;
-
-        return CustomCard(
-          child: sets.isEmpty
-              ? getHeader(standalone: true, isDone: widget.workoutExercise.done)
-              : Column(
-                  children: [
-                    GestureDetector(
-                      onTap: () => setState(() {
-                        dropped = !dropped;
-                      }),
-                      behavior: HitTestBehavior.translucent,
-                      child: getHeader(standalone: false, isDone: !(sets.any((ws) => !ws.done))),
-                    ),
-                    if (dropped) ...[
-                      const CustomDivider(shadow: true, height: 0),
-                      Column(children: getSetWidgets(sets)),
+        final sets = snapshot.data;
+        return ShimmerLoad(
+          height: dropped ? 100 : 50,
+          loading: snapshot.connectionState == ConnectionState.waiting,
+          child: CustomCard(
+            child: sets == null || sets.isEmpty
+                ? getHeader(standalone: true, isDone: widget.workoutExercise.done)
+                : Column(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          provider.toggleDroppedExercise(widget.workoutExercise.id!);
+                          setState(() {
+                            dropped = !dropped;
+                          });
+                        },
+                        behavior: HitTestBehavior.translucent,
+                        child: getHeader(standalone: false, isDone: !(sets.any((ws) => !ws.done))),
+                      ),
+                      if (dropped) ...[
+                        const CustomDivider(shadow: true, height: 0),
+                        Column(children: getSetWidgets(sets)),
+                      ],
                     ],
-                  ],
-                ),
+                  ),
+          ),
         );
       },
     );

@@ -87,7 +87,8 @@ class _HistoryState extends State<History> {
             return ListView(
               children: [
                 getFilterRow([]),
-                ...List.generate(5, (i) => const ShimmerLoad(height: 100)),
+                const Row(mainAxisAlignment: MainAxisAlignment.end, children: [Button(text: 'All Time')]),
+                ...List.generate(5, (i) => const ShimmerLoad(height: 200)),
                 const ScrollBottomPadding(),
               ],
             );

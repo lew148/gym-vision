@@ -212,7 +212,6 @@ Future showFullScreenBottomSheet(
             MediaQuery.of(context).viewInsets.bottom, // for keyboard space
           ),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -257,28 +256,30 @@ Future addWorkout(
   }
 }
 
-Future openWorkoutView(
+Future<void> openWorkoutView(
   BuildContext context,
   int workoutId, {
   bool autofocusNotes = false,
-  List<int>? droppedWes,
+  int? focusedWorkoutExerciseId,
 }) async {
-  final provider = Provider.of<ActiveWorkoutProvider>(context, listen: false);
+  final provider = context.read<ActiveWorkoutProvider>();
   final isActiveWorkout = await provider.isActiveWorkout(workoutId);
   if (!context.mounted) return;
   if (isActiveWorkout) provider.setOpen();
 
-  await showFullScreenBottomSheet(
-    context,
-    WorkoutView(
-      workoutId: workoutId,
-      autofocusNotes: autofocusNotes,
-      droppedWes: droppedWes,
-    ),
-  ).then((x) {
-    if (isActiveWorkout) provider.setClosed();
+  try {
+    await showFullScreenBottomSheet(
+      context,
+      WorkoutView(
+        workoutId: workoutId,
+        autofocusNotes: autofocusNotes,
+        focusedWorkoutExerciseId: focusedWorkoutExerciseId,
+      ),
+    );
+  } finally {
+    if (context.mounted && isActiveWorkout) provider.setClosed();
     provider.refreshActiveWorkout();
-  });
+  }
 }
 
 void closeKeyboard() => FocusManager.instance.primaryFocus?.unfocus();

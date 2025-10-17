@@ -77,46 +77,45 @@ class _NotesState extends State<Notes> {
     return FutureBuilder(
       future: noteFuture,
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting && firstLoad) {
-          firstLoad = false;
-          return const ShimmerLoad(height: 25);
-        }
-
-        return CustomCard(
-          child: Padding(
-            padding: const EdgeInsetsGeometry.symmetric(horizontal: 5),
-            child: Row(children: [
-              Expanded(
-                child: CupertinoTextField(
-                  controller: controller,
-                  keyboardType: TextInputType.multiline,
-                  autofocus: widget.autofocus,
-                  textInputAction: TextInputAction.done,
-                  onEditingComplete: () => onSave(snapshot.data),
-                  padding: const EdgeInsetsGeometry.all(10),
-                  minLines: 1,
-                  maxLines: 3,
-                  suffixMode: OverlayVisibilityMode.editing,
-                  suffix: GestureDetector(
-                    child: Padding(
-                      padding: const EdgeInsetsGeometry.all(5),
-                      child: Icon(Icons.clear_rounded, size: 16, color: Theme.of(context).colorScheme.shadow),
+        return ShimmerLoad(
+          height: 28,
+          loading: snapshot.connectionState == ConnectionState.waiting && firstLoad,
+          child: CustomCard(
+            child: Padding(
+              padding: const EdgeInsetsGeometry.symmetric(horizontal: 5),
+              child: Row(children: [
+                Expanded(
+                  child: CupertinoTextField(
+                    controller: controller,
+                    keyboardType: TextInputType.multiline,
+                    autofocus: widget.autofocus,
+                    textInputAction: TextInputAction.done,
+                    onEditingComplete: () => onSave(snapshot.data),
+                    padding: const EdgeInsetsGeometry.all(10),
+                    minLines: 1,
+                    maxLines: 3,
+                    suffixMode: OverlayVisibilityMode.editing,
+                    suffix: GestureDetector(
+                      child: Padding(
+                        padding: const EdgeInsetsGeometry.all(5),
+                        child: Icon(Icons.clear_rounded, size: 16, color: Theme.of(context).colorScheme.shadow),
+                      ),
+                      onTap: () => showDeleteConfirm(
+                        context,
+                        'note',
+                        () {
+                          controller.clear();
+                          onSave(snapshot.data);
+                        },
+                      ).then((x) => reload()),
                     ),
-                    onTap: () => showDeleteConfirm(
-                      context,
-                      'note',
-                      () {
-                        controller.clear();
-                        onSave(snapshot.data);
-                      },
-                    ).then((x) => reload()),
+                    placeholder: 'Add note...',
+                    style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontSize: 15),
+                    decoration: const BoxDecoration(color: Colors.transparent),
                   ),
-                  placeholder: 'Add note...',
-                  style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontSize: 15),
-                  decoration: const BoxDecoration(color: Colors.transparent),
                 ),
-              ),
-            ]),
+              ]),
+            ),
           ),
         );
       },
