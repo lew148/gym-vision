@@ -53,7 +53,7 @@ class _RestTimerState extends State<RestTimer> {
         isTimer: true,
       );
 
-  void onTimerDelete() => provider.clearTimer();
+  void onTimerDelete() async => await provider.clearTimer();
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +64,7 @@ class _RestTimerState extends State<RestTimer> {
           )
         : GestureDetector(
             behavior: HitTestBehavior.translucent,
-            onTap: () => showDeleteConfirm(context, 'Timer', onTimerDelete),
+            onTap: () async => await showDeleteConfirm(context, 'Timer', onTimerDelete),
             child: Stack(children: [
               AnimatedContainer(
                 duration: const Duration(milliseconds: 300),

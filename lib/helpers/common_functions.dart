@@ -262,23 +262,24 @@ Future<void> openWorkoutView(
   bool autofocusNotes = false,
   int? focusedWorkoutExerciseId,
 }) async {
-  final provider = context.read<ActiveWorkoutProvider>();
-  final isActiveWorkout = await provider.isActiveWorkout(workoutId);
+  final activeWorkoutProvider = context.read<ActiveWorkoutProvider>();
+  final isActiveWorkout = await activeWorkoutProvider.isActiveWorkout(workoutId);
   if (!context.mounted) return;
-  if (isActiveWorkout) provider.setOpen();
+  if (isActiveWorkout) activeWorkoutProvider.setOpen();
 
   try {
     await showFullScreenBottomSheet(
       context,
       WorkoutView(
         workoutId: workoutId,
+        isActiveWorkout: isActiveWorkout,
         autofocusNotes: autofocusNotes,
         focusedWorkoutExerciseId: focusedWorkoutExerciseId,
       ),
     );
   } finally {
-    if (context.mounted && isActiveWorkout) provider.setClosed();
-    provider.refreshActiveWorkout();
+    if (context.mounted && isActiveWorkout) activeWorkoutProvider.setClosed();
+    activeWorkoutProvider.refreshActiveWorkout();
   }
 }
 

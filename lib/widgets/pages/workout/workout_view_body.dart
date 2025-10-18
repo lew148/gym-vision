@@ -6,6 +6,8 @@ import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
+import 'package:gymvision/providers/active_workout_provider.dart';
+import 'package:gymvision/providers/rest_timer_provider.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/widgets/components/rest_timer.dart';
 import 'package:gymvision/widgets/components/stateless/prop_display.dart';
@@ -71,13 +73,17 @@ class WorkoutViewBody extends StatelessWidget {
               : 'Are you sure you are finished with this workout?',
         );
 
+        final bool wasActiveWorkout =
+            context.mounted ? await context.read<ActiveWorkoutProvider>().isActiveWorkout(workout.id!) : false;
+
         if (!confirmed) return;
         workout.endDate = resuming ? null : DateTime.now();
         final success = await WorkoutModel.update(workout);
         if (!success) throw Exception();
 
-        if (!resuming && context.mounted) {
-          Navigator.pop(context);
+        if (!resuming) {
+          if (context.mounted && wasActiveWorkout) await context.read<RestTimerProvider>().clearTimer();
+          if (context.mounted) Navigator.pop(context);
           return;
         }
 
@@ -159,17 +165,17 @@ class WorkoutViewBody extends StatelessWidget {
           ),
         ]));
 
-    void onWorkoutExerciseReorder(int currentIndex, int newIndex) async {
-      try {
-        HapticFeedback.heavyImpact();
-        workout.exerciseOrder = OrderingHelper.reorderByIndex(workout.exerciseOrder, currentIndex, newIndex);
-        await WorkoutModel.update(workout);
-      } catch (e) {
-        // do nothing
-      }
+    // void onWorkoutExerciseReorder(int currentIndex, int newIndex) async {
+    //   try {
+    //     HapticFeedback.heavyImpact();
+    //     workout.exerciseOrder = OrderingHelper.reorderByIndex(workout.exerciseOrder, currentIndex, newIndex);
+    //     await WorkoutModel.update(workout);
+    //   } catch (e) {
+    //     // do nothing
+    //   }
 
-      provider.reload();
-    }
+    //   provider.reload();
+    // }
 
     return Column(
       children: [
@@ -197,7 +203,7 @@ class WorkoutViewBody extends StatelessWidget {
               WorkoutOptionsMenu(
                 workout: workout,
                 onChange: () => provider.reload(),
-                popCallerOnDelete: true,
+                fromWorkoutView: true,
                 extraButtons: [
                   if (workout.isFinished())
                     Button(

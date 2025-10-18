@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 
 class DurationPicker extends StatefulWidget {
@@ -35,6 +36,25 @@ class _DurationPickerState extends State<DurationPicker> {
     value = widget.initialValue ?? Duration.zero;
   }
 
+  List<Duration> getSampleDurations() => [
+        if (widget.mode != CupertinoTimerPickerMode.ms) const Duration(hours: 1),
+        const Duration(minutes: 30),
+        const Duration(minutes: 15),
+        if (widget.mode != CupertinoTimerPickerMode.hm) ...[
+          const Duration(seconds: 30),
+          const Duration(seconds: 15),
+        ],
+      ];
+
+  void onChange(Duration d, {bool fromButton = false}) {
+    setState(() {
+      if (fromButton) key = GlobalKey(); // new key to flush cache
+      value = d;
+    });
+
+    if (widget.onChange != null) widget.onChange!(d);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -45,13 +65,20 @@ class _DurationPickerState extends State<DurationPicker> {
             key: key,
             initialTimerDuration: value,
             mode: widget.mode,
-            onTimerDurationChanged: (d) {
-              setState(() {
-                value = d;
-              });
-
-              if (widget.onChange != null) widget.onChange!(d);
-            },
+            onTimerDurationChanged: onChange,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsetsGeometry.symmetric(vertical: 5),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: getSampleDurations()
+                .map((d) => Button(
+                      text: DateTimeHelper.getDurationString(d),
+                      style: ButtonCustomStyle.noPrimary(),
+                      onTap: () => onChange(d, fromButton: true),
+                    ))
+                .toList(),
           ),
         ),
         if (widget.onSubmit != null)

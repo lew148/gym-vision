@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
+import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/providers/active_workout_provider.dart';
 import 'package:gymvision/providers/navigation_provider.dart';
 import 'package:gymvision/services/local_notification_service.dart';
@@ -32,24 +33,35 @@ class RestTimerProvider extends ChangeNotifier {
 
   int getPercentageLeft() => _duration == null ? 0 : (getTimeLeft().inSeconds / _duration!.inSeconds * 100).truncate();
 
-  void clearTimer({Timer? t}) {
+  Future<void> clearTimer({Timer? t}) async {
     t?.cancel();
     timer?.cancel();
     _startTime = null;
     _duration = null;
     _timer = null;
+    await LocalNotificationService.cancelNotification(iosNotifId);
   }
 
   void setTimer({required BuildContext context, required Duration duration}) async {
     final globalContext = Provider.of<NavigationProvider>(context, listen: false).getGlobalContext();
 
-    clearTimer();
+    await clearTimer();
     _startTime = DateTime.now();
     _duration = duration;
+
+    if (Platform.isIOS) {
+      await LocalNotificationService.scheduleNotification(
+        id: iosNotifId,
+        title: restTimerTitle,
+        body: restTimerBody,
+        scheduledTime: _startTime!.add(_duration!),
+      );
+    }
+
     _timer = Timer(
       duration,
       () async {
-        clearTimer();
+        await clearTimer();
 
         if (SchedulerBinding.instance.lifecycleState != AppLifecycleState.resumed) {
           // IOS has been set on a timer
@@ -94,15 +106,6 @@ class RestTimerProvider extends ChangeNotifier {
         notifyListeners();
       },
     );
-
-    if (Platform.isIOS) {
-      await LocalNotificationService.scheduleNotification(
-        id: iosNotifId,
-        title: restTimerTitle,
-        body: restTimerBody,
-        scheduledTime: _startTime!.add(_duration!),
-      );
-    }
 
     notifyListeners();
   }

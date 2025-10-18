@@ -164,39 +164,39 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           ? getSetWidgetInner(i + 1, set)
           : InkWell(
               enableFeedback: false,
-              // onLongPress: () => OptionsMenu.showOptionsMenu(
-              //   context,
-              //   buttons: [
-              //     Button(
-              //       text: 'Copy Set',
-              //       icon: Icons.content_copy_rounded,
-              //       style: ButtonCustomStyle.primaryIconOnly(),
-              //       onTap: () => onCopySetButtonTap(set),
-              //     ),
-              //     Button(
-              //       text: 'Edit Set',
-              //       icon: Icons.edit_rounded,
-              //       style: ButtonCustomStyle.primaryIconOnly(),
-              //       onTap: () {
-              //         Navigator.pop(context);
-              //         onEditWorkoutSetTap(set);
-              //       },
-              //     ),
-              //     Button(
-              //       text: 'Delete Set',
-              //       icon: Icons.delete_rounded,
-              //       style: ButtonCustomStyle.redIconOnly(),
-              //       onTap: () => showDeleteConfirm(
-              //         context,
-              //         "set",
-              //         () => WorkoutSetModel.delete(set.id!),
-              //       ).then((x) {
-              //         if (mounted) Navigator.pop(context);
-              //         reload();
-              //       }),
-              //     ),
-              //   ],
-              // ),
+              onLongPress: () => OptionsMenu.showOptionsMenu(
+                context,
+                buttons: [
+                  Button(
+                    text: 'Copy Set',
+                    icon: Icons.content_copy_rounded,
+                    style: ButtonCustomStyle.primaryIconOnly(),
+                    onTap: () => onCopySetButtonTap(set),
+                  ),
+                  Button(
+                    text: 'Edit Set',
+                    icon: Icons.edit_rounded,
+                    style: ButtonCustomStyle.primaryIconOnly(),
+                    onTap: () {
+                      Navigator.pop(context);
+                      onEditWorkoutSetTap(set);
+                    },
+                  ),
+                  Button(
+                    text: 'Delete Set',
+                    icon: Icons.delete_rounded,
+                    style: ButtonCustomStyle.redIconOnly(),
+                    onTap: () => showDeleteConfirm(
+                      context,
+                      "set",
+                      () => WorkoutSetModel.delete(set.id!),
+                    ).then((x) {
+                      if (mounted) Navigator.pop(context);
+                      reload();
+                    }),
+                  ),
+                ],
+              ),
               onTap: () => onEditWorkoutSetTap(set),
               child: getSetWidgetInner(i + 1, set),
             ));

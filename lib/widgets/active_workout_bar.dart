@@ -16,8 +16,6 @@ class ActiveWorkoutBar extends StatefulWidget {
 }
 
 class _ActiveWorkoutBarState extends State<ActiveWorkoutBar> with SingleTickerProviderStateMixin {
-  late ActiveWorkoutProvider provider;
-
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -39,12 +37,6 @@ class _ActiveWorkoutBarState extends State<ActiveWorkoutBar> with SingleTickerPr
   void dispose() {
     _controller.dispose();
     super.dispose();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    provider = Provider.of<ActiveWorkoutProvider>(context, listen: true);
   }
 
   @override
