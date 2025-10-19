@@ -46,8 +46,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   late String exerciseIdentifier;
   late Exercise exercise;
   late bool isDisplay;
-  late WorkoutProvider provider;
-  late bool dropped;
+  WorkoutProvider? provider;
+  bool dropped = false;
 
   @override
   void initState() {
@@ -61,8 +61,10 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    provider = context.read<WorkoutProvider>();
-    dropped = provider.droppedWorkoutExerciseIds.contains(widget.workoutExercise.id!);
+    if (!isDisplay) {
+      provider = context.read<WorkoutProvider>();
+      dropped = provider!.droppedWorkoutExerciseIds.contains(widget.workoutExercise.id!);
+    }
   }
 
   void reload() => setState(() {
@@ -113,7 +115,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
             workoutSetsFuture = WorkoutSetModel.getSetsForWorkoutExercise(widget.workoutExercise.id!);
           });
 
-          provider.toggleDroppedExercise(widget.workoutExercise.id!);
+          provider?.toggleDroppedExercise(widget.workoutExercise.id!);
         },
       ),
     );
@@ -356,7 +358,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          provider.toggleDroppedExercise(widget.workoutExercise.id!);
+                          provider?.toggleDroppedExercise(widget.workoutExercise.id!);
                           setState(() {
                             dropped = !dropped;
                           });

@@ -246,7 +246,7 @@ class WorkoutViewBody extends StatelessWidget {
 
         // --- categories, notes and actions ---
         if (workout.hasCategories())
-          Row(children: [
+          Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Wrap(
                 alignment: WrapAlignment.start,
                 children: workout.workoutCategories! //todo: sort
@@ -255,7 +255,7 @@ class WorkoutViewBody extends StatelessWidget {
                           onTap: () => goToMostRecentWorkout(wc),
                           size: PropDisplaySize.small,
                         ))
-                    .toList())
+                    .toList()),
           ]),
         Row(children: [
           Expanded(child: Notes(type: NoteType.workout, objectId: workout.id!.toString(), autofocus: autofocusNotes)),
