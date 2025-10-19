@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gymvision/widgets/active_workout_bar.dart';
+import 'package:gymvision/widgets/active_workout_draggable_sheet.dart';
 import 'package:gymvision/widgets/components/stateless/logo.dart';
 
 class ScrollBottomPadding extends StatelessWidget {
@@ -8,7 +8,7 @@ class ScrollBottomPadding extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const SizedBox(
-      height: ActiveWorkoutBar.height - 5,
+      height: ActiveWorkoutDraggableSheet.height,
       child: Center(child: Logo()),
     );
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/helpers/common_functions.dart';
-import 'package:gymvision/widgets/active_workout_bar.dart';
+import 'package:gymvision/widgets/active_workout_draggable_sheet.dart';
 import 'package:gymvision/widgets/components/stateless/logo.dart';
 import 'package:gymvision/widgets/forms/report_bug_form.dart';
 import 'package:gymvision/widgets/pages/user_settings_view.dart';
@@ -70,18 +70,17 @@ class _DebugScaffoldState extends State<DebugScaffold> {
         actions: actions,
       ),
       bottomNavigationBar: widget.bottomNavigationBar,
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         bottom: true,
         child: GestureDetector(
           onTap: () => closeKeyboard(),
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
-            child: widget.body,
-          ),
+          child: Stack(children: [
+            Padding(padding: const EdgeInsets.fromLTRB(10, 10, 10, 5), child: widget.body),
+            if (widget.showActiveWorkout) const ActiveWorkoutDraggableSheet()
+          ]),
         ),
       ),
-      resizeToAvoidBottomInset: false,
-      bottomSheet: widget.showActiveWorkout ? const ActiveWorkoutBar() : null,
     );
   }
 }

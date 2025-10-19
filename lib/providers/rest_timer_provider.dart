@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
-import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/providers/active_workout_provider.dart';
 import 'package:gymvision/providers/navigation_provider.dart';
 import 'package:gymvision/services/local_notification_service.dart';

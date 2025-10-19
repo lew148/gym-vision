@@ -8,6 +8,7 @@ import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/providers/active_workout_provider.dart';
 import 'package:gymvision/widgets/components/stateless/calendar_view.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
+import 'package:gymvision/widgets/components/stateless/drag_handle.dart';
 import 'package:gymvision/widgets/components/stateless/header.dart';
 import 'package:gymvision/widgets/forms/date_time_picker.dart';
 import 'package:gymvision/widgets/forms/duration_picker.dart';
@@ -169,20 +170,11 @@ Future showCloseableBottomSheet(BuildContext context, Widget child, {String? tit
                   : 30, // add viewInsets.bottom for keyboard space
             ),
             child: Column(children: [
-              SizedBox(
-                width: 100,
-                child: Divider(
-                  color: Theme.of(context).colorScheme.shadow,
-                  thickness: 4,
-                  radius: const BorderRadius.all(Radius.circular(25)),
-                ),
-              ),
+              const DragHandle(),
               if (title != null) ...[
-                const Padding(padding: EdgeInsetsGeometry.all(10)),
                 Header(title: title),
                 const CustomDivider(),
-              ] else
-                const Padding(padding: EdgeInsetsGeometry.all(5)),
+              ],
               child,
             ]),
           ),
@@ -190,12 +182,7 @@ Future showCloseableBottomSheet(BuildContext context, Widget child, {String? tit
       ),
     );
 
-Future showFullScreenBottomSheet(
-  BuildContext context,
-  Widget child, {
-  List<Widget> actions = const [],
-}) async =>
-    await showModalBottomSheet(
+Future showFullScreenBottomSheet(BuildContext context, Widget child) async => await showModalBottomSheet(
       context: context,
       useSafeArea: true,
       isScrollControlled: true,
@@ -211,18 +198,10 @@ Future showFullScreenBottomSheet(
             10,
             MediaQuery.of(context).viewInsets.bottom, // for keyboard space
           ),
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  if (actions.isNotEmpty) Row(children: actions),
-                ],
-              ),
-              Expanded(child: child),
-            ],
-          ),
+          child: Column(children: [
+            const DragHandle(),
+            Expanded(child: child),
+          ]),
         ),
       ),
     );

@@ -148,7 +148,7 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         splashColor: Colors.transparent,
         scaffoldBackgroundColor: darkBackground,
-        bottomSheetTheme: BottomSheetThemeData(backgroundColor: darkBottomSheet),
+        bottomSheetTheme: BottomSheetThemeData(backgroundColor: darkCard),
         cardTheme: CardThemeData(color: darkCard),
         colorScheme: ColorScheme.dark(
           primary: primary,
@@ -160,7 +160,7 @@ class MyApp extends StatelessWidget {
       ),
       themeMode: EasyDynamicTheme.of(context).themeMode,
       home: DebugScaffold(
-        showActiveWorkout: true,
+        showActiveWorkout: navProvider.selectedIndex != 4,
         body: widgetPages().elementAt(navProvider.selectedIndex),
         bottomNavigationBar: Container(
           decoration: BoxDecoration(border: BoxBorder.fromLTRB(top: BorderSide(color: shadow, width: 0.25))),
