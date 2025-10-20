@@ -9,12 +9,14 @@ import 'package:gymvision/widgets/components/time_elapsed.dart';
 import 'package:provider/provider.dart';
 
 class ActiveWorkoutDraggableSheet extends StatelessWidget {
-  static const double height = 65;
+  static const double height = 85; // used for padding behind sheet
 
   const ActiveWorkoutDraggableSheet({super.key});
 
   @override
   Widget build(BuildContext context) {
+    bool hasTriggeredSwipeUp = false;
+
     return Consumer<ActiveWorkoutProvider>(builder: (context, activeWorkoutProvider, child) {
       return FutureBuilder(
           future: activeWorkoutProvider.activeWorkoutFuture,
@@ -23,14 +25,11 @@ class ActiveWorkoutDraggableSheet extends StatelessWidget {
             final workout = snapshot.data!;
 
             return DraggableScrollableSheet(
-                initialChildSize: 0.1,
-                minChildSize: 0.1,
-                maxChildSize: 0.5,
-                snapSizes: const [0.1, 0.5],
-                snap: true,
+                initialChildSize: 0.12,
+                minChildSize: 0.12,
                 builder: (context, scrollController) {
                   return Container(
-                    height: ActiveWorkoutDraggableSheet.height,
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.surface,
                       borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
@@ -39,42 +38,55 @@ class ActiveWorkoutDraggableSheet extends StatelessWidget {
                     child: GestureDetector(
                       behavior: HitTestBehavior.translucent,
                       onTap: () => openWorkoutView(context, workout.id!),
-                      onVerticalDragStart: (details) => openWorkoutView(context, workout.id!),
+                      onVerticalDragUpdate: (details) {
+                        // only react if user drags upward
+                        if (!hasTriggeredSwipeUp && details.delta.dy < 0) {
+                          hasTriggeredSwipeUp = true;
+                          openWorkoutView(context, workout.id!);
+                        }
+                      },
+                      onVerticalDragEnd: (_) {
+                        hasTriggeredSwipeUp = false;
+                      },
+                      onVerticalDragCancel: () {
+                        hasTriggeredSwipeUp = false;
+                      },
                       child: Column(
                         children: [
                           const DragHandle(),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 30),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    if (!DateTimeHelper.isInFuture(workout.date))
-                                      const Padding(
-                                        padding: EdgeInsetsGeometry.only(right: 8),
-                                        child: PulsingDot(),
-                                      ),
-                                    Text(
-                                      !DateTimeHelper.isToday(workout.date)
-                                          ? DateTimeHelper.getDateOrDayStr(workout.date)
-                                          : workout.getWorkoutTitle(),
-                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+
+                                children: [
+                                  if (!DateTimeHelper.isInFuture(workout.date))
+                                    const Padding(
+                                      padding: EdgeInsetsGeometry.only(right: 8),
+                                      child: PulsingDot(),
                                     ),
-                                    const Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: 5)),
-                                    TextWithIcon.time(workout.date),
-                                  ],
-                                ),
+                                  Text(
+                                    !DateTimeHelper.isToday(workout.date)
+                                        ? DateTimeHelper.getDateOrDayStr(workout.date)
+                                        : workout.getWorkoutTitle(),
+                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                TextWithIcon.time(workout.date),
                                 TimeElapsed(
                                   since: workout.date,
                                   color: Theme.of(context).colorScheme.primary,
                                   labelForNegativeDuration: 'Starts in',
-                                  useIcon: false,
                                   bold: true,
                                 ),
-                              ],
-                            ),
+                              ],),
+                            ],
                           ),
                         ],
                       ),

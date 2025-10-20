@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
-import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/providers/active_workout_provider.dart';
@@ -86,30 +85,39 @@ Future<bool> showConfirm(
 }
 
 Future showCustomDialog(
-  BuildContext context,
-  Widget title,
-  Widget content, {
-  List<CupertinoDialogAction>? actions,
+  BuildContext context, {
+  required String title,
+  IconData? icon,
+  String? content,
+  List<CupertinoDialogAction>? customActions,
+  bool includeOK = true,
 }) async {
   HapticFeedback.heavyImpact();
   await showDialog(
     context: context,
     builder: (context) => CupertinoAlertDialog(
-      title: title,
-      content: content,
-      actions: actions ??
-          [
+        title: icon == null
+            ? Text(title)
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(icon, color: Theme.of(context).colorScheme.primary),
+                  const Padding(padding: EdgeInsetsGeometry.all(2.5)),
+                  Text(title),
+                ],
+              ),
+        content: (content == null ? null : Text(content)),
+        actions: [
+          if (customActions != null) ...customActions,
+          if (includeOK)
             CupertinoDialogAction(
               child: Text(
-                'Done',
+                'OK',
                 style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),
               ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
+              onPressed: () => Navigator.pop(context),
             ),
-          ],
-    ),
+        ]),
   );
 }
 
@@ -206,30 +214,45 @@ Future showFullScreenBottomSheet(BuildContext context, Widget child) async => aw
       ),
     );
 
-Future addWorkout(
-  BuildContext context, {
-  DateTime? date,
-  List<Category>? categories,
-}) async {
+Future addActiveWorkout(BuildContext context, {List<Category>? categories}) async {
   try {
-    final now = DateTime.now();
+    final activeWorkout = await WorkoutModel.getActiveWorkout();
 
-    if (date != null && DateTimeHelper.roundToDay(date) != DateTimeHelper.roundToDay(now)) {
-      date = DateTime(date.year, date.month, date.day, now.hour, now.minute, now.second, now.millisecond);
-    } else {
-      if ((await WorkoutModel.getActiveWorkout() != null)) {
-        if (context.mounted) showSnackBar(context, 'Finish the active workout before creating another.');
-        return;
+    if ((activeWorkout != null)) {
+      var continuingAdd = false;
+
+      if (context.mounted) {
+        await showCustomDialog(
+          context,
+          icon: Icons.directions_run_rounded,
+          title: 'Ongoing Workout',
+          content: 'Finish the active workout before creating another!',
+          customActions: [
+            CupertinoDialogAction(
+              child: Text(
+                'Finish & Start New',
+                style: TextStyle(color: Theme.of(context).colorScheme.primary),
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+                activeWorkout.endDate = DateTime.now();
+                WorkoutModel.update(activeWorkout);
+                continuingAdd = true;
+              },
+            )
+          ],
+        );
       }
+
+      if (!continuingAdd) return;
     }
 
-    final newWorkoutId = await WorkoutModel.insert(Workout(date: date ?? now, exerciseOrder: ''));
+    final newWorkoutId = await WorkoutModel.insert(Workout(date: DateTime.now(), exerciseOrder: ''));
     if (categories != null && categories.isNotEmpty) {
       await WorkoutCategoryModel.setWorkoutCategories(newWorkoutId, categories);
     }
 
-    if (!context.mounted) return;
-    await openWorkoutView(context, newWorkoutId);
+    if (context.mounted) await openWorkoutView(context, newWorkoutId);
   } catch (ex) {
     if (context.mounted) showSnackBar(context, 'Failed to add workout');
   }

@@ -96,9 +96,50 @@ class WorkoutSummaryCard extends StatelessWidget {
               summary == null || summary.totalExercises == 0
                   ? const SizedBox.shrink()
                   : Column(children: [
+                      if (!isDisplay && summary.bestSet != null && summary.bestSetExercise != null)
+                        Padding(
+                          padding: const EdgeInsetsGeometry.symmetric(vertical: 5),
+                          child: CustomCard(
+                            onTap: () => openWorkout(focusWe: summary.bestSet!.workoutExerciseId),
+                            color: AppHelper.isDarkMode(context) ? AppHelper.darkPropOnCardColor : null,
+                            child: Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.star_rounded, color: Colors.amber[300]),
+                                  const Padding(padding: EdgeInsets.all(5)),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(summary.bestSetExercise!.getFullName()),
+                                      Row(children: [
+                                        TextWithIcon.weight(summary.bestSet!.weight, muted: true),
+                                        const Padding(padding: EdgeInsets.symmetric(horizontal: 10)),
+                                        TextWithIcon.reps(summary.bestSet!.reps, muted: true),
+                                      ]),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      if (summary.isNote())
+                        Padding(
+                          padding: const EdgeInsetsGeometry.symmetric(vertical: 5),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              summary.note!,
+                              style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                              softWrap: true,
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                        ),
                       const CustomDivider(shadow: true),
                       Container(
-                        padding: const EdgeInsets.all(5),
+                        margin: const EdgeInsetsGeometry.only(top: 5),
                         height: 30,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -142,45 +183,6 @@ class WorkoutSummaryCard extends StatelessWidget {
                                 ],
                         ),
                       ),
-                      const CustomDivider(shadow: true),
-                      if (summary.bestSet != null && summary.bestSetExercise != null)
-                        CustomCard(
-                          onTap: () => openWorkout(focusWe: summary.bestSet!.workoutExerciseId),
-                          color: AppHelper.isDarkMode(context) ? AppHelper.darkPropOnCardColor : null,
-                          child: Padding(
-                            padding: const EdgeInsets.all(5),
-                            child: Row(
-                              children: [
-                                Icon(Icons.star_rounded, color: Colors.amber[300]),
-                                const Padding(padding: EdgeInsets.all(5)),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(summary.bestSetExercise!.getFullName()),
-                                    Row(children: [
-                                      TextWithIcon.weight(summary.bestSet!.weight, muted: true),
-                                      const Padding(padding: EdgeInsets.symmetric(horizontal: 10)),
-                                      TextWithIcon.reps(summary.bestSet!.reps, muted: true),
-                                    ]),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      if (summary.isNote())
-                        Padding(
-                          padding: const EdgeInsetsGeometry.symmetric(vertical: 5),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              summary.note!,
-                              style: TextStyle(color: Theme.of(context).colorScheme.shadow),
-                              softWrap: true,
-                              textAlign: TextAlign.start,
-                            ),
-                          ),
-                        ),
                     ]),
               if (!isDisplay)
                 Padding(

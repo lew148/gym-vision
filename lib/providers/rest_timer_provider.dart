@@ -18,8 +18,8 @@ class RestTimerProvider extends ChangeNotifier {
   Timer? get timer => _timer;
 
   static const int iosNotifId = 11;
-  static const String restTimerTitle = "Rest is over!";
-  static const String restTimerBody = "Time to get back to work";
+  static const String restTimerTitle = "Rest is over";
+  static const String restTimerBody = "Time to get back to work!";
 
   DateTime _getNow() {
     final now = DateTime.now();
@@ -79,20 +79,13 @@ class RestTimerProvider extends ChangeNotifier {
 
           showCustomDialog(
             globalContext,
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.alarm_on_rounded),
-                Padding(padding: EdgeInsetsGeometry.all(2.5)),
-                Text(restTimerTitle),
-              ],
-            ),
-            const Text(restTimerBody),
-            actions: [
-              CupertinoDialogAction(child: const Text("I'm Ready!"), onPressed: () => Navigator.pop(globalContext)),
+            title: restTimerTitle,
+            icon: Icons.alarm_on_rounded,
+            content: restTimerBody,
+            customActions: [
               if (!activeWorkoutProvider.activeWorkoutIsOpen)
                 CupertinoDialogAction(
-                  child: const Text("Go to Workout!"),
+                  child: const Text("Open Workout!"),
                   onPressed: () {
                     Navigator.pop(globalContext);
                     activeWorkoutProvider.openActiveWorkout(globalContext);

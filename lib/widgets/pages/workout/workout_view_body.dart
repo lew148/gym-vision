@@ -25,6 +25,8 @@ import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/components/notes.dart';
 
 class WorkoutViewBody extends StatelessWidget {
+  static const workoutResumableForHours = 4;
+
   final bool autofocusNotes;
 
   const WorkoutViewBody({
@@ -204,7 +206,7 @@ class WorkoutViewBody extends StatelessWidget {
                 onChange: () => provider.reload(),
                 fromWorkoutView: true,
                 extraButtons: [
-                  if (workout.isFinished())
+                  if (workout.isFinished() && DateTime.now().isBefore(workout.endDate!.add(const Duration(hours: workoutResumableForHours))))
                     Button(
                       icon: Icons.play_circle_outline_rounded,
                       text: 'Resume Workout',

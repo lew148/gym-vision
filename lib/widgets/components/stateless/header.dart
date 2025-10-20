@@ -13,7 +13,7 @@ class Header extends StatelessWidget {
     this.actions,
     this.large = false,
   }) : assert(
-          (title != null || widget != null) || (title == null || widget == null),
+          (title != null) ^ (widget != null),
           'Must provide EITHER title OR widget to Header',
         );
 
