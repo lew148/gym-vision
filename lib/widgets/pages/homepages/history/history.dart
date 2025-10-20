@@ -128,7 +128,7 @@ class _HistoryState extends State<History> {
                                   ? const ScrollBottomPadding()
                                   : Padding(
                                       padding: const EdgeInsetsGeometry.only(bottom: 5),
-                                      child: WorkoutSummaryCard(
+                                      child: WorkoutCard(
                                         workout: workoutsToDisplay[i],
                                         isDisplay: true,
                                         reloadParent: reload,

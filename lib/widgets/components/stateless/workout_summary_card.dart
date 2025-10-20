@@ -9,14 +9,15 @@ import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/custom_vertical_divider.dart';
 import 'package:gymvision/widgets/components/stateless/prop_display.dart';
 import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
+import 'package:gymvision/widgets/pages/workout/sharable_workout_summary.dart';
 import 'package:gymvision/widgets/pages/workout/workout_options_menu.dart';
 
-class WorkoutSummaryCard extends StatelessWidget {
+class WorkoutCard extends StatelessWidget {
   final Workout workout;
   final bool isDisplay;
   final Function()? reloadParent; // parent needs this class to be stateless for preformance reasons
 
-  const WorkoutSummaryCard({
+  const WorkoutCard({
     super.key,
     required this.workout,
     this.isDisplay = false,
@@ -73,7 +74,18 @@ class WorkoutSummaryCard extends StatelessWidget {
                       ],
                     ),
                   ]),
-                  WorkoutOptionsMenu(workout: workout, onChange: reloadParent),
+                  WorkoutOptionsMenu(workout: workout, onChange: reloadParent, extraButtons: [
+                    if (workout.isFinished())
+                      Button(
+                        onTap: () async {
+                          Navigator.pop(context);
+                          await showCloseableBottomSheet(context, SharableWorkoutSummary(workout: workout));
+                        },
+                        icon: Icons.share_rounded,
+                        style: ButtonCustomStyle.primaryIconOnly(),
+                        text: 'Share / Summary',
+                      ),
+                  ]),
                 ],
               ),
               if (workout.workoutCategories != null && workout.workoutCategories!.isNotEmpty)
@@ -137,6 +149,28 @@ class WorkoutSummaryCard extends StatelessWidget {
                             ),
                           ),
                         ),
+                      if (!isDisplay)
+                        Padding(
+                          padding: const EdgeInsetsGeometry.only(top: 10),
+                          child: Row(children: [
+                            if (workout.summary == null || !workout.summary!.isNote())
+                              Padding(
+                                padding: const EdgeInsetsGeometry.only(right: 20),
+                                child: Button(
+                                  text: 'Add Note',
+                                  icon: Icons.add_rounded,
+                                  style: ButtonCustomStyle.noPadding(),
+                                  onTap: () => openWorkout(autofocusNotes: true),
+                                ),
+                              ),
+                            Button(
+                              text: 'Add Progress Pic',
+                              icon: Icons.add_rounded,
+                              style: ButtonCustomStyle.noPadding(),
+                              onTap: () => null,
+                            ),
+                          ]),
+                        ),
                       const CustomDivider(shadow: true),
                       Container(
                         margin: const EdgeInsetsGeometry.only(top: 5),
@@ -184,28 +218,6 @@ class WorkoutSummaryCard extends StatelessWidget {
                         ),
                       ),
                     ]),
-              if (!isDisplay)
-                Padding(
-                  padding: const EdgeInsetsGeometry.only(top: 10),
-                  child: Row(children: [
-                    if (workout.summary == null || !workout.summary!.isNote())
-                      Padding(
-                        padding: const EdgeInsetsGeometry.only(right: 20),
-                        child: Button(
-                          text: 'Add Note',
-                          icon: Icons.add_rounded,
-                          style: ButtonCustomStyle.noPadding(),
-                          onTap: () => openWorkout(autofocusNotes: true),
-                        ),
-                      ),
-                    Button(
-                      text: 'Add Progress Pic',
-                      icon: Icons.add_rounded,
-                      style: ButtonCustomStyle.noPadding(),
-                      onTap: () => null,
-                    ),
-                  ]),
-                ),
             ],
           ),
         ),

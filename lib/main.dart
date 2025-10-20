@@ -160,7 +160,7 @@ class MyApp extends StatelessWidget {
       ),
       themeMode: EasyDynamicTheme.of(context).themeMode,
       home: DebugScaffold(
-        showActiveWorkout: navProvider.selectedIndex != 4,
+        showActiveWorkout: navProvider.selectedIndex < 4,
         body: widgetPages().elementAt(navProvider.selectedIndex),
         bottomNavigationBar: Container(
           decoration: BoxDecoration(border: BoxBorder.fromLTRB(top: BorderSide(color: shadow, width: 0.25))),

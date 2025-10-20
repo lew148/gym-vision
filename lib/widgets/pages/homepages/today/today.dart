@@ -119,7 +119,7 @@ class _TodayState extends State<Today> {
       borderRadius: BorderRadius.circular(15),
       child: SingleChildScrollView(
           child: Column(children: [
-        ...workouts.map((w) => WorkoutSummaryCard(workout: w, reloadParent: reload)),
+        ...workouts.map((w) => WorkoutCard(workout: w, reloadParent: reload)),
         const ScrollBottomPadding(),
       ])),
     );

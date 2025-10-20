@@ -114,7 +114,7 @@ class Button extends StatelessWidget {
         );
 
     return elevated
-        ? Padding(
+        ? Container(
             padding: const EdgeInsetsGeometry.symmetric(vertical: 2.5),
             child: ElevatedButton(
               onPressed: disabled ? null : onTap,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_confetti/flutter_confetti.dart';
 import 'package:gymvision/classes/db/workouts/workout_category.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
@@ -14,6 +15,7 @@ import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
 import 'package:gymvision/widgets/components/time_elapsed.dart';
 import 'package:gymvision/widgets/forms/add_exercises_to_workout.dart';
 import 'package:gymvision/widgets/pages/workout/workout_options_menu.dart';
+import 'package:gymvision/widgets/pages/workout/sharable_workout_summary.dart';
 import 'package:provider/provider.dart';
 import 'package:gymvision/providers/workout_provider.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
@@ -84,7 +86,12 @@ class WorkoutViewBody extends StatelessWidget {
 
         if (!resuming) {
           if (context.mounted && wasActiveWorkout) await context.read<RestTimerProvider>().clearTimer();
-          if (context.mounted) Navigator.pop(context);
+          if (context.mounted) {
+            Navigator.pop(context);
+            Confetti.launch(context, options: const ConfettiOptions(particleCount: 200, spread: 70, y: 0.8));
+            await showCloseableBottomSheet(context, SharableWorkoutSummary(workout: workout));
+          }
+
           return;
         }
 
@@ -206,7 +213,8 @@ class WorkoutViewBody extends StatelessWidget {
                 onChange: () => provider.reload(),
                 fromWorkoutView: true,
                 extraButtons: [
-                  if (workout.isFinished() && DateTime.now().isBefore(workout.endDate!.add(const Duration(hours: workoutResumableForHours))))
+                  if (workout.isFinished() &&
+                      DateTime.now().isBefore(workout.endDate!.add(const Duration(hours: workoutResumableForHours))))
                     Button(
                       icon: Icons.play_circle_outline_rounded,
                       text: 'Resume Workout',
