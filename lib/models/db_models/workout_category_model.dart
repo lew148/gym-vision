@@ -13,7 +13,7 @@ class WorkoutCategoryModel {
         .toList();
   }
 
-  static setWorkoutCategories(int workoutId, List<Category> categories) async {
+  static Future<void> setWorkoutCategories(int workoutId, List<Category> categories) async {
     final existingCategories = await getWorkoutCategoriesByWorkout(workoutId);
     final newCategories = categories;
 

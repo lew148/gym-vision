@@ -26,7 +26,7 @@ class LocalNotificationService {
     await plugin.initialize(settings);
 
     tz.initializeTimeZones();
-    tz.setLocalLocation(tz.getLocation(await FlutterTimezone.getLocalTimezone()));
+    tz.setLocalLocation(tz.getLocation((await FlutterTimezone.getLocalTimezone()).identifier));
 
     isInit = true;
   }

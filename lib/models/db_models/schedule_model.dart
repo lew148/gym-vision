@@ -20,7 +20,7 @@ class ScheduleModel {
     if (schedule == null) return null;
 
     if (withItems) {
-      schedule.items = await getItemsBySchedule(schedule.id, withCategories: withItems);
+      schedule.items = await getItemsBySchedule(schedule.id!, withCategories: withItems);
     }
 
     return schedule;
@@ -33,13 +33,13 @@ class ScheduleModel {
     if (schedule == null) return null;
 
     if (withItems) {
-      schedule.items = await getItemsBySchedule(schedule.id, withCategories: withItems);
+      schedule.items = await getItemsBySchedule(schedule.id!, withCategories: withItems);
     }
 
     return schedule;
   }
 
-  static Future<List<ScheduleItem>> getItemsBySchedule(scheduleId, {bool withCategories = false}) async {
+  static Future<List<ScheduleItem>> getItemsBySchedule(int scheduleId, {bool withCategories = false}) async {
     final db = DatabaseHelper.db;
     final items = (await (db.select(db.driftScheduleItems)..where((i) => i.scheduleId.equals(scheduleId))).get())
         .map((i) => i.toObject())

@@ -8,7 +8,7 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  reloadState() => setState(() {});
+  void reload() => setState(() {});
 
   @override
   Widget build(BuildContext context) {

@@ -58,7 +58,7 @@ class _ExercisesState extends State<Exercises> {
         excludedExerciseIds: widget.excludedExerciseIdentifiers,
       );
 
-  setSearchValue(String? string) => setState(() {
+  void setSearchValue(String? string) => setState(() {
         selectedType = ExerciseType.strength;
 
         if (string == null) {
