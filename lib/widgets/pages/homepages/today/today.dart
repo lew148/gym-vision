@@ -14,7 +14,7 @@ import 'package:gymvision/widgets/components/stateless/prop_display.dart';
 import 'package:gymvision/widgets/components/stateless/scroll_bottom_padding.dart';
 import 'package:gymvision/widgets/components/stateless/header.dart';
 import 'package:gymvision/widgets/components/stateless/splash_text.dart';
-import 'package:gymvision/widgets/components/stateless/workout_summary_card.dart';
+import 'package:gymvision/widgets/components/workouts/workout_summary_card.dart';
 import 'package:gymvision/widgets/forms/add_bodyweight_form.dart';
 import 'package:gymvision/providers/navigation_provider.dart';
 import 'package:gymvision/static_data/helpers.dart';

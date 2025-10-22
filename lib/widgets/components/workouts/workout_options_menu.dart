@@ -7,6 +7,7 @@ import 'package:gymvision/providers/active_workout_provider.dart';
 import 'package:gymvision/providers/rest_timer_provider.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/options_menu.dart';
+import 'package:gymvision/widgets/components/workouts/sharable_workout_summary.dart';
 import 'package:provider/provider.dart';
 
 class WorkoutOptionsMenu extends StatelessWidget {
@@ -57,22 +58,16 @@ class WorkoutOptionsMenu extends StatelessWidget {
         );
 
     return OptionsMenu(buttons: [
-      //   Button
-      //     onTap: () async {
-      //       Navigator.pop(context);
-
-      //       try {
-      //         final exportString = await WorkoutModel.getWorkoutExportString(workout.id!);
-      //         if (exportString == null) throw Exception();
-      //         await Clipboard.setData(ClipboardData(text: exportString));
-      //         if (mounted) showSnackBar(context, 'Workout copied to clipboard!');
-      //       } catch (ex) {
-      //         if (mounted) showSnackBar(context, 'Failed to export workout.');
-      //       }
-      //     },
-      //     icon: Icons.share_rounded,
-      //     text: 'Export Workout',
-      //   ),
+      if (workout.isFinished())
+        Button(
+          onTap: () async {
+            Navigator.pop(context);
+            await showCloseableBottomSheet(context, SharableWorkoutSummary(workout: workout));
+          },
+          icon: Icons.share_rounded,
+          style: ButtonCustomStyle.primaryIconOnly(),
+          text: 'Share / Summary',
+        ),
       ...?extraButtons,
       Button(
         onTap: () {

@@ -353,7 +353,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           loading: snapshot.connectionState == ConnectionState.waiting,
           child: CustomCard(
             child: sets == null || sets.isEmpty
-                ? getHeader(standalone: true, isDone: widget.workoutExercise.done)
+                ? getHeader(standalone: true, isDone: widget.workoutExercise.isDone())
                 : Column(
                     children: [
                       GestureDetector(
@@ -364,7 +364,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                           });
                         },
                         behavior: HitTestBehavior.translucent,
-                        child: getHeader(standalone: false, isDone: !(sets.any((ws) => !ws.done))),
+                        child: getHeader(standalone: false, isDone: sets.every((ws) => ws.done)),
                       ),
                       if (dropped) ...[
                         const CustomDivider(shadow: true, height: 0),

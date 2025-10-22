@@ -9,8 +9,7 @@ import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/custom_vertical_divider.dart';
 import 'package:gymvision/widgets/components/stateless/prop_display.dart';
 import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
-import 'package:gymvision/widgets/pages/workout/sharable_workout_summary.dart';
-import 'package:gymvision/widgets/pages/workout/workout_options_menu.dart';
+import 'package:gymvision/widgets/components/workouts/workout_options_menu.dart';
 
 class WorkoutCard extends StatelessWidget {
   final Workout workout;
@@ -74,18 +73,7 @@ class WorkoutCard extends StatelessWidget {
                       ],
                     ),
                   ]),
-                  WorkoutOptionsMenu(workout: workout, onChange: reloadParent, extraButtons: [
-                    if (workout.isFinished())
-                      Button(
-                        onTap: () async {
-                          Navigator.pop(context);
-                          await showCloseableBottomSheet(context, SharableWorkoutSummary(workout: workout));
-                        },
-                        icon: Icons.share_rounded,
-                        style: ButtonCustomStyle.primaryIconOnly(),
-                        text: 'Share / Summary',
-                      ),
-                  ]),
+                  WorkoutOptionsMenu(workout: workout, onChange: reloadParent),
                 ],
               ),
               if (workout.workoutCategories != null && workout.workoutCategories!.isNotEmpty)

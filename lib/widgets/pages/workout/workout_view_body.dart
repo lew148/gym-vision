@@ -14,12 +14,12 @@ import 'package:gymvision/widgets/components/stateless/prop_display.dart';
 import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
 import 'package:gymvision/widgets/components/time_elapsed.dart';
 import 'package:gymvision/widgets/forms/add_exercises_to_workout.dart';
-import 'package:gymvision/widgets/pages/workout/workout_options_menu.dart';
-import 'package:gymvision/widgets/pages/workout/sharable_workout_summary.dart';
+import 'package:gymvision/widgets/components/workouts/workout_options_menu.dart';
+import 'package:gymvision/widgets/components/workouts/sharable_workout_summary.dart';
 import 'package:provider/provider.dart';
 import 'package:gymvision/providers/workout_provider.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
-import 'package:gymvision/widgets/pages/workout/workout_exercise_widget.dart';
+import 'package:gymvision/widgets/components/workouts/workout_exercise_widget.dart';
 import 'package:gymvision/widgets/components/stateless/splash_text.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/forms/category_picker.dart';
@@ -255,17 +255,20 @@ class WorkoutViewBody extends StatelessWidget {
 
         // --- categories, notes and actions ---
         if (workout.hasCategories())
-          Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-            Wrap(
-                alignment: WrapAlignment.start,
-                children: workout.workoutCategories! //todo: sort
-                    .map((wc) => PropDisplay(
-                          text: wc.getCategoryDisplayName(),
-                          onTap: () => goToMostRecentWorkout(wc),
-                          size: PropDisplaySize.small,
-                        ))
-                    .toList()),
-          ]),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Wrap(
+                  alignment: WrapAlignment.start,
+                  children: workout.workoutCategories! //todo: sort
+                      .map((wc) => PropDisplay(
+                            text: wc.getCategoryDisplayName(),
+                            onTap: () => goToMostRecentWorkout(wc),
+                            size: PropDisplaySize.small,
+                          ))
+                      .toList()),
+            ],
+          ),
         Row(children: [
           Expanded(child: Notes(type: NoteType.workout, objectId: workout.id!.toString(), autofocus: autofocusNotes)),
           Row(children: [

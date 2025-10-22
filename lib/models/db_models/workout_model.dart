@@ -62,17 +62,16 @@ class WorkoutModel {
 
     if (workout.workoutExercises == null || workout.workoutExercises!.isEmpty) return summary;
 
-    final allSets = [for (var we in workout.getWorkoutExercises()) ...we.getSets()];
-    allSets.removeWhere((s) => !s.done);
+    final allDoneSets = [for (var we in workout.getDoneWorkoutExercises()) ...we.getSets()];
     summary.totalExercises = workout.getWorkoutExercises().length;
-    summary.totalSets = allSets.length;
-    summary.totalReps = allSets.map((s) => s.reps ?? 0).sum;
-    summary.totalCalsBurned = allSets.map((s) => s.calsBurned ?? 0).sum;
+    summary.totalSets = allDoneSets.length;
+    summary.totalReps = allDoneSets.map((s) => s.reps ?? 0).sum;
+    summary.totalCalsBurned = allDoneSets.map((s) => s.calsBurned ?? 0).sum;
 
-    if (!fullSummary || allSets.isEmpty) return summary;
+    if (!fullSummary || allDoneSets.isEmpty) return summary;
 
     WorkoutSet? bestSet;
-    final setsGroupedByWeight = groupBy(allSets, (s) => s.weight);
+    final setsGroupedByWeight = groupBy(allDoneSets, (s) => s.weight);
     final heaviestWeight = (setsGroupedByWeight.keys.toList()..sort((a, b) => a! < b! ? 1 : 0)).first;
     final bestSets = setsGroupedByWeight[heaviestWeight];
     if (bestSets != null) {

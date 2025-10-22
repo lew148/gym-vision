@@ -14,7 +14,7 @@ import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
 import 'package:gymvision/widgets/debug_scaffold.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
-import 'package:gymvision/widgets/pages/workout/workout_exercise_widget.dart';
+import 'package:gymvision/widgets/components/workouts/workout_exercise_widget.dart';
 
 class ExerciseView extends StatefulWidget {
   final String identifier;
