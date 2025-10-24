@@ -3,15 +3,19 @@ import 'package:flutter/material.dart';
 class PulsingDot extends StatefulWidget {
   final double size;
   final Color color;
+  final String? text;
 
   const PulsingDot({
     super.key,
-    this.size = 12,
+    this.size = 15,
     this.color = Colors.green,
+    this.text,
   });
 
   @override
   State<PulsingDot> createState() => _PulsingDotState();
+
+  factory PulsingDot.active() => PulsingDot(text: 'Active');
 }
 
 class _PulsingDotState extends State<PulsingDot> with SingleTickerProviderStateMixin {
@@ -23,7 +27,7 @@ class _PulsingDotState extends State<PulsingDot> with SingleTickerProviderStateM
   void initState() {
     super.initState();
     _controller = AnimationController(vsync: this, duration: const Duration(seconds: 1));
-    _scale = Tween<double>(begin: 0.9, end: 3).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    _scale = Tween<double>(begin: 0.9, end: 2).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
     _opacity = Tween<double>(begin: 0.5, end: 0.0).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
     startPulsing();
   }
@@ -50,20 +54,27 @@ class _PulsingDotState extends State<PulsingDot> with SingleTickerProviderStateM
           decoration: BoxDecoration(shape: BoxShape.circle, color: widget.color),
         );
 
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        AnimatedBuilder(
-          animation: _controller,
-          builder: (context, child) {
-            return Transform.scale(
-              scale: _scale.value,
-              child: Opacity(opacity: _opacity.value, child: getCircle()),
-            );
-          },
+    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Stack(
+        alignment: Alignment.center,
+        children: [
+          AnimatedBuilder(
+            animation: _controller,
+            builder: (context, child) {
+              return Transform.scale(
+                scale: _scale.value,
+                child: Opacity(opacity: _opacity.value, child: getCircle()),
+              );
+            },
+          ),
+          getCircle(halfScale: true),
+        ],
+      ),
+      if (widget.text != null)
+        Padding(
+          padding: const EdgeInsets.only(left: 5),
+          child: Text(widget.text!, style: TextStyle(color: widget.color)),
         ),
-        getCircle(halfScale: true),
-      ],
-    );
+    ]);
   }
 }

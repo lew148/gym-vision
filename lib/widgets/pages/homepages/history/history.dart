@@ -14,7 +14,7 @@ import 'package:gymvision/widgets/components/stateless/category_filter.dart';
 import 'package:gymvision/widgets/components/stateless/scroll_bottom_padding.dart';
 import 'package:gymvision/widgets/components/stateless/shimmer_load.dart';
 import 'package:gymvision/widgets/components/stateless/splash_text.dart';
-import 'package:gymvision/widgets/components/workouts/workout_summary_card.dart';
+import 'package:gymvision/widgets/components/workouts/workout_card.dart';
 import 'package:provider/provider.dart';
 
 class History extends StatefulWidget {

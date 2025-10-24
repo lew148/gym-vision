@@ -62,7 +62,7 @@ class WorkoutOptionsMenu extends StatelessWidget {
         Button(
           onTap: () async {
             Navigator.pop(context);
-            await showCloseableBottomSheet(context, SharableWorkoutSummary(workout: workout));
+            await showCloseableBottomSheet(context, SharableWorkoutSummary(workoutId: workout.id!));
           },
           icon: Icons.share_rounded,
           style: ButtonCustomStyle.primaryIconOnly(),

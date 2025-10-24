@@ -225,7 +225,7 @@ Future addActiveWorkout(BuildContext context, {List<Category>? categories}) asyn
         await showCustomDialog(
           context,
           icon: Icons.directions_run_rounded,
-          title: 'Ongoing Workout',
+          title: 'Active Workout',
           content: 'Finish the active workout before creating another!',
           customActions: [
             CupertinoDialogAction(

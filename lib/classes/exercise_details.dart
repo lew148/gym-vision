@@ -4,21 +4,28 @@ import 'package:gymvision/helpers/number_helper.dart';
 
 class ExerciseDetails {
   String exerciseIdentifier;
-  WorkoutSet? pr;
+  WorkoutSet? max;
   WorkoutSet? last;
   List<WorkoutExercise>? workoutExercises;
 
   ExerciseDetails({
     required this.exerciseIdentifier,
-    this.pr,
+    this.max,
     this.last,
     this.workoutExercises,
   });
 
-  String? getPRAsString() => pr == null || pr!.weight! <= 0 ? null : NumberHelper.truncateDouble(pr!.weight);
-  
-  String? getLastWeightAsString() =>
-      last == null || last!.weight! <= 0 ? null : NumberHelper.truncateDouble(last!.weight);
+  MapEntry<String?, String?>? getMaxStrings() => max == null
+      ? null
+      : MapEntry(
+          max!.weight! == 0 ? null : NumberHelper.truncateDouble(max!.weight),
+          max!.reps! == 0 ? null : max!.reps.toString(),
+        );
 
-  String? getLastRepsAsString() => last == null || last!.reps! <= 0 ? null : last!.reps.toString();
+  MapEntry<String?, String?>? getLastStrings() => last == null
+      ? null
+      : MapEntry(
+          last!.weight! == 0 ? null : NumberHelper.truncateDouble(last!.weight),
+          last!.reps! == 0 ? null : last!.reps.toString(),
+        );
 }

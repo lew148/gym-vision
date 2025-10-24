@@ -11,7 +11,7 @@ class ExerciseDetailsModel {
   }) async {
     return ExerciseDetails(
       exerciseIdentifier: exerciseIdentifier,
-      pr: await getPr(exerciseIdentifier),
+      max: await getPr(exerciseIdentifier),
       last: await getLast(exerciseIdentifier),
       workoutExercises: includeRecentUses
           ? await WorkoutExerciseModel.getWorkoutExercisesForExercise(

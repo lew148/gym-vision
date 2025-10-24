@@ -9,6 +9,9 @@ class TodoistService {
     'ospuuq',
     'fzelzz',
     'akqndp',
+    'nnnqaw',
+    'msdvfk',
+    'DUMMY',
   ];
 
   static const String _projectId = '6f4676JVMm8w5Xvp';

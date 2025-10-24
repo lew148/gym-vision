@@ -15,7 +15,7 @@ class SplashText extends StatelessWidget {
   factory SplashText.notFound({String? item, String? description}) => SplashText(
         title: 'This ${item == null ? '' : '$item '}could not be found...',
         icon: Icons.question_mark_rounded,
-        description: description ?? 'Go back and try again',
+        description: description ?? 'Please try again',
       );
 
   @override

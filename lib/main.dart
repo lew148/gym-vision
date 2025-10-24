@@ -106,11 +106,10 @@ class MyApp extends StatelessWidget {
   final tertiary = const Color.fromARGB(255, 255, 101, 101);
   final shadow = const Color.fromARGB(255, 77, 77, 77);
   final lightBackground = const Color.fromARGB(255, 245, 245, 245);
-  final lightSurface = Colors.white; //const Color.fromARGB(255, 245, 245, 245);
-  final darkBackground = const Color.fromARGB(255, 0, 0, 0);
+  final lightSurface = Colors.white; 
+  final darkBackground = Colors.black;
   final darkSurface = const Color.fromARGB(255, 15, 15, 15);
-  final darkCard = const Color.fromARGB(255, 22, 22, 22);
-  final darkBottomSheet = const Color.fromARGB(255, 26, 26, 26);
+  // final darkBottomSheet = const Color.fromARGB(255, 22, 22, 22);
 
   List<Widget> widgetPages() => [
         const Today(),
@@ -148,8 +147,8 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         splashColor: Colors.transparent,
         scaffoldBackgroundColor: darkBackground,
-        bottomSheetTheme: BottomSheetThemeData(backgroundColor: darkCard),
-        cardTheme: CardThemeData(color: darkCard),
+        // bottomSheetTheme: BottomSheetThemeData(backgroundColor: darkBottomSheet),
+        // cardTheme: CardThemeData(color: darkCard),
         colorScheme: ColorScheme.dark(
           primary: primary,
           secondary: secondary,

@@ -69,33 +69,21 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
     duration = widget.workoutSet?.time ?? const Duration();
   }
 
-  List<Widget> getWeightFields(Exercise ex) {
-    final last = ex.exerciseDetails?.getLastWeightAsString();
-    final pr = ex.exerciseDetails?.getPRAsString();
-    final lastReps = ex.exerciseDetails?.getLastRepsAsString();
+  void setWeight(String s) => weightController.text = s;
+  void setReps(String s) => repsController.text = s;
 
+  List<Widget> getWeightFields(Exercise ex) {
     return [
-      CustomFormField.double(
-        controller: weightController,
-        label: 'Weight',
-        unit: 'kg',
-        buttons: [
-          if (last != null)
-            Button(text: 'Last', onTap: () => weightController.text = last, style: ButtonCustomStyle.noPrimary()),
-          if (pr != null)
-            Button(text: 'Max', onTap: () => weightController.text = pr, style: ButtonCustomStyle.noPrimary()),
-        ],
-      ),
+      CustomFormField.double(controller: weightController, label: 'Weight', unit: 'kg'),
       CustomFormField.int(
         controller: repsController,
         label: 'Reps',
         canBeBlank: false,
         buttons: [
-          lastReps != null
-              ? Button(text: 'Last', onTap: () => repsController.text = lastReps, style: ButtonCustomStyle.noPrimary())
-              : Button(text: '1', onTap: () => repsController.text = '1', style: ButtonCustomStyle.noPrimary()),
-          Button(text: '8', onTap: () => repsController.text = '8', style: ButtonCustomStyle.noPrimary()),
-          Button(text: '12', onTap: () => repsController.text = '12', style: ButtonCustomStyle.noPrimary()),
+          Button(text: '1', onTap: () => setReps('1'), style: ButtonCustomStyle.noPrimary()),
+          Button(text: '8', onTap: () => setReps('8'), style: ButtonCustomStyle.noPrimary()),
+          Button(text: '10', onTap: () => setReps('10'), style: ButtonCustomStyle.noPrimary()),
+          Button(text: '12', onTap: () => setReps('12'), style: ButtonCustomStyle.noPrimary()),
         ],
       ),
     ];
@@ -255,7 +243,9 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
           );
         }
 
-        final exercise = snapshot.data!;
+        final Exercise exercise = snapshot.data!;
+        final MapEntry? maxStrings = exercise.exerciseDetails?.getMaxStrings();
+        final MapEntry? lastStrings = exercise.exerciseDetails?.getLastStrings();
 
         return Form(
           key: formKey,
@@ -263,6 +253,26 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
             children: [
               Header(title: exercise.getFullName()),
               const CustomDivider(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (lastStrings != null)
+                    Button(
+                      text: 'Last',
+                      onTap: () {
+                        if (lastStrings.key != null) setWeight(lastStrings.key);
+                        if (lastStrings.value != null) setReps(lastStrings.value);
+                      },
+                    ),
+                  if (maxStrings != null)
+                    Button(
+                        text: 'Max',
+                        onTap: () {
+                          if (maxStrings.key != null) setWeight(maxStrings.key);
+                          if (maxStrings.value != null) setReps(maxStrings.value);
+                        }),
+                ],
+              ),
               if (exercise.type == ExerciseType.strength) ...getWeightFields(exercise),
               if (exercise.type == ExerciseType.cardio) ...getCardioFields(exercise),
               Padding(

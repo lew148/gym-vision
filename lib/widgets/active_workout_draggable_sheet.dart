@@ -58,34 +58,34 @@ class ActiveWorkoutDraggableSheet extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-
-                                children: [
-                                  if (!DateTimeHelper.isInFuture(workout.date))
-                                    const Padding(
-                                      padding: EdgeInsetsGeometry.only(right: 8),
-                                      child: PulsingDot(),
-                                    ),
-                                  Text(
-                                    !DateTimeHelper.isToday(workout.date)
-                                        ? DateTimeHelper.getDateOrDayStr(workout.date)
-                                        : workout.getWorkoutTitle(),
-                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                                  ),
-                                ],
-                              ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                TextWithIcon.time(workout.date),
-                                TimeElapsed(
-                                  since: workout.date,
-                                  color: Theme.of(context).colorScheme.primary,
-                                  labelForNegativeDuration: 'Starts in',
-                                  bold: true,
-                                ),
-                              ],),
+                                  Text(
+                                    !DateTimeHelper.isToday(workout.date)
+                                        ? '${DateTimeHelper.getDateOrDayStr(workout.date)}\'s Workout'
+                                        : workout.getWorkoutTitle(),
+                                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                                  ),
+                                  TextWithIcon.time(workout.date),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  if (!DateTimeHelper.isInFuture(workout.date))
+                                    Padding(
+                                      padding: EdgeInsetsGeometry.only(bottom: 5),
+                                      child: PulsingDot.active(),
+                                    ),
+                                  TimeElapsed(
+                                    since: workout.date,
+                                    color: Theme.of(context).colorScheme.primary,
+                                    labelForNegativeDuration: 'Starts in',
+                                    bold: true,
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                         ],

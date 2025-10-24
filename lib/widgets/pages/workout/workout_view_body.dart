@@ -89,7 +89,7 @@ class WorkoutViewBody extends StatelessWidget {
           if (context.mounted) {
             Navigator.pop(context);
             Confetti.launch(context, options: const ConfettiOptions(particleCount: 200, spread: 70, y: 0.8));
-            await showCloseableBottomSheet(context, SharableWorkoutSummary(workout: workout));
+            await showCloseableBottomSheet(context, SharableWorkoutSummary(workoutId: workout.id!));
           }
 
           return;

@@ -27,11 +27,17 @@ class _NotesState extends State<Notes> {
   bool firstLoad = true;
   late Future<Note?> noteFuture;
   TextEditingController controller = TextEditingController();
+  final _focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
     noteFuture = loadNote();
+    if (widget.autofocus) {
+      Future.delayed(const Duration(milliseconds: 400), () {
+        if (mounted) FocusScope.of(context).requestFocus(_focusNode);
+      });
+    }
   }
 
   void reload() => setState(() {
@@ -87,8 +93,9 @@ class _NotesState extends State<Notes> {
                 Expanded(
                   child: CupertinoTextField(
                     controller: controller,
+                    focusNode: _focusNode,
                     keyboardType: TextInputType.multiline,
-                    autofocus: widget.autofocus,
+                    autofocus: false, // to rely on manual focus
                     textInputAction: TextInputAction.done,
                     onEditingComplete: () => onSave(snapshot.data),
                     padding: const EdgeInsetsGeometry.all(10),

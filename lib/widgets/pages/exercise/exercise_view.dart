@@ -151,8 +151,8 @@ class _ExerciseViewState extends State<ExerciseView> {
                     getInfoWidget(context, 'Type', Text(exercise.type.displayName)),
                     getInfoWidget(context, 'Primary Muscle', Text(exercise.primaryMuscleGroup.displayName)),
                     getInfoWidget(context, 'Equipment', Text(exercise.equipment.displayName)),
-                    if (exercise.type == ExerciseType.strength && exercise.exerciseDetails?.pr != null)
-                      getPrSection(exercise.exerciseDetails!.pr!),
+                    if (exercise.type == ExerciseType.strength && exercise.exerciseDetails?.max != null)
+                      getPrSection(exercise.exerciseDetails!.max!),
                     Notes(type: NoteType.exercise, objectId: exercise.identifier),
                     const Header(title: 'History'),
                     const CustomDivider(shadow: true),
