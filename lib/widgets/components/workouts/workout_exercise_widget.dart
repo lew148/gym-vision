@@ -165,6 +165,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       widgets.add(isDisplay
           ? getSetWidgetInner(i + 1, set)
           : InkWell(
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
               enableFeedback: false,
               onLongPress: () => OptionsMenu.showOptionsMenu(
                 context,

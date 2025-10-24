@@ -227,26 +227,6 @@ class WorkoutModel {
     return true;
   }
 
-  static Future<int?> getMostRecentWorkoutIdForCategory(WorkoutCategory wc) async {
-    final db = DatabaseHelper.db;
-    var workout = await getWorkout(wc.workoutId);
-    if (workout == null) return null;
-    return (await (db.select(db.driftWorkouts).join([
-      leftOuterJoin(
-        db.driftWorkoutCategories,
-        db.driftWorkoutCategories.workoutId.equalsExp(db.driftWorkouts.id),
-        useColumns: false,
-      )
-    ])
-          ..groupBy([db.driftWorkouts.id])
-          ..orderBy([OrderingTerm.desc(db.driftWorkouts.date)])
-          ..where(db.driftWorkoutCategories.category.equalsValue(wc.category))
-          ..where(db.driftWorkouts.date.isSmallerThanValue(workout.date))
-          ..limit(1))
-        .map((row) => row.readTable(db.driftWorkouts).id)
-        .getSingleOrNull());
-  }
-
   static Future<bool> copyLastSimilarWorkout(int workoutId, List<Category> categories) async {
     try {
       final db = DatabaseHelper.db;

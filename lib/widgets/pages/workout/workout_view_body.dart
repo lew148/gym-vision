@@ -7,6 +7,7 @@ import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/providers/active_workout_provider.dart';
+import 'package:gymvision/providers/navigation_provider.dart';
 import 'package:gymvision/providers/rest_timer_provider.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/widgets/components/rest_timer.dart';
@@ -101,17 +102,10 @@ class WorkoutViewBody extends StatelessWidget {
       }
     }
 
-    Future<void> goToMostRecentWorkout(WorkoutCategory wc) async {
-      var id = await WorkoutModel.getMostRecentWorkoutIdForCategory(wc);
-      if (!context.mounted) return;
-
-      if (id == null) {
-        showSnackBar(context, 'No previous workouts for this category.');
-        return;
-      }
-
-      await openWorkoutView(context, id);
-      provider.reload();
+    Future<void> onCategoryPillTap(WorkoutCategory wc) async {
+      final provider = context.read<NavigationProvider>();
+      Navigator.pop(context); // close workout
+      provider.goToHistoryTab(withCategories: [wc.category]);
     }
 
     Future<void> onAddCategoryClick(List<Category> existingWorkoutCategoryIds) async {
@@ -263,7 +257,7 @@ class WorkoutViewBody extends StatelessWidget {
                   children: workout.workoutCategories! //todo: sort
                       .map((wc) => PropDisplay(
                             text: wc.getCategoryDisplayName(),
-                            onTap: () => goToMostRecentWorkout(wc),
+                            onTap: () => onCategoryPillTap(wc),
                             size: PropDisplaySize.small,
                           ))
                       .toList()),

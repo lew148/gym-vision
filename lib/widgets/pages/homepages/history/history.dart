@@ -7,6 +7,7 @@ import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/providers/active_workout_provider.dart';
+import 'package:gymvision/providers/navigation_provider.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/widgets/components/stateless/calendar_view.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
@@ -31,7 +32,9 @@ class _HistoryState extends State<History> {
   @override
   void initState() {
     super.initState();
-    filterCategories = [];
+    final navProvider = context.read<NavigationProvider>();
+    filterCategories = navProvider.historyCategoryFilters;
+    navProvider.resetHistoryCategoryFilters();
   }
 
   Future<(List<Bodyweight>, List<Workout>)> loadFuture() async => (
