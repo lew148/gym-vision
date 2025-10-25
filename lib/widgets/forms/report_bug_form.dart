@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/services/apis/todoist_service.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
-import 'package:gymvision/widgets/forms/fields/checkbox_with_label.dart';
+import 'package:gymvision/widgets/forms/fields/custom_checkbox_with_label.dart';
 import 'package:gymvision/widgets/forms/fields/custom_form_field.dart';
 
 class ReportBugForm extends StatefulWidget {
@@ -57,7 +57,7 @@ class _ReportBugFormState extends State<ReportBugForm> {
           label: 'Your Name',
           maxLength: 15,
         ),
-        CheckbockWithLabel(
+        CustomCheckboxWithLabel(
           label: 'Is a bug',
           value: isBug,
           onChange: (v) => setState(() {

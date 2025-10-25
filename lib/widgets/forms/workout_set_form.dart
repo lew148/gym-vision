@@ -12,6 +12,7 @@ import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/header.dart';
 import 'package:gymvision/widgets/components/stateless/splash_text.dart';
+import 'package:gymvision/widgets/forms/fields/custom_checkbox_with_label.dart';
 import 'package:gymvision/widgets/forms/fields/custom_form_field.dart';
 import 'package:gymvision/widgets/forms/fields/duration_field.dart';
 
@@ -34,49 +35,52 @@ class WorkoutSetForm extends StatefulWidget {
 }
 
 class _WorkoutSetFormState extends State<WorkoutSetForm> {
-  final formKey = GlobalKey<FormState>();
-  late bool isEdit;
-  late Future<Exercise?> exerciseFuture;
+  final _formKey = GlobalKey<FormState>();
+  late bool _isEdit;
+  late Future<Exercise?> _exerciseFuture;
 
-  late TextEditingController weightController;
-  late TextEditingController repsController;
-  late TextEditingController distanceController;
-  late TextEditingController calsBurnedController;
-  late Duration duration;
+  late bool _complete;
+  late TextEditingController _weightController;
+  late TextEditingController _repsController;
+  late TextEditingController _distanceController;
+  late TextEditingController _calsBurnedController;
+  late Duration _duration;
 
   @override
   void initState() {
     super.initState();
-    exerciseFuture = DefaultExercisesModel.getExerciseWithDetails(identifier: widget.exerciseIdentifier);
+    _exerciseFuture = DefaultExercisesModel.getExerciseWithDetails(identifier: widget.exerciseIdentifier);
 
-    isEdit = widget.workoutSet != null;
-    weightController = TextEditingController(
-      text: isEdit ? NumberHelper.blankIfZero(NumberHelper.truncateDouble(widget.workoutSet!.weight)) : null,
+    _isEdit = widget.workoutSet != null;
+    _complete = _isEdit ? widget.workoutSet?.done ?? false : false;
+
+    _weightController = TextEditingController(
+      text: _isEdit ? NumberHelper.blankIfZero(NumberHelper.truncateDouble(widget.workoutSet!.weight)) : null,
     );
 
-    repsController = TextEditingController(
-      text: isEdit ? NumberHelper.blankIfZero(widget.workoutSet!.reps.toString()) : null,
+    _repsController = TextEditingController(
+      text: _isEdit ? NumberHelper.blankIfZero(widget.workoutSet!.reps.toString()) : null,
     );
 
-    distanceController = TextEditingController(
-      text: isEdit ? NumberHelper.blankIfZero(NumberHelper.truncateDouble(widget.workoutSet!.distance)) : null,
+    _distanceController = TextEditingController(
+      text: _isEdit ? NumberHelper.blankIfZero(NumberHelper.truncateDouble(widget.workoutSet!.distance)) : null,
     );
 
-    calsBurnedController = TextEditingController(
-      text: isEdit ? NumberHelper.blankIfZero(widget.workoutSet!.calsBurned.toString()) : null,
+    _calsBurnedController = TextEditingController(
+      text: _isEdit ? NumberHelper.blankIfZero(widget.workoutSet!.calsBurned.toString()) : null,
     );
 
-    duration = widget.workoutSet?.time ?? const Duration();
+    _duration = widget.workoutSet?.time ?? const Duration();
   }
 
-  void setWeight(String s) => weightController.text = s;
-  void setReps(String s) => repsController.text = s;
+  void setWeight(String s) => _weightController.text = s;
+  void setReps(String s) => _repsController.text = s;
 
   List<Widget> getWeightFields(Exercise ex) {
     return [
-      CustomFormField.double(controller: weightController, label: 'Weight', unit: 'kg'),
+      CustomFormField.double(controller: _weightController, label: 'Weight', unit: 'kg'),
       CustomFormField.int(
-        controller: repsController,
+        controller: _repsController,
         label: 'Reps',
         canBeBlank: false,
         buttons: [
@@ -92,26 +96,26 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
   List<Widget> getCardioFields(Exercise ex) => [
         DurationField(
           label: 'Time',
-          duration: duration,
-          onChange: (Duration newDuration) => setState(() => duration = newDuration),
+          duration: _duration,
+          onChange: (Duration newDuration) => setState(() => _duration = newDuration),
         ),
         CustomFormField.double(
-          controller: distanceController,
+          controller: _distanceController,
           label: 'Distance',
           unit: 'km',
-          buttons: [Button.clear(onTap: () => distanceController.clear())],
+          buttons: [Button.clear(onTap: () => _distanceController.clear())],
         ),
         CustomFormField.int(
-          controller: calsBurnedController,
+          controller: _calsBurnedController,
           label: 'Cals Burned',
           unit: 'kcal',
-          buttons: [Button.clear(onTap: () => calsBurnedController.clear())],
+          buttons: [Button.clear(onTap: () => _calsBurnedController.clear())],
         ),
       ];
 
   void onAddSubmit(Exercise exercise, {bool addThree = false}) async {
-    if (!formKey.currentState!.validate() ||
-        (!exercise.isCardio() && repsController.text == '' || repsController.text == '0')) {
+    if (!_formKey.currentState!.validate() ||
+        (!exercise.isCardio() && _repsController.text == '' || _repsController.text == '0')) {
       return;
     }
 
@@ -128,11 +132,12 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
         await WorkoutSetModel.insert(
           WorkoutSet(
             workoutExerciseId: we!.id!,
-            weight: NumberHelper.parseDouble(weightController.text),
-            reps: int.parse(NumberHelper.getNumberString(repsController.text)),
-            time: duration,
-            distance: NumberHelper.parseDouble(distanceController.text),
-            calsBurned: int.parse(NumberHelper.getNumberString(calsBurnedController.text)),
+            weight: NumberHelper.parseDouble(_weightController.text),
+            reps: int.parse(NumberHelper.getNumberString(_repsController.text)),
+            time: _duration,
+            distance: NumberHelper.parseDouble(_distanceController.text),
+            calsBurned: int.parse(NumberHelper.getNumberString(_calsBurnedController.text)),
+            done: _complete,
           ),
         );
       }
@@ -145,16 +150,16 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
   }
 
   void onEditSubmit() async {
-    if (formKey.currentState!.validate()) {
+    if (_formKey.currentState!.validate()) {
       Navigator.pop(context);
       bool hasChanges = false;
 
       try {
-        final newWeight = NumberHelper.parseDouble(weightController.text);
-        final newReps = int.parse(NumberHelper.getNumberString(repsController.text));
-        final newDistance = NumberHelper.parseDouble(distanceController.text);
-        final newCalsBurned = int.parse(NumberHelper.getNumberString(calsBurnedController.text));
-        final newDuration = duration;
+        final newWeight = NumberHelper.parseDouble(_weightController.text);
+        final newReps = int.parse(NumberHelper.getNumberString(_repsController.text));
+        final newDistance = NumberHelper.parseDouble(_distanceController.text);
+        final newCalsBurned = int.parse(NumberHelper.getNumberString(_calsBurnedController.text));
+        final newDuration = _duration;
 
         final set = widget.workoutSet!;
         if (set.weight != newWeight) {
@@ -179,6 +184,11 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
 
         if (set.time != newDuration) {
           set.time = newDuration;
+          hasChanges = true;
+        }
+
+        if (set.done != _complete) {
+          set.done = _complete;
           hasChanges = true;
         }
 
@@ -232,7 +242,7 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Exercise?>(
-      future: exerciseFuture,
+      future: _exerciseFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) return const SizedBox.shrink();
 
@@ -248,29 +258,41 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
         final MapEntry? lastStrings = exercise.exerciseDetails?.getLastStrings();
 
         return Form(
-          key: formKey,
+          key: _formKey,
           child: Column(
             children: [
               Header(title: exercise.getFullName()),
               const CustomDivider(),
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  if (lastStrings != null)
-                    Button(
-                      text: 'Last',
-                      onTap: () {
-                        if (lastStrings.key != null) setWeight(lastStrings.key);
-                        if (lastStrings.value != null) setReps(lastStrings.value);
-                      },
-                    ),
-                  if (maxStrings != null)
-                    Button(
-                        text: 'Max',
-                        onTap: () {
-                          if (maxStrings.key != null) setWeight(maxStrings.key);
-                          if (maxStrings.value != null) setReps(maxStrings.value);
-                        }),
+                  CustomCheckboxWithLabel(
+                    label: 'Complete',
+                    value: _complete,
+                    onChange: (value) => setState(() {
+                      _complete = value;
+                    }),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      if (lastStrings != null)
+                        Button(
+                          text: 'Last',
+                          onTap: () {
+                            if (lastStrings.key != null) setWeight(lastStrings.key);
+                            if (lastStrings.value != null) setReps(lastStrings.value);
+                          },
+                        ),
+                      if (maxStrings != null)
+                        Button(
+                            text: 'Max',
+                            onTap: () {
+                              if (maxStrings.key != null) setWeight(maxStrings.key);
+                              if (maxStrings.value != null) setReps(maxStrings.value);
+                            }),
+                    ],
+                  ),
                 ],
               ),
               if (exercise.type == ExerciseType.strength) ...getWeightFields(exercise),
@@ -279,7 +301,7 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
                 padding: const EdgeInsets.only(top: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: isEdit
+                  children: _isEdit
                       ? [
                           Row(children: [
                             Button.delete(onTap: onDeleteButtonTap),

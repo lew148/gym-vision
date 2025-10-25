@@ -25,8 +25,8 @@ class ActiveWorkoutDraggableSheet extends StatelessWidget {
             final workout = snapshot.data!;
 
             return DraggableScrollableSheet(
-                initialChildSize: 0.12,
-                minChildSize: 0.12,
+                initialChildSize: 0.13,
+                minChildSize: 0.13,
                 builder: (context, scrollController) {
                   return Container(
                     padding: const EdgeInsets.symmetric(horizontal: 30),

@@ -108,8 +108,7 @@ class MyApp extends StatelessWidget {
   final lightBackground = const Color.fromARGB(255, 245, 245, 245);
   final lightSurface = Colors.white; 
   final darkBackground = Colors.black;
-  final darkSurface = const Color.fromARGB(255, 15, 15, 15);
-  // final darkBottomSheet = const Color.fromARGB(255, 22, 22, 22);
+  final darkSurface = const Color.fromARGB(255, 22, 22, 22);
 
   List<Widget> widgetPages() => [
         const Today(),
