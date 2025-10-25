@@ -140,6 +140,18 @@ class _ExerciseViewState extends State<ExerciseView> {
               ? SplashText.notFound(item: 'exercise')
               : Column(
                   children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const CircleAvatar(
+                          radius: 40,
+                          backgroundColor: Colors.transparent,
+                          backgroundImage: AssetImage("assets/images/logo.png"),
+                        ),
+                      ],
+                    ),
+
+                    Padding(padding: EdgeInsetsGeometry.symmetric(vertical: 10)),
                     // if (god)
                     getInfoWidget(
                         context,
@@ -153,7 +165,10 @@ class _ExerciseViewState extends State<ExerciseView> {
                     getInfoWidget(context, 'Equipment', Text(exercise.equipment.displayName)),
                     if (exercise.type == ExerciseType.strength && exercise.exerciseDetails?.max != null)
                       getPrSection(exercise.exerciseDetails!.max!),
-                    Notes(type: NoteType.exercise, objectId: exercise.identifier),
+                    Padding(
+                      padding: EdgeInsetsGeometry.symmetric(vertical: 5),
+                      child: Notes(type: NoteType.exercise, objectId: exercise.identifier),
+                    ),
                     const Header(title: 'History'),
                     const CustomDivider(shadow: true),
                     getRecentUsesWidget(exercise, exercise.exerciseDetails),

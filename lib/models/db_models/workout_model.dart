@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
-import 'package:gymvision/classes/db/workouts/workout_category.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/classes/workout_summary.dart';

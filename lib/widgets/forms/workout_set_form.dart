@@ -78,11 +78,17 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
 
   List<Widget> getWeightFields(Exercise ex) {
     return [
-      CustomFormField.double(controller: _weightController, label: 'Weight', unit: 'kg'),
+      CustomFormField.double(
+        controller: _weightController,
+        label: 'Weight',
+        unit: 'kg',
+        prefixIcon: Icons.fitness_center_rounded,
+      ),
       CustomFormField.int(
         controller: _repsController,
         label: 'Reps',
         canBeBlank: false,
+        prefixIcon: Icons.repeat_rounded,
         buttons: [
           Button(text: '1', onTap: () => setReps('1'), style: ButtonCustomStyle.noPrimary()),
           Button(text: '8', onTap: () => setReps('8'), style: ButtonCustomStyle.noPrimary()),
@@ -103,12 +109,14 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
           controller: _distanceController,
           label: 'Distance',
           unit: 'km',
+          prefixIcon: Icons.timeline_rounded,
           buttons: [Button.clear(onTap: () => _distanceController.clear())],
         ),
         CustomFormField.int(
           controller: _calsBurnedController,
           label: 'Cals Burned',
           unit: 'kcal',
+          prefixIcon: Icons.local_fire_department_rounded,
           buttons: [Button.clear(onTap: () => _calsBurnedController.clear())],
         ),
       ];

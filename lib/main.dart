@@ -34,7 +34,7 @@ void main() async {
       options.dsn = dotenv.env['SENTRY_DSN'];
       options.tracesSampleRate = 1.0;
       options.profilesSampleRate = 1.0;
-      // options.replay.sessionSampleRate = 1.0; //
+      // options.replay.sessionSampleRate = 1.0;
       options.replay.onErrorSampleRate = 1.0;
     },
     appRunner: () async {
@@ -106,7 +106,7 @@ class MyApp extends StatelessWidget {
   final tertiary = const Color.fromARGB(255, 255, 101, 101);
   final shadow = const Color.fromARGB(255, 77, 77, 77);
   final lightBackground = const Color.fromARGB(255, 245, 245, 245);
-  final lightSurface = Colors.white; 
+  final lightSurface = Colors.white;
   final darkBackground = Colors.black;
   final darkSurface = const Color.fromARGB(255, 22, 22, 22);
 

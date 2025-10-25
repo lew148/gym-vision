@@ -12,6 +12,7 @@ class CustomFormField extends StatelessWidget {
   final TextInputType? keyboardType;
   final int? maxLength;
   final int? maxLines;
+  final IconData? prefixIcon;
 
   const CustomFormField({
     super.key,
@@ -25,6 +26,7 @@ class CustomFormField extends StatelessWidget {
     this.canBeBlank = true,
     this.maxLength,
     this.maxLines,
+    this.prefixIcon,
   });
 
   factory CustomFormField.string({
@@ -36,6 +38,7 @@ class CustomFormField extends StatelessWidget {
     bool canBeBlank = true,
     List<Button>? buttons,
     int? maxLength,
+    IconData prefixIcon = Icons.abc_rounded,
   }) =>
       CustomFormField(
         controller: controller,
@@ -45,6 +48,7 @@ class CustomFormField extends StatelessWidget {
         autofocus: autofocus,
         canBeBlank: canBeBlank,
         buttons: buttons,
+        prefixIcon: prefixIcon,
       );
 
   factory CustomFormField.textArea({
@@ -57,6 +61,7 @@ class CustomFormField extends StatelessWidget {
     List<Button>? buttons,
     int? maxLength,
     int maxLines = 2,
+    IconData prefixIcon = Icons.abc_rounded,
   }) =>
       CustomFormField(
         controller: controller,
@@ -68,6 +73,7 @@ class CustomFormField extends StatelessWidget {
         autofocus: autofocus,
         canBeBlank: canBeBlank,
         buttons: buttons,
+        prefixIcon: prefixIcon,
       );
 
   factory CustomFormField.int({
@@ -78,6 +84,7 @@ class CustomFormField extends StatelessWidget {
     bool autofocus = false,
     bool canBeBlank = true,
     List<Button>? buttons,
+    IconData prefixIcon = Icons.numbers_rounded,
   }) =>
       CustomFormField(
         controller: controller,
@@ -88,6 +95,7 @@ class CustomFormField extends StatelessWidget {
         autofocus: autofocus,
         canBeBlank: canBeBlank,
         buttons: buttons,
+        prefixIcon: prefixIcon,
       );
 
   factory CustomFormField.double({
@@ -98,6 +106,7 @@ class CustomFormField extends StatelessWidget {
     bool autofocus = false,
     bool canBeBlank = true,
     List<Button>? buttons,
+    IconData prefixIcon = Icons.numbers_rounded,
   }) =>
       CustomFormField(
         controller: controller,
@@ -108,15 +117,18 @@ class CustomFormField extends StatelessWidget {
         autofocus: autofocus,
         canBeBlank: canBeBlank,
         buttons: buttons,
+        prefixIcon: prefixIcon,
       );
 
   static const Color errorColor = Colors.redAccent;
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     OutlineInputBorder getBorder({bool errored = false}) => OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: errored ? errorColor : Theme.of(context).colorScheme.shadow, width: 1.5),
+          borderSide: BorderSide(color: errored ? errorColor : colorScheme.shadow, width: 1.5),
         );
 
     return Padding(
@@ -134,20 +146,20 @@ class CustomFormField extends StatelessWidget {
               },
               keyboardType: keyboardType,
               cursorErrorColor: errorColor,
-
               // obscureText: true, // for passwords
               autofocus: autofocus,
               maxLength: maxLength,
               maxLines: maxLines,
-              style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+              style: TextStyle(color: colorScheme.onSurface),
               decoration: InputDecoration(
+                prefixIcon: prefixIcon == null ? null : Icon(prefixIcon, color: colorScheme.secondary),
                 filled: true,
-                fillColor: Theme.of(context).colorScheme.surface,
+                fillColor: colorScheme.surface,
                 labelText: label,
-                labelStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                labelStyle: TextStyle(color: colorScheme.secondary),
                 errorStyle: const TextStyle(color: errorColor, fontSize: 10, fontWeight: FontWeight.w500),
                 suffixText: suffix,
-                suffixStyle: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.w500),
+                suffixStyle: TextStyle(color: colorScheme.secondary, fontWeight: FontWeight.w500),
                 contentPadding: const EdgeInsets.all(10),
                 enabledBorder: getBorder(),
                 focusedBorder: getBorder(),

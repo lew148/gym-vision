@@ -13,7 +13,7 @@ import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/header.dart';
 import 'package:gymvision/widgets/debug_scaffold.dart';
-import 'package:gymvision/widgets/forms/import_workout_form.dart';
+import 'package:gymvision/widgets/forms/fields/custom_dropdown.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import '../../models/db_models/user_settings_model.dart';
 
@@ -34,6 +34,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
   @override
   Widget build(BuildContext context) {
     return DebugScaffold(
+      ignoreDefaults: true,
       body: FutureBuilder(
         future: userSettings,
         builder: (context, snapshot) {
@@ -43,81 +44,86 @@ class _UserSettingsViewState extends State<UserSettingsView> {
 
           final settings = snapshot.data!;
 
+          String? getInitialValue() {
+            if (settings.theme == UserTheme.light) return 'Light';
+            if (settings.theme == UserTheme.dark) return 'Dark';
+            if (settings.theme == UserTheme.system) return 'System';
+            return null;
+          }
+
           return Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Theme'),
-                  DropdownButton<UserTheme>(
-                    value: settings.theme,
-                    onChanged: (UserTheme? value) async {
-                      try {
-                        switch (value) {
-                          case UserTheme.light:
-                            {
-                              settings.theme = UserTheme.light;
-                              EasyDynamicTheme.of(context).changeTheme(dark: false, dynamic: false);
-                              break;
-                            }
-                          case UserTheme.dark:
-                            {
-                              settings.theme = UserTheme.dark;
-                              EasyDynamicTheme.of(context).changeTheme(dark: true, dynamic: false);
-                              break;
-                            }
-                          case UserTheme.system:
-                            {
-                              settings.theme = UserTheme.system;
-                              EasyDynamicTheme.of(context).changeTheme(dynamic: true);
-                              break;
-                            }
-                          case null:
-                            return;
-                        }
-
-                        await UserSettingsModel.update(settings);
-                      } catch (ex) {
-                        if (context.mounted) showSnackBar(context, 'Failed to update theme.');
-                      }
-
-                      reloadState();
-                    },
-                    items: const [
-                      DropdownMenuItem<UserTheme>(value: UserTheme.system, child: Text('System')),
-                      DropdownMenuItem<UserTheme>(value: UserTheme.light, child: Text('Light')),
-                      DropdownMenuItem<UserTheme>(value: UserTheme.dark, child: Text('Dark')),
-                    ],
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Intra-set Rest Timer'),
-                  Button(
-                    style: ButtonCustomStyle(padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5)),
-                    text: settings.intraSetRestTimer == null
-                        ? 'Set Timer'
-                        : DateTimeHelper.getDurationString(settings.intraSetRestTimer!, noHours: true),
-                    onTap: () => showDurationPicker(
-                      context,
-                      initialDuration: settings.intraSetRestTimer,
-                      CupertinoTimerPickerMode.ms,
-                      onSubmit: (Duration d) async {
-                        try {
-                          settings.intraSetRestTimer = d.inSeconds == 0 ? null : d;
-                          await UserSettingsModel.update(settings);
-                        } catch (ex) {
-                          if (context.mounted) showSnackBar(context, 'Failed to update Intra-Set Rest Timer.');
-                        }
-
-                        reloadState();
-                      },
+              Padding(
+                padding: EdgeInsetsGeometry.symmetric(vertical: 5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Intra-set Rest Timer',
+                      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                     ),
-                  ),
-                ],
+                    Button(
+                      style: ButtonCustomStyle(padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5)),
+                      text: settings.intraSetRestTimer == null
+                          ? 'Set Timer'
+                          : DateTimeHelper.getDurationString(settings.intraSetRestTimer!, noHours: true),
+                      onTap: () => showDurationPicker(
+                        context,
+                        initialDuration: settings.intraSetRestTimer,
+                        CupertinoTimerPickerMode.ms,
+                        onSubmit: (Duration d) async {
+                          try {
+                            settings.intraSetRestTimer = d.inSeconds == 0 ? null : d;
+                            await UserSettingsModel.update(settings);
+                          } catch (ex) {
+                            if (context.mounted) showSnackBar(context, 'Failed to update Intra-Set Rest Timer.');
+                          }
+
+                          reloadState();
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              CustomDropdown(
+                label: 'Theme',
+                intialValue: getInitialValue(),
+                values: ['Light', 'Dark', 'System'],
+                onChange: (value) async {
+                  try {
+                    switch (value) {
+                      case 'Light':
+                        {
+                          settings.theme = UserTheme.light;
+                          EasyDynamicTheme.of(context).changeTheme(dark: false, dynamic: false);
+                          break;
+                        }
+                      case 'Dark':
+                        {
+                          settings.theme = UserTheme.dark;
+                          EasyDynamicTheme.of(context).changeTheme(dark: true, dynamic: false);
+                          break;
+                        }
+                      case 'System':
+                        {
+                          settings.theme = UserTheme.system;
+                          EasyDynamicTheme.of(context).changeTheme(dynamic: true);
+                          break;
+                        }
+                      case null:
+                        return;
+                    }
+
+                    await UserSettingsModel.update(settings);
+                  } catch (ex) {
+                    if (context.mounted) showSnackBar(context, 'Failed to update theme.');
+                  }
+
+                  reloadState();
+                },
+              ),
+              const Padding(padding: EdgeInsets.all(5)),
               const Header(title: 'Developer Settings'),
               const CustomDivider(),
               Button.elevated(
@@ -139,10 +145,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                 onTap: () => LocalNotificationService.showTestNotification(),
                 text: 'Show Test Notification',
               ),
-              Button.elevated(
-                onTap: () => showCloseableBottomSheet(context, const ImportWorkoutForm()),
-                text: 'Import Workout',
-              ),
+              const Padding(padding: EdgeInsets.all(5)),
               const Header(title: 'Database Settings'),
               const CustomDivider(),
               Button.elevated(

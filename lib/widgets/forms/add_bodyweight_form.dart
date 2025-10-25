@@ -26,6 +26,7 @@ class AddBodyWeightForm extends StatelessWidget {
                   label: 'BW',
                   unit: 'kg',
                   autofocus: true,
+                  prefixIcon: Icons.monitor_weight_rounded,
                 ),
               ),
               const Padding(padding: EdgeInsetsGeometry.all(20)),
