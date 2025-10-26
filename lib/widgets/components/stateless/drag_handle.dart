@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymvision/constants.dart';
 
 class DragHandle extends StatelessWidget {
   const DragHandle({super.key});
@@ -12,7 +13,7 @@ class DragHandle extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: 10),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.shadow,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(borderRadius),
         ),
       ),
     );

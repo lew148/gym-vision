@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/bodyweight.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
+import 'package:gymvision/constants.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
@@ -111,8 +112,11 @@ class _HistoryState extends State<History> {
                         ? const Button(text: 'All Time')
                         : Button(
                             text: DateTimeHelper.getDateStr(date!),
-                            onTap: () =>
-                                showConfirm(context, title: 'Remove date filter?', onConfirm: () => setDate(null))),
+                            onTap: () => showConfirm(
+                                  context,
+                                  title: 'Remove date filter?',
+                                  onConfirm: () => setDate(null),
+                                )),
                   ],
                 ),
                 workoutsToDisplay.isEmpty
@@ -123,7 +127,7 @@ class _HistoryState extends State<History> {
                       )
                     : Expanded(
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(clipRectRadius),
                           child: ListView.builder(
                             itemCount: workoutsToDisplay.length + 1, // + 1 for bottom padding
                             itemBuilder: (BuildContext context, int i) {

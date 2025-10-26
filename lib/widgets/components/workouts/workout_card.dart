@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
+import 'package:gymvision/constants.dart';
 import 'package:gymvision/helpers/app_helper.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/static_data/helpers.dart';
@@ -44,7 +45,7 @@ class WorkoutCard extends StatelessWidget {
                 padding: const EdgeInsetsGeometry.only(top: 5),
                 child: CustomCard(
                   onTap: () => openWorkout(focusWe: summary.bestSet!.workoutExerciseId),
-                  color: AppHelper.isDarkMode(context) ? AppHelper.darkPropOnCardColor : null,
+                  color: AppHelper.isDarkMode(context) ? darkPropOnCardColor : null,
                   child: Padding(
                     padding: const EdgeInsets.all(5),
                     child: Row(
@@ -183,7 +184,7 @@ class WorkoutCard extends StatelessWidget {
                             .getCategories()
                             .map((c) => PropDisplay(
                                   text: c.displayName,
-                                  color: AppHelper.isDarkMode(context) ? AppHelper.darkPropOnCardColor : null,
+                                  color: AppHelper.isDarkMode(context) ? darkPropOnCardColor : null,
                                 ))
                             .toList(),
                       ),

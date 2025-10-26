@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gymvision/constants.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
@@ -65,31 +66,34 @@ class _RestTimerState extends State<RestTimer> {
         : GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: () async => await showDeleteConfirm(context, 'Timer', onTimerDelete),
-            child: Stack(children: [
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                height: 25,
-                width: 60 * (provider.getPercentageLeft() / 100),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  borderRadius: const BorderRadius.all(Radius.circular(5)),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(clipRectRadius),
+              child: Stack(children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  height: 25,
+                  width: 60 * (provider.getPercentageLeft() / 100),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.primary,
+                    borderRadius: const BorderRadius.all(Radius.circular(smallBorderRadius)),
+                  ),
                 ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Theme.of(context).colorScheme.shadow),
-                  borderRadius: const BorderRadius.all(Radius.circular(5)),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Theme.of(context).colorScheme.shadow),
+                    borderRadius: const BorderRadius.all(Radius.circular(smallBorderRadius)),
+                  ),
+                  height: 25,
+                  width: 60,
+                  child: Center(
+                    child: Text(DateTimeHelper.getDurationString(
+                      provider.getTimeLeft(),
+                      noHours: true,
+                    )),
+                  ),
                 ),
-                height: 25,
-                width: 60,
-                child: Center(
-                  child: Text(DateTimeHelper.getDurationString(
-                    provider.getTimeLeft(),
-                    noHours: true,
-                  )),
-                ),
-              ),
-            ]),
+              ]),
+            ),
           );
   }
 }

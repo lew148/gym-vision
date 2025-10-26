@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/bodyweight.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
+import 'package:gymvision/constants.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/models/db_models/schedule_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
@@ -116,7 +117,7 @@ class _TodayState extends State<Today> {
     if (workouts == null || workouts.isEmpty) return getPlaceholder();
     workouts.sort((a, b) => a.date.compareTo(b.date)); // sort by date asc
     return ClipRRect(
-      borderRadius: BorderRadius.circular(15),
+      borderRadius: BorderRadius.circular(clipRectRadius),
       child: SingleChildScrollView(
           child: Column(children: [
         ...workouts.map((w) => WorkoutCard(workout: w, reloadParent: reload)),

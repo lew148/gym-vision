@@ -41,7 +41,7 @@ class TextWithIcon extends StatelessWidget {
         text: DateTimeHelper.getHoursAndMinsDurationString(timeElapsed),
       );
 
-  factory TextWithIcon.weight(double? weight, {MainAxisAlignment? alignment, bool muted = false}) => TextWithIcon(
+  factory TextWithIcon.weight(double? weight, {MainAxisAlignment? alignment, bool muted = false, bool compact = false}) => TextWithIcon(
         icon: Icons.fitness_center_rounded,
         text: weight == null || weight == 0 ? null : '${NumberHelper.truncateDouble(weight)}kg',
         alignment: alignment,

@@ -13,8 +13,9 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   final TextEditingController _usernameController = TextEditingController(text: 'John Doe');
   final TextEditingController _emailController = TextEditingController(text: 'john.doe@example.com');
-  final TextEditingController _weightController = TextEditingController(text: '70 kg');
+  // final TextEditingController _weightController = TextEditingController(text: '70 kg');
   final TextEditingController _heightController = TextEditingController(text: '175 cm');
+  // ignore: unused_field
   String _gender = 'Male';
 
   void reload() => setState(() {});

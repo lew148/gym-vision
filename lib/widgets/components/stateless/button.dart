@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymvision/constants.dart';
 
 class ButtonCustomStyle {
   final bool primaryText;
@@ -125,7 +126,7 @@ class Button extends StatelessWidget {
                 minimumSize: Size.zero,
                 tapTargetSize: MaterialTapTargetSize.padded,
                 shadowColor: Colors.transparent,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius)),
                 overlayColor: Colors.grey,
               ),
               child: getInner(),
@@ -138,7 +139,7 @@ class Button extends StatelessWidget {
               minimumSize: Size.zero,
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               shadowColor: Colors.transparent,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius)),
               overlayColor: Colors.grey,
             ),
             onPressed: disabled ? null : onTap,

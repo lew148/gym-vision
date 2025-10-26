@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
+import 'package:gymvision/constants.dart';
 import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/providers/active_workout_provider.dart';
@@ -164,11 +165,14 @@ Future showCloseableBottomSheet(BuildContext context, Widget child, {String? tit
       constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
       useSafeArea: true,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25.0))),
       builder: (BuildContext context) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Padding(
+          Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(largeBorderRadius)),
+            ),
             padding: EdgeInsets.fromLTRB(
               20,
               5,
@@ -195,18 +199,22 @@ Future showFullScreenBottomSheet(BuildContext context, Widget child) async => aw
       useSafeArea: true,
       isScrollControlled: true,
       constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(25))),
-      builder: (BuildContext context) => Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: Container(
-          height: MediaQuery.of(context).size.height,
-          padding: EdgeInsets.fromLTRB(
-            10,
-            10,
-            10,
-            MediaQuery.of(context).viewInsets.bottom, // for keyboard space
-          ),
-          child: Column(children: [
+      builder: (BuildContext context) => Container(
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(largeBorderRadius)),
+        ),
+        padding: EdgeInsets.fromLTRB(
+          10,
+          10,
+          10,
+          MediaQuery.of(context).viewInsets.bottom, // for keyboard space
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          resizeToAvoidBottomInset: false,
+          body: Column(children: [
             const DragHandle(),
             Expanded(child: child),
           ]),

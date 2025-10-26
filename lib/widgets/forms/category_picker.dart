@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymvision/constants.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
@@ -39,7 +40,7 @@ class _CateogryPickerState extends State<CateogryPicker> {
         child: CustomCard(
           child: Container(
             decoration: BoxDecoration(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
+              borderRadius: const BorderRadius.all(Radius.circular(borderRadius)),
               border: Border.all(
                 width: 2,
                 color:

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymvision/constants.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 
 enum PropDisplaySize {
@@ -27,7 +28,7 @@ class PropDisplay extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          decoration: BoxDecoration(color: color, borderRadius: const BorderRadius.all(Radius.circular(10))),
+          decoration: BoxDecoration(color: color, borderRadius: const BorderRadius.all(Radius.circular(borderRadius))),
           padding: EdgeInsets.all(size == PropDisplaySize.small ? 5 : 10),
           child: onTap == null
               ? Text(text)

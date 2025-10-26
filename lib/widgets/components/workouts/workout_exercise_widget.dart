@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/classes/exercise.dart';
+import 'package:gymvision/constants.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/user_settings_model.dart';
 import 'package:gymvision/models/db_models/workout_exercise_model.dart';
@@ -165,7 +166,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       widgets.add(isDisplay
           ? getSetWidgetInner(i + 1, set)
           : InkWell(
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(borderRadius)),
               enableFeedback: false,
               onLongPress: () => OptionsMenu.showOptionsMenu(
                 context,

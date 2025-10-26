@@ -59,9 +59,9 @@ class WorkoutModel {
       note: (await NoteModel.getNoteForObject(NoteType.workout, workout.id.toString()))?.note,
     );
 
-    if (workout.workoutExercises == null || workout.workoutExercises!.isEmpty) return summary;
+    if (workout.getWorkoutExercises().isEmpty) return summary;
 
-    final allDoneSets = [for (var we in workout.getDoneWorkoutExercises()) ...we.getSets()];
+    final allDoneSets = [for (var we in workout.getWorkoutExercises()) ...we.getDoneSets()];
     summary.totalExercises = workout.getWorkoutExercises().length;
     summary.totalSets = allDoneSets.length;
     summary.totalReps = allDoneSets.map((s) => s.reps ?? 0).sum;

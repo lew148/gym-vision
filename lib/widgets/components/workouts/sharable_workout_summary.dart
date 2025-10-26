@@ -6,9 +6,11 @@ import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/classes/workout_summary.dart';
+import 'package:gymvision/constants.dart';
 import 'package:gymvision/helpers/app_helper.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
+import 'package:gymvision/helpers/number_helper.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/static_data/helpers.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
@@ -99,32 +101,54 @@ class SharableWorkoutSummary extends StatelessWidget {
 
           Widget getGroupedSetsBreakdown(WorkoutExercise we, {String? betSetKey}) {
             final groupedSets = groupBy(we.getSets(), getSetGroupKey);
-
+            
             return Wrap(
               alignment: WrapAlignment.start,
-              direction: Axis.horizontal,
+              spacing: 8,
               children: groupedSets.entries.map((entry) {
                 final set = entry.value.first;
-                return Row(children: [
-                  CustomCard(
-                    margin: EdgeInsets.only(top: 2.5),
-                    padding: EdgeInsets.symmetric(vertical: 1, horizontal: 5),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        TextWithIcon.weight(set.weight, muted: true),
-                        const Padding(padding: EdgeInsets.symmetric(horizontal: 2.5)),
-                        TextWithIcon.reps(set.reps, muted: true),
-                      ],
-                    ),
+                final isBest = betSetKey == getSetGroupKey(set);
+
+                return CustomCard(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2.5),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      if (isBest)
+                        Padding(
+                          padding: EdgeInsetsGeometry.only(right: 5),
+                          child: Icon(Icons.star_rounded, color: Colors.amber[300], size: 16),
+                        ),
+                      if (set.weight != null && set.weight != 0)
+                        Row(children: [
+                          Text(
+                            '${NumberHelper.truncateDouble(set.weight)} kg',
+                            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                          ),
+                          Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: 2.5)),
+                          Icon(Icons.circle, color: Theme.of(context).colorScheme.secondary, size: 4),
+                          Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: 2.5)),
+                        ]),
+                      Padding(
+                        padding: EdgeInsetsGeometry.only(right: 5),
+                        child: Text(
+                          '${set.reps} rep${set.reps == 1 ? '' : 's'}',
+                          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                        ),
+                      ),
+                      if (entry.value.length > 1)
+                        Text(
+                          'x${entry.value.length}',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                    ],
                   ),
-                  const Padding(padding: EdgeInsets.symmetric(horizontal: 2.5)),
-                  Text('x ${entry.value.length}', style: TextStyle(color: Theme.of(context).colorScheme.secondary)),
-                  if (betSetKey == getSetGroupKey(set)) ...[
-                    const Padding(padding: EdgeInsets.all(5)),
-                    Icon(Icons.star_rounded, color: Colors.amber[300]),
-                  ],
-                ]);
+                );
               }).toList(),
             );
           }
@@ -144,11 +168,15 @@ class SharableWorkoutSummary extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                            Icon(Icons.circle_rounded, size: 8, color: Theme.of(context).colorScheme.primary),
-                            const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
-                            Text(we.exercise!.getFullName()),
-                          ]),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(Icons.circle_rounded, size: 8, color: Theme.of(context).colorScheme.primary),
+                              const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
+                              Text(we.exercise!.getFullName()),
+                            ],
+                          ),
+                          const Padding(padding: EdgeInsetsGeometry.all(1)),
                           if (we.getSets().isNotEmpty && !we.isCardio())
                             getGroupedSetsBreakdown(
                               we,
@@ -163,75 +191,75 @@ class SharableWorkoutSummary extends StatelessWidget {
             );
           }
 
-          Widget getSharableSection(WorkoutSummary? summary) => Screenshot(
-                controller: screenshotController,
-                child: Container(
-                  // constraints: BoxConstraints(maxHeight: 700),
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(24),
-                    border: BoxBorder.all(color: Theme.of(context).colorScheme.shadow),
+          Widget getSharableSection(WorkoutSummary? summary) => Container(
+                padding: EdgeInsets.all(2.5),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(borderRadius),
+                  border: BoxBorder.all(color: Theme.of(context).colorScheme.shadow),
+                ),
+                child: Screenshot(
+                  controller: screenshotController,
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
                     color: Theme.of(context).colorScheme.surface,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: summary == null
-                        ? []
-                        : [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      workout.getWorkoutTitle(),
-                                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                                    ),
-                                    TextWithIcon.date(workout.date),
-                                    Row(children: [
-                                      TextWithIcon.time(workout.date),
-                                      if (workout.isFinished()) ...[
-                                        const Padding(padding: EdgeInsetsGeometry.all(5)),
-                                        TextWithIcon.timeElapsed(workout.getDuration()),
-                                      ],
-                                    ]),
-                                  ],
-                                ),
-                                getStatsBreakdown(summary),
-                              ],
-                            ),
-                            if (workout.workoutCategories != null && workout.workoutCategories!.isNotEmpty)
-                              Padding(
-                                padding: const EdgeInsetsGeometry.only(top: 5),
-                                child: Row(children: [
-                                  Expanded(
-                                    child: Wrap(
-                                      children: workout
-                                          .getCategories()
-                                          .map((c) => PropDisplay(
-                                                text: c.displayName,
-                                                color: AppHelper.isDarkMode(context)
-                                                    ? AppHelper.darkPropOnCardColor
-                                                    : null,
-                                              ))
-                                          .toList(),
-                                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: summary == null
+                          ? []
+                          : [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        workout.getWorkoutTitle(),
+                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                                      ),
+                                      TextWithIcon.date(workout.date),
+                                      Row(children: [
+                                        TextWithIcon.time(workout.date),
+                                        if (workout.isFinished()) ...[
+                                          const Padding(padding: EdgeInsetsGeometry.all(5)),
+                                          TextWithIcon.timeElapsed(workout.getDuration()),
+                                        ],
+                                      ]),
+                                    ],
                                   ),
-                                ]),
+                                  getStatsBreakdown(summary),
+                                ],
                               ),
-                            if (workout.getWorkoutExercises().isNotEmpty) ...[
-                              const CustomDivider(shadow: true),
-                              Container(
-                                constraints: BoxConstraints(maxHeight: 500),
-                                child: getWorkoutExerciseSummariesListView(workout: workout, summary: summary),
-                              ),
+                              if (workout.workoutCategories != null && workout.workoutCategories!.isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsetsGeometry.only(top: 5),
+                                  child: Row(children: [
+                                    Expanded(
+                                      child: Wrap(
+                                        children: workout
+                                            .getCategories()
+                                            .map((c) => PropDisplay(
+                                                  text: c.displayName,
+                                                  color: AppHelper.isDarkMode(context) ? darkPropOnCardColor : null,
+                                                ))
+                                            .toList(),
+                                      ),
+                                    ),
+                                  ]),
+                                ),
+                              if (workout.getWorkoutExercises().isNotEmpty) ...[
+                                const CustomDivider(shadow: true),
+                                Container(
+                                  constraints: BoxConstraints(maxHeight: 500),
+                                  child: getWorkoutExerciseSummariesListView(workout: workout, summary: summary),
+                                ),
+                              ],
+                              Row(mainAxisAlignment: MainAxisAlignment.end, children: [Logo()]),
                             ],
-                            //   const Padding(padding: EdgeInsetsGeometry.all(2.5)),
-                            Row(mainAxisAlignment: MainAxisAlignment.end, children: [Logo()]),
-                          ],
+                    ),
                   ),
                 ),
               );

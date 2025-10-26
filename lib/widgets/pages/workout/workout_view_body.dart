@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_confetti/flutter_confetti.dart';
 import 'package:gymvision/classes/db/workouts/workout_category.dart';
+import 'package:gymvision/constants.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
@@ -304,7 +305,7 @@ class WorkoutViewBody extends StatelessWidget {
                     ),
                   )
                 : ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
+                    borderRadius: BorderRadius.circular(clipRectRadius),
                     child: ListView.builder(
                       padding: const EdgeInsets.only(bottom: 20),
                       itemCount: workoutExercises.length,

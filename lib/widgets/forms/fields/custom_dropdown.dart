@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymvision/constants.dart';
 
 class CustomDropdown extends StatelessWidget {
   final String label;
@@ -21,7 +22,7 @@ class CustomDropdown extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     OutlineInputBorder getBorder() => OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(borderRadius),
           borderSide: BorderSide(color: colorScheme.shadow, width: 1.5),
         );
 
@@ -36,7 +37,7 @@ class CustomDropdown extends StatelessWidget {
                 ))
             .toList(),
         onChanged: onChange,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(borderRadius),
         decoration: InputDecoration(
           prefixIcon: prefixIcon == null ? null : Icon(prefixIcon, color: colorScheme.secondary),
           filled: true,

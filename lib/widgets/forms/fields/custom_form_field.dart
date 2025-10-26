@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymvision/constants.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 
 class CustomFormField extends StatelessWidget {
@@ -127,7 +128,7 @@ class CustomFormField extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     OutlineInputBorder getBorder({bool errored = false}) => OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(borderRadius),
           borderSide: BorderSide(color: errored ? errorColor : colorScheme.shadow, width: 1.5),
         );
 

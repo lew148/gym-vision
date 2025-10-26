@@ -2,8 +2,8 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/user_settings.dart';
+import 'package:gymvision/constants.dart';
 import 'package:gymvision/enums.dart';
-import 'package:gymvision/helpers/app_helper.dart';
 import 'package:gymvision/helpers/database_helper.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/services/local_notification_service.dart';
@@ -177,7 +177,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
               const Padding(padding: EdgeInsets.all(10)),
               Center(
                 child: Text(
-                  'Version: ${AppHelper.appVersion}',
+                  'Version: $appVersion',
                   style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                 ),
               ),

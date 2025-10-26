@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/schedules/schedule.dart';
 import 'package:gymvision/classes/db/schedules/schedule_item.dart';
+import 'package:gymvision/constants.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/models/db_models/schedule_model.dart';
@@ -47,7 +48,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
   Widget getScheduleItemWidget(String title, ScheduleItem? si, {bool active = false}) => CustomCard(
         child: Container(
           decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(10)),
+            borderRadius: const BorderRadius.all(Radius.circular(borderRadius)),
             border: Border.all(
               width: 2,
               color: active ? Theme.of(context).colorScheme.primary : Colors.transparent,

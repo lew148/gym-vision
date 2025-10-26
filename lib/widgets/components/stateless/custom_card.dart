@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymvision/constants.dart';
 
 class CustomCard extends StatelessWidget {
   final Widget child;
@@ -32,7 +33,7 @@ class CustomCard extends StatelessWidget {
       margin: margin ?? const EdgeInsets.symmetric(horizontal: 2.5, vertical: 5),
       color: color ?? Theme.of(context).colorScheme.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(borderRadius),
         side: BorderSide(color: Theme.of(context).colorScheme.shadow, width: borderWidth ?? 0.25),
       ),
       child: GestureDetector(
