@@ -29,7 +29,6 @@ class _WorkoutExerciseSummaryState extends State<WorkoutExerciseSummary> {
 
     return Wrap(
       alignment: WrapAlignment.start,
-      spacing: 4,
       children: groupedSets.entries.map((entry) {
         final set = entry.value.first;
         final isBest = betSetKey == getSetGroupKey(set);
@@ -51,24 +50,25 @@ class _WorkoutExerciseSummaryState extends State<WorkoutExerciseSummary> {
                     '${NumberHelper.truncateDouble(set.weight)}kg',
                     style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                   ),
-                  Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: 2.5)),
-                  Icon(Icons.circle, color: Theme.of(context).colorScheme.secondary, size: 4),
-                  Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: 2.5)),
+                  Padding(
+                    padding: EdgeInsetsGeometry.symmetric(horizontal: 5),
+                    child: Icon(Icons.circle, color: Theme.of(context).colorScheme.secondary, size: 4),
+                  ),
                 ]),
-              Padding(
-                padding: EdgeInsetsGeometry.only(right: 5),
-                child: Text(
-                  '${set.reps} rep${set.reps == 1 ? '' : 's'}',
-                  style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                ),
+              Text(
+                '${set.reps} rep${set.reps == 1 ? '' : 's'}',
+                style: TextStyle(color: Theme.of(context).colorScheme.secondary),
               ),
               if (entry.value.length > 1)
-                Text(
-                  'x${entry.value.length}',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
+                Padding(
+                  padding: EdgeInsetsGeometry.only(left: 5),
+                  child: Text(
+                    'x${entry.value.length}',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
             ],

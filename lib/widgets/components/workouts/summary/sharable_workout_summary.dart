@@ -7,6 +7,7 @@ import 'package:gymvision/constants.dart';
 import 'package:gymvision/helpers/app_helper.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
+import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/static_data/helpers.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
@@ -67,20 +68,28 @@ class SharableWorkoutSummary extends StatelessWidget {
           }
 
           Widget getWorkoutExercisesBreakdown(WorkoutSummary summary) {
-            final wes = workout.getWorkoutExercisesDoneOrWithDoneSets();
+            final wes = OrderingHelper.orderListById(
+              workout.getWorkoutExercisesDoneOrWithDoneSets(),
+              workout.exerciseOrder,
+            );
 
             return Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 if (wes.isNotEmpty) ...[
                   const CustomDivider(shadow: true),
                   Container(
                     constraints: BoxConstraints(maxHeight: 500),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: wes.length,
-                      itemBuilder: (BuildContext context, int i) => Padding(
-                        padding: EdgeInsets.only(top: 1),
-                        child: WorkoutExerciseSummary(workoutExercise: wes[i], bestSet: summary.bestSet),
+                    child: MediaQuery.removePadding(
+                      context: context,
+                      removeBottom: true,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: wes.length,
+                        itemBuilder: (BuildContext context, int i) => Padding(
+                          padding: EdgeInsets.only(top: 1),
+                          child: WorkoutExerciseSummary(workoutExercise: wes[i], bestSet: summary.bestSet),
+                        ),
                       ),
                     ),
                   ),
@@ -170,6 +179,7 @@ class SharableWorkoutSummary extends StatelessWidget {
                                 ]),
                               ),
                             getWorkoutExercisesBreakdown(summary),
+                            const Padding(padding: EdgeInsetsGeometry.all(2.5)),
                             Row(mainAxisAlignment: MainAxisAlignment.end, children: [Logo()]),
                           ],
                   ),
@@ -190,7 +200,7 @@ class SharableWorkoutSummary extends StatelessWidget {
                   child: getSharableSection(snapshot.data),
                 ),
               ),
-              const Padding(padding: EdgeInsets.all(5)),
+              const Padding(padding: EdgeInsets.all(2.5)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
