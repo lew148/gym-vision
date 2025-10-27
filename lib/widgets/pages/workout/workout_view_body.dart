@@ -7,9 +7,9 @@ import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
-import 'package:gymvision/providers/active_workout_provider.dart';
-import 'package:gymvision/providers/navigation_provider.dart';
-import 'package:gymvision/providers/rest_timer_provider.dart';
+import 'package:gymvision/providers/global/active_workout_provider.dart';
+import 'package:gymvision/providers/global/rest_timer_provider.dart';
+import 'package:gymvision/providers/history_provider.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/widgets/components/rest_timer.dart';
 import 'package:gymvision/widgets/components/stateless/prop_display.dart';
@@ -17,7 +17,7 @@ import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
 import 'package:gymvision/widgets/components/time_elapsed.dart';
 import 'package:gymvision/widgets/forms/add_exercises_to_workout.dart';
 import 'package:gymvision/widgets/components/workouts/workout_options_menu.dart';
-import 'package:gymvision/widgets/components/workouts/sharable_workout_summary.dart';
+import 'package:gymvision/widgets/components/workouts/summary/sharable_workout_summary.dart';
 import 'package:provider/provider.dart';
 import 'package:gymvision/providers/workout_provider.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
@@ -104,28 +104,24 @@ class WorkoutViewBody extends StatelessWidget {
     }
 
     Future<void> onCategoryPillTap(WorkoutCategory wc) async {
-      final provider = context.read<NavigationProvider>();
+      context.read<HistoryProvider>().setCategoryFilters([wc.category]);
       Navigator.pop(context); // close workout
-      provider.goToHistoryTab(withCategories: [wc.category]);
     }
 
-    Future<void> onAddCategoryClick(List<Category> existingWorkoutCategoryIds) async {
-      await showCloseableBottomSheet(
-        context,
-        CateogryPicker(
-          selectedCategories: existingWorkoutCategoryIds,
-          onChange: (List<Category> newCategories) async {
-            try {
-              await WorkoutCategoryModel.setWorkoutCategories(workout.id!, newCategories);
-            } catch (ex) {
-              if (context.mounted) showSnackBar(context, 'Failed to add Categories to workout.');
-            }
-          },
-        ),
-      );
-
-      provider.reload();
-    }
+    Future<void> onAddCategoryClick(List<Category> existingWorkoutCategoryIds) async => await showCloseableBottomSheet(
+          context,
+          CateogryPicker(
+            selectedCategories: existingWorkoutCategoryIds,
+            onChange: (List<Category> newCategories) async {
+              try {
+                await WorkoutCategoryModel.setWorkoutCategories(workout.id!, newCategories);
+                provider.reload();
+              } catch (ex) {
+                if (context.mounted) showSnackBar(context, 'Failed to add Categories to workout.');
+              }
+            },
+          ),
+        );
 
     Future<void> onAddExerciseClick() async {
       await Navigator.push(
@@ -182,7 +178,7 @@ class WorkoutViewBody extends StatelessWidget {
 
     return Column(
       children: [
-        // --- drop, timer and options ---
+        // drop, timer and options
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -225,7 +221,7 @@ class WorkoutViewBody extends StatelessWidget {
           ],
         ),
 
-        // --- summary ---
+        // summary
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -248,7 +244,7 @@ class WorkoutViewBody extends StatelessWidget {
           ],
         ),
 
-        // --- categories, notes and actions ---
+        // categories, notes and actions
         if (workout.hasCategories())
           Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -272,7 +268,7 @@ class WorkoutViewBody extends StatelessWidget {
           ]),
         ]),
 
-        // --- exercises ---
+        // exercises
         Expanded(
             child: workoutExercises.isEmpty
                 ? Padding(

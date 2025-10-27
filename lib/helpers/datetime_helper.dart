@@ -32,6 +32,8 @@ class DateTimeHelper {
     return getDateStr(dt);
   }
 
+  static bool areSameDay(DateTime d1, DateTime d2) => roundToDay(d1) == roundToDay(d2);
+
   static bool isToday(DateTime dt, {DateTime? now}) {
     now ??= DateTime.now();
     return dt.day == now.day && dt.month == now.month && dt.year == now.year;

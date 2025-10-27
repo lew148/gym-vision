@@ -5,7 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/database_helper.dart';
 import 'package:gymvision/models/db_models/user_settings_model.dart';
-import 'package:gymvision/providers/active_workout_provider.dart';
+import 'package:gymvision/providers/global/active_workout_provider.dart';
+import 'package:gymvision/providers/history_provider.dart';
 import 'package:gymvision/services/local_notification_service.dart';
 import 'package:gymvision/widgets/coming_soon.dart';
 import 'package:gymvision/widgets/debug_scaffold.dart';
@@ -13,8 +14,8 @@ import 'package:gymvision/widgets/pages/homepages/exercises/exercises.dart';
 import 'package:gymvision/widgets/pages/homepages/history/history.dart';
 import 'package:gymvision/widgets/pages/homepages/progress/progress.dart';
 import 'package:gymvision/widgets/pages/homepages/today/today.dart';
-import 'package:gymvision/providers/navigation_provider.dart';
-import 'package:gymvision/providers/rest_timer_provider.dart';
+import 'package:gymvision/providers/global/navigation_provider.dart';
+import 'package:gymvision/providers/global/rest_timer_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -90,6 +91,7 @@ Future start() async {
             ChangeNotifierProvider(create: (_) => NavigationProvider()),
             ChangeNotifierProvider(create: (_) => RestTimerProvider()),
             ChangeNotifierProvider(create: (_) => ActiveWorkoutProvider()),
+            ChangeNotifierProvider(create: (_) => HistoryProvider()),
           ],
           child: const MyApp(),
         ),

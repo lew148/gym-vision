@@ -5,7 +5,7 @@ import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/constants.dart';
 import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
-import 'package:gymvision/providers/active_workout_provider.dart';
+import 'package:gymvision/providers/global/active_workout_provider.dart';
 import 'package:gymvision/widgets/components/stateless/calendar_view.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/drag_handle.dart';
@@ -13,7 +13,7 @@ import 'package:gymvision/widgets/components/stateless/header.dart';
 import 'package:gymvision/widgets/forms/date_time_picker.dart';
 import 'package:gymvision/widgets/forms/duration_picker.dart';
 import 'package:gymvision/widgets/pages/workout/workout_view.dart';
-import 'package:gymvision/providers/rest_timer_provider.dart';
+import 'package:gymvision/providers/global/rest_timer_provider.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:provider/provider.dart';
 
@@ -126,8 +126,16 @@ Future showCalendarView(
   BuildContext context, {
   required Map<DateTime, List<CalendarViewEvent>> events,
   void Function(DateTime? selectedDay)? onDateSelected,
+  DateTime? selectedDate,
 }) async =>
-    await showCloseableBottomSheet(context, CalendarView(events: events, onDateSelected: onDateSelected));
+    await showCloseableBottomSheet(
+      context,
+      CalendarView(
+        events: events,
+        onDateSelected: onDateSelected,
+        selectedDate: selectedDate,
+      ),
+    );
 
 Future showDateTimePicker(
   BuildContext context,

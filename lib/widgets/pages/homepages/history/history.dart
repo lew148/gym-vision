@@ -7,9 +7,8 @@ import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
-import 'package:gymvision/providers/active_workout_provider.dart';
-import 'package:gymvision/providers/navigation_provider.dart';
-import 'package:gymvision/static_data/enums.dart';
+import 'package:gymvision/providers/global/active_workout_provider.dart';
+import 'package:gymvision/providers/history_provider.dart';
 import 'package:gymvision/widgets/components/stateless/calendar_view.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/category_filter.dart';
@@ -27,29 +26,9 @@ class History extends StatefulWidget {
 }
 
 class _HistoryState extends State<History> {
-  late List<Category> filterCategories;
   DateTime? date;
 
-  @override
-  void initState() {
-    super.initState();
-    final navProvider = context.read<NavigationProvider>();
-    filterCategories = navProvider.historyCategoryFilters;
-    navProvider.resetHistoryCategoryFilters();
-  }
-
-  Future<(List<Bodyweight>, List<Workout>)> loadFuture() async => (
-        await BodyweightModel.getBodyweights(),
-        await WorkoutModel.getAllWorkouts(withSummary: true, filterCategories: filterCategories)
-      );
-
   void reload() => setState(() {});
-
-  void onSetFilterCategories(List<Category> categories) async {
-    setState(() {
-      filterCategories = categories;
-    });
-  }
 
   void setDate(DateTime? dt) => setState(() {
         date = dt;
@@ -58,30 +37,37 @@ class _HistoryState extends State<History> {
   Map<DateTime, List<CalendarViewEvent>> getEvents(List<Workout> workouts) => groupBy(workouts, (w) => w.date).map(
       (key, value) => MapEntry(DateTimeHelper.roundToDay(key), value.map((w) => (CalendarViewEvent.workout)).toList()));
 
-  Widget getFilterRow(List<Workout> workouts) => Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Expanded(
-            child: CategoryFilter(
-              filterCategories: filterCategories,
-              onChange: onSetFilterCategories,
-            ),
-          ),
-          Button.calendar(
-            onTap: () => showCalendarView(
-              context,
-              events: getEvents(workouts),
-              onDateSelected: setDate,
-            ),
-          ),
-        ],
-      );
-
   @override
   Widget build(BuildContext context) {
     return Consumer<ActiveWorkoutProvider>(builder: (context, activeWorkoutProvider, child) {
-      return FutureBuilder<(List<Bodyweight>, List<Workout>)>(
+      return Consumer<HistoryProvider>(builder: (context, historyProvider, child) {
+        Future<(List<Bodyweight>, List<Workout>)> loadFuture() async => (
+              await BodyweightModel.getBodyweights(),
+              await WorkoutModel.getAllWorkouts(withSummary: true, filterCategories: historyProvider.categoryFilters)
+            );
+
+        Widget getFilterRow(List<Workout> workouts) => Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: CategoryFilter(
+                    filterCategories: historyProvider.categoryFilters,
+                    onChange: (cs) => historyProvider.setCategoryFilters(cs),
+                  ),
+                ),
+                Button.calendar(
+                  onTap: () => showCalendarView(
+                    context,
+                    events: getEvents(workouts),
+                    onDateSelected: setDate,
+                    selectedDate: date,
+                  ),
+                ),
+              ],
+            );
+
+        return FutureBuilder<(List<Bodyweight>, List<Workout>)>(
           future: loadFuture(),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
@@ -147,7 +133,9 @@ class _HistoryState extends State<History> {
                       ),
               ],
             );
-          });
+          },
+        );
+      });
     });
   }
 }

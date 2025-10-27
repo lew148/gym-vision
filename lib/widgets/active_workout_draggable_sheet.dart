@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/constants.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
-import 'package:gymvision/providers/active_workout_provider.dart';
+import 'package:gymvision/providers/global/active_workout_provider.dart';
 import 'package:gymvision/widgets/components/animated/pulsing_dot.dart';
 import 'package:gymvision/widgets/components/stateless/drag_handle.dart';
 import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';

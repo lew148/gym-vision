@@ -36,10 +36,14 @@ class Workout extends DBO {
   String getTimeStr() => DateFormat(DateTimeHelper.hmFormat).format(date);
   bool isInFuture() => DateTimeHelper.isInFuture(date);
 
+  List<WorkoutCategory> getWorkoutCategories() => workoutCategories ?? [];
+
   List<Category> getCategories() => workoutCategories?.map((wc) => wc.category).toList() ?? [];
 
   List<WorkoutExercise> getWorkoutExercises() => workoutExercises ?? [];
   List<WorkoutExercise> getDoneWorkoutExercises() => getWorkoutExercises().where((we) => we.isDone()).toList();
+  List<WorkoutExercise> getWorkoutExercisesDoneOrWithDoneSets() =>
+      getWorkoutExercises().where((we) => we.isDone() || we.getDoneSets().isNotEmpty).toList();
 
   String getWorkoutTitle() {
     if (isInFuture()) return '📍 Planned Workout';

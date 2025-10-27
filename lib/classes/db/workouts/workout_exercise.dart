@@ -30,8 +30,8 @@ class WorkoutExercise extends DBO {
 
   bool isCardio() => exercise?.type == ExerciseType.cardio;
 
-  bool isDone() => workoutSets == null || workoutSets!.isEmpty ? done : workoutSets!.every((ws) => ws.done);
-
   List<WorkoutSet> getSets() => workoutSets ?? [];
   List<WorkoutSet> getDoneSets() => getSets().where((s) => s.done).toList();
+
+  bool isDone() => getSets().isEmpty ? done : getSets().every((ws) => ws.done);
 }

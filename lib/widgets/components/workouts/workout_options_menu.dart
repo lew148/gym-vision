@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
-import 'package:gymvision/providers/active_workout_provider.dart';
-import 'package:gymvision/providers/rest_timer_provider.dart';
+import 'package:gymvision/providers/global/active_workout_provider.dart';
+import 'package:gymvision/providers/global/rest_timer_provider.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/options_menu.dart';
-import 'package:gymvision/widgets/components/workouts/sharable_workout_summary.dart';
+import 'package:gymvision/widgets/components/workouts/summary/sharable_workout_summary.dart';
 import 'package:provider/provider.dart';
 
 class WorkoutOptionsMenu extends StatelessWidget {

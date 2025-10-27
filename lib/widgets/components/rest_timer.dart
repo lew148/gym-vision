@@ -5,7 +5,7 @@ import 'package:gymvision/constants.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
-import 'package:gymvision/providers/rest_timer_provider.dart';
+import 'package:gymvision/providers/global/rest_timer_provider.dart';
 import 'package:provider/provider.dart';
 
 class RestTimer extends StatefulWidget {
@@ -67,7 +67,7 @@ class _RestTimerState extends State<RestTimer> {
             behavior: HitTestBehavior.translucent,
             onTap: () async => await showDeleteConfirm(context, 'Timer', onTimerDelete),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(clipRectRadius),
+              borderRadius: BorderRadius.circular(smallBorderRadius),
               child: Stack(children: [
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 300),

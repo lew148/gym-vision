@@ -10,11 +10,13 @@ enum CalendarViewEvent {
 class CalendarView extends StatelessWidget {
   final Map<DateTime, List<CalendarViewEvent>> events;
   final void Function(DateTime? selectedDay)? onDateSelected;
+  final DateTime? selectedDate;
 
   const CalendarView({
     super.key,
     required this.events,
     this.onDateSelected,
+    this.selectedDate,
   });
 
   List<CalendarViewEvent> getEvent(DateTime dt) => events[DateTimeHelper.roundToDay(dt)] ?? [];
@@ -43,12 +45,18 @@ class CalendarView extends StatelessWidget {
       TableCalendar<CalendarViewEvent>(
         firstDay: DateTime.utc(2000, 1, 1),
         lastDay: DateTime.utc(2050, 12, 31),
+        selectedDayPredicate: (day) => selectedDate == null ? false : DateTimeHelper.areSameDay(day, selectedDate!),
         focusedDay: DateTime.now(),
         eventLoader: getEvent,
         headerStyle: const HeaderStyle(formatButtonVisible: false, titleCentered: true),
         calendarStyle: CalendarStyle(
           markersMaxCount: 3,
-          todayDecoration: BoxDecoration(color: Theme.of(context).colorScheme.shadow, shape: BoxShape.circle),
+          todayTextStyle: TextStyle(color: Theme.of(context).colorScheme.primary),
+          todayDecoration: BoxDecoration(), // remove default circle
+          selectedDecoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primary.withValues(alpha: .5),
+            shape: BoxShape.circle,
+          ),
         ),
         calendarBuilders: CalendarBuilders(
           markerBuilder: (context, date, events) => events.isEmpty

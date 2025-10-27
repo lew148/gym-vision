@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
-import 'package:gymvision/providers/navigation_provider.dart';
+import 'package:gymvision/providers/global/navigation_provider.dart';
 import 'package:provider/provider.dart';
 
 class ActiveWorkoutProvider extends ChangeNotifier {
