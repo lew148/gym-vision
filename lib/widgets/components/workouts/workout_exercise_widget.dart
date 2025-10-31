@@ -121,7 +121,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       ];
 
   List<Widget> getCardioSetContents(WorkoutSet ws) => [
-        Expanded(flex: 4, child: TextWithIcon.setTime(ws.time, alignment: MainAxisAlignment.center)),
+        Expanded(flex: 4, child: TextWithIcon.duration(ws.time, alignment: MainAxisAlignment.center)),
         Expanded(flex: 4, child: TextWithIcon.distance(ws.distance, alignment: MainAxisAlignment.center)),
         Expanded(flex: 3, child: TextWithIcon.caloriesBurned(ws.calsBurned, alignment: MainAxisAlignment.center)),
       ];
@@ -202,13 +202,20 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     return widgets;
   }
 
-  Future<bool> onWorkoutExerciseDoneTap(bool done, bool standalone) async {
+  Future<bool> onWorkoutExerciseDoneTap(bool done, bool standalone, List<WorkoutSet>? sets) async {
     try {
       HapticFeedback.lightImpact();
 
-      if (widget.isInFuture && done) {
-        showSnackBar(context, 'Cannot complete sets in the future');
-        return false;
+      if (done) {
+        if (widget.isInFuture) {
+          showSnackBar(context, 'Cannot complete sets in the future');
+          return false;
+        }
+
+        if (!exercise.isCardio() && sets != null && sets.any((s) => s.reps == null || s.reps == 0)) {
+          showSnackBar(context, 'Sets must have reps');
+          return false;
+        }
       }
 
       if (standalone) {
@@ -231,9 +238,17 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   Future<bool> onSetDoneTap(WorkoutSet set, bool done) async {
     try {
       HapticFeedback.lightImpact();
-      if (widget.isInFuture && done) {
-        showSnackBar(context, 'Cannot complete sets in the future');
-        return false;
+
+      if (done) {
+        if (widget.isInFuture) {
+          showSnackBar(context, 'Cannot complete sets in the future');
+          return false;
+        }
+
+        if (!exercise.isCardio() && (set.reps == null || set.reps == 0)) {
+          showSnackBar(context, 'Sets must have reps');
+          return false;
+        }
       }
 
       set.done = done;
@@ -250,14 +265,14 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     }
   }
 
-  Widget getHeader({required bool standalone, required bool isDone}) => Padding(
+  Widget getHeader({required bool standalone, List<WorkoutSet>? sets}) => Padding(
         padding: const EdgeInsets.all(8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             CustomCheckbox(
-              value: isDone,
-              onChangeAsync: isDisplay ? null : (value) => onWorkoutExerciseDoneTap(value, standalone),
+              value: sets != null ? sets.every((ws) => ws.done) : widget.workoutExercise.isDone(),
+              onChangeAsync: isDisplay ? null : (value) => onWorkoutExerciseDoneTap(value, standalone, sets),
             ),
             const Padding(padding: EdgeInsetsGeometry.all(5)),
             Expanded(
@@ -348,7 +363,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           loading: snapshot.connectionState == ConnectionState.waiting,
           child: CustomCard(
             child: sets == null || sets.isEmpty
-                ? getHeader(standalone: true, isDone: widget.workoutExercise.isDone())
+                ? getHeader(standalone: true)
                 : Column(
                     children: [
                       GestureDetector(
@@ -359,7 +374,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                           });
                         },
                         behavior: HitTestBehavior.translucent,
-                        child: getHeader(standalone: false, isDone: sets.every((ws) => ws.done)),
+                        child: getHeader(standalone: false, sets: sets),
                       ),
                       if (dropped) ...[
                         const CustomDivider(shadow: true, height: 0),

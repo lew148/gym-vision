@@ -29,6 +29,8 @@ class DurationField extends StatelessWidget {
               behavior: HitTestBehavior.translucent,
               onTap: () => showDurationPicker(context, CupertinoTimerPickerMode.hms, onChange: onChange),
               child: Row(children: [
+                Icon(Icons.timer_rounded, color: Theme.of(context).colorScheme.secondary),
+                const Padding(padding: EdgeInsetsGeometry.all(8)), // in line with Material FormField's padding
                 duration.inSeconds == 0
                     ? Text(
                         'Duration',

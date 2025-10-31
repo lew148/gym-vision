@@ -5,9 +5,10 @@ import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
+import 'package:gymvision/widgets/components/stateless/category_filter.dart';
+import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/scroll_bottom_padding.dart';
 import 'package:gymvision/widgets/pages/exercise/exercise_view.dart';
-import 'package:gymvision/widgets/forms/category_picker.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 
@@ -143,15 +144,6 @@ class _ExercisesState extends State<Exercises> {
     });
   }
 
-  void showCategories() => showCloseableBottomSheet(
-        context,
-        CateogryPicker(
-          selectedCategories: filterCategories,
-          onChange: onCategoriesChange,
-          includeMiscCategories: false,
-        ),
-      );
-
   Widget getExercisesScrollView() {
     final List<Widget> sections = [];
     final Map<int, List<Exercise>> groups =
@@ -249,15 +241,9 @@ class _ExercisesState extends State<Exercises> {
         ),
       ]),
       if (selectedType != ExerciseType.cardio)
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Button(
-              icon: Icons.category_rounded,
-              onTap: showCategories,
-              style: ButtonCustomStyle(padding: const EdgeInsets.all(10)),
-            ),
-          ],
+        Padding(
+          padding: EdgeInsetsGeometry.only(bottom: 5),
+          child: CategoryFilter(filterCategories: filterCategories, onChange: onCategoriesChange),
         ),
       Expanded(child: getExercisesScrollView()),
     ]);

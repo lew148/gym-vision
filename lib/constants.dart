@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-const String appVersion = '1.0.12';
+const String appVersion = '1.0.13';
 
 const double smallBorderRadius = 5.00;
 const double borderRadius = 10.00;

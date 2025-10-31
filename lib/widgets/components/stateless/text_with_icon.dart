@@ -41,7 +41,13 @@ class TextWithIcon extends StatelessWidget {
         text: DateTimeHelper.getHoursAndMinsDurationString(timeElapsed),
       );
 
-  factory TextWithIcon.weight(double? weight, {MainAxisAlignment? alignment, bool muted = false, bool compact = false}) => TextWithIcon(
+  factory TextWithIcon.weight(
+    double? weight, {
+    MainAxisAlignment? alignment,
+    bool muted = false,
+    bool compact = false,
+  }) =>
+      TextWithIcon(
         icon: Icons.fitness_center_rounded,
         text: weight == null || weight == 0 ? null : '${NumberHelper.truncateDouble(weight)}kg',
         alignment: alignment,
@@ -50,28 +56,28 @@ class TextWithIcon extends StatelessWidget {
 
   factory TextWithIcon.reps(int? reps, {MainAxisAlignment? alignment, bool muted = false}) => TextWithIcon(
         icon: Icons.repeat_rounded,
-        text: reps == null || reps == 0 ? 'No Reps' : '$reps rep${reps == 1 ? '' : 's'}',
+        text: reps == null || reps == 0 ? null : '$reps rep${reps == 1 ? '' : 's'}',
         alignment: alignment,
         muted: muted,
       );
 
-  factory TextWithIcon.setTime(Duration? time, {MainAxisAlignment? alignment}) => TextWithIcon(
+  factory TextWithIcon.duration(Duration? duration, {MainAxisAlignment? alignment}) => TextWithIcon(
         icon: Icons.timer_rounded,
-        text: time == null || time.inSeconds == 0 ? '00.00.00' : time.toString().split('.').first.padLeft(8, "0"),
+        text: duration == null || duration.inSeconds == 0 ? null : duration.toString().split('.').first.padLeft(8, "0"),
         alignment: alignment,
         muted: false,
       );
 
   factory TextWithIcon.distance(double? distance, {MainAxisAlignment? alignment}) => TextWithIcon(
         icon: Icons.timeline_rounded,
-        text: '${distance == null || distance == 0 ? 0 : distance.toStringAsFixed(2)}km',
+        text: distance == null || distance == 0 ? null : '${distance.toStringAsFixed(2)}km',
         alignment: alignment,
         muted: false,
       );
 
   factory TextWithIcon.caloriesBurned(int? cals, {MainAxisAlignment? alignment}) => TextWithIcon(
         icon: Icons.local_fire_department_rounded,
-        text: '${cals == null || cals == 0 ? 0 : cals}kcals',
+        text: cals == null || cals == 0 ? null : '${cals}kcals',
         alignment: alignment,
         muted: false,
       );

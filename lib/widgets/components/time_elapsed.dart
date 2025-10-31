@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
+import 'package:gymvision/providers/global/active_workout_provider.dart';
+import 'package:provider/provider.dart';
 
 class TimeElapsed extends StatefulWidget {
   final DateTime since;
@@ -37,8 +39,13 @@ class _TimeElapsedState extends State<TimeElapsed> {
       timer = Timer.periodic(
         const Duration(seconds: 1),
         (Timer t) {
+          final newTimeSince = DateTimeHelper.timeBetween(widget.since, widget.end ?? DateTime.now());
+          if (Duration(seconds: -1) <= timeSince && timeSince <= Duration(seconds: 1)) {
+            context.read<ActiveWorkoutProvider>().refreshActiveWorkout();
+          }
+
           setState(() {
-            timeSince = DateTimeHelper.timeBetween(widget.since, widget.end ?? DateTime.now());
+            timeSince = newTimeSince;
           });
         },
       );

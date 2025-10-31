@@ -87,7 +87,6 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
       CustomFormField.int(
         controller: _repsController,
         label: 'Reps',
-        canBeBlank: false,
         prefixIcon: Icons.repeat_rounded,
         buttons: [
           Button(text: '1', onTap: () => setReps('1'), style: ButtonCustomStyle.noPrimary()),
@@ -122,10 +121,7 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
       ];
 
   void onAddSubmit(Exercise exercise, {bool addThree = false}) async {
-    if (!_formKey.currentState!.validate() ||
-        (!exercise.isCardio() && _repsController.text == '' || _repsController.text == '0')) {
-      return;
-    }
+    if (!_formKey.currentState!.validate()) return;
 
     Navigator.pop(context);
 
@@ -158,56 +154,56 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
   }
 
   void onEditSubmit() async {
-    if (_formKey.currentState!.validate()) {
-      Navigator.pop(context);
-      bool hasChanges = false;
+    if (!_formKey.currentState!.validate()) return;
 
-      try {
-        final newWeight = NumberHelper.parseDouble(_weightController.text);
-        final newReps = int.parse(NumberHelper.getNumberString(_repsController.text));
-        final newDistance = NumberHelper.parseDouble(_distanceController.text);
-        final newCalsBurned = int.parse(NumberHelper.getNumberString(_calsBurnedController.text));
-        final newDuration = _duration;
+    Navigator.pop(context);
+    bool hasChanges = false;
 
-        final set = widget.workoutSet!;
-        if (set.weight != newWeight) {
-          set.weight = newWeight;
-          hasChanges = true;
-        }
+    try {
+      final newWeight = NumberHelper.parseDouble(_weightController.text);
+      final newReps = int.parse(NumberHelper.getNumberString(_repsController.text));
+      final newDistance = NumberHelper.parseDouble(_distanceController.text);
+      final newCalsBurned = int.parse(NumberHelper.getNumberString(_calsBurnedController.text));
+      final newDuration = _duration;
 
-        if (set.reps != newReps) {
-          set.reps = newReps;
-          hasChanges = true;
-        }
-
-        if (set.distance != newDistance) {
-          set.distance = newDistance;
-          hasChanges = true;
-        }
-
-        if (set.calsBurned != newCalsBurned) {
-          set.calsBurned = newCalsBurned;
-          hasChanges = true;
-        }
-
-        if (set.time != newDuration) {
-          set.time = newDuration;
-          hasChanges = true;
-        }
-
-        if (set.done != _complete) {
-          set.done = _complete;
-          hasChanges = true;
-        }
-
-        if (!hasChanges) return;
-
-        await WorkoutSetModel.update(set);
-        widget.onSuccess();
-      } catch (ex) {
-        if (!mounted) return;
-        showSnackBar(context, 'Failed to edit workout set');
+      final set = widget.workoutSet!;
+      if (set.weight != newWeight) {
+        set.weight = newWeight;
+        hasChanges = true;
       }
+
+      if (set.reps != newReps) {
+        set.reps = newReps;
+        hasChanges = true;
+      }
+
+      if (set.distance != newDistance) {
+        set.distance = newDistance;
+        hasChanges = true;
+      }
+
+      if (set.calsBurned != newCalsBurned) {
+        set.calsBurned = newCalsBurned;
+        hasChanges = true;
+      }
+
+      if (set.time != newDuration) {
+        set.time = newDuration;
+        hasChanges = true;
+      }
+
+      if (set.done != _complete) {
+        set.done = _complete;
+        hasChanges = true;
+      }
+
+      if (!hasChanges) return;
+
+      await WorkoutSetModel.update(set);
+      widget.onSuccess();
+    } catch (ex) {
+      if (!mounted) return;
+      showSnackBar(context, 'Failed to edit workout set');
     }
   }
 
