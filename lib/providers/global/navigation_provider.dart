@@ -9,10 +9,16 @@ class NavigationProvider extends ChangeNotifier {
 
   BuildContext? getGlobalContext() => _navKey.currentContext;
 
-  void changeTab(int index) {
+  void toTab(int index) {
     _selectedIndex = index;
     notifyListeners();
   }
+
+  void toTodayTab() => toTab(0);
+  void toHistoryTab() => toTab(1);
+  void toExercisesTab() => toTab(2);
+  void toProgressTab() => toTab(3);
+  void toProfileTab() => toTab(4);
 
   void reloadCurrentTab() {
     notifyListeners();

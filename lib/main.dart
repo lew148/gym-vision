@@ -112,13 +112,13 @@ class MyApp extends StatelessWidget {
   final darkBackground = Colors.black;
   final darkSurface = const Color.fromARGB(255, 22, 22, 22);
 
-  List<Widget> widgetPages() => [
-        const Today(),
-        const History(),
-        const Exercises(),
-        const Progress(),
-        const ComingSoon(),
-      ];
+  static const List<Widget> widgetPages = [
+    Today(),
+    History(),
+    Exercises(),
+    Progress(),
+    ComingSoon(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -161,11 +161,11 @@ class MyApp extends StatelessWidget {
       themeMode: EasyDynamicTheme.of(context).themeMode,
       home: DebugScaffold(
         showActiveWorkout: navProvider.selectedIndex < 4,
-        body: widgetPages().elementAt(navProvider.selectedIndex),
+        body: MyApp.widgetPages.elementAt(navProvider.selectedIndex),
         bottomNavigationBar: Container(
           decoration: BoxDecoration(border: BoxBorder.fromLTRB(top: BorderSide(color: shadow, width: 0.25))),
           child: NavigationBar(
-            onDestinationSelected: navProvider.changeTab,
+            onDestinationSelected: navProvider.toTab,
             labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
             indicatorColor: Colors.transparent,
             selectedIndex: navProvider.selectedIndex,

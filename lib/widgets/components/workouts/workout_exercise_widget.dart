@@ -10,7 +10,6 @@ import 'package:gymvision/models/db_models/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workout_set_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
-import 'package:gymvision/providers/workout_provider.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
@@ -22,20 +21,23 @@ import 'package:gymvision/widgets/forms/workout_set_form.dart';
 import 'package:gymvision/widgets/pages/exercise/exercise_view.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
-import 'package:provider/provider.dart';
 
 class WorkoutExerciseWidget extends StatefulWidget {
   final WorkoutExercise workoutExercise;
   final Function(int weId)? onDelete;
+  final Function(int weId)? onDrop;
   final bool isInFuture;
   final bool isDisplay;
+  final bool dropped;
 
   const WorkoutExerciseWidget({
     super.key,
     required this.workoutExercise,
     this.onDelete,
+    this.onDrop,
     this.isInFuture = false,
     this.isDisplay = false,
+    this.dropped = false,
   });
 
   @override
@@ -47,8 +49,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   late String exerciseIdentifier;
   late Exercise exercise;
   late bool isDisplay;
-  WorkoutProvider? provider;
-  bool dropped = false;
+  late bool dropped;
 
   @override
   void initState() {
@@ -57,15 +58,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     exerciseIdentifier = widget.workoutExercise.exerciseIdentifier;
     exercise = widget.workoutExercise.exercise ?? DefaultExercisesModel.getExerciseByIdentifier(exerciseIdentifier)!;
     isDisplay = widget.isDisplay;
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!isDisplay) {
-      provider = context.read<WorkoutProvider>();
-      dropped = provider!.droppedWorkoutExerciseIds.contains(widget.workoutExercise.id!);
-    }
+    dropped = widget.dropped;
   }
 
   void reload() => setState(() {
@@ -116,7 +109,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
             workoutSetsFuture = WorkoutSetModel.getSetsForWorkoutExercise(widget.workoutExercise.id!);
           });
 
-          provider?.toggleDroppedExercise(widget.workoutExercise.id!);
+          if (widget.onDrop != null) widget.onDrop!(widget.workoutExercise.id!);
         },
       ),
     );
@@ -360,7 +353,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          provider?.toggleDroppedExercise(widget.workoutExercise.id!);
+                          if (widget.onDrop != null) widget.onDrop!(widget.workoutExercise.id!);
                           setState(() {
                             dropped = !dropped;
                           });

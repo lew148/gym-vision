@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_confetti/flutter_confetti.dart';
 import 'package:gymvision/classes/db/workouts/workout_category.dart';
-import 'package:gymvision/constants.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workout_model.dart';
 import 'package:gymvision/providers/global/active_workout_provider.dart';
+import 'package:gymvision/providers/global/navigation_provider.dart';
 import 'package:gymvision/providers/global/rest_timer_provider.dart';
 import 'package:gymvision/providers/history_provider.dart';
 import 'package:gymvision/static_data/enums.dart';
+import 'package:gymvision/widgets/components/custom_reorderable_list.dart';
 import 'package:gymvision/widgets/components/rest_timer.dart';
 import 'package:gymvision/widgets/components/stateless/prop_display.dart';
 import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
 import 'package:gymvision/widgets/components/time_elapsed.dart';
+import 'package:gymvision/widgets/components/workouts/workout_exercise_widget.dart';
 import 'package:gymvision/widgets/forms/add_exercises_to_workout.dart';
 import 'package:gymvision/widgets/components/workouts/workout_options_menu.dart';
 import 'package:gymvision/widgets/components/workouts/summary/sharable_workout_summary.dart';
 import 'package:provider/provider.dart';
 import 'package:gymvision/providers/workout_provider.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
-import 'package:gymvision/widgets/components/workouts/workout_exercise_widget.dart';
 import 'package:gymvision/widgets/components/stateless/splash_text.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/forms/category_picker.dart';
@@ -105,6 +106,7 @@ class WorkoutViewBody extends StatelessWidget {
 
     Future<void> onCategoryPillTap(WorkoutCategory wc) async {
       context.read<HistoryProvider>().setCategoryFilters([wc.category]);
+      context.read<NavigationProvider>().toHistoryTab();
       Navigator.pop(context); // close workout
     }
 
@@ -164,17 +166,10 @@ class WorkoutViewBody extends StatelessWidget {
           ),
         ]));
 
-    // void onWorkoutExerciseReorder(int currentIndex, int newIndex) async {
-    //   try {
-    //     HapticFeedback.heavyImpact();
-    //     workout.exerciseOrder = OrderingHelper.reorderByIndex(workout.exerciseOrder, currentIndex, newIndex);
-    //     await WorkoutModel.update(workout);
-    //   } catch (e) {
-    //     // do nothing
-    //   }
-
-    //   provider.reload();
-    // }
+    void onWorkoutExerciseReorder(int currentIndex, int newIndex) async {
+      workout.exerciseOrder = OrderingHelper.reorderByIndex(workout.exerciseOrder, currentIndex, newIndex);
+      await WorkoutModel.update(workout);
+    }
 
     return Column(
       children: [
@@ -270,55 +265,49 @@ class WorkoutViewBody extends StatelessWidget {
 
         // exercises
         Expanded(
-            child: workoutExercises.isEmpty
-                ? Padding(
-                    padding: const EdgeInsetsGeometry.fromLTRB(30, 30, 30, 0), // b is 0 to avoid padding using keyboard
-                    child: Column(
-                      children: [
-                        const SplashText(
-                          title: 'What are you training today?',
-                          description: 'One workout closer to your goals!',
-                        ),
-                        if (!workout.hasCategories()) ...[
-                          Button.elevated(
-                            icon: Icons.category_rounded,
-                            text: 'Select categories',
-                            onTap: () => onAddCategoryClick(categories),
-                          ),
-                          Padding(
-                            padding: const EdgeInsetsGeometry.all(5),
-                            child: Text(
-                              'OR',
-                              style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.secondary),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
-                        Button.elevated(icon: Icons.add_rounded, text: 'Add exercises', onTap: onAddExerciseClick),
+          child: workoutExercises.isEmpty
+              ? Padding(
+                  padding: const EdgeInsetsGeometry.fromLTRB(30, 30, 30, 0), // b is 0 to avoid padding using keyboard
+                  child: Column(
+                    children: [
+                      const SplashText(
+                        title: 'What are you training today?',
+                        description: 'One workout closer to your goals!',
+                      ),
+                      if (!workout.hasCategories()) ...[
                         Button.elevated(
-                            icon: Icons.copy_rounded, text: 'Copy Workout', onTap: onCopyPreviousWorkoutTap),
+                          icon: Icons.category_rounded,
+                          text: 'Select categories',
+                          onTap: () => onAddCategoryClick(categories),
+                        ),
+                        Padding(
+                          padding: const EdgeInsetsGeometry.all(5),
+                          child: Text(
+                            'OR',
+                            style: TextStyle(fontSize: 14, color: Theme.of(context).colorScheme.secondary),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
                       ],
-                    ),
-                  )
-                : ClipRRect(
-                    borderRadius: BorderRadius.circular(clipRectRadius),
-                    child: ListView.builder(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      itemCount: workoutExercises.length,
-                      itemBuilder: (context, index) {
-                        final we = workoutExercises[index];
-                        return Container(
-                          key: Key(we.id.toString()),
-                          child: WorkoutExerciseWidget(
+                      Button.elevated(icon: Icons.add_rounded, text: 'Add exercises', onTap: onAddExerciseClick),
+                      Button.elevated(icon: Icons.copy_rounded, text: 'Copy Workout', onTap: onCopyPreviousWorkoutTap),
+                    ],
+                  ),
+                )
+              : CustomReorderableList(
+                  onReorder: onWorkoutExerciseReorder,
+                  children: workoutExercises
+                      .map((we) => WorkoutExerciseWidget(
+                            key: ValueKey(we.id),
                             workoutExercise: we,
                             onDelete: (x) => provider.reload(),
                             isInFuture: workout.isInFuture(),
-                          ),
-                        );
-                      },
-                      // onReorder: onWorkoutExerciseReorder,
-                    ),
-                  )),
+                            dropped: provider.droppedWorkoutExerciseIds.contains(we.id),
+                            onDrop: (weId) => provider.toggleDroppedExercise(weId),
+                          ))
+                      .toList(),
+                ),
+        ),
       ],
     );
   }

@@ -72,7 +72,7 @@ class _TodayState extends State<Today> {
                       Button.elevated(
                         icon: Icons.calendar_month_rounded,
                         text: 'Create a Schedule',
-                        onTap: () => Provider.of<NavigationProvider>(context, listen: false).changeTab(3),
+                        onTap: () => Provider.of<NavigationProvider>(context, listen: false).toTab(3),
                       ),
                     ]);
                   }

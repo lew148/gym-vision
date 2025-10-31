@@ -99,10 +99,11 @@ class _HistoryState extends State<History> {
                         : Button(
                             text: DateTimeHelper.getDateStr(date!),
                             onTap: () => showConfirm(
-                                  context,
-                                  title: 'Remove date filter?',
-                                  onConfirm: () => setDate(null),
-                                )),
+                              context,
+                              title: 'Remove date filter?',
+                              onConfirm: () => setDate(null),
+                            ),
+                          ),
                   ],
                 ),
                 workoutsToDisplay.isEmpty
@@ -115,19 +116,18 @@ class _HistoryState extends State<History> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(clipRectRadius),
                           child: ListView.builder(
+                            key: GlobalKey(),
                             itemCount: workoutsToDisplay.length + 1, // + 1 for bottom padding
-                            itemBuilder: (BuildContext context, int i) {
-                              return i == workoutsToDisplay.length
-                                  ? const ScrollBottomPadding()
-                                  : Padding(
-                                      padding: const EdgeInsetsGeometry.only(bottom: 5),
-                                      child: WorkoutCard(
-                                        workout: workoutsToDisplay[i],
-                                        isDisplay: true,
-                                        reloadParent: reload,
-                                      ),
-                                    );
-                            },
+                            itemBuilder: (BuildContext context, int i) => i == workoutsToDisplay.length
+                                ? const ScrollBottomPadding()
+                                : Padding(
+                                    padding: const EdgeInsetsGeometry.only(bottom: 5),
+                                    child: WorkoutCard(
+                                      workout: workoutsToDisplay[i],
+                                      isDisplay: true,
+                                      reloadParent: reload,
+                                    ),
+                                  ),
                           ),
                         ),
                       ),

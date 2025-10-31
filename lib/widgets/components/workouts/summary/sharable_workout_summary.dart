@@ -128,8 +128,11 @@ class SharableWorkoutSummary extends StatelessWidget {
           Widget getSharableSection(WorkoutSummary? summary) => Screenshot(
                 controller: screenshotController,
                 child: Container(
-                  padding: const EdgeInsets.all(10),
-                  color: Theme.of(context).colorScheme.surface,
+                  padding: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(borderRadius),
+                    color: Theme.of(context).colorScheme.surface,
+                  ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: summary == null
@@ -191,7 +194,6 @@ class SharableWorkoutSummary extends StatelessWidget {
               FutureBuilder(
                 future: WorkoutModel.getWorkoutSummary(id: workout.id!),
                 builder: (context, snapshot) => Container(
-                  padding: EdgeInsets.all(2.5),
                   decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.circular(borderRadius),
