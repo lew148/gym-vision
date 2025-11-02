@@ -4,8 +4,8 @@ import 'package:gymvision/classes/db/workouts/workout_category.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
-import 'package:gymvision/models/db_models/workout_category_model.dart';
-import 'package:gymvision/models/db_models/workout_model.dart';
+import 'package:gymvision/models/db_models/workouts/workout_category_model.dart';
+import 'package:gymvision/models/db_models/workouts/workout_model.dart';
 import 'package:gymvision/providers/global/active_workout_provider.dart';
 import 'package:gymvision/providers/global/navigation_provider.dart';
 import 'package:gymvision/providers/global/rest_timer_provider.dart';
@@ -25,7 +25,7 @@ import 'package:gymvision/providers/workout_provider.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/splash_text.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
-import 'package:gymvision/widgets/forms/category_picker.dart';
+import 'package:gymvision/widgets/forms/fields/category_picker.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/components/notes.dart';
 
@@ -112,7 +112,7 @@ class WorkoutViewBody extends StatelessWidget {
 
     Future<void> onAddCategoryClick(List<Category> existingWorkoutCategoryIds) async => await showCloseableBottomSheet(
           context,
-          CateogryPicker(
+          CategoryPicker(
             selectedCategories: existingWorkoutCategoryIds,
             onChange: (List<Category> newCategories) async {
               try {
@@ -185,15 +185,12 @@ class WorkoutViewBody extends StatelessWidget {
                   Navigator.pop(context);
                 },
               ),
-              Button(
-                icon: Icons.refresh,
-                onTap: provider.reload,
-              ),
+              Button(icon: Icons.refresh, onTap: provider.reload),
               if (!workout.isFinished()) const RestTimer(),
             ]),
             Row(children: [
               if (!DateTimeHelper.isInFuture(workout.date) && !workout.isFinished())
-                Button(icon: Icons.check_rounded, onTap: () => onFinishOrResumeTap(false)),
+                Button.check(onTap: () => onFinishOrResumeTap(false)),
               WorkoutOptionsMenu(
                 workout: workout,
                 onChange: () => provider.reload(),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
-import 'package:gymvision/models/db_models/workout_model.dart';
-import 'package:gymvision/models/db_models/workout_category_model.dart';
+import 'package:gymvision/models/db_models/workouts/workout_model.dart';
+import 'package:gymvision/models/db_models/workouts/workout_category_model.dart';
 import 'package:gymvision/static_data/enums.dart';
 
 class WorkoutProvider extends ChangeNotifier {

@@ -1,8 +1,8 @@
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/classes/exercise_details.dart';
-import 'package:gymvision/models/db_models/workout_exercise_model.dart';
-import 'package:gymvision/models/db_models/workout_model.dart';
-import 'package:gymvision/models/db_models/workout_set_model.dart';
+import 'package:gymvision/models/db_models/workouts/workout_exercise_model.dart';
+import 'package:gymvision/models/db_models/workouts/workout_model.dart';
+import 'package:gymvision/models/db_models/workouts/workout_set_model.dart';
 
 class ExerciseDetailsModel {
   static Future<ExerciseDetails?> getExerciseDetails({

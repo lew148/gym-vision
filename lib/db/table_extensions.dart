@@ -5,6 +5,9 @@ import 'package:gymvision/classes/db/schedules/schedule.dart';
 import 'package:gymvision/classes/db/schedules/schedule_category.dart';
 import 'package:gymvision/classes/db/schedules/schedule_item.dart';
 import 'package:gymvision/classes/db/user_settings.dart';
+import 'package:gymvision/classes/db/workout_templates/workout_template.dart';
+import 'package:gymvision/classes/db/workout_templates/workout_template_exercise.dart';
+import 'package:gymvision/classes/db/workout_templates/workout_template_set.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_category.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
@@ -133,5 +136,42 @@ extension DriftScheduleCategoryX on DriftScheduleCategory {
         createdAt: createdAt,
         scheduleItemId: scheduleItemId,
         category: category,
+      );
+}
+
+extension DriftWorkoutTemplateX on DriftWorkoutTemplate {
+  WorkoutTemplate toObject() => WorkoutTemplate(
+        id: id,
+        updatedAt: updatedAt,
+        createdAt: createdAt,
+        name: name,
+        categories: categories,
+        exerciseOrder: exerciseOrder,
+      );
+}
+
+extension DriftWorkoutTemplateExerciseX on DriftWorkoutTemplateExercise {
+  WorkoutTemplateExercise toObject() => WorkoutTemplateExercise(
+        id: id,
+        updatedAt: updatedAt,
+        createdAt: createdAt,
+        workoutTemplateId: workoutTemplateId,
+        exerciseIdentifier: exerciseIdentifier,
+        setOrder: setOrder,
+        exercise: DefaultExercisesModel.getExerciseByIdentifier(exerciseIdentifier),
+      );
+}
+
+extension DriftWorkoutTemplateSetX on DriftWorkoutTemplateSet {
+  WorkoutTemplateSet toObject() => WorkoutTemplateSet(
+        id: id,
+        updatedAt: updatedAt,
+        createdAt: createdAt,
+        workoutTemplateExerciseId: workoutTemplateExerciseId,
+        weight: weight,
+        reps: reps,
+        time: time,
+        distance: distance,
+        calsBurned: calsBurned,
       );
 }

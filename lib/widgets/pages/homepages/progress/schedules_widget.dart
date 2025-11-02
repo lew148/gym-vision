@@ -216,97 +216,98 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
         if (activeScheduleSnapshot.connectionState == ConnectionState.waiting) return const SizedBox.shrink();
 
         return FutureBuilder(
-            future: schedules,
-            builder: (context, schedulesSnapshot) {
-              if (schedulesSnapshot.connectionState == ConnectionState.waiting) return const SizedBox.shrink();
-              final schedules = schedulesSnapshot.data ?? [];
+          future: schedules,
+          builder: (context, schedulesSnapshot) {
+            if (schedulesSnapshot.connectionState == ConnectionState.waiting) return const SizedBox.shrink();
+            final schedules = schedulesSnapshot.data ?? [];
 
-              final actions = [
+            final actions = [
+              OptionsMenu(
+                icon: Icons.menu_rounded,
+                title: 'Schedules',
+                buttons: [
+                  Button(
+                    text: 'Add Schedule',
+                    icon: Icons.add_rounded,
+                    onTap: () {
+                      Navigator.pop(context);
+                      addScheduleOnTap();
+                    },
+                    style: ButtonCustomStyle.primaryIconOnly(),
+                  ),
+                  ...schedules.map(
+                    (s) => Button(
+                      text: s.name,
+                      icon: s.active ? Icons.chevron_right_rounded : null,
+                      onTap: () => setActiveSchedule(s.id!, activeScheduleSnapshot.data?.id),
+                      style: s.active ? null : ButtonCustomStyle.primaryIconOnly(),
+                    ),
+                  ),
+                ],
+              ),
+              if (activeScheduleSnapshot.hasData)
                 OptionsMenu(
-                  icon: Icons.menu_rounded,
-                  title: 'Schedules',
+                  title: activeScheduleSnapshot.data!.name,
                   buttons: [
                     Button(
-                      text: 'Add Schedule',
-                      icon: Icons.add_rounded,
+                      icon: Icons.edit_rounded,
+                      text: 'Edit Schedule',
                       onTap: () {
                         Navigator.pop(context);
-                        addScheduleOnTap();
+                        editScheduleOnTap(activeScheduleSnapshot.data!);
                       },
                       style: ButtonCustomStyle.primaryIconOnly(),
                     ),
-                    ...schedules.map(
-                      (s) => Button(
-                        text: s.name,
-                        icon: s.active ? Icons.chevron_right_rounded : null,
-                        onTap: () => setActiveSchedule(s.id!, activeScheduleSnapshot.data?.id),
-                        style: s.active ? null : ButtonCustomStyle.primaryIconOnly(),
-                      ),
+                    Button.delete(
+                      onTap: () => showDeleteConfirm(
+                        context,
+                        'Schedule',
+                        () async => await ScheduleModel.delete(activeScheduleSnapshot.data!.id!),
+                      ).then((x) {
+                        if (context.mounted) Navigator.pop(context);
+                        reload();
+                      }),
+                      text: 'Delete Schedule',
                     ),
                   ],
-                ),
-                if (activeScheduleSnapshot.hasData)
-                  OptionsMenu(
-                    title: activeScheduleSnapshot.data!.name,
-                    buttons: [
-                      Button(
-                        icon: Icons.edit_rounded,
-                        text: 'Edit Schedule',
-                        onTap: () {
-                          Navigator.pop(context);
-                          editScheduleOnTap(activeScheduleSnapshot.data!);
-                        },
-                        style: ButtonCustomStyle.primaryIconOnly(),
-                      ),
-                      Button.delete(
-                        onTap: () => showDeleteConfirm(
-                          context,
-                          'Schedule',
-                          () async => await ScheduleModel.delete(activeScheduleSnapshot.data!.id!),
-                        ).then((x) {
-                          if (context.mounted) Navigator.pop(context);
-                          reload();
-                        }),
-                        text: 'Delete Schedule',
-                      ),
-                    ],
-                  )
-              ];
+                )
+            ];
 
-              return Column(
-                children: [
-                  schedules.isEmpty
-                      ? Header(title: 'Schedule', actions: actions)
-                      : Header(
-                          widget: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                activeScheduleSnapshot.data!.name,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
+            return Column(
+              children: [
+                schedules.isEmpty
+                    ? Header(title: 'Schedule', actions: actions)
+                    : Header(
+                        widget: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              activeScheduleSnapshot.data!.name,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
                               ),
-                              Text(
-                                'Started ${DateTimeHelper.getDateOrDayStr(activeScheduleSnapshot.data!.startDate)}',
-                                style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                              ),
-                            ],
-                          ),
-                          actions: actions,
+                            ),
+                            Text(
+                              'Started ${DateTimeHelper.getDateOrDayStr(activeScheduleSnapshot.data!.startDate)}',
+                              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                            ),
+                          ],
                         ),
-                  const Padding(padding: EdgeInsets.all(5)),
-                  activeScheduleSnapshot.hasData
-                      ? getScheduleDisplay(activeScheduleSnapshot.data!)
-                      : Button.elevated(
-                          icon: Icons.add_rounded,
-                          text: 'Add a Schedule',
-                          onTap: addScheduleOnTap,
-                        ),
-                ],
-              );
-            });
+                        actions: actions,
+                      ),
+                const Padding(padding: EdgeInsets.all(5)),
+                activeScheduleSnapshot.hasData
+                    ? getScheduleDisplay(activeScheduleSnapshot.data!)
+                    : Button.elevated(
+                        icon: Icons.add_rounded,
+                        text: 'Add a Schedule',
+                        onTap: addScheduleOnTap,
+                      ),
+              ],
+            );
+          },
+        );
       },
     );
   }

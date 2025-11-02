@@ -1,22 +1,26 @@
 import 'package:gymvision/classes/db/_dbo.dart';
-import 'package:gymvision/classes/db/workout_templates/workout_template_category.dart';
 import 'package:gymvision/classes/db/workout_templates/workout_template_exercise.dart';
+import 'package:gymvision/helpers/enum_helper.dart';
+import 'package:gymvision/static_data/enums.dart';
 
 class WorkoutTemplate extends DBO {
   String name;
+  String categories; // in order
+  String exerciseOrder;
 
   // non-db props
-  List<WorkoutTemplateCategory>? workoutTemplateCategories;
   List<WorkoutTemplateExercise>? workoutTemplateExercises;
-  // WorkoutExerciseOrdering? exerciseOrdering;
 
   WorkoutTemplate({
     super.id,
     super.updatedAt,
     super.createdAt,
     required this.name,
-    this.workoutTemplateCategories,
+    required this.categories,
+    required this.exerciseOrder,
     this.workoutTemplateExercises,
-    // this.exerciseOrdering,
   });
+
+  List<Category> getCategories() =>
+      categories.split(',').map((c) => EnumHelper.stringToEnum(c, Category.values)).whereType<Category>().toList();
 }

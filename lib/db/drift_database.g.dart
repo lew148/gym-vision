@@ -3898,6 +3898,1248 @@ class DriftScheduleCategoriesCompanion
   }
 }
 
+class $DriftWorkoutTemplatesTable extends DriftWorkoutTemplates
+    with TableInfo<$DriftWorkoutTemplatesTable, DriftWorkoutTemplate> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DriftWorkoutTemplatesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _categoriesMeta =
+      const VerificationMeta('categories');
+  @override
+  late final GeneratedColumn<String> categories = GeneratedColumn<String>(
+      'categories', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _exerciseOrderMeta =
+      const VerificationMeta('exerciseOrder');
+  @override
+  late final GeneratedColumn<String> exerciseOrder = GeneratedColumn<String>(
+      'exercise_order', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, updatedAt, createdAt, name, categories, exerciseOrder];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'workout_template';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<DriftWorkoutTemplate> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('categories')) {
+      context.handle(
+          _categoriesMeta,
+          categories.isAcceptableOrUnknown(
+              data['categories']!, _categoriesMeta));
+    } else if (isInserting) {
+      context.missing(_categoriesMeta);
+    }
+    if (data.containsKey('exercise_order')) {
+      context.handle(
+          _exerciseOrderMeta,
+          exerciseOrder.isAcceptableOrUnknown(
+              data['exercise_order']!, _exerciseOrderMeta));
+    } else if (isInserting) {
+      context.missing(_exerciseOrderMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DriftWorkoutTemplate map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DriftWorkoutTemplate(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at']),
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at']),
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      categories: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}categories'])!,
+      exerciseOrder: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}exercise_order'])!,
+    );
+  }
+
+  @override
+  $DriftWorkoutTemplatesTable createAlias(String alias) {
+    return $DriftWorkoutTemplatesTable(attachedDatabase, alias);
+  }
+}
+
+class DriftWorkoutTemplate extends DataClass
+    implements Insertable<DriftWorkoutTemplate> {
+  final int id;
+  final DateTime? updatedAt;
+  final DateTime? createdAt;
+  final String name;
+  final String categories;
+  final String exerciseOrder;
+  const DriftWorkoutTemplate(
+      {required this.id,
+      this.updatedAt,
+      this.createdAt,
+      required this.name,
+      required this.categories,
+      required this.exerciseOrder});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
+    }
+    if (!nullToAbsent || createdAt != null) {
+      map['created_at'] = Variable<DateTime>(createdAt);
+    }
+    map['name'] = Variable<String>(name);
+    map['categories'] = Variable<String>(categories);
+    map['exercise_order'] = Variable<String>(exerciseOrder);
+    return map;
+  }
+
+  DriftWorkoutTemplatesCompanion toCompanion(bool nullToAbsent) {
+    return DriftWorkoutTemplatesCompanion(
+      id: Value(id),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
+      createdAt: createdAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdAt),
+      name: Value(name),
+      categories: Value(categories),
+      exerciseOrder: Value(exerciseOrder),
+    );
+  }
+
+  factory DriftWorkoutTemplate.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DriftWorkoutTemplate(
+      id: serializer.fromJson<int>(json['id']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
+      createdAt: serializer.fromJson<DateTime?>(json['createdAt']),
+      name: serializer.fromJson<String>(json['name']),
+      categories: serializer.fromJson<String>(json['categories']),
+      exerciseOrder: serializer.fromJson<String>(json['exerciseOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
+      'createdAt': serializer.toJson<DateTime?>(createdAt),
+      'name': serializer.toJson<String>(name),
+      'categories': serializer.toJson<String>(categories),
+      'exerciseOrder': serializer.toJson<String>(exerciseOrder),
+    };
+  }
+
+  DriftWorkoutTemplate copyWith(
+          {int? id,
+          Value<DateTime?> updatedAt = const Value.absent(),
+          Value<DateTime?> createdAt = const Value.absent(),
+          String? name,
+          String? categories,
+          String? exerciseOrder}) =>
+      DriftWorkoutTemplate(
+        id: id ?? this.id,
+        updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
+        createdAt: createdAt.present ? createdAt.value : this.createdAt,
+        name: name ?? this.name,
+        categories: categories ?? this.categories,
+        exerciseOrder: exerciseOrder ?? this.exerciseOrder,
+      );
+  DriftWorkoutTemplate copyWithCompanion(DriftWorkoutTemplatesCompanion data) {
+    return DriftWorkoutTemplate(
+      id: data.id.present ? data.id.value : this.id,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      name: data.name.present ? data.name.value : this.name,
+      categories:
+          data.categories.present ? data.categories.value : this.categories,
+      exerciseOrder: data.exerciseOrder.present
+          ? data.exerciseOrder.value
+          : this.exerciseOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DriftWorkoutTemplate(')
+          ..write('id: $id, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('name: $name, ')
+          ..write('categories: $categories, ')
+          ..write('exerciseOrder: $exerciseOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, updatedAt, createdAt, name, categories, exerciseOrder);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DriftWorkoutTemplate &&
+          other.id == this.id &&
+          other.updatedAt == this.updatedAt &&
+          other.createdAt == this.createdAt &&
+          other.name == this.name &&
+          other.categories == this.categories &&
+          other.exerciseOrder == this.exerciseOrder);
+}
+
+class DriftWorkoutTemplatesCompanion
+    extends UpdateCompanion<DriftWorkoutTemplate> {
+  final Value<int> id;
+  final Value<DateTime?> updatedAt;
+  final Value<DateTime?> createdAt;
+  final Value<String> name;
+  final Value<String> categories;
+  final Value<String> exerciseOrder;
+  const DriftWorkoutTemplatesCompanion({
+    this.id = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.name = const Value.absent(),
+    this.categories = const Value.absent(),
+    this.exerciseOrder = const Value.absent(),
+  });
+  DriftWorkoutTemplatesCompanion.insert({
+    this.id = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    required String name,
+    required String categories,
+    required String exerciseOrder,
+  })  : name = Value(name),
+        categories = Value(categories),
+        exerciseOrder = Value(exerciseOrder);
+  static Insertable<DriftWorkoutTemplate> custom({
+    Expression<int>? id,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? createdAt,
+    Expression<String>? name,
+    Expression<String>? categories,
+    Expression<String>? exerciseOrder,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (createdAt != null) 'created_at': createdAt,
+      if (name != null) 'name': name,
+      if (categories != null) 'categories': categories,
+      if (exerciseOrder != null) 'exercise_order': exerciseOrder,
+    });
+  }
+
+  DriftWorkoutTemplatesCompanion copyWith(
+      {Value<int>? id,
+      Value<DateTime?>? updatedAt,
+      Value<DateTime?>? createdAt,
+      Value<String>? name,
+      Value<String>? categories,
+      Value<String>? exerciseOrder}) {
+    return DriftWorkoutTemplatesCompanion(
+      id: id ?? this.id,
+      updatedAt: updatedAt ?? this.updatedAt,
+      createdAt: createdAt ?? this.createdAt,
+      name: name ?? this.name,
+      categories: categories ?? this.categories,
+      exerciseOrder: exerciseOrder ?? this.exerciseOrder,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (categories.present) {
+      map['categories'] = Variable<String>(categories.value);
+    }
+    if (exerciseOrder.present) {
+      map['exercise_order'] = Variable<String>(exerciseOrder.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DriftWorkoutTemplatesCompanion(')
+          ..write('id: $id, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('name: $name, ')
+          ..write('categories: $categories, ')
+          ..write('exerciseOrder: $exerciseOrder')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DriftWorkoutTemplateExercisesTable extends DriftWorkoutTemplateExercises
+    with
+        TableInfo<$DriftWorkoutTemplateExercisesTable,
+            DriftWorkoutTemplateExercise> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DriftWorkoutTemplateExercisesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _workoutTemplateIdMeta =
+      const VerificationMeta('workoutTemplateId');
+  @override
+  late final GeneratedColumn<int> workoutTemplateId = GeneratedColumn<int>(
+      'workout_template_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'REFERENCES workout_template (id)'));
+  static const VerificationMeta _exerciseIdentifierMeta =
+      const VerificationMeta('exerciseIdentifier');
+  @override
+  late final GeneratedColumn<String> exerciseIdentifier =
+      GeneratedColumn<String>('exercise_identifier', aliasedName, false,
+          type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _setOrderMeta =
+      const VerificationMeta('setOrder');
+  @override
+  late final GeneratedColumn<String> setOrder = GeneratedColumn<String>(
+      'set_order', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        updatedAt,
+        createdAt,
+        workoutTemplateId,
+        exerciseIdentifier,
+        setOrder
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'workout_template_exercise';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<DriftWorkoutTemplateExercise> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    if (data.containsKey('workout_template_id')) {
+      context.handle(
+          _workoutTemplateIdMeta,
+          workoutTemplateId.isAcceptableOrUnknown(
+              data['workout_template_id']!, _workoutTemplateIdMeta));
+    } else if (isInserting) {
+      context.missing(_workoutTemplateIdMeta);
+    }
+    if (data.containsKey('exercise_identifier')) {
+      context.handle(
+          _exerciseIdentifierMeta,
+          exerciseIdentifier.isAcceptableOrUnknown(
+              data['exercise_identifier']!, _exerciseIdentifierMeta));
+    } else if (isInserting) {
+      context.missing(_exerciseIdentifierMeta);
+    }
+    if (data.containsKey('set_order')) {
+      context.handle(_setOrderMeta,
+          setOrder.isAcceptableOrUnknown(data['set_order']!, _setOrderMeta));
+    } else if (isInserting) {
+      context.missing(_setOrderMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DriftWorkoutTemplateExercise map(Map<String, dynamic> data,
+      {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DriftWorkoutTemplateExercise(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at']),
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at']),
+      workoutTemplateId: attachedDatabase.typeMapping.read(
+          DriftSqlType.int, data['${effectivePrefix}workout_template_id'])!,
+      exerciseIdentifier: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}exercise_identifier'])!,
+      setOrder: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}set_order'])!,
+    );
+  }
+
+  @override
+  $DriftWorkoutTemplateExercisesTable createAlias(String alias) {
+    return $DriftWorkoutTemplateExercisesTable(attachedDatabase, alias);
+  }
+}
+
+class DriftWorkoutTemplateExercise extends DataClass
+    implements Insertable<DriftWorkoutTemplateExercise> {
+  final int id;
+  final DateTime? updatedAt;
+  final DateTime? createdAt;
+  final int workoutTemplateId;
+  final String exerciseIdentifier;
+  final String setOrder;
+  const DriftWorkoutTemplateExercise(
+      {required this.id,
+      this.updatedAt,
+      this.createdAt,
+      required this.workoutTemplateId,
+      required this.exerciseIdentifier,
+      required this.setOrder});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
+    }
+    if (!nullToAbsent || createdAt != null) {
+      map['created_at'] = Variable<DateTime>(createdAt);
+    }
+    map['workout_template_id'] = Variable<int>(workoutTemplateId);
+    map['exercise_identifier'] = Variable<String>(exerciseIdentifier);
+    map['set_order'] = Variable<String>(setOrder);
+    return map;
+  }
+
+  DriftWorkoutTemplateExercisesCompanion toCompanion(bool nullToAbsent) {
+    return DriftWorkoutTemplateExercisesCompanion(
+      id: Value(id),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
+      createdAt: createdAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdAt),
+      workoutTemplateId: Value(workoutTemplateId),
+      exerciseIdentifier: Value(exerciseIdentifier),
+      setOrder: Value(setOrder),
+    );
+  }
+
+  factory DriftWorkoutTemplateExercise.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DriftWorkoutTemplateExercise(
+      id: serializer.fromJson<int>(json['id']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
+      createdAt: serializer.fromJson<DateTime?>(json['createdAt']),
+      workoutTemplateId: serializer.fromJson<int>(json['workoutTemplateId']),
+      exerciseIdentifier:
+          serializer.fromJson<String>(json['exerciseIdentifier']),
+      setOrder: serializer.fromJson<String>(json['setOrder']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
+      'createdAt': serializer.toJson<DateTime?>(createdAt),
+      'workoutTemplateId': serializer.toJson<int>(workoutTemplateId),
+      'exerciseIdentifier': serializer.toJson<String>(exerciseIdentifier),
+      'setOrder': serializer.toJson<String>(setOrder),
+    };
+  }
+
+  DriftWorkoutTemplateExercise copyWith(
+          {int? id,
+          Value<DateTime?> updatedAt = const Value.absent(),
+          Value<DateTime?> createdAt = const Value.absent(),
+          int? workoutTemplateId,
+          String? exerciseIdentifier,
+          String? setOrder}) =>
+      DriftWorkoutTemplateExercise(
+        id: id ?? this.id,
+        updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
+        createdAt: createdAt.present ? createdAt.value : this.createdAt,
+        workoutTemplateId: workoutTemplateId ?? this.workoutTemplateId,
+        exerciseIdentifier: exerciseIdentifier ?? this.exerciseIdentifier,
+        setOrder: setOrder ?? this.setOrder,
+      );
+  DriftWorkoutTemplateExercise copyWithCompanion(
+      DriftWorkoutTemplateExercisesCompanion data) {
+    return DriftWorkoutTemplateExercise(
+      id: data.id.present ? data.id.value : this.id,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      workoutTemplateId: data.workoutTemplateId.present
+          ? data.workoutTemplateId.value
+          : this.workoutTemplateId,
+      exerciseIdentifier: data.exerciseIdentifier.present
+          ? data.exerciseIdentifier.value
+          : this.exerciseIdentifier,
+      setOrder: data.setOrder.present ? data.setOrder.value : this.setOrder,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DriftWorkoutTemplateExercise(')
+          ..write('id: $id, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('workoutTemplateId: $workoutTemplateId, ')
+          ..write('exerciseIdentifier: $exerciseIdentifier, ')
+          ..write('setOrder: $setOrder')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, updatedAt, createdAt, workoutTemplateId,
+      exerciseIdentifier, setOrder);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DriftWorkoutTemplateExercise &&
+          other.id == this.id &&
+          other.updatedAt == this.updatedAt &&
+          other.createdAt == this.createdAt &&
+          other.workoutTemplateId == this.workoutTemplateId &&
+          other.exerciseIdentifier == this.exerciseIdentifier &&
+          other.setOrder == this.setOrder);
+}
+
+class DriftWorkoutTemplateExercisesCompanion
+    extends UpdateCompanion<DriftWorkoutTemplateExercise> {
+  final Value<int> id;
+  final Value<DateTime?> updatedAt;
+  final Value<DateTime?> createdAt;
+  final Value<int> workoutTemplateId;
+  final Value<String> exerciseIdentifier;
+  final Value<String> setOrder;
+  const DriftWorkoutTemplateExercisesCompanion({
+    this.id = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.workoutTemplateId = const Value.absent(),
+    this.exerciseIdentifier = const Value.absent(),
+    this.setOrder = const Value.absent(),
+  });
+  DriftWorkoutTemplateExercisesCompanion.insert({
+    this.id = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    required int workoutTemplateId,
+    required String exerciseIdentifier,
+    required String setOrder,
+  })  : workoutTemplateId = Value(workoutTemplateId),
+        exerciseIdentifier = Value(exerciseIdentifier),
+        setOrder = Value(setOrder);
+  static Insertable<DriftWorkoutTemplateExercise> custom({
+    Expression<int>? id,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? createdAt,
+    Expression<int>? workoutTemplateId,
+    Expression<String>? exerciseIdentifier,
+    Expression<String>? setOrder,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (createdAt != null) 'created_at': createdAt,
+      if (workoutTemplateId != null) 'workout_template_id': workoutTemplateId,
+      if (exerciseIdentifier != null) 'exercise_identifier': exerciseIdentifier,
+      if (setOrder != null) 'set_order': setOrder,
+    });
+  }
+
+  DriftWorkoutTemplateExercisesCompanion copyWith(
+      {Value<int>? id,
+      Value<DateTime?>? updatedAt,
+      Value<DateTime?>? createdAt,
+      Value<int>? workoutTemplateId,
+      Value<String>? exerciseIdentifier,
+      Value<String>? setOrder}) {
+    return DriftWorkoutTemplateExercisesCompanion(
+      id: id ?? this.id,
+      updatedAt: updatedAt ?? this.updatedAt,
+      createdAt: createdAt ?? this.createdAt,
+      workoutTemplateId: workoutTemplateId ?? this.workoutTemplateId,
+      exerciseIdentifier: exerciseIdentifier ?? this.exerciseIdentifier,
+      setOrder: setOrder ?? this.setOrder,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (workoutTemplateId.present) {
+      map['workout_template_id'] = Variable<int>(workoutTemplateId.value);
+    }
+    if (exerciseIdentifier.present) {
+      map['exercise_identifier'] = Variable<String>(exerciseIdentifier.value);
+    }
+    if (setOrder.present) {
+      map['set_order'] = Variable<String>(setOrder.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DriftWorkoutTemplateExercisesCompanion(')
+          ..write('id: $id, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('workoutTemplateId: $workoutTemplateId, ')
+          ..write('exerciseIdentifier: $exerciseIdentifier, ')
+          ..write('setOrder: $setOrder')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DriftWorkoutTemplateSetsTable extends DriftWorkoutTemplateSets
+    with TableInfo<$DriftWorkoutTemplateSetsTable, DriftWorkoutTemplateSet> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DriftWorkoutTemplateSetsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _workoutTemplateExerciseIdMeta =
+      const VerificationMeta('workoutTemplateExerciseId');
+  @override
+  late final GeneratedColumn<int> workoutTemplateExerciseId =
+      GeneratedColumn<int>('workout_template_exercise_id', aliasedName, false,
+          type: DriftSqlType.int,
+          requiredDuringInsert: true,
+          defaultConstraints: GeneratedColumn.constraintIsAlways(
+              'REFERENCES workout_template_exercise (id)'));
+  static const VerificationMeta _weightMeta = const VerificationMeta('weight');
+  @override
+  late final GeneratedColumn<double> weight = GeneratedColumn<double>(
+      'weight', aliasedName, true,
+      type: DriftSqlType.double, requiredDuringInsert: false);
+  static const VerificationMeta _repsMeta = const VerificationMeta('reps');
+  @override
+  late final GeneratedColumn<int> reps = GeneratedColumn<int>(
+      'reps', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  @override
+  late final GeneratedColumnWithTypeConverter<Duration?, String> time =
+      GeneratedColumn<String>('time', aliasedName, true,
+              type: DriftSqlType.string, requiredDuringInsert: false)
+          .withConverter<Duration?>(
+              $DriftWorkoutTemplateSetsTable.$convertertime);
+  static const VerificationMeta _distanceMeta =
+      const VerificationMeta('distance');
+  @override
+  late final GeneratedColumn<double> distance = GeneratedColumn<double>(
+      'distance', aliasedName, true,
+      type: DriftSqlType.double, requiredDuringInsert: false);
+  static const VerificationMeta _calsBurnedMeta =
+      const VerificationMeta('calsBurned');
+  @override
+  late final GeneratedColumn<int> calsBurned = GeneratedColumn<int>(
+      'cals_burned', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _doneMeta = const VerificationMeta('done');
+  @override
+  late final GeneratedColumn<bool> done = GeneratedColumn<bool>(
+      'done', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("done" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        updatedAt,
+        createdAt,
+        workoutTemplateExerciseId,
+        weight,
+        reps,
+        time,
+        distance,
+        calsBurned,
+        done
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'workout_template_set';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<DriftWorkoutTemplateSet> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    if (data.containsKey('workout_template_exercise_id')) {
+      context.handle(
+          _workoutTemplateExerciseIdMeta,
+          workoutTemplateExerciseId.isAcceptableOrUnknown(
+              data['workout_template_exercise_id']!,
+              _workoutTemplateExerciseIdMeta));
+    } else if (isInserting) {
+      context.missing(_workoutTemplateExerciseIdMeta);
+    }
+    if (data.containsKey('weight')) {
+      context.handle(_weightMeta,
+          weight.isAcceptableOrUnknown(data['weight']!, _weightMeta));
+    }
+    if (data.containsKey('reps')) {
+      context.handle(
+          _repsMeta, reps.isAcceptableOrUnknown(data['reps']!, _repsMeta));
+    }
+    if (data.containsKey('distance')) {
+      context.handle(_distanceMeta,
+          distance.isAcceptableOrUnknown(data['distance']!, _distanceMeta));
+    }
+    if (data.containsKey('cals_burned')) {
+      context.handle(
+          _calsBurnedMeta,
+          calsBurned.isAcceptableOrUnknown(
+              data['cals_burned']!, _calsBurnedMeta));
+    }
+    if (data.containsKey('done')) {
+      context.handle(
+          _doneMeta, done.isAcceptableOrUnknown(data['done']!, _doneMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DriftWorkoutTemplateSet map(Map<String, dynamic> data,
+      {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DriftWorkoutTemplateSet(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at']),
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at']),
+      workoutTemplateExerciseId: attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}workout_template_exercise_id'])!,
+      weight: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}weight']),
+      reps: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}reps']),
+      time: $DriftWorkoutTemplateSetsTable.$convertertime.fromSql(
+          attachedDatabase.typeMapping
+              .read(DriftSqlType.string, data['${effectivePrefix}time'])),
+      distance: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}distance']),
+      calsBurned: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}cals_burned']),
+      done: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}done'])!,
+    );
+  }
+
+  @override
+  $DriftWorkoutTemplateSetsTable createAlias(String alias) {
+    return $DriftWorkoutTemplateSetsTable(attachedDatabase, alias);
+  }
+
+  static TypeConverter<Duration?, String?> $convertertime =
+      const DurationConverter();
+}
+
+class DriftWorkoutTemplateSet extends DataClass
+    implements Insertable<DriftWorkoutTemplateSet> {
+  final int id;
+  final DateTime? updatedAt;
+  final DateTime? createdAt;
+  final int workoutTemplateExerciseId;
+  final double? weight;
+  final int? reps;
+  final Duration? time;
+  final double? distance;
+  final int? calsBurned;
+  final bool done;
+  const DriftWorkoutTemplateSet(
+      {required this.id,
+      this.updatedAt,
+      this.createdAt,
+      required this.workoutTemplateExerciseId,
+      this.weight,
+      this.reps,
+      this.time,
+      this.distance,
+      this.calsBurned,
+      required this.done});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
+    }
+    if (!nullToAbsent || createdAt != null) {
+      map['created_at'] = Variable<DateTime>(createdAt);
+    }
+    map['workout_template_exercise_id'] =
+        Variable<int>(workoutTemplateExerciseId);
+    if (!nullToAbsent || weight != null) {
+      map['weight'] = Variable<double>(weight);
+    }
+    if (!nullToAbsent || reps != null) {
+      map['reps'] = Variable<int>(reps);
+    }
+    if (!nullToAbsent || time != null) {
+      map['time'] = Variable<String>(
+          $DriftWorkoutTemplateSetsTable.$convertertime.toSql(time));
+    }
+    if (!nullToAbsent || distance != null) {
+      map['distance'] = Variable<double>(distance);
+    }
+    if (!nullToAbsent || calsBurned != null) {
+      map['cals_burned'] = Variable<int>(calsBurned);
+    }
+    map['done'] = Variable<bool>(done);
+    return map;
+  }
+
+  DriftWorkoutTemplateSetsCompanion toCompanion(bool nullToAbsent) {
+    return DriftWorkoutTemplateSetsCompanion(
+      id: Value(id),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
+      createdAt: createdAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdAt),
+      workoutTemplateExerciseId: Value(workoutTemplateExerciseId),
+      weight:
+          weight == null && nullToAbsent ? const Value.absent() : Value(weight),
+      reps: reps == null && nullToAbsent ? const Value.absent() : Value(reps),
+      time: time == null && nullToAbsent ? const Value.absent() : Value(time),
+      distance: distance == null && nullToAbsent
+          ? const Value.absent()
+          : Value(distance),
+      calsBurned: calsBurned == null && nullToAbsent
+          ? const Value.absent()
+          : Value(calsBurned),
+      done: Value(done),
+    );
+  }
+
+  factory DriftWorkoutTemplateSet.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DriftWorkoutTemplateSet(
+      id: serializer.fromJson<int>(json['id']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
+      createdAt: serializer.fromJson<DateTime?>(json['createdAt']),
+      workoutTemplateExerciseId:
+          serializer.fromJson<int>(json['workoutTemplateExerciseId']),
+      weight: serializer.fromJson<double?>(json['weight']),
+      reps: serializer.fromJson<int?>(json['reps']),
+      time: serializer.fromJson<Duration?>(json['time']),
+      distance: serializer.fromJson<double?>(json['distance']),
+      calsBurned: serializer.fromJson<int?>(json['calsBurned']),
+      done: serializer.fromJson<bool>(json['done']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
+      'createdAt': serializer.toJson<DateTime?>(createdAt),
+      'workoutTemplateExerciseId':
+          serializer.toJson<int>(workoutTemplateExerciseId),
+      'weight': serializer.toJson<double?>(weight),
+      'reps': serializer.toJson<int?>(reps),
+      'time': serializer.toJson<Duration?>(time),
+      'distance': serializer.toJson<double?>(distance),
+      'calsBurned': serializer.toJson<int?>(calsBurned),
+      'done': serializer.toJson<bool>(done),
+    };
+  }
+
+  DriftWorkoutTemplateSet copyWith(
+          {int? id,
+          Value<DateTime?> updatedAt = const Value.absent(),
+          Value<DateTime?> createdAt = const Value.absent(),
+          int? workoutTemplateExerciseId,
+          Value<double?> weight = const Value.absent(),
+          Value<int?> reps = const Value.absent(),
+          Value<Duration?> time = const Value.absent(),
+          Value<double?> distance = const Value.absent(),
+          Value<int?> calsBurned = const Value.absent(),
+          bool? done}) =>
+      DriftWorkoutTemplateSet(
+        id: id ?? this.id,
+        updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
+        createdAt: createdAt.present ? createdAt.value : this.createdAt,
+        workoutTemplateExerciseId:
+            workoutTemplateExerciseId ?? this.workoutTemplateExerciseId,
+        weight: weight.present ? weight.value : this.weight,
+        reps: reps.present ? reps.value : this.reps,
+        time: time.present ? time.value : this.time,
+        distance: distance.present ? distance.value : this.distance,
+        calsBurned: calsBurned.present ? calsBurned.value : this.calsBurned,
+        done: done ?? this.done,
+      );
+  DriftWorkoutTemplateSet copyWithCompanion(
+      DriftWorkoutTemplateSetsCompanion data) {
+    return DriftWorkoutTemplateSet(
+      id: data.id.present ? data.id.value : this.id,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      workoutTemplateExerciseId: data.workoutTemplateExerciseId.present
+          ? data.workoutTemplateExerciseId.value
+          : this.workoutTemplateExerciseId,
+      weight: data.weight.present ? data.weight.value : this.weight,
+      reps: data.reps.present ? data.reps.value : this.reps,
+      time: data.time.present ? data.time.value : this.time,
+      distance: data.distance.present ? data.distance.value : this.distance,
+      calsBurned:
+          data.calsBurned.present ? data.calsBurned.value : this.calsBurned,
+      done: data.done.present ? data.done.value : this.done,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DriftWorkoutTemplateSet(')
+          ..write('id: $id, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('workoutTemplateExerciseId: $workoutTemplateExerciseId, ')
+          ..write('weight: $weight, ')
+          ..write('reps: $reps, ')
+          ..write('time: $time, ')
+          ..write('distance: $distance, ')
+          ..write('calsBurned: $calsBurned, ')
+          ..write('done: $done')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id,
+      updatedAt,
+      createdAt,
+      workoutTemplateExerciseId,
+      weight,
+      reps,
+      time,
+      distance,
+      calsBurned,
+      done);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DriftWorkoutTemplateSet &&
+          other.id == this.id &&
+          other.updatedAt == this.updatedAt &&
+          other.createdAt == this.createdAt &&
+          other.workoutTemplateExerciseId == this.workoutTemplateExerciseId &&
+          other.weight == this.weight &&
+          other.reps == this.reps &&
+          other.time == this.time &&
+          other.distance == this.distance &&
+          other.calsBurned == this.calsBurned &&
+          other.done == this.done);
+}
+
+class DriftWorkoutTemplateSetsCompanion
+    extends UpdateCompanion<DriftWorkoutTemplateSet> {
+  final Value<int> id;
+  final Value<DateTime?> updatedAt;
+  final Value<DateTime?> createdAt;
+  final Value<int> workoutTemplateExerciseId;
+  final Value<double?> weight;
+  final Value<int?> reps;
+  final Value<Duration?> time;
+  final Value<double?> distance;
+  final Value<int?> calsBurned;
+  final Value<bool> done;
+  const DriftWorkoutTemplateSetsCompanion({
+    this.id = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.workoutTemplateExerciseId = const Value.absent(),
+    this.weight = const Value.absent(),
+    this.reps = const Value.absent(),
+    this.time = const Value.absent(),
+    this.distance = const Value.absent(),
+    this.calsBurned = const Value.absent(),
+    this.done = const Value.absent(),
+  });
+  DriftWorkoutTemplateSetsCompanion.insert({
+    this.id = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    required int workoutTemplateExerciseId,
+    this.weight = const Value.absent(),
+    this.reps = const Value.absent(),
+    this.time = const Value.absent(),
+    this.distance = const Value.absent(),
+    this.calsBurned = const Value.absent(),
+    this.done = const Value.absent(),
+  }) : workoutTemplateExerciseId = Value(workoutTemplateExerciseId);
+  static Insertable<DriftWorkoutTemplateSet> custom({
+    Expression<int>? id,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? createdAt,
+    Expression<int>? workoutTemplateExerciseId,
+    Expression<double>? weight,
+    Expression<int>? reps,
+    Expression<String>? time,
+    Expression<double>? distance,
+    Expression<int>? calsBurned,
+    Expression<bool>? done,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (createdAt != null) 'created_at': createdAt,
+      if (workoutTemplateExerciseId != null)
+        'workout_template_exercise_id': workoutTemplateExerciseId,
+      if (weight != null) 'weight': weight,
+      if (reps != null) 'reps': reps,
+      if (time != null) 'time': time,
+      if (distance != null) 'distance': distance,
+      if (calsBurned != null) 'cals_burned': calsBurned,
+      if (done != null) 'done': done,
+    });
+  }
+
+  DriftWorkoutTemplateSetsCompanion copyWith(
+      {Value<int>? id,
+      Value<DateTime?>? updatedAt,
+      Value<DateTime?>? createdAt,
+      Value<int>? workoutTemplateExerciseId,
+      Value<double?>? weight,
+      Value<int?>? reps,
+      Value<Duration?>? time,
+      Value<double?>? distance,
+      Value<int?>? calsBurned,
+      Value<bool>? done}) {
+    return DriftWorkoutTemplateSetsCompanion(
+      id: id ?? this.id,
+      updatedAt: updatedAt ?? this.updatedAt,
+      createdAt: createdAt ?? this.createdAt,
+      workoutTemplateExerciseId:
+          workoutTemplateExerciseId ?? this.workoutTemplateExerciseId,
+      weight: weight ?? this.weight,
+      reps: reps ?? this.reps,
+      time: time ?? this.time,
+      distance: distance ?? this.distance,
+      calsBurned: calsBurned ?? this.calsBurned,
+      done: done ?? this.done,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (workoutTemplateExerciseId.present) {
+      map['workout_template_exercise_id'] =
+          Variable<int>(workoutTemplateExerciseId.value);
+    }
+    if (weight.present) {
+      map['weight'] = Variable<double>(weight.value);
+    }
+    if (reps.present) {
+      map['reps'] = Variable<int>(reps.value);
+    }
+    if (time.present) {
+      map['time'] = Variable<String>(
+          $DriftWorkoutTemplateSetsTable.$convertertime.toSql(time.value));
+    }
+    if (distance.present) {
+      map['distance'] = Variable<double>(distance.value);
+    }
+    if (calsBurned.present) {
+      map['cals_burned'] = Variable<int>(calsBurned.value);
+    }
+    if (done.present) {
+      map['done'] = Variable<bool>(done.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DriftWorkoutTemplateSetsCompanion(')
+          ..write('id: $id, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('workoutTemplateExerciseId: $workoutTemplateExerciseId, ')
+          ..write('weight: $weight, ')
+          ..write('reps: $reps, ')
+          ..write('time: $time, ')
+          ..write('distance: $distance, ')
+          ..write('calsBurned: $calsBurned, ')
+          ..write('done: $done')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -3919,6 +5161,12 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $DriftScheduleItemsTable(this);
   late final $DriftScheduleCategoriesTable driftScheduleCategories =
       $DriftScheduleCategoriesTable(this);
+  late final $DriftWorkoutTemplatesTable driftWorkoutTemplates =
+      $DriftWorkoutTemplatesTable(this);
+  late final $DriftWorkoutTemplateExercisesTable driftWorkoutTemplateExercises =
+      $DriftWorkoutTemplateExercisesTable(this);
+  late final $DriftWorkoutTemplateSetsTable driftWorkoutTemplateSets =
+      $DriftWorkoutTemplateSetsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3934,7 +5182,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         driftWorkoutSets,
         driftSchedules,
         driftScheduleItems,
-        driftScheduleCategories
+        driftScheduleCategories,
+        driftWorkoutTemplates,
+        driftWorkoutTemplateExercises,
+        driftWorkoutTemplateSets
       ];
 }
 
@@ -6961,6 +8212,1057 @@ typedef $$DriftScheduleCategoriesTableProcessedTableManager
         (DriftScheduleCategory, $$DriftScheduleCategoriesTableReferences),
         DriftScheduleCategory,
         PrefetchHooks Function({bool scheduleItemId})>;
+typedef $$DriftWorkoutTemplatesTableCreateCompanionBuilder
+    = DriftWorkoutTemplatesCompanion Function({
+  Value<int> id,
+  Value<DateTime?> updatedAt,
+  Value<DateTime?> createdAt,
+  required String name,
+  required String categories,
+  required String exerciseOrder,
+});
+typedef $$DriftWorkoutTemplatesTableUpdateCompanionBuilder
+    = DriftWorkoutTemplatesCompanion Function({
+  Value<int> id,
+  Value<DateTime?> updatedAt,
+  Value<DateTime?> createdAt,
+  Value<String> name,
+  Value<String> categories,
+  Value<String> exerciseOrder,
+});
+
+final class $$DriftWorkoutTemplatesTableReferences extends BaseReferences<
+    _$AppDatabase, $DriftWorkoutTemplatesTable, DriftWorkoutTemplate> {
+  $$DriftWorkoutTemplatesTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$DriftWorkoutTemplateExercisesTable,
+          List<DriftWorkoutTemplateExercise>>
+      _driftWorkoutTemplateExercisesRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.driftWorkoutTemplateExercises,
+              aliasName: $_aliasNameGenerator(db.driftWorkoutTemplates.id,
+                  db.driftWorkoutTemplateExercises.workoutTemplateId));
+
+  $$DriftWorkoutTemplateExercisesTableProcessedTableManager
+      get driftWorkoutTemplateExercisesRefs {
+    final manager = $$DriftWorkoutTemplateExercisesTableTableManager(
+            $_db, $_db.driftWorkoutTemplateExercises)
+        .filter(
+            (f) => f.workoutTemplateId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult
+        .readTableOrNull(_driftWorkoutTemplateExercisesRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
+
+class $$DriftWorkoutTemplatesTableFilterComposer
+    extends Composer<_$AppDatabase, $DriftWorkoutTemplatesTable> {
+  $$DriftWorkoutTemplatesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get categories => $composableBuilder(
+      column: $table.categories, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get exerciseOrder => $composableBuilder(
+      column: $table.exerciseOrder, builder: (column) => ColumnFilters(column));
+
+  Expression<bool> driftWorkoutTemplateExercisesRefs(
+      Expression<bool> Function(
+              $$DriftWorkoutTemplateExercisesTableFilterComposer f)
+          f) {
+    final $$DriftWorkoutTemplateExercisesTableFilterComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.driftWorkoutTemplateExercises,
+            getReferencedColumn: (t) => t.workoutTemplateId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftWorkoutTemplateExercisesTableFilterComposer(
+                  $db: $db,
+                  $table: $db.driftWorkoutTemplateExercises,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+}
+
+class $$DriftWorkoutTemplatesTableOrderingComposer
+    extends Composer<_$AppDatabase, $DriftWorkoutTemplatesTable> {
+  $$DriftWorkoutTemplatesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get categories => $composableBuilder(
+      column: $table.categories, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get exerciseOrder => $composableBuilder(
+      column: $table.exerciseOrder,
+      builder: (column) => ColumnOrderings(column));
+}
+
+class $$DriftWorkoutTemplatesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DriftWorkoutTemplatesTable> {
+  $$DriftWorkoutTemplatesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get categories => $composableBuilder(
+      column: $table.categories, builder: (column) => column);
+
+  GeneratedColumn<String> get exerciseOrder => $composableBuilder(
+      column: $table.exerciseOrder, builder: (column) => column);
+
+  Expression<T> driftWorkoutTemplateExercisesRefs<T extends Object>(
+      Expression<T> Function(
+              $$DriftWorkoutTemplateExercisesTableAnnotationComposer a)
+          f) {
+    final $$DriftWorkoutTemplateExercisesTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.driftWorkoutTemplateExercises,
+            getReferencedColumn: (t) => t.workoutTemplateId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftWorkoutTemplateExercisesTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.driftWorkoutTemplateExercises,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+}
+
+class $$DriftWorkoutTemplatesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $DriftWorkoutTemplatesTable,
+    DriftWorkoutTemplate,
+    $$DriftWorkoutTemplatesTableFilterComposer,
+    $$DriftWorkoutTemplatesTableOrderingComposer,
+    $$DriftWorkoutTemplatesTableAnnotationComposer,
+    $$DriftWorkoutTemplatesTableCreateCompanionBuilder,
+    $$DriftWorkoutTemplatesTableUpdateCompanionBuilder,
+    (DriftWorkoutTemplate, $$DriftWorkoutTemplatesTableReferences),
+    DriftWorkoutTemplate,
+    PrefetchHooks Function({bool driftWorkoutTemplateExercisesRefs})> {
+  $$DriftWorkoutTemplatesTableTableManager(
+      _$AppDatabase db, $DriftWorkoutTemplatesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DriftWorkoutTemplatesTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DriftWorkoutTemplatesTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DriftWorkoutTemplatesTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime?> updatedAt = const Value.absent(),
+            Value<DateTime?> createdAt = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String> categories = const Value.absent(),
+            Value<String> exerciseOrder = const Value.absent(),
+          }) =>
+              DriftWorkoutTemplatesCompanion(
+            id: id,
+            updatedAt: updatedAt,
+            createdAt: createdAt,
+            name: name,
+            categories: categories,
+            exerciseOrder: exerciseOrder,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime?> updatedAt = const Value.absent(),
+            Value<DateTime?> createdAt = const Value.absent(),
+            required String name,
+            required String categories,
+            required String exerciseOrder,
+          }) =>
+              DriftWorkoutTemplatesCompanion.insert(
+            id: id,
+            updatedAt: updatedAt,
+            createdAt: createdAt,
+            name: name,
+            categories: categories,
+            exerciseOrder: exerciseOrder,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$DriftWorkoutTemplatesTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({driftWorkoutTemplateExercisesRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (driftWorkoutTemplateExercisesRefs)
+                  db.driftWorkoutTemplateExercises
+              ],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (driftWorkoutTemplateExercisesRefs)
+                    await $_getPrefetchedData<
+                            DriftWorkoutTemplate,
+                            $DriftWorkoutTemplatesTable,
+                            DriftWorkoutTemplateExercise>(
+                        currentTable: table,
+                        referencedTable: $$DriftWorkoutTemplatesTableReferences
+                            ._driftWorkoutTemplateExercisesRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$DriftWorkoutTemplatesTableReferences(
+                                    db, table, p0)
+                                .driftWorkoutTemplateExercisesRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.workoutTemplateId == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$DriftWorkoutTemplatesTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $DriftWorkoutTemplatesTable,
+        DriftWorkoutTemplate,
+        $$DriftWorkoutTemplatesTableFilterComposer,
+        $$DriftWorkoutTemplatesTableOrderingComposer,
+        $$DriftWorkoutTemplatesTableAnnotationComposer,
+        $$DriftWorkoutTemplatesTableCreateCompanionBuilder,
+        $$DriftWorkoutTemplatesTableUpdateCompanionBuilder,
+        (DriftWorkoutTemplate, $$DriftWorkoutTemplatesTableReferences),
+        DriftWorkoutTemplate,
+        PrefetchHooks Function({bool driftWorkoutTemplateExercisesRefs})>;
+typedef $$DriftWorkoutTemplateExercisesTableCreateCompanionBuilder
+    = DriftWorkoutTemplateExercisesCompanion Function({
+  Value<int> id,
+  Value<DateTime?> updatedAt,
+  Value<DateTime?> createdAt,
+  required int workoutTemplateId,
+  required String exerciseIdentifier,
+  required String setOrder,
+});
+typedef $$DriftWorkoutTemplateExercisesTableUpdateCompanionBuilder
+    = DriftWorkoutTemplateExercisesCompanion Function({
+  Value<int> id,
+  Value<DateTime?> updatedAt,
+  Value<DateTime?> createdAt,
+  Value<int> workoutTemplateId,
+  Value<String> exerciseIdentifier,
+  Value<String> setOrder,
+});
+
+final class $$DriftWorkoutTemplateExercisesTableReferences
+    extends BaseReferences<_$AppDatabase, $DriftWorkoutTemplateExercisesTable,
+        DriftWorkoutTemplateExercise> {
+  $$DriftWorkoutTemplateExercisesTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $DriftWorkoutTemplatesTable _workoutTemplateIdTable(
+          _$AppDatabase db) =>
+      db.driftWorkoutTemplates.createAlias($_aliasNameGenerator(
+          db.driftWorkoutTemplateExercises.workoutTemplateId,
+          db.driftWorkoutTemplates.id));
+
+  $$DriftWorkoutTemplatesTableProcessedTableManager get workoutTemplateId {
+    final $_column = $_itemColumn<int>('workout_template_id')!;
+
+    final manager = $$DriftWorkoutTemplatesTableTableManager(
+            $_db, $_db.driftWorkoutTemplates)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_workoutTemplateIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static MultiTypedResultKey<$DriftWorkoutTemplateSetsTable,
+      List<DriftWorkoutTemplateSet>> _driftWorkoutTemplateSetsRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.driftWorkoutTemplateSets,
+          aliasName: $_aliasNameGenerator(db.driftWorkoutTemplateExercises.id,
+              db.driftWorkoutTemplateSets.workoutTemplateExerciseId));
+
+  $$DriftWorkoutTemplateSetsTableProcessedTableManager
+      get driftWorkoutTemplateSetsRefs {
+    final manager = $$DriftWorkoutTemplateSetsTableTableManager(
+            $_db, $_db.driftWorkoutTemplateSets)
+        .filter((f) =>
+            f.workoutTemplateExerciseId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache =
+        $_typedResult.readTableOrNull(_driftWorkoutTemplateSetsRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
+
+class $$DriftWorkoutTemplateExercisesTableFilterComposer
+    extends Composer<_$AppDatabase, $DriftWorkoutTemplateExercisesTable> {
+  $$DriftWorkoutTemplateExercisesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get exerciseIdentifier => $composableBuilder(
+      column: $table.exerciseIdentifier,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get setOrder => $composableBuilder(
+      column: $table.setOrder, builder: (column) => ColumnFilters(column));
+
+  $$DriftWorkoutTemplatesTableFilterComposer get workoutTemplateId {
+    final $$DriftWorkoutTemplatesTableFilterComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.workoutTemplateId,
+            referencedTable: $db.driftWorkoutTemplates,
+            getReferencedColumn: (t) => t.id,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftWorkoutTemplatesTableFilterComposer(
+                  $db: $db,
+                  $table: $db.driftWorkoutTemplates,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return composer;
+  }
+
+  Expression<bool> driftWorkoutTemplateSetsRefs(
+      Expression<bool> Function($$DriftWorkoutTemplateSetsTableFilterComposer f)
+          f) {
+    final $$DriftWorkoutTemplateSetsTableFilterComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.driftWorkoutTemplateSets,
+            getReferencedColumn: (t) => t.workoutTemplateExerciseId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftWorkoutTemplateSetsTableFilterComposer(
+                  $db: $db,
+                  $table: $db.driftWorkoutTemplateSets,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+}
+
+class $$DriftWorkoutTemplateExercisesTableOrderingComposer
+    extends Composer<_$AppDatabase, $DriftWorkoutTemplateExercisesTable> {
+  $$DriftWorkoutTemplateExercisesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get exerciseIdentifier => $composableBuilder(
+      column: $table.exerciseIdentifier,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get setOrder => $composableBuilder(
+      column: $table.setOrder, builder: (column) => ColumnOrderings(column));
+
+  $$DriftWorkoutTemplatesTableOrderingComposer get workoutTemplateId {
+    final $$DriftWorkoutTemplatesTableOrderingComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.workoutTemplateId,
+            referencedTable: $db.driftWorkoutTemplates,
+            getReferencedColumn: (t) => t.id,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftWorkoutTemplatesTableOrderingComposer(
+                  $db: $db,
+                  $table: $db.driftWorkoutTemplates,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return composer;
+  }
+}
+
+class $$DriftWorkoutTemplateExercisesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DriftWorkoutTemplateExercisesTable> {
+  $$DriftWorkoutTemplateExercisesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get exerciseIdentifier => $composableBuilder(
+      column: $table.exerciseIdentifier, builder: (column) => column);
+
+  GeneratedColumn<String> get setOrder =>
+      $composableBuilder(column: $table.setOrder, builder: (column) => column);
+
+  $$DriftWorkoutTemplatesTableAnnotationComposer get workoutTemplateId {
+    final $$DriftWorkoutTemplatesTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.workoutTemplateId,
+            referencedTable: $db.driftWorkoutTemplates,
+            getReferencedColumn: (t) => t.id,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftWorkoutTemplatesTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.driftWorkoutTemplates,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return composer;
+  }
+
+  Expression<T> driftWorkoutTemplateSetsRefs<T extends Object>(
+      Expression<T> Function(
+              $$DriftWorkoutTemplateSetsTableAnnotationComposer a)
+          f) {
+    final $$DriftWorkoutTemplateSetsTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.id,
+            referencedTable: $db.driftWorkoutTemplateSets,
+            getReferencedColumn: (t) => t.workoutTemplateExerciseId,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftWorkoutTemplateSetsTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.driftWorkoutTemplateSets,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return f(composer);
+  }
+}
+
+class $$DriftWorkoutTemplateExercisesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $DriftWorkoutTemplateExercisesTable,
+    DriftWorkoutTemplateExercise,
+    $$DriftWorkoutTemplateExercisesTableFilterComposer,
+    $$DriftWorkoutTemplateExercisesTableOrderingComposer,
+    $$DriftWorkoutTemplateExercisesTableAnnotationComposer,
+    $$DriftWorkoutTemplateExercisesTableCreateCompanionBuilder,
+    $$DriftWorkoutTemplateExercisesTableUpdateCompanionBuilder,
+    (
+      DriftWorkoutTemplateExercise,
+      $$DriftWorkoutTemplateExercisesTableReferences
+    ),
+    DriftWorkoutTemplateExercise,
+    PrefetchHooks Function(
+        {bool workoutTemplateId, bool driftWorkoutTemplateSetsRefs})> {
+  $$DriftWorkoutTemplateExercisesTableTableManager(
+      _$AppDatabase db, $DriftWorkoutTemplateExercisesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DriftWorkoutTemplateExercisesTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DriftWorkoutTemplateExercisesTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DriftWorkoutTemplateExercisesTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime?> updatedAt = const Value.absent(),
+            Value<DateTime?> createdAt = const Value.absent(),
+            Value<int> workoutTemplateId = const Value.absent(),
+            Value<String> exerciseIdentifier = const Value.absent(),
+            Value<String> setOrder = const Value.absent(),
+          }) =>
+              DriftWorkoutTemplateExercisesCompanion(
+            id: id,
+            updatedAt: updatedAt,
+            createdAt: createdAt,
+            workoutTemplateId: workoutTemplateId,
+            exerciseIdentifier: exerciseIdentifier,
+            setOrder: setOrder,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime?> updatedAt = const Value.absent(),
+            Value<DateTime?> createdAt = const Value.absent(),
+            required int workoutTemplateId,
+            required String exerciseIdentifier,
+            required String setOrder,
+          }) =>
+              DriftWorkoutTemplateExercisesCompanion.insert(
+            id: id,
+            updatedAt: updatedAt,
+            createdAt: createdAt,
+            workoutTemplateId: workoutTemplateId,
+            exerciseIdentifier: exerciseIdentifier,
+            setOrder: setOrder,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$DriftWorkoutTemplateExercisesTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: (
+              {workoutTemplateId = false,
+              driftWorkoutTemplateSetsRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [
+                if (driftWorkoutTemplateSetsRefs) db.driftWorkoutTemplateSets
+              ],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (workoutTemplateId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.workoutTemplateId,
+                    referencedTable:
+                        $$DriftWorkoutTemplateExercisesTableReferences
+                            ._workoutTemplateIdTable(db),
+                    referencedColumn:
+                        $$DriftWorkoutTemplateExercisesTableReferences
+                            ._workoutTemplateIdTable(db)
+                            .id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (driftWorkoutTemplateSetsRefs)
+                    await $_getPrefetchedData<
+                            DriftWorkoutTemplateExercise,
+                            $DriftWorkoutTemplateExercisesTable,
+                            DriftWorkoutTemplateSet>(
+                        currentTable: table,
+                        referencedTable:
+                            $$DriftWorkoutTemplateExercisesTableReferences
+                                ._driftWorkoutTemplateSetsRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$DriftWorkoutTemplateExercisesTableReferences(
+                                    db, table, p0)
+                                .driftWorkoutTemplateSetsRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems.where(
+                                (e) => e.workoutTemplateExerciseId == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$DriftWorkoutTemplateExercisesTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $DriftWorkoutTemplateExercisesTable,
+        DriftWorkoutTemplateExercise,
+        $$DriftWorkoutTemplateExercisesTableFilterComposer,
+        $$DriftWorkoutTemplateExercisesTableOrderingComposer,
+        $$DriftWorkoutTemplateExercisesTableAnnotationComposer,
+        $$DriftWorkoutTemplateExercisesTableCreateCompanionBuilder,
+        $$DriftWorkoutTemplateExercisesTableUpdateCompanionBuilder,
+        (
+          DriftWorkoutTemplateExercise,
+          $$DriftWorkoutTemplateExercisesTableReferences
+        ),
+        DriftWorkoutTemplateExercise,
+        PrefetchHooks Function(
+            {bool workoutTemplateId, bool driftWorkoutTemplateSetsRefs})>;
+typedef $$DriftWorkoutTemplateSetsTableCreateCompanionBuilder
+    = DriftWorkoutTemplateSetsCompanion Function({
+  Value<int> id,
+  Value<DateTime?> updatedAt,
+  Value<DateTime?> createdAt,
+  required int workoutTemplateExerciseId,
+  Value<double?> weight,
+  Value<int?> reps,
+  Value<Duration?> time,
+  Value<double?> distance,
+  Value<int?> calsBurned,
+  Value<bool> done,
+});
+typedef $$DriftWorkoutTemplateSetsTableUpdateCompanionBuilder
+    = DriftWorkoutTemplateSetsCompanion Function({
+  Value<int> id,
+  Value<DateTime?> updatedAt,
+  Value<DateTime?> createdAt,
+  Value<int> workoutTemplateExerciseId,
+  Value<double?> weight,
+  Value<int?> reps,
+  Value<Duration?> time,
+  Value<double?> distance,
+  Value<int?> calsBurned,
+  Value<bool> done,
+});
+
+final class $$DriftWorkoutTemplateSetsTableReferences extends BaseReferences<
+    _$AppDatabase, $DriftWorkoutTemplateSetsTable, DriftWorkoutTemplateSet> {
+  $$DriftWorkoutTemplateSetsTableReferences(
+      super.$_db, super.$_table, super.$_typedResult);
+
+  static $DriftWorkoutTemplateExercisesTable _workoutTemplateExerciseIdTable(
+          _$AppDatabase db) =>
+      db.driftWorkoutTemplateExercises.createAlias($_aliasNameGenerator(
+          db.driftWorkoutTemplateSets.workoutTemplateExerciseId,
+          db.driftWorkoutTemplateExercises.id));
+
+  $$DriftWorkoutTemplateExercisesTableProcessedTableManager
+      get workoutTemplateExerciseId {
+    final $_column = $_itemColumn<int>('workout_template_exercise_id')!;
+
+    final manager = $$DriftWorkoutTemplateExercisesTableTableManager(
+            $_db, $_db.driftWorkoutTemplateExercises)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item =
+        $_typedResult.readTableOrNull(_workoutTemplateExerciseIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$DriftWorkoutTemplateSetsTableFilterComposer
+    extends Composer<_$AppDatabase, $DriftWorkoutTemplateSetsTable> {
+  $$DriftWorkoutTemplateSetsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get weight => $composableBuilder(
+      column: $table.weight, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get reps => $composableBuilder(
+      column: $table.reps, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<Duration?, Duration, String> get time =>
+      $composableBuilder(
+          column: $table.time,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<double> get distance => $composableBuilder(
+      column: $table.distance, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get calsBurned => $composableBuilder(
+      column: $table.calsBurned, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get done => $composableBuilder(
+      column: $table.done, builder: (column) => ColumnFilters(column));
+
+  $$DriftWorkoutTemplateExercisesTableFilterComposer
+      get workoutTemplateExerciseId {
+    final $$DriftWorkoutTemplateExercisesTableFilterComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.workoutTemplateExerciseId,
+            referencedTable: $db.driftWorkoutTemplateExercises,
+            getReferencedColumn: (t) => t.id,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftWorkoutTemplateExercisesTableFilterComposer(
+                  $db: $db,
+                  $table: $db.driftWorkoutTemplateExercises,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return composer;
+  }
+}
+
+class $$DriftWorkoutTemplateSetsTableOrderingComposer
+    extends Composer<_$AppDatabase, $DriftWorkoutTemplateSetsTable> {
+  $$DriftWorkoutTemplateSetsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get weight => $composableBuilder(
+      column: $table.weight, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get reps => $composableBuilder(
+      column: $table.reps, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get time => $composableBuilder(
+      column: $table.time, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get distance => $composableBuilder(
+      column: $table.distance, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get calsBurned => $composableBuilder(
+      column: $table.calsBurned, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get done => $composableBuilder(
+      column: $table.done, builder: (column) => ColumnOrderings(column));
+
+  $$DriftWorkoutTemplateExercisesTableOrderingComposer
+      get workoutTemplateExerciseId {
+    final $$DriftWorkoutTemplateExercisesTableOrderingComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.workoutTemplateExerciseId,
+            referencedTable: $db.driftWorkoutTemplateExercises,
+            getReferencedColumn: (t) => t.id,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftWorkoutTemplateExercisesTableOrderingComposer(
+                  $db: $db,
+                  $table: $db.driftWorkoutTemplateExercises,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return composer;
+  }
+}
+
+class $$DriftWorkoutTemplateSetsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DriftWorkoutTemplateSetsTable> {
+  $$DriftWorkoutTemplateSetsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<double> get weight =>
+      $composableBuilder(column: $table.weight, builder: (column) => column);
+
+  GeneratedColumn<int> get reps =>
+      $composableBuilder(column: $table.reps, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<Duration?, String> get time =>
+      $composableBuilder(column: $table.time, builder: (column) => column);
+
+  GeneratedColumn<double> get distance =>
+      $composableBuilder(column: $table.distance, builder: (column) => column);
+
+  GeneratedColumn<int> get calsBurned => $composableBuilder(
+      column: $table.calsBurned, builder: (column) => column);
+
+  GeneratedColumn<bool> get done =>
+      $composableBuilder(column: $table.done, builder: (column) => column);
+
+  $$DriftWorkoutTemplateExercisesTableAnnotationComposer
+      get workoutTemplateExerciseId {
+    final $$DriftWorkoutTemplateExercisesTableAnnotationComposer composer =
+        $composerBuilder(
+            composer: this,
+            getCurrentColumn: (t) => t.workoutTemplateExerciseId,
+            referencedTable: $db.driftWorkoutTemplateExercises,
+            getReferencedColumn: (t) => t.id,
+            builder: (joinBuilder,
+                    {$addJoinBuilderToRootComposer,
+                    $removeJoinBuilderFromRootComposer}) =>
+                $$DriftWorkoutTemplateExercisesTableAnnotationComposer(
+                  $db: $db,
+                  $table: $db.driftWorkoutTemplateExercises,
+                  $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+                  joinBuilder: joinBuilder,
+                  $removeJoinBuilderFromRootComposer:
+                      $removeJoinBuilderFromRootComposer,
+                ));
+    return composer;
+  }
+}
+
+class $$DriftWorkoutTemplateSetsTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $DriftWorkoutTemplateSetsTable,
+    DriftWorkoutTemplateSet,
+    $$DriftWorkoutTemplateSetsTableFilterComposer,
+    $$DriftWorkoutTemplateSetsTableOrderingComposer,
+    $$DriftWorkoutTemplateSetsTableAnnotationComposer,
+    $$DriftWorkoutTemplateSetsTableCreateCompanionBuilder,
+    $$DriftWorkoutTemplateSetsTableUpdateCompanionBuilder,
+    (DriftWorkoutTemplateSet, $$DriftWorkoutTemplateSetsTableReferences),
+    DriftWorkoutTemplateSet,
+    PrefetchHooks Function({bool workoutTemplateExerciseId})> {
+  $$DriftWorkoutTemplateSetsTableTableManager(
+      _$AppDatabase db, $DriftWorkoutTemplateSetsTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DriftWorkoutTemplateSetsTableFilterComposer(
+                  $db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DriftWorkoutTemplateSetsTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DriftWorkoutTemplateSetsTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime?> updatedAt = const Value.absent(),
+            Value<DateTime?> createdAt = const Value.absent(),
+            Value<int> workoutTemplateExerciseId = const Value.absent(),
+            Value<double?> weight = const Value.absent(),
+            Value<int?> reps = const Value.absent(),
+            Value<Duration?> time = const Value.absent(),
+            Value<double?> distance = const Value.absent(),
+            Value<int?> calsBurned = const Value.absent(),
+            Value<bool> done = const Value.absent(),
+          }) =>
+              DriftWorkoutTemplateSetsCompanion(
+            id: id,
+            updatedAt: updatedAt,
+            createdAt: createdAt,
+            workoutTemplateExerciseId: workoutTemplateExerciseId,
+            weight: weight,
+            reps: reps,
+            time: time,
+            distance: distance,
+            calsBurned: calsBurned,
+            done: done,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime?> updatedAt = const Value.absent(),
+            Value<DateTime?> createdAt = const Value.absent(),
+            required int workoutTemplateExerciseId,
+            Value<double?> weight = const Value.absent(),
+            Value<int?> reps = const Value.absent(),
+            Value<Duration?> time = const Value.absent(),
+            Value<double?> distance = const Value.absent(),
+            Value<int?> calsBurned = const Value.absent(),
+            Value<bool> done = const Value.absent(),
+          }) =>
+              DriftWorkoutTemplateSetsCompanion.insert(
+            id: id,
+            updatedAt: updatedAt,
+            createdAt: createdAt,
+            workoutTemplateExerciseId: workoutTemplateExerciseId,
+            weight: weight,
+            reps: reps,
+            time: time,
+            distance: distance,
+            calsBurned: calsBurned,
+            done: done,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$DriftWorkoutTemplateSetsTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({workoutTemplateExerciseId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (workoutTemplateExerciseId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.workoutTemplateExerciseId,
+                    referencedTable: $$DriftWorkoutTemplateSetsTableReferences
+                        ._workoutTemplateExerciseIdTable(db),
+                    referencedColumn: $$DriftWorkoutTemplateSetsTableReferences
+                        ._workoutTemplateExerciseIdTable(db)
+                        .id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$DriftWorkoutTemplateSetsTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $DriftWorkoutTemplateSetsTable,
+        DriftWorkoutTemplateSet,
+        $$DriftWorkoutTemplateSetsTableFilterComposer,
+        $$DriftWorkoutTemplateSetsTableOrderingComposer,
+        $$DriftWorkoutTemplateSetsTableAnnotationComposer,
+        $$DriftWorkoutTemplateSetsTableCreateCompanionBuilder,
+        $$DriftWorkoutTemplateSetsTableUpdateCompanionBuilder,
+        (DriftWorkoutTemplateSet, $$DriftWorkoutTemplateSetsTableReferences),
+        DriftWorkoutTemplateSet,
+        PrefetchHooks Function({bool workoutTemplateExerciseId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -6990,4 +9292,13 @@ class $AppDatabaseManager {
   $$DriftScheduleCategoriesTableTableManager get driftScheduleCategories =>
       $$DriftScheduleCategoriesTableTableManager(
           _db, _db.driftScheduleCategories);
+  $$DriftWorkoutTemplatesTableTableManager get driftWorkoutTemplates =>
+      $$DriftWorkoutTemplatesTableTableManager(_db, _db.driftWorkoutTemplates);
+  $$DriftWorkoutTemplateExercisesTableTableManager
+      get driftWorkoutTemplateExercises =>
+          $$DriftWorkoutTemplateExercisesTableTableManager(
+              _db, _db.driftWorkoutTemplateExercises);
+  $$DriftWorkoutTemplateSetsTableTableManager get driftWorkoutTemplateSets =>
+      $$DriftWorkoutTemplateSetsTableTableManager(
+          _db, _db.driftWorkoutTemplateSets);
 }

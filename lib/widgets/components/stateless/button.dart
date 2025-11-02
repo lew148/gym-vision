@@ -88,6 +88,21 @@ class Button extends StatelessWidget {
   factory Button.x({required Function() onTap}) => Button(icon: Icons.close_rounded, onTap: onTap);
   factory Button.calendar({required Function() onTap}) => Button(icon: Icons.calendar_today_rounded, onTap: onTap);
   factory Button.clear({required Function() onTap}) => Button(text: 'Clear', onTap: onTap);
+  factory Button.check({required Function() onTap}) => Button(icon: Icons.check_rounded, onTap: onTap);
+
+  factory Button.edit({required Function() onTap, String? text}) => Button(
+        text: text,
+        icon: Icons.edit_rounded,
+        onTap: onTap,
+        style: ButtonCustomStyle.primaryIconOnly(),
+      );
+
+  factory Button.add({required Function() onTap, String? text}) => Button(
+        text: text,
+        icon: Icons.add_rounded,
+        onTap: onTap,
+        style: ButtonCustomStyle.primaryIconOnly(),
+      );
 
   @override
   Widget build(BuildContext context) {

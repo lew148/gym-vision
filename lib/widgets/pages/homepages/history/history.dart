@@ -6,7 +6,7 @@ import 'package:gymvision/constants.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
-import 'package:gymvision/models/db_models/workout_model.dart';
+import 'package:gymvision/models/db_models/workouts/workout_model.dart';
 import 'package:gymvision/providers/global/active_workout_provider.dart';
 import 'package:gymvision/providers/history_provider.dart';
 import 'package:gymvision/widgets/components/stateless/calendar_view.dart';

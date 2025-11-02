@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
-import 'package:gymvision/models/db_models/workout_exercise_model.dart';
-import 'package:gymvision/models/db_models/workout_model.dart';
+import 'package:gymvision/models/db_models/workouts/workout_exercise_model.dart';
+import 'package:gymvision/models/db_models/workouts/workout_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/debug_scaffold.dart';
 import 'package:gymvision/widgets/pages/homepages/exercises/exercises.dart';

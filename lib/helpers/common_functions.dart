@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/constants.dart';
-import 'package:gymvision/models/db_models/workout_category_model.dart';
-import 'package:gymvision/models/db_models/workout_model.dart';
+import 'package:gymvision/models/db_models/workouts/workout_category_model.dart';
+import 'package:gymvision/models/db_models/workouts/workout_model.dart';
 import 'package:gymvision/providers/global/active_workout_provider.dart';
 import 'package:gymvision/widgets/components/stateless/calendar_view.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/drag_handle.dart';
 import 'package:gymvision/widgets/components/stateless/header.dart';
-import 'package:gymvision/widgets/forms/date_time_picker.dart';
-import 'package:gymvision/widgets/forms/duration_picker.dart';
+import 'package:gymvision/widgets/forms/fields/date_time_picker.dart';
+import 'package:gymvision/widgets/forms/fields/duration_picker.dart';
 import 'package:gymvision/widgets/pages/workout/workout_view.dart';
 import 'package:gymvision/providers/global/rest_timer_provider.dart';
 import 'package:gymvision/static_data/enums.dart';
@@ -202,10 +202,12 @@ Future showCloseableBottomSheet(BuildContext context, Widget child, {String? tit
       ),
     );
 
-Future showFullScreenBottomSheet(BuildContext context, Widget child) async => await showModalBottomSheet(
+Future showFullScreenBottomSheet(BuildContext context, {required Widget child, bool closable = false}) async =>
+    await showModalBottomSheet(
       context: context,
       useSafeArea: true,
       isScrollControlled: true,
+      enableDrag: closable,
       constraints: BoxConstraints(minWidth: MediaQuery.of(context).size.width),
       builder: (BuildContext context) => Container(
         height: MediaQuery.of(context).size.height,
@@ -223,7 +225,7 @@ Future showFullScreenBottomSheet(BuildContext context, Widget child) async => aw
           backgroundColor: Colors.transparent,
           resizeToAvoidBottomInset: false,
           body: Column(children: [
-            const DragHandle(),
+            if (closable) const DragHandle(),
             Expanded(child: child),
           ]),
         ),
@@ -288,7 +290,8 @@ Future<void> openWorkoutView(
   try {
     await showFullScreenBottomSheet(
       context,
-      WorkoutView(
+      closable: true,
+      child: WorkoutView(
         workoutId: workoutId,
         isActiveWorkout: isActiveWorkout,
         autofocusNotes: autofocusNotes,

@@ -8,6 +8,7 @@ class TextWithIcon extends StatelessWidget {
   final double? iconSize;
   final String? text;
   final bool muted;
+  final bool primary;
   final MainAxisAlignment? alignment;
 
   const TextWithIcon({
@@ -15,7 +16,8 @@ class TextWithIcon extends StatelessWidget {
     required this.icon,
     this.iconSize,
     this.text,
-    this.muted = true,
+    this.muted = false,
+    this.primary = false,
     this.alignment,
   });
 
@@ -30,15 +32,17 @@ class TextWithIcon extends StatelessWidget {
         muted: muted,
       );
 
-  factory TextWithIcon.time(DateTime dt, {DateTime? dtEnd}) => TextWithIcon(
+  factory TextWithIcon.time(DateTime dt, {DateTime? dtEnd, bool muted = true}) => TextWithIcon(
         icon: Icons.access_time_rounded,
+        muted: muted,
         text:
             '${DateFormat(DateTimeHelper.hmFormat).format(dt)}${dtEnd == null ? '' : ' - ${DateFormat(DateTimeHelper.hmFormat).format(dtEnd)}'}',
       );
 
-  factory TextWithIcon.timeElapsed(Duration timeElapsed) => TextWithIcon(
+  factory TextWithIcon.timeElapsed(Duration timeElapsed, {bool muted = true}) => TextWithIcon(
         icon: Icons.hourglass_empty_rounded,
         text: DateTimeHelper.getHoursAndMinsDurationString(timeElapsed),
+        muted: muted,
       );
 
   factory TextWithIcon.weight(
@@ -89,13 +93,21 @@ class TextWithIcon extends StatelessWidget {
     return Row(
       mainAxisAlignment: alignment ?? MainAxisAlignment.start,
       children: [
-        Icon(icon, size: iconSize ?? 15, color: muted ? Theme.of(context).colorScheme.secondary : null),
+        Icon(
+          icon,
+          size: iconSize ?? 15,
+          color: muted
+              ? Theme.of(context).colorScheme.secondary
+              : (primary ? Theme.of(context).colorScheme.primary : null),
+        ),
         const Padding(padding: EdgeInsets.all(2.5)),
         Text(
           text ?? '-',
           style: TextStyle(
             fontSize: 15,
-            color: muted ? Theme.of(context).colorScheme.secondary : null,
+            color: muted
+                ? Theme.of(context).colorScheme.secondary
+                : (primary ? Theme.of(context).colorScheme.primary : null),
           ),
         ),
       ],
