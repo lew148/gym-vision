@@ -10,9 +10,9 @@ import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/database_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/note_model.dart';
-import 'package:gymvision/models/db_models/workout_exercise_model.dart';
-import 'package:gymvision/models/db_models/workout_category_model.dart';
-import 'package:gymvision/models/db_models/workout_set_model.dart';
+import 'package:gymvision/models/db_models/workouts/workout_exercise_model.dart';
+import 'package:gymvision/models/db_models/workouts/workout_category_model.dart';
+import 'package:gymvision/models/db_models/workouts/workout_set_model.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/static_data/enums.dart';
 

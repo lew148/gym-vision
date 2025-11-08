@@ -184,7 +184,7 @@ class WorkoutCard extends StatelessWidget {
                             .getCategories()
                             .map((c) => PropDisplay(
                                   text: c.displayName,
-                                  color: AppHelper.isDarkMode(context) ? darkPropOnCardColor : null,
+                                  onCard: true,
                                 ))
                             .toList(),
                       ),

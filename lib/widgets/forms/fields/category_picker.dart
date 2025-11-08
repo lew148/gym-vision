@@ -6,12 +6,12 @@ import 'package:gymvision/static_data/helpers.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 
-class CateogryPicker extends StatefulWidget {
+class CategoryPicker extends StatefulWidget {
   final List<Category>? selectedCategories;
   final void Function(List<Category> c) onChange;
   final bool includeMiscCategories;
 
-  const CateogryPicker({
+  const CategoryPicker({
     super.key,
     this.selectedCategories = const [],
     required this.onChange,
@@ -19,10 +19,10 @@ class CateogryPicker extends StatefulWidget {
   });
 
   @override
-  State<CateogryPicker> createState() => _CateogryPickerState();
+  State<CategoryPicker> createState() => _CategoryPickerState();
 }
 
-class _CateogryPickerState extends State<CateogryPicker> {
+class _CategoryPickerState extends State<CategoryPicker> {
   late List<Category> selectedCategories;
 
   @override

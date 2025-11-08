@@ -13,9 +13,15 @@ class SplashText extends StatelessWidget {
   });
 
   factory SplashText.notFound({String? item, String? description}) => SplashText(
-        title: 'This ${item == null ? '' : '$item '}could not be found...',
         icon: Icons.question_mark_rounded,
+        title: 'This ${item == null ? '' : '$item '}could not be found...',
         description: description ?? 'Please try again',
+      );
+
+  factory SplashText.none({String? item, String? description}) => SplashText(
+        icon: Icons.inbox_rounded,
+        title: 'No ${item == null ? '' : '$item '}yet',
+        description: description ?? 'Tap + to get started',
       );
 
   @override

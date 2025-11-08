@@ -5,7 +5,7 @@ import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/constants.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/models/db_models/schedule_model.dart';
-import 'package:gymvision/models/db_models/workout_model.dart';
+import 'package:gymvision/models/db_models/workouts/workout_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/providers/global/active_workout_provider.dart';
 import 'package:gymvision/widgets/components/flavour_text_card.dart';
@@ -57,7 +57,7 @@ class _TodayState extends State<Today> {
                         icon: Icons.add_rounded,
                         text: 'Start a workout',
                         onTap: () async {
-                          await addActiveWorkout(context);
+                          await createActiveWorkout(context);
                           reload();
                         },
                       ),
@@ -103,7 +103,7 @@ class _TodayState extends State<Today> {
                             icon: Icons.add_rounded,
                             text: 'Start scheduled workout',
                             onTap: () async {
-                              await addActiveWorkout(context, categories: todayCategories);
+                              await createActiveWorkout(context, categories: todayCategories);
                               reload();
                             },
                           ),
@@ -238,13 +238,10 @@ class _TodayState extends State<Today> {
               Header.large(
                 'Today',
                 actions: [
-                  Button(
-                    icon: Icons.add_rounded,
-                    onTap: () async {
-                      await addActiveWorkout(context);
-                      reload();
-                    },
-                  )
+                  Button.add(onTap: () async {
+                    await createActiveWorkout(context);
+                    reload();
+                  }),
                 ],
               ),
             ],

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/helpers/common_functions.dart';
-import 'package:gymvision/models/db_models/workout_model.dart';
+import 'package:gymvision/models/db_models/workouts/workout_model.dart';
 import 'package:gymvision/providers/global/active_workout_provider.dart';
 import 'package:gymvision/providers/global/rest_timer_provider.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';

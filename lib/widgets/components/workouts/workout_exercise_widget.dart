@@ -6,8 +6,8 @@ import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/constants.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/user_settings_model.dart';
-import 'package:gymvision/models/db_models/workout_exercise_model.dart';
-import 'package:gymvision/models/db_models/workout_set_model.dart';
+import 'package:gymvision/models/db_models/workouts/workout_exercise_model.dart';
+import 'package:gymvision/models/db_models/workouts/workout_set_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
@@ -115,49 +115,58 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
     );
   }
 
-  List<Widget> getWeightedSetContents(WorkoutSet ws) => [
-        Expanded(flex: 4, child: TextWithIcon.weight(ws.weight, alignment: MainAxisAlignment.center)),
-        Expanded(flex: 4, child: TextWithIcon.reps(ws.reps, alignment: MainAxisAlignment.center)),
+  Widget getCheckAndIndex(int flex, WorkoutSet set, int setNumber) => Expanded(
+        flex: flex,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            CustomCheckbox(
+              value: set.done,
+              onChangeAsync: isDisplay ? null : (value) => onSetDoneTap(set, value),
+            ),
+            const Padding(padding: EdgeInsetsGeometry.all(5)),
+            Text(
+              setNumber.toString(),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.secondary,
+              ),
+            )
+          ],
+        ),
+      );
+
+  List<Widget> getWeightedSetContents(WorkoutSet ws, int setNumber) => [
+        getCheckAndIndex(4, ws, setNumber),
+        Expanded(flex: 4, child: TextWithIcon.weight(ws.weight, alignment: MainAxisAlignment.start)),
+        Expanded(flex: 4, child: TextWithIcon.reps(ws.reps, alignment: MainAxisAlignment.start)),
       ];
 
-  List<Widget> getCardioSetContents(WorkoutSet ws) => [
+  List<Widget> getCardioSetContents(WorkoutSet ws, int setNumber) => [
+        getCheckAndIndex(2, ws, setNumber),
         Expanded(flex: 4, child: TextWithIcon.duration(ws.time, alignment: MainAxisAlignment.center)),
         Expanded(flex: 4, child: TextWithIcon.distance(ws.distance, alignment: MainAxisAlignment.center)),
-        Expanded(flex: 3, child: TextWithIcon.caloriesBurned(ws.calsBurned, alignment: MainAxisAlignment.center)),
+        Expanded(flex: 4, child: TextWithIcon.caloriesBurned(ws.calsBurned, alignment: MainAxisAlignment.center)),
       ];
 
-  Widget getSetWidgetInner(int setNumber, WorkoutSet set) => Padding(
+  Widget getSetWidgetInner(WorkoutSet set, int setNumber) => Padding(
         padding: const EdgeInsets.all(10),
         child: Row(
-          children: [
-            Expanded(
-              flex: 2,
-              child: Row(children: [
-                CustomCheckbox(value: set.done, onChangeAsync: isDisplay ? null : (value) => onSetDoneTap(set, value)),
-                const Padding(padding: EdgeInsetsGeometry.all(5)),
-                Text(
-                  setNumber.toString(),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                )
-              ]),
-            ),
-            ...(widget.workoutExercise.isCardio() ? getCardioSetContents(set) : getWeightedSetContents(set))
-          ],
+          children: widget.workoutExercise.isCardio()
+              ? getCardioSetContents(set, setNumber)
+              : getWeightedSetContents(set, setNumber),
         ),
       );
 
   List<Widget> getSetWidgets(List<WorkoutSet> sets) {
     final List<Widget> widgets = [];
 
-    final orderedSets = OrderingHelper.orderListById(sets, widget.workoutExercise.setOrder);
+    final orderedSets = OrderingHelper.sortByOrder(sets, widget.workoutExercise.setOrder);
     for (int i = 0; i < orderedSets.length; i++) {
       final set = orderedSets[i];
       widgets.add(isDisplay
-          ? getSetWidgetInner(i + 1, set)
+          ? getSetWidgetInner(set, i + 1)
           : InkWell(
               borderRadius: BorderRadius.vertical(bottom: Radius.circular(borderRadius)),
               enableFeedback: false,
@@ -183,19 +192,16 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                     text: 'Delete Set',
                     icon: Icons.delete_rounded,
                     style: ButtonCustomStyle.redIconOnly(),
-                    onTap: () => showDeleteConfirm(
-                      context,
-                      "set",
-                      () => WorkoutSetModel.delete(set.id!),
-                    ).then((x) {
+                    onTap: () {
+                      showDeleteConfirm(context, "set", () => WorkoutSetModel.delete(set.id!));
                       if (mounted) Navigator.pop(context);
                       reload();
-                    }),
+                    },
                   ),
                 ],
               ),
               onTap: () => onEditWorkoutSetTap(set),
-              child: getSetWidgetInner(i + 1, set),
+              child: getSetWidgetInner(set, i + 1),
             ));
     }
 
@@ -305,11 +311,15 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
             isDisplay
                 ? Button(
                     icon: Icons.remove_red_eye_rounded,
-                    onTap: () => openWorkoutView(
-                      context,
-                      widget.workoutExercise.workoutId,
-                      focusedWorkoutExerciseId: widget.workoutExercise.id!,
-                    ).then((x) => reload()),
+                    onTap: () async {
+                      await openWorkoutView(
+                        context,
+                        widget.workoutExercise.workoutId,
+                        focusedWorkoutExerciseId: widget.workoutExercise.id!,
+                      );
+
+                      reload();
+                    },
                   )
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -321,26 +331,26 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                           Button(
                             icon: Icons.visibility_rounded,
                             text: 'View Exercise',
-                            onTap: () {
+                            onTap: () async {
                               Navigator.pop(context);
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(
-                                    builder: (context) => ExerciseView(identifier: exerciseIdentifier),
-                                  ))
-                                  .then((value) => reload());
+                              await Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ExerciseView(identifier: exerciseIdentifier),
+                              ));
+
+                              reload();
                             },
                             style: ButtonCustomStyle.primaryIconOnly(),
                           ),
                           Button.delete(
-                            onTap: () {
+                            onTap: () async {
                               Navigator.pop(context);
-                              showDeleteConfirm(
+                              await showDeleteConfirm(
                                 context,
                                 "exercise from workout",
                                 () => WorkoutExerciseModel.delete(widget.workoutExercise.id!),
-                              ).then((x) {
-                                if (widget.onDelete != null) widget.onDelete!(widget.workoutExercise.id!);
-                              });
+                              );
+
+                              if (widget.onDelete != null) widget.onDelete!(widget.workoutExercise.id!);
                             },
                             text: 'Delete Exercise',
                           )

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gymvision/classes/db/workouts/workout_set.dart';
+import 'package:gymvision/classes/db/workout_templates/workout_template_set.dart';
 import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/helpers/number_helper.dart';
-import 'package:gymvision/models/db_models/workouts/workout_exercise_model.dart';
+import 'package:gymvision/models/db_models/workout_template_model.dart';
 import 'package:gymvision/models/db_models/workouts/workout_set_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
@@ -12,34 +12,32 @@ import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/header.dart';
 import 'package:gymvision/widgets/components/stateless/splash_text.dart';
-import 'package:gymvision/widgets/forms/fields/custom_checkbox_with_label.dart';
 import 'package:gymvision/widgets/forms/fields/custom_form_field.dart';
 import 'package:gymvision/widgets/forms/fields/duration_field.dart';
 
-class WorkoutSetForm extends StatefulWidget {
-  final int workoutId;
+class TemplateSetForm extends StatefulWidget {
+  final int templateId;
   final String exerciseIdentifier;
   final Function onSuccess;
-  final WorkoutSet? workoutSet;
+  final WorkoutTemplateSet? templateSet;
 
-  const WorkoutSetForm({
+  const TemplateSetForm({
     super.key,
-    required this.workoutId,
+    required this.templateId,
     required this.exerciseIdentifier,
     required this.onSuccess,
-    this.workoutSet,
+    this.templateSet,
   });
 
   @override
-  State<WorkoutSetForm> createState() => _WorkoutSetFormState();
+  State<TemplateSetForm> createState() => _TemplateSetFormState();
 }
 
-class _WorkoutSetFormState extends State<WorkoutSetForm> {
+class _TemplateSetFormState extends State<TemplateSetForm> {
   final _formKey = GlobalKey<FormState>();
   late bool _isEdit;
   late Future<Exercise?> _exerciseFuture;
 
-  late bool _complete;
   late TextEditingController _weightController;
   late TextEditingController _repsController;
   late TextEditingController _distanceController;
@@ -51,26 +49,25 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
     super.initState();
     _exerciseFuture = DefaultExercisesModel.getExerciseWithDetails(identifier: widget.exerciseIdentifier);
 
-    _isEdit = widget.workoutSet != null;
-    _complete = _isEdit ? widget.workoutSet?.done ?? false : false;
+    _isEdit = widget.templateSet != null;
 
     _weightController = TextEditingController(
-      text: _isEdit ? NumberHelper.blankIfZero(NumberHelper.truncateDouble(widget.workoutSet!.weight)) : null,
+      text: _isEdit ? NumberHelper.blankIfZero(NumberHelper.truncateDouble(widget.templateSet!.weight)) : null,
     );
 
     _repsController = TextEditingController(
-      text: _isEdit ? NumberHelper.blankIfZero(widget.workoutSet!.reps.toString()) : null,
+      text: _isEdit ? NumberHelper.blankIfZero(widget.templateSet!.reps.toString()) : null,
     );
 
     _distanceController = TextEditingController(
-      text: _isEdit ? NumberHelper.blankIfZero(NumberHelper.truncateDouble(widget.workoutSet!.distance)) : null,
+      text: _isEdit ? NumberHelper.blankIfZero(NumberHelper.truncateDouble(widget.templateSet!.distance)) : null,
     );
 
     _calsBurnedController = TextEditingController(
-      text: _isEdit ? NumberHelper.blankIfZero(widget.workoutSet!.calsBurned.toString()) : null,
+      text: _isEdit ? NumberHelper.blankIfZero(widget.templateSet!.calsBurned.toString()) : null,
     );
 
-    _duration = widget.workoutSet?.time ?? const Duration();
+    _duration = widget.templateSet?.time ?? const Duration();
   }
 
   void setWeight(String s) => _weightController.text = s;
@@ -126,22 +123,21 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
     Navigator.pop(context);
 
     try {
-      var we = await WorkoutExerciseModel.getWorkoutExerciseByWorkoutAndExercise(
-        widget.workoutId,
+      var wte = await WorkoutTemplateModel.getExerciseByTemplateAndExercise(
+        widget.templateId,
         exercise.identifier,
         createIfNotFound: true,
       );
 
       for (int i = 0; i < (addThree ? 3 : 1); i++) {
-        await WorkoutSetModel.insert(
-          WorkoutSet(
-            workoutExerciseId: we!.id!,
+        await WorkoutTemplateModel.insertWorkoutTemplateSet(
+          WorkoutTemplateSet(
+            workoutTemplateExerciseId: wte!.id!,
             weight: NumberHelper.parseDouble(_weightController.text),
             reps: int.parse(NumberHelper.getNumberString(_repsController.text)),
             time: _duration,
             distance: NumberHelper.parseDouble(_distanceController.text),
             calsBurned: int.parse(NumberHelper.getNumberString(_calsBurnedController.text)),
-            done: _complete,
           ),
         );
       }
@@ -149,7 +145,7 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
       widget.onSuccess();
     } catch (ex) {
       if (!mounted) return;
-      showSnackBar(context, 'Failed to add set(s) to workout');
+      showSnackBar(context, 'Failed to add set(s) to template');
     }
   }
 
@@ -166,7 +162,7 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
       final newCalsBurned = int.parse(NumberHelper.getNumberString(_calsBurnedController.text));
       final newDuration = _duration;
 
-      final set = widget.workoutSet!;
+      final set = widget.templateSet!;
       if (set.weight != newWeight) {
         set.weight = newWeight;
         hasChanges = true;
@@ -192,28 +188,23 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
         hasChanges = true;
       }
 
-      if (set.done != _complete) {
-        set.done = _complete;
-        hasChanges = true;
-      }
-
       if (!hasChanges) return;
 
-      await WorkoutSetModel.update(set);
+      await WorkoutTemplateModel.updateWorkoutTemplateSet(set);
       widget.onSuccess();
     } catch (ex) {
       if (!mounted) return;
-      showSnackBar(context, 'Failed to edit workout set');
+      showSnackBar(context, 'Failed to edit template set');
     }
   }
 
   void onDeleteButtonTap() async {
     Navigator.pop(context);
     try {
-      await WorkoutSetModel.delete(widget.workoutSet!.id!);
+      await WorkoutSetModel.delete(widget.templateSet!.id!);
     } catch (ex) {
       if (!mounted) return;
-      showSnackBar(context, 'Failed to remove set from workout');
+      showSnackBar(context, 'Failed to remove set from template');
     }
 
     widget.onSuccess();
@@ -223,21 +214,20 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
     try {
       HapticFeedback.lightImpact();
 
-      final set = widget.workoutSet!;
-      await WorkoutSetModel.insert(
-        WorkoutSet(
-          workoutExerciseId: set.workoutExerciseId,
+      final set = widget.templateSet!;
+      await WorkoutTemplateModel.insertWorkoutTemplateSet(
+        WorkoutTemplateSet(
+          workoutTemplateExerciseId: set.workoutTemplateExerciseId,
           weight: set.weight,
           time: set.time,
           distance: set.distance,
           calsBurned: set.calsBurned,
           reps: set.reps,
-          done: false,
         ),
       );
     } catch (ex) {
       if (!mounted) return;
-      showSnackBar(context, 'Failed add set to workout');
+      showSnackBar(context, 'Failed add set to template');
     }
 
     widget.onSuccess();
@@ -268,35 +258,24 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
               Header(title: exercise.getFullName()),
               const CustomDivider(),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  CustomCheckboxWithLabel(
-                    label: 'Complete',
-                    value: _complete,
-                    onChange: (value) => setState(() {
-                      _complete = value;
-                    }),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      if (lastStrings != null)
-                        Button(
-                          text: 'Last',
-                          onTap: () {
-                            if (lastStrings.key != null) setWeight(lastStrings.key);
-                            if (lastStrings.value != null) setReps(lastStrings.value);
-                          },
-                        ),
-                      if (maxStrings != null)
-                        Button(
-                            text: 'Max',
-                            onTap: () {
-                              if (maxStrings.key != null) setWeight(maxStrings.key);
-                              if (maxStrings.value != null) setReps(maxStrings.value);
-                            }),
-                    ],
-                  ),
+                  if (lastStrings != null)
+                    Button(
+                      text: 'Last',
+                      onTap: () {
+                        if (lastStrings.key != null) setWeight(lastStrings.key);
+                        if (lastStrings.value != null) setReps(lastStrings.value);
+                      },
+                    ),
+                  if (maxStrings != null)
+                    Button(
+                      text: 'Max',
+                      onTap: () {
+                        if (maxStrings.key != null) setWeight(maxStrings.key);
+                        if (maxStrings.value != null) setReps(maxStrings.value);
+                      },
+                    ),
                 ],
               ),
               if (exercise.type == ExerciseType.strength) ...getWeightFields(exercise),

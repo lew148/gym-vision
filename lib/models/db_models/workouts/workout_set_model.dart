@@ -4,7 +4,7 @@ import 'package:gymvision/db/drift_database.dart';
 import 'package:gymvision/db/table_extensions.dart';
 import 'package:gymvision/helpers/database_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
-import 'package:gymvision/models/db_models/workout_exercise_model.dart';
+import 'package:gymvision/models/db_models/workouts/workout_exercise_model.dart';
 
 class WorkoutSetModel {
   static Future<List<WorkoutSet>> getSetsForWorkoutExercise(int workoutExerciseId) async {

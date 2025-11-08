@@ -9,7 +9,7 @@ import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
-import 'package:gymvision/widgets/forms/category_picker.dart';
+import 'package:gymvision/widgets/forms/fields/category_picker.dart';
 import 'package:gymvision/widgets/forms/fields/custom_form_field.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
@@ -142,7 +142,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
         behavior: HitTestBehavior.translucent,
         onTap: () => showCloseableBottomSheet(
           context,
-          CateogryPicker(
+          CategoryPicker(
             selectedCategories: categoriesForDay,
             onChange: (c) {
               setState(() {

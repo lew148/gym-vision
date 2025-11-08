@@ -14,4 +14,5 @@ enum NoteType {
   workout,
   exercise,
   other,
+  template,
 }

@@ -6,7 +6,6 @@ import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/category_filter.dart';
-import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/scroll_bottom_padding.dart';
 import 'package:gymvision/widgets/pages/exercise/exercise_view.dart';
 import 'package:gymvision/static_data/enums.dart';

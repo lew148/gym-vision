@@ -19,6 +19,9 @@ part 'drift_database.g.dart';
   DriftSchedules,
   DriftScheduleItems,
   DriftScheduleCategories,
+  DriftWorkoutTemplates,
+  DriftWorkoutTemplateExercises,
+  DriftWorkoutTemplateSets,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.executor);
@@ -152,4 +155,39 @@ class DriftScheduleCategories extends Table with CoreColumns {
 
   IntColumn get scheduleItemId => integer().references(DriftScheduleItems, #id)();
   TextColumn get category => textEnum<Category>()();
+}
+
+class DriftWorkoutTemplates extends Table with CoreColumns {
+  @override
+  String get tableName => 'workout_template';
+
+  TextColumn get name => text()();
+  TextColumn get categories => text()();
+  TextColumn get exerciseOrder => text()();
+}
+
+class DriftWorkoutTemplateExercises extends Table with CoreColumns {
+  @override
+  String get tableName => 'workout_template_exercise';
+
+  IntColumn get workoutTemplateId => integer().references(DriftWorkoutTemplates, #id)();
+  TextColumn get exerciseIdentifier => text()();
+  TextColumn get setOrder => text()();
+}
+
+class DriftWorkoutTemplateSets extends Table with CoreColumns {
+  @override
+  String get tableName => 'workout_template_set';
+
+  IntColumn get workoutTemplateExerciseId => integer().references(DriftWorkoutTemplateExercises, #id)();
+
+  // weight fields
+  RealColumn get weight => real().nullable()();
+  IntColumn get reps => integer().nullable()();
+
+  // cardio fields
+  TextColumn get time => text().map(const DurationConverter()).nullable()();
+  RealColumn get distance => real().nullable()();
+  IntColumn get calsBurned => integer().nullable()();
+  BoolColumn get done => boolean().withDefault(const Constant(false))();
 }

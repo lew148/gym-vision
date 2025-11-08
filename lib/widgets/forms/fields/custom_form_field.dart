@@ -142,7 +142,7 @@ class CustomFormField extends StatelessWidget {
               controller: controller,
               validator: (String? s) {
                 if (!canBeBlank && (s == null || s.isEmpty)) return '$label cannot be blank';
-                if (validator != null) validator!(s);
+                if (validator != null) return validator!(s);
                 return null;
               },
               keyboardType: keyboardType,

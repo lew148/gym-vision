@@ -4,11 +4,10 @@ import 'package:flutter_confetti/flutter_confetti.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/workout_summary.dart';
 import 'package:gymvision/constants.dart';
-import 'package:gymvision/helpers/app_helper.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
-import 'package:gymvision/models/db_models/workout_model.dart';
+import 'package:gymvision/models/db_models/workouts/workout_model.dart';
 import 'package:gymvision/static_data/helpers.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
@@ -68,7 +67,7 @@ class SharableWorkoutSummary extends StatelessWidget {
           }
 
           Widget getWorkoutExercisesBreakdown(WorkoutSummary summary) {
-            final wes = OrderingHelper.orderListById(
+            final wes = OrderingHelper.sortByOrder(
               workout.getWorkoutExercisesDoneOrWithDoneSets(),
               workout.exerciseOrder,
             );
@@ -173,8 +172,8 @@ class SharableWorkoutSummary extends StatelessWidget {
                                           .getCategories()
                                           .map((c) => PropDisplay(
                                                 text: c.displayName,
-                                                color: AppHelper.isDarkMode(context) ? darkPropOnCardColor : null,
                                                 size: PropDisplaySize.small,
+                                                onCard: true,
                                               ))
                                           .toList(),
                                     ),

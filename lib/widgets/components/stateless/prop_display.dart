@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/constants.dart';
+import 'package:gymvision/helpers/app_helper.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 
 enum PropDisplaySize {
@@ -12,14 +13,14 @@ class PropDisplay extends StatelessWidget {
   final String text;
   final PropDisplaySize size;
   final Function()? onTap;
-  final Color? color;
+  final bool onCard;
 
   const PropDisplay({
     super.key,
     required this.text,
     this.size = PropDisplaySize.medium,
     this.onTap,
-    this.color,
+    this.onCard = false,
   });
 
   @override
@@ -28,7 +29,10 @@ class PropDisplay extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          decoration: BoxDecoration(color: color, borderRadius: const BorderRadius.all(Radius.circular(borderRadius))),
+          decoration: BoxDecoration(
+            color: onCard && AppHelper.isDarkMode(context) ? darkPropOnCardColor : null,
+            borderRadius: const BorderRadius.all(Radius.circular(borderRadius)),
+          ),
           padding: EdgeInsets.all(size == PropDisplaySize.small ? 5 : 10),
           child: onTap == null
               ? Text(text)

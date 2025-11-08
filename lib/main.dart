@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/enums.dart';
@@ -29,6 +30,12 @@ void main() async {
   ]);
 
   await dotenv.load(fileName: ".env");
+
+  if (!kReleaseMode) {
+    // --- debug ---
+    await start();
+    return;
+  }
 
   await SentryFlutter.init(
     (options) {
@@ -107,8 +114,8 @@ class MyApp extends StatelessWidget {
   final secondary = const Color.fromARGB(255, 146, 146, 146);
   final tertiary = const Color.fromARGB(255, 255, 101, 101);
   final shadow = const Color.fromARGB(255, 77, 77, 77);
-  final lightBackground = const Color.fromARGB(255, 245, 245, 245);
-  final lightSurface = Colors.white;
+  final lightBackground = Colors.white;
+  final lightSurface = const Color.fromARGB(255, 235, 235, 235);
   final darkBackground = Colors.black;
   final darkSurface = const Color.fromARGB(255, 22, 22, 22);
 
@@ -148,7 +155,7 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         splashColor: Colors.transparent,
         scaffoldBackgroundColor: darkBackground,
-        // bottomSheetTheme: BottomSheetThemeData(backgroundColor: darkBottomSheet),
+        bottomSheetTheme: BottomSheetThemeData(backgroundColor: darkSurface),
         // cardTheme: CardThemeData(color: darkCard),
         colorScheme: ColorScheme.dark(
           primary: primary,
