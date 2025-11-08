@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_confetti/flutter_confetti.dart';
 import 'package:gymvision/classes/db/workouts/workout_category.dart';
+import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workouts/workout_category_model.dart';
+import 'package:gymvision/models/db_models/workouts/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workouts/workout_model.dart';
 import 'package:gymvision/providers/global/active_workout_provider.dart';
 import 'package:gymvision/providers/global/navigation_provider.dart';
@@ -17,9 +19,11 @@ import 'package:gymvision/widgets/components/stateless/prop_display.dart';
 import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
 import 'package:gymvision/widgets/components/time_elapsed.dart';
 import 'package:gymvision/widgets/components/workouts/workout_exercise_widget.dart';
-import 'package:gymvision/widgets/forms/add_exercises_to_workout.dart';
 import 'package:gymvision/widgets/components/workouts/workout_options_menu.dart';
 import 'package:gymvision/widgets/components/workouts/summary/sharable_workout_summary.dart';
+import 'package:gymvision/widgets/debug_scaffold.dart';
+import 'package:gymvision/widgets/pages/homepages/exercises/exercises.dart';
+import 'package:gymvision/widgets/pages/homepages/progress/templates.dart';
 import 'package:provider/provider.dart';
 import 'package:gymvision/providers/workout_provider.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
@@ -66,7 +70,7 @@ class WorkoutViewBody extends StatelessWidget {
       ]);
     }
 
-    final workoutExercises = OrderingHelper.orderListById(workout.getWorkoutExercises(), workout.exerciseOrder);
+    final workoutExercises = OrderingHelper.sortByOrder(workout.getWorkoutExercises(), workout.exerciseOrder);
     final categories = workout.getCategories();
 
     void onFinishOrResumeTap(bool resuming) async {
@@ -126,9 +130,31 @@ class WorkoutViewBody extends StatelessWidget {
         );
 
     Future<void> onAddExerciseClick() async {
-      await Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => AddExercisesToWorkout(workoutId: workout.id!)),
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => DebugScaffold(
+            ignoreDefaults: false,
+            body: Exercises(
+              filterCategories: workout.getCategories(),
+              excludedExerciseIdentifiers: workout.getWorkoutExercises().map((we) => we.exerciseIdentifier).toList(),
+              onAddTap: (String exerciseIdentifier) async {
+                try {
+                  await WorkoutExerciseModel.insert(
+                    WorkoutExercise(
+                      workoutId: workout.id!,
+                      exerciseIdentifier: exerciseIdentifier,
+                      setOrder: '',
+                    ),
+                  );
+                } catch (ex) {
+                  if (context.mounted) showSnackBar(context, 'Failed to add set(s) to workout');
+                } finally {
+                  if (context.mounted) Navigator.pop(context);
+                }
+              },
+            ),
+          ),
+        ),
       );
 
       provider.reload();
@@ -157,7 +183,6 @@ class WorkoutViewBody extends StatelessWidget {
               final success = await WorkoutModel.copyLastWorkout(workout.id!);
               if (success) {
                 provider.reload();
-
                 return;
               }
 
@@ -165,6 +190,28 @@ class WorkoutViewBody extends StatelessWidget {
             },
           ),
         ]));
+
+    Future onCreateFromTemplateTap() async {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (BuildContext context) => Templates(
+            filterCategories: workout.getCategories(),
+            onAddTap: (int templateId) async {
+              try {
+                await copyTemplateToworkout(workoutId: workout.id!, templateId: templateId);
+                if (context.mounted) Navigator.pop(context);
+                provider.reload();
+              } catch (ex) {
+                if (context.mounted) showSnackBar(context, 'Failed to copy Template');
+              }
+            },
+          ),
+        ),
+      );
+
+      provider.reload();
+    }
 
     void onWorkoutExerciseReorder(int currentIndex, int newIndex) async {
       workout.exerciseOrder = OrderingHelper.reorderByIndex(workout.exerciseOrder, currentIndex, newIndex);
@@ -277,6 +324,7 @@ class WorkoutViewBody extends StatelessWidget {
                           text: 'Select categories',
                           onTap: () => onAddCategoryClick(categories),
                         ),
+                        Button.elevated(icon: Icons.add_rounded, text: 'Add exercises', onTap: onAddExerciseClick),
                         Padding(
                           padding: const EdgeInsetsGeometry.all(5),
                           child: Text(
@@ -286,8 +334,12 @@ class WorkoutViewBody extends StatelessWidget {
                           ),
                         ),
                       ],
-                      Button.elevated(icon: Icons.add_rounded, text: 'Add exercises', onTap: onAddExerciseClick),
                       Button.elevated(icon: Icons.copy_rounded, text: 'Copy Workout', onTap: onCopyPreviousWorkoutTap),
+                      Button.elevated(
+                        icon: Icons.description_rounded,
+                        text: 'Create from Template',
+                        onTap: onCreateFromTemplateTap,
+                      ),
                     ],
                   ),
                 )

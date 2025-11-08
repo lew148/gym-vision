@@ -26,5 +26,7 @@ class WorkoutTemplateExercise extends DBO {
     this.workoutTemplateSets,
   });
 
+  List<WorkoutTemplateSet> getSets() => workoutTemplateSets ?? [];
+
   bool isCardio() => exercise?.type == ExerciseType.cardio;
 }

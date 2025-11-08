@@ -20,8 +20,8 @@ class SplashText extends StatelessWidget {
 
   factory SplashText.none({String? item, String? description}) => SplashText(
         icon: Icons.inbox_rounded,
-        title: 'There are no ${item == null ? '' : '$item '}yet...',
-        description: description ?? 'Tap + to start',
+        title: 'No ${item == null ? '' : '$item '}yet',
+        description: description ?? 'Tap + to get started',
       );
 
   @override

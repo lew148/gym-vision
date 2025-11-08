@@ -67,7 +67,7 @@ class SharableWorkoutSummary extends StatelessWidget {
           }
 
           Widget getWorkoutExercisesBreakdown(WorkoutSummary summary) {
-            final wes = OrderingHelper.orderListById(
+            final wes = OrderingHelper.sortByOrder(
               workout.getWorkoutExercisesDoneOrWithDoneSets(),
               workout.exerciseOrder,
             );

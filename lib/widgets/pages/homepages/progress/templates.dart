@@ -1,35 +1,66 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workout_templates/workout_template.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/models/db_models/workout_template_model.dart';
+import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
+import 'package:gymvision/widgets/components/stateless/category_filter.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
-import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
-import 'package:gymvision/widgets/components/stateless/header.dart';
 import 'package:gymvision/widgets/components/stateless/options_menu.dart';
 import 'package:gymvision/widgets/components/stateless/prop_display.dart';
 import 'package:gymvision/widgets/components/stateless/shimmer_load.dart';
 import 'package:gymvision/widgets/components/stateless/splash_text.dart';
 import 'package:gymvision/widgets/debug_scaffold.dart';
-import 'package:gymvision/widgets/forms/workout_template_form.dart';
+import 'package:gymvision/widgets/forms/templates/workout_template_core_form.dart';
+import 'package:gymvision/widgets/forms/templates/edit_workout_template_form.dart';
 
 class Templates extends StatefulWidget {
-  const Templates({super.key});
+  final List<Category>? filterCategories;
+  final Function(int templateId)? onAddTap;
+
+  const Templates({
+    super.key,
+    this.filterCategories,
+    this.onAddTap,
+  });
 
   @override
   State<Templates> createState() => _TemplatesState();
 }
 
 class _TemplatesState extends State<Templates> {
-  Future<List<WorkoutTemplate>> _workoutTemplateFuture = WorkoutTemplateModel.getAll();
+  final TextEditingController _searchTextController = TextEditingController();
+  late List<Category> _filterCategories;
+  late Future<List<WorkoutTemplate>> _templatesFuture;
+  late bool _isSelect;
+  String? searchString;
+
+  @override
+  void initState() {
+    super.initState();
+    _filterCategories = widget.filterCategories ?? [];
+    _templatesFuture = WorkoutTemplateModel.getAll(withNote: true, filterCategories: _filterCategories);
+    _isSelect = widget.onAddTap != null;
+  }
 
   void reload() => setState(() {
-        _workoutTemplateFuture = WorkoutTemplateModel.getAll();
+        _templatesFuture = WorkoutTemplateModel.getAll(withNote: true, filterCategories: _filterCategories);
       });
 
-  Future onAddEditTemplate({int? templateId}) async {
-    await showFullScreenBottomSheet(context, child: WorkoutTemplateForm(templateId: templateId));
+  Future onAddTemplate({String? name}) async {
+    final int? newId = await showCloseableBottomSheet(
+      context,
+      WorkoutTemplateCoreForm(initialName: name),
+      title: 'Add Template',
+    );
+    if (newId == null) return;
+    await onEditTemplate(newId);
+  }
+
+  Future onEditTemplate(int templateId) async {
+    await showFullScreenBottomSheet(context, child: EditWorkoutTemplateForm(templateId: templateId));
     reload();
   }
 
@@ -38,96 +69,198 @@ class _TemplatesState extends State<Templates> {
     reload();
   }
 
+  void setSearchValue(String? s) => setState(() {
+        searchString = s;
+      });
+
+  Widget getLoadingView() => const Column(
+        children: [
+          ShimmerLoad(height: 80),
+          ShimmerLoad(height: 80),
+          ShimmerLoad(height: 80),
+        ],
+      );
+
+  Widget getEmptyTemplatesView() => searchString != null
+      ? Column(children: [
+          Text('No results for: ${_searchTextController.text}'),
+          const Padding(padding: EdgeInsetsGeometry.all(5)),
+          Button.elevated(
+            icon: Icons.add_rounded,
+            text: 'Add ${_searchTextController.text}',
+            onTap: () => onAddTemplate(name: _searchTextController.text),
+          ),
+        ])
+      : Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: _filterCategories.isNotEmpty
+              ? [
+                  SplashText(
+                    title: 'No Template for these Categories',
+                    description: 'Tap + to get started',
+                  ),
+                  Button.elevated(
+                    icon: Icons.add_rounded,
+                    text: 'Add a Template',
+                    onTap: onAddTemplate,
+                  ),
+                ]
+              : [
+                  SplashText.none(item: 'Templates'),
+                  Button.elevated(
+                    icon: Icons.add_rounded,
+                    text: 'Add a Template',
+                    onTap: onAddTemplate,
+                  ),
+                ],
+        );
+
+  Widget getTemplatesList(List<WorkoutTemplate> templates) => ListView(
+        children: templates
+            .map((wt) => GestureDetector(
+                  onTap: () => onEditTemplate(wt.id!),
+                  child: CustomCard(
+                    padding: EdgeInsets.all(10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                spacing: 10,
+                                runSpacing: 5,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsetsGeometry.only(left: 2.5),
+                                    child: Text(wt.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                                  ),
+                                  if (wt.categories != '')
+                                    Wrap(
+                                      alignment: WrapAlignment.start,
+                                      spacing: 5,
+                                      children: wt
+                                          .getCategories()
+                                          .map((c) => PropDisplay(
+                                                text: c.displayName,
+                                                onCard: true,
+                                                size: PropDisplaySize.small,
+                                              ))
+                                          .toList(),
+                                    ),
+                                ],
+                              ),
+                              if (wt.note != null)
+                                Text(
+                                  wt.note!.note,
+                                  style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                                  softWrap: true,
+                                  textAlign: TextAlign.start,
+                                ),
+                            ],
+                          ),
+                        ),
+                        _isSelect
+                            ? Button(
+                                icon: Icons.copy_rounded,
+                                onTap: () => widget.onAddTap!(wt.id!),
+                                style: ButtonCustomStyle.primaryIconOnly(),
+                              )
+                            : OptionsMenu(
+                                title: wt.name,
+                                buttons: [
+                                  Button.add(
+                                    onTap: () async {
+                                      Navigator.pop(context);
+                                      await createActiveWorkoutFromTemplate(context, templateId: wt.id!);
+                                    },
+                                    text: 'Create Workout from Template',
+                                  ),
+                                  Button.edit(
+                                    onTap: () async {
+                                      Navigator.pop(context);
+                                      await onEditTemplate(wt.id!);
+                                    },
+                                    text: 'Edit Template',
+                                  ),
+                                  Button.delete(
+                                    text: 'Delete Template',
+                                    onTap: () async {
+                                      Navigator.pop(context);
+                                      await showDeleteConfirm(
+                                        context,
+                                        'Template',
+                                        () => onDeleteTemplate(wt.id!),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                      ],
+                    ),
+                  ),
+                ))
+            .toList(),
+      );
+
   @override
   Widget build(BuildContext context) {
     return DebugScaffold(
       ignoreDefaults: true,
-      body: Column(children: [
-        Header(
-          title: 'Templates',
-          actions: [
-            Button.add(onTap: onAddEditTemplate),
-          ],
-        ),
-        CustomDivider(),
-        Expanded(
-          child: FutureBuilder(
-              future: _workoutTemplateFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting || !snapshot.hasData) {
-                  return const Column(
-                    children: [
-                      ShimmerLoad(height: 80),
-                      ShimmerLoad(height: 80),
-                      ShimmerLoad(height: 80),
-                      ShimmerLoad(height: 80),
-                    ],
-                  );
-                }
+      customAppBarTitle: Text(_isSelect ? 'Select Template' : 'Templates'),
+      body: FutureBuilder(
+        future: _templatesFuture,
+        builder: (context, snapshot) {
+          var templates = snapshot.data;
+          if (templates != null && searchString != null) {
+            templates = templates.where((t) => t.name.contains(RegExp(searchString!, caseSensitive: false))).toList();
+          }
 
-                final templates = snapshot.data!;
-                if (templates.isEmpty) {
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SplashText.none(item: 'Templates'),
-                      Button.elevated(
-                        icon: Icons.add_rounded,
-                        text: 'Add a Template',
-                        onTap: onAddEditTemplate,
-                      ),
-                    ],
-                  );
-                }
-
-                return ListView(
-                  children: templates
-                      .map((wt) => GestureDetector(
-                            onTap: () => onAddEditTemplate(templateId: wt.id!),
-                            child: CustomCard(
-                              padding: EdgeInsets.all(10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(wt.name, style: TextStyle(fontWeight: FontWeight.bold)),
-                                      if (wt.categories != '')
-                                        Padding(
-                                          padding: EdgeInsetsGeometry.only(top: 5),
-                                          child: Wrap(
-                                            alignment: WrapAlignment.start,
-                                            spacing: 5,
-                                            children: wt
-                                                .getCategories()
-                                                .map((c) => PropDisplay(text: c.displayName, onCard: true))
-                                                .toList(),
-                                          ),
-                                        ),
-                                    ],
-                                  ),
-                                  OptionsMenu(
-                                    title: 'Template: ${wt.name}',
-                                    buttons: [
-                                      Button.add(onTap: () => null, text: 'Create Workout from Template'),
-                                      Button.edit(
-                                        onTap: () => onAddEditTemplate(templateId: wt.id!),
-                                        text: 'Edit Template',
-                                      ),
-                                      Button.delete(
-                                          text: 'Delete Template', onTap: () async => onDeleteTemplate(wt.id!)),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ))
-                      .toList(),
-                );
-              }),
-        ),
-      ]),
+          return Column(children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: CategoryFilter(
+                    filterCategories: _filterCategories,
+                    onChange: (cs) => setState(() {
+                      _filterCategories = cs;
+                      _templatesFuture = WorkoutTemplateModel.getAll(withNote: true, filterCategories: cs);
+                    }),
+                  ),
+                ),
+                Button.add(onTap: onAddTemplate),
+              ],
+            ),
+            Row(children: [
+              Expanded(
+                child: CupertinoSearchTextField(
+                  controller: _searchTextController,
+                  placeholder: 'Search for exercise...',
+                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+                  onChanged: (s) => setSearchValue(s),
+                  suffixIcon: const Icon(Icons.clear_rounded),
+                  onSuffixTap: () {
+                    closeKeyboard();
+                    setSearchValue(null);
+                    _searchTextController.clear();
+                  },
+                ),
+              ),
+            ]),
+            const Padding(padding: EdgeInsetsGeometry.all(5)),
+            Expanded(
+              child: snapshot.connectionState == ConnectionState.waiting
+                  ? getLoadingView()
+                  : templates == null || templates.isEmpty
+                      ? getEmptyTemplatesView()
+                      : getTemplatesList(templates),
+            ),
+          ]);
+        },
+      ),
     );
   }
 }

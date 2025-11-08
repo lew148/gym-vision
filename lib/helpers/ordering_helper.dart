@@ -44,7 +44,7 @@ class OrderingHelper {
     return getStringFromIntList(il);
   }
 
-  static List<T> orderListById<T extends DBO>(List<T> list, String ordering) {
+  static List<T> sortByOrder<T extends DBO>(List<T> list, String ordering) {
     final List<T> newOrder = [];
     final List<T> remainders = [...list];
 

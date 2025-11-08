@@ -57,7 +57,7 @@ class _TodayState extends State<Today> {
                         icon: Icons.add_rounded,
                         text: 'Start a workout',
                         onTap: () async {
-                          await addActiveWorkout(context);
+                          await createActiveWorkout(context);
                           reload();
                         },
                       ),
@@ -103,7 +103,7 @@ class _TodayState extends State<Today> {
                             icon: Icons.add_rounded,
                             text: 'Start scheduled workout',
                             onTap: () async {
-                              await addActiveWorkout(context, categories: todayCategories);
+                              await createActiveWorkout(context, categories: todayCategories);
                               reload();
                             },
                           ),
@@ -239,7 +239,7 @@ class _TodayState extends State<Today> {
                 'Today',
                 actions: [
                   Button.add(onTap: () async {
-                    await addActiveWorkout(context);
+                    await createActiveWorkout(context);
                     reload();
                   }),
                 ],

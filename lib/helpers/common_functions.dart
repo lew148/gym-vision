@@ -1,10 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gymvision/classes/db/workout_templates/workout_template.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
+import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
+import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/constants.dart';
+import 'package:gymvision/models/db_models/workout_template_model.dart';
 import 'package:gymvision/models/db_models/workouts/workout_category_model.dart';
+import 'package:gymvision/models/db_models/workouts/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workouts/workout_model.dart';
+import 'package:gymvision/models/db_models/workouts/workout_set_model.dart';
 import 'package:gymvision/providers/global/active_workout_provider.dart';
 import 'package:gymvision/widgets/components/stateless/calendar_view.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
@@ -232,38 +238,114 @@ Future showFullScreenBottomSheet(BuildContext context, {required Widget child, b
       ),
     );
 
-Future addActiveWorkout(BuildContext context, {List<Category>? categories}) async {
+Future<bool> checkForAndFinishActiveWorkout(BuildContext context) async {
   try {
     final activeWorkout = await WorkoutModel.getActiveWorkout();
+    if (activeWorkout == null) return true;
 
-    if ((activeWorkout != null)) {
-      var continuingAdd = false;
-
-      if (context.mounted) {
-        await showCustomDialog(
-          context,
-          icon: Icons.directions_run_rounded,
-          title: 'Active Workout',
-          content: 'Finish the active workout before creating another!',
-          customActions: [
-            CupertinoDialogAction(
-              child: Text(
-                'Finish & Start New',
-                style: TextStyle(color: Theme.of(context).colorScheme.primary),
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-                activeWorkout.endDate = DateTime.now();
-                WorkoutModel.update(activeWorkout);
-                continuingAdd = true;
-              },
-            )
-          ],
-        );
-      }
-
-      if (!continuingAdd) return;
+    var continuingAdd = false;
+    if (context.mounted) {
+      await showCustomDialog(
+        context,
+        icon: Icons.directions_run_rounded,
+        title: 'Active Workout',
+        content: 'Finish the active workout before creating another!',
+        customActions: [
+          CupertinoDialogAction(
+            child: Text(
+              'Finish & Start New',
+              style: TextStyle(color: Theme.of(context).colorScheme.primary),
+            ),
+            onPressed: () {
+              Navigator.pop(context);
+              activeWorkout.endDate = DateTime.now();
+              WorkoutModel.update(activeWorkout);
+              continuingAdd = true;
+            },
+          )
+        ],
+      );
     }
+
+    return continuingAdd;
+  } catch (ex) {
+    if (context.mounted) showSnackBar(context, 'Failed to finish Active Workout');
+    return false;
+  }
+}
+
+Future<bool> copyTemplateToworkout({required int workoutId, required int templateId}) async {
+  final template = await WorkoutTemplateModel.getTemplate(templateId);
+  if (template == null) return false;
+  return await _copyTemplateToWorkoutInner(workoutId: workoutId, template: template);
+}
+
+Future<bool> _copyTemplateToWorkoutInner({required int workoutId, required WorkoutTemplate template}) async {
+  try {
+    final templateCategories = template.getCategories();
+    if (templateCategories.isNotEmpty) {
+      await WorkoutCategoryModel.setWorkoutCategories(workoutId, templateCategories);
+    }
+
+    final exercises = template.getWorkoutTemplateExercises();
+    if (exercises.isNotEmpty) {
+      for (final exercise in exercises) {
+        final newWeId = await WorkoutExerciseModel.insert(WorkoutExercise(
+          workoutId: workoutId,
+          exerciseIdentifier: exercise.exerciseIdentifier,
+          setOrder: '',
+        ));
+
+        final sets = exercise.getSets();
+        if (sets.isNotEmpty) {
+          for (final set in sets) {
+            await WorkoutSetModel.insert(WorkoutSet(
+              workoutExerciseId: newWeId,
+              weight: set.weight,
+              reps: set.reps,
+              time: set.time,
+              distance: set.distance,
+              calsBurned: set.calsBurned,
+            ));
+          }
+        }
+      }
+    }
+
+    return true;
+  } catch (ex) {
+    return false;
+  }
+}
+
+Future createActiveWorkoutFromTemplate(BuildContext context, {required int templateId}) async {
+  try {
+    if (!(await checkForAndFinishActiveWorkout(context))) return;
+
+    final template = await WorkoutTemplateModel.getTemplate(templateId);
+    if (template == null) {
+      if (context.mounted) showSnackBar(context, 'Could\'nt find Template!');
+      return;
+    }
+
+    final newWorkout = Workout(date: DateTime.now(), exerciseOrder: '');
+    final newWorkoutId = await WorkoutModel.insert(newWorkout);
+
+    final success = await _copyTemplateToWorkoutInner(workoutId: newWorkoutId, template: template);
+    if (!success) {
+      if (context.mounted) showSnackBar(context, 'Could\'nt copy Template to Workout!');
+      return;
+    }
+
+    if (context.mounted) await openWorkoutView(context, newWorkoutId);
+  } catch (ex) {
+    if (context.mounted) showSnackBar(context, 'Failed to add Workout from Template');
+  }
+}
+
+Future createActiveWorkout(BuildContext context, {List<Category>? categories}) async {
+  try {
+    if (!(await checkForAndFinishActiveWorkout(context))) return;
 
     final newWorkoutId = await WorkoutModel.insert(Workout(date: DateTime.now(), exerciseOrder: ''));
     if (categories != null && categories.isNotEmpty) {

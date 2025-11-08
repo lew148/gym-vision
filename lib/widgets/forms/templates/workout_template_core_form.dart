@@ -6,60 +6,85 @@ import 'package:gymvision/models/db_models/workout_template_model.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
-import 'package:gymvision/widgets/components/stateless/header.dart';
 import 'package:gymvision/widgets/components/stateless/prop_display.dart';
 import 'package:gymvision/widgets/forms/fields/category_picker.dart';
 import 'package:gymvision/widgets/forms/fields/custom_form_field.dart';
 
-class WorkoutTemplateForm extends StatefulWidget {
-  final int? templateId;
+class WorkoutTemplateCoreForm extends StatefulWidget {
+  final String? initialName;
+  final WorkoutTemplate? template;
 
-  const WorkoutTemplateForm({
+  const WorkoutTemplateCoreForm({
     super.key,
-    this.templateId,
+    this.initialName,
+    this.template,
   });
 
   @override
-  State<StatefulWidget> createState() => _WorkoutTemplateFormState();
+  State<StatefulWidget> createState() => _WorkoutTemplateCoreFormState();
 }
 
-class _WorkoutTemplateFormState extends State<WorkoutTemplateForm> {
+class _WorkoutTemplateCoreFormState extends State<WorkoutTemplateCoreForm> {
+  late bool _isEdit;
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   List<Category> _categories = [];
-  List<String> _existingNames = ['lol'];
+  List<String> _existingNames = [];
 
   @override
   void initState() {
     super.initState();
+
+    _isEdit = widget.template != null;
+    if (_isEdit) {
+      _nameController.text = widget.template!.name;
+      _categories = widget.template!.getCategories();
+    } else {
+      _nameController.text = widget.initialName ?? '';
+    }
+
+    loadExistingNames();
+  }
+
+  Future<void> loadExistingNames() async {
+    final List<String> names = await WorkoutTemplateModel.getExistingNames();
+    names.remove(_nameController.text);
+    setState(() {
+      _existingNames = names;
+    });
   }
 
   void onSubmit() async {
     if (!_formKey.currentState!.validate()) return;
-    Navigator.pop(context);
 
-    await WorkoutTemplateModel.insert(WorkoutTemplate(
-      name: _nameController.text,
-      categories: _categories.map((c) => EnumHelper.enumToString(c)).toList().join(','),
+    final name = _nameController.text;
+    final categories = _categories.map((c) => EnumHelper.enumToString(c)).toList().join(',');
+
+    if (_isEdit) {
+      Navigator.pop(context);
+      final template = widget.template!;
+      template.name = name;
+      template.categories = categories;
+      await WorkoutTemplateModel.update(template);
+      return;
+    }
+
+    var nav = Navigator.of(context);
+
+    final id = await WorkoutTemplateModel.insert(WorkoutTemplate(
+      name: name,
+      categories: categories,
       exerciseOrder: '',
     ));
+
+    nav.pop(id);
   }
 
   @override
   Widget build(BuildContext context) {
-    // return FutureBuilder(
-    //   future: _future,
-    //   builder: (context, snapshot) {
     return Form(
       key: _formKey,
       child: Column(children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Button.check(onTap: onSubmit),
-          ],
-        ),
-        const Padding(padding: EdgeInsetsGeometry.all(5)),
         Row(children: [
           Expanded(
             child: CustomFormField.string(
@@ -67,7 +92,7 @@ class _WorkoutTemplateFormState extends State<WorkoutTemplateForm> {
               label: 'Name',
               autofocus: true,
               canBeBlank: false,
-              maxLength: 250,
+              maxLength: 100,
               validator: (s) => _existingNames.contains(s) ? 'Name must be unique' : null,
             ),
           ),
@@ -94,15 +119,24 @@ class _WorkoutTemplateFormState extends State<WorkoutTemplateForm> {
             Wrap(
               alignment: WrapAlignment.start,
               spacing: 5,
-              children: _categories.map((c) => PropDisplay(text: c.displayName, onCard: true)).toList(),
+              children: _categories
+                  .map((c) => PropDisplay(
+                        text: c.displayName,
+                        onCard: true,
+                        size: PropDisplaySize.small,
+                      ))
+                  .toList(),
             ),
           ],
         ),
-        Padding(padding: const EdgeInsetsGeometry.only(top: 10)),
-        Header(title: 'Exercises')
+        Padding(
+          padding: EdgeInsetsGeometry.only(top: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [Button.done(isAdd: !_isEdit, onTap: onSubmit)],
+          ),
+        )
       ]),
     );
-    //   },
-    // );
   }
 }

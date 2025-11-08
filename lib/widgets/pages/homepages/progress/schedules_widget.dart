@@ -11,6 +11,7 @@ import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:gymvision/widgets/components/stateless/header.dart';
 import 'package:gymvision/widgets/components/stateless/options_menu.dart';
+import 'package:gymvision/widgets/components/stateless/splash_text.dart';
 import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
 import 'package:gymvision/widgets/forms/schedule_form.dart';
 import 'package:gymvision/static_data/helpers.dart';
@@ -270,42 +271,42 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
                       text: 'Delete Schedule',
                     ),
                   ],
-                )
+                )''
             ];
 
             return Column(
-              children: [
-                schedules.isEmpty
-                    ? Header(title: 'Schedule', actions: actions)
-                    : Header(
-                        widget: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              activeScheduleSnapshot.data!.name,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                              ),
-                            ),
-                            Text(
-                              'Started ${DateTimeHelper.getDateOrDayStr(activeScheduleSnapshot.data!.startDate)}',
-                              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                            ),
-                          ],
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: schedules.isEmpty || !activeScheduleSnapshot.hasData
+                    ? [
+                        Header(title: 'Schedule', actions: actions),
+                        const Padding(padding: EdgeInsets.all(5)),
+                        SplashText(
+                          icon: Icons.calendar_month_rounded,
+                          title: 'No Active Schedule set',
+                          description: 'Set an Active Schedule to begin!',
                         ),
-                        actions: actions,
-                      ),
-                const Padding(padding: EdgeInsets.all(5)),
-                activeScheduleSnapshot.hasData
-                    ? getScheduleDisplay(activeScheduleSnapshot.data!)
-                    : Button.elevated(
-                        icon: Icons.add_rounded,
-                        text: 'Add a Schedule',
-                        onTap: addScheduleOnTap,
-                      ),
-              ],
-            );
+                        Button.elevated(icon: Icons.add_rounded, text: 'Add a Schedule', onTap: addScheduleOnTap),
+                      ]
+                    : [
+                        Header(
+                          widget: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                activeScheduleSnapshot.data!.name,
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                              ),
+                              Text(
+                                'Started ${DateTimeHelper.getDateOrDayStr(activeScheduleSnapshot.data!.startDate)}',
+                                style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                              ),
+                            ],
+                          ),
+                          actions: actions,
+                        ),
+                        const Padding(padding: EdgeInsets.all(5)),
+                        getScheduleDisplay(activeScheduleSnapshot.data!),
+                      ]);
           },
         );
       },

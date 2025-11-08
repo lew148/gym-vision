@@ -80,9 +80,22 @@ class Button extends StatelessWidget {
         style: ButtonCustomStyle.redIconOnly(),
       );
 
+  factory Button.add({required Function() onTap, String? text}) => Button(
+        text: text,
+        icon: Icons.add_rounded,
+        onTap: onTap,
+        style: ButtonCustomStyle.primaryIconOnly(),
+      );
+
   factory Button.done({required Function() onTap, bool isAdd = false, String? customTitle}) => Button(
         onTap: onTap,
         text: customTitle ?? (isAdd ? 'Add' : 'Done'),
+      );
+
+  factory Button.cancel({required Function() onTap}) => Button(
+        text: 'Cancel',
+        onTap: onTap,
+        style: ButtonCustomStyle.redIconAndText(),
       );
 
   factory Button.x({required Function() onTap}) => Button(icon: Icons.close_rounded, onTap: onTap);
@@ -93,13 +106,6 @@ class Button extends StatelessWidget {
   factory Button.edit({required Function() onTap, String? text}) => Button(
         text: text,
         icon: Icons.edit_rounded,
-        onTap: onTap,
-        style: ButtonCustomStyle.primaryIconOnly(),
-      );
-
-  factory Button.add({required Function() onTap, String? text}) => Button(
-        text: text,
-        icon: Icons.add_rounded,
         onTap: onTap,
         style: ButtonCustomStyle.primaryIconOnly(),
       );

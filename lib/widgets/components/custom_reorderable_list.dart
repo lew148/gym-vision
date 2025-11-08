@@ -4,13 +4,13 @@ import 'package:gymvision/constants.dart';
 import 'package:gymvision/helpers/common_functions.dart';
 
 class CustomReorderableList extends StatefulWidget {
-  final List<Widget> children;
   final void Function(int oldIndex, int newIndex) onReorder;
+  final List<Widget> children;
 
   const CustomReorderableList({
     super.key,
-    required this.children,
     required this.onReorder,
+    required this.children,
   });
 
   @override
@@ -30,7 +30,10 @@ class _CustomReorderableListState extends State<CustomReorderableList> {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(clipRectRadius),
-      child: ReorderableListView(
+      child: ReorderableListView.builder(
+        // key: GlobalKey(),
+        itemBuilder: (context, index) => _items[index],
+        itemCount: _items.length,
         onReorder: (int currentIndex, int newIndex) {
           try {
             HapticFeedback.heavyImpact();
@@ -45,7 +48,6 @@ class _CustomReorderableListState extends State<CustomReorderableList> {
             showSnackBar(context, 'Failed to reorder');
           }
         },
-        children: _items,
       ),
     );
   }

@@ -14,47 +14,41 @@ class Progress extends StatefulWidget {
 }
 
 class _ProgressState extends State<Progress> {
+  Widget getPill(IconData icon, String text, GestureTapCallback onTap) => Expanded(
+        child: CustomCard(
+          padding: EdgeInsets.all(10),
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: onTap,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextWithIcon(icon: icon, text: text, iconSize: 20, primary: true),
+                Icon(Icons.chevron_right_rounded, color: Theme.of(context).colorScheme.primary),
+              ],
+            ),
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SchedulesWidget(),
+        Row(children: [
+          getPill(
+            Icons.description_rounded,
+            'Templates',
+            () => Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const Templates())),
+          ),
+          // getPill(
+          //   Icons.event_note_rounded,
+          //   'Schedules',
+          //   () => Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const Schedules())),
+          // ),
+        ]),
         CustomDivider(),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            CustomCard(
-              padding: EdgeInsets.all(10),
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: () => Navigator.push(
-                    context, MaterialPageRoute(builder: (BuildContext context) => const Templates())),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextWithIcon(icon: Icons.description_rounded, text: "Templates", iconSize: 20, primary: true),
-                    Icon(Icons.chevron_right_rounded, color: Theme.of(context).colorScheme.primary),
-                  ],
-                ),
-              ),
-            ),
-            CustomCard(
-              padding: EdgeInsets.all(10),
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: () => Navigator.push(
-                    context, MaterialPageRoute(builder: (BuildContext context) => const Schedules())),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextWithIcon(icon: Icons.event_note_rounded, text: "Schedules", iconSize: 20, primary: true),
-                    Icon(Icons.chevron_right_rounded, color: Theme.of(context).colorScheme.primary),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+        SchedulesWidget(),
       ],
     );
   }
