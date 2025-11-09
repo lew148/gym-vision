@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
-import 'package:gymvision/widgets/pages/homepages/progress/schedules.dart';
 import 'package:gymvision/widgets/pages/homepages/progress/schedules_widget.dart';
 import 'package:gymvision/widgets/pages/homepages/progress/templates.dart';
 

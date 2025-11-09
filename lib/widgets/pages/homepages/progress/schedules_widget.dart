@@ -271,7 +271,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
                       text: 'Delete Schedule',
                     ),
                   ],
-                )''
+                )
             ];
 
             return Column(
