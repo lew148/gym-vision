@@ -46,7 +46,7 @@ println "min sdk: ${flutter.minSdkVersion}"
 android {
     namespace = "com.example.gymvision"
 
-    compileSdkVersion 35
+    compileSdkVersion 36
     ndkVersion flutter.ndkVersion
 
     compileOptions {
