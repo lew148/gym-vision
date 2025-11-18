@@ -50,3 +50,5 @@ app.*.map.json
 linux/
 macos/
 windows/
+
+pubspec.lock

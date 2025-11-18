@@ -29,7 +29,7 @@ class CustomDropdown extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: DropdownButtonFormField<String>(
-        initialValue: intialValue,
+        value: intialValue,
         items: values
             .map((v) => DropdownMenuItem(
                   value: v,

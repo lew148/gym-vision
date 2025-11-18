@@ -31,7 +31,6 @@ class _CustomReorderableListState extends State<CustomReorderableList> {
     return ClipRRect(
       borderRadius: BorderRadius.circular(clipRectRadius),
       child: ReorderableListView.builder(
-        // key: GlobalKey(),
         itemBuilder: (context, index) => _items[index],
         itemCount: _items.length,
         onReorder: (int currentIndex, int newIndex) {

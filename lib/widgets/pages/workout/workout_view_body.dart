@@ -344,6 +344,7 @@ class WorkoutViewBody extends StatelessWidget {
                   ),
                 )
               : CustomReorderableList(
+                  key: ValueKey(workoutExercises.length),
                   onReorder: onWorkoutExerciseReorder,
                   children: workoutExercises
                       .map((we) => WorkoutExerciseWidget(
