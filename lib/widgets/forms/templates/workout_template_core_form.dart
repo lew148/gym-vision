@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workout_templates/workout_template.dart';
-import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/helpers/enum_helper.dart';
+import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/models/db_models/workout_template_model.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
@@ -99,7 +99,7 @@ class _WorkoutTemplateCoreFormState extends State<WorkoutTemplateCoreForm> {
           const Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: 10)),
           Button(
             icon: Icons.category_rounded,
-            onTap: () => showCloseableBottomSheet(
+            onTap: () => BottomSheetHelper.showCloseableBottomSheet(
               context,
               CategoryPicker(
                 selectedCategories: _categories,

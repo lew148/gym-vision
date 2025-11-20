@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gymvision/helpers/common_functions.dart';
+import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
@@ -39,7 +39,7 @@ class CategoryFilter extends StatelessWidget {
         ],
         Button(
           icon: Icons.category_rounded,
-          onTap: () => showCloseableBottomSheet(
+          onTap: () => BottomSheetHelper.showCloseableBottomSheet(
             context,
             CategoryPicker(selectedCategories: filterCategories, onChange: onChange, includeMiscCategories: false),
           ),

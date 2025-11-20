@@ -3,10 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/classes/exercise.dart';
+import 'package:gymvision/helpers/functions/app_helper.dart';
+import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
+import 'package:gymvision/helpers/functions/dialog_helper.dart';
+import 'package:gymvision/helpers/functions/workout_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workouts/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workouts/workout_set_model.dart';
-import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
@@ -65,7 +68,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
       });
 
   void onAddSetsButtonTap() async {
-    await showCloseableBottomSheet(
+    await BottomSheetHelper.showCloseableBottomSheet(
       context,
       WorkoutSetForm(
         exerciseIdentifier: exerciseIdentifier,
@@ -108,12 +111,12 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
 
       if (done) {
         if (widget.isInFuture) {
-          showSnackBar(context, 'Cannot complete sets in the future');
+          AppHelper.showSnackBar(context, 'Cannot complete sets in the future');
           return false;
         }
 
         if (!exercise.isCardio() && sets != null && sets.any((s) => s.reps == null || s.reps == 0)) {
-          showSnackBar(context, 'Sets must have reps');
+          AppHelper.showSnackBar(context, 'Sets must have reps');
           return false;
         }
       }
@@ -176,7 +179,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                 ? Button(
                     icon: Icons.remove_red_eye_rounded,
                     onTap: () async {
-                      await openWorkoutView(
+                      await WorkoutHelper.openWorkoutView(
                         context,
                         widget.workoutExercise.workoutId,
                         focusedWorkoutExerciseId: widget.workoutExercise.id!,
@@ -208,7 +211,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                           Button.delete(
                             onTap: () async {
                               Navigator.pop(context);
-                              await showDeleteConfirm(
+                              await DialogHelper.showDeleteConfirm(
                                 context,
                                 "exercise from workout",
                                 () => WorkoutExerciseModel.delete(widget.workoutExercise.id!),

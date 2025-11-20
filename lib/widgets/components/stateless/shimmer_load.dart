@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/constants.dart';
-import 'package:gymvision/helpers/app_helper.dart';
+import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:shimmer/shimmer.dart';
 

@@ -4,9 +4,11 @@ import 'package:gymvision/classes/db/workout_templates/workout_template_exercise
 import 'package:gymvision/classes/db/workout_templates/workout_template_set.dart';
 import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/constants.dart';
+import 'package:gymvision/helpers/functions/app_helper.dart';
+import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
+import 'package:gymvision/helpers/functions/dialog_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workout_template_model.dart';
-import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
@@ -56,7 +58,7 @@ class _TemplateExerciseWidgetState extends State<TemplateExerciseWidget> {
         );
       });
 
-  Future onEditWorkoutSetTap(WorkoutTemplateSet set) async => await showCloseableBottomSheet(
+  Future onEditWorkoutSetTap(WorkoutTemplateSet set) async => await BottomSheetHelper.showCloseableBottomSheet(
         context,
         TemplateSetForm(
           templateId: widget.workoutTemplateExercise.workoutTemplateId,
@@ -81,14 +83,14 @@ class _TemplateExerciseWidgetState extends State<TemplateExerciseWidget> {
       );
     } catch (ex) {
       if (!mounted) return;
-      showSnackBar(context, 'Failed add set to template: ${ex.toString()}');
+      AppHelper.showSnackBar(context, 'Failed add set to template: ${ex.toString()}');
     }
 
     reload();
   }
 
   void onAddSetsButtonTap() async {
-    await showCloseableBottomSheet(
+    await BottomSheetHelper.showCloseableBottomSheet(
       context,
       TemplateSetForm(
         templateId: widget.workoutTemplateExercise.workoutTemplateId,
@@ -174,7 +176,8 @@ class _TemplateExerciseWidgetState extends State<TemplateExerciseWidget> {
               icon: Icons.delete_rounded,
               style: ButtonCustomStyle.redIconOnly(),
               onTap: () async {
-                await showDeleteConfirm(context, "set", () => WorkoutTemplateModel.deleteWorkoutTemplateSet(set.id!));
+                await DialogHelper.showDeleteConfirm(
+                    context, "set", () => WorkoutTemplateModel.deleteWorkoutTemplateSet(set.id!));
                 if (mounted) Navigator.pop(context);
                 reload();
               },
@@ -237,7 +240,7 @@ class _TemplateExerciseWidgetState extends State<TemplateExerciseWidget> {
                     Button.delete(
                       onTap: () async {
                         Navigator.pop(context);
-                        await showDeleteConfirm(
+                        await DialogHelper.showDeleteConfirm(
                           context,
                           "exercise from template",
                           () => WorkoutTemplateModel.deleteWorkoutTemplateExercise(widget.workoutTemplateExercise.id!),

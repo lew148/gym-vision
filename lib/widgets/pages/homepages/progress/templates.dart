@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workout_templates/workout_template.dart';
-import 'package:gymvision/helpers/common_functions.dart';
+import 'package:gymvision/helpers/functions/app_helper.dart';
+import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
+import 'package:gymvision/helpers/functions/dialog_helper.dart';
+import 'package:gymvision/helpers/functions/workout_helper.dart';
 import 'package:gymvision/models/db_models/workout_template_model.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
@@ -50,7 +53,7 @@ class _TemplatesState extends State<Templates> {
       });
 
   Future onAddTemplate({String? name}) async {
-    final int? newId = await showCloseableBottomSheet(
+    final int? newId = await BottomSheetHelper.showCloseableBottomSheet(
       context,
       WorkoutTemplateCoreForm(initialName: name),
       title: 'Add Template',
@@ -60,7 +63,7 @@ class _TemplatesState extends State<Templates> {
   }
 
   Future onEditTemplate(int templateId) async {
-    await showFullScreenBottomSheet(context, child: EditWorkoutTemplateForm(templateId: templateId));
+    await BottomSheetHelper.showFullScreenBottomSheet(context, child: EditWorkoutTemplateForm(templateId: templateId));
     reload();
   }
 
@@ -174,7 +177,7 @@ class _TemplatesState extends State<Templates> {
                                   Button.add(
                                     onTap: () async {
                                       Navigator.pop(context);
-                                      await createActiveWorkoutFromTemplate(context, templateId: wt.id!);
+                                      await WorkoutHelper.createActiveWorkoutFromTemplate(context, templateId: wt.id!);
                                     },
                                     text: 'Create Workout from Template',
                                   ),
@@ -189,7 +192,7 @@ class _TemplatesState extends State<Templates> {
                                     text: 'Delete Template',
                                     onTap: () async {
                                       Navigator.pop(context);
-                                      await showDeleteConfirm(
+                                      await DialogHelper.showDeleteConfirm(
                                         context,
                                         'Template',
                                         () => onDeleteTemplate(wt.id!),
@@ -243,7 +246,7 @@ class _TemplatesState extends State<Templates> {
                   onChanged: (s) => setSearchValue(s),
                   suffixIcon: const Icon(Icons.clear_rounded),
                   onSuffixTap: () {
-                    closeKeyboard();
+                    AppHelper.closeKeyboard();
                     setSearchValue(null);
                     _searchTextController.clear();
                   },

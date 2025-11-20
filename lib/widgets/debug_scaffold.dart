@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gymvision/helpers/common_functions.dart';
+import 'package:gymvision/helpers/functions/app_helper.dart';
+import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/widgets/active_workout_draggable_sheet.dart';
 import 'package:gymvision/widgets/components/stateless/logo.dart';
 import 'package:gymvision/widgets/forms/report_bug_form.dart';
@@ -48,11 +49,11 @@ class _DebugScaffoldState extends State<DebugScaffold> {
       0,
       IconButton(
         icon: const Icon(Icons.bug_report_outlined),
-        onPressed: () => showCloseableBottomSheet(
+        onPressed: () => BottomSheetHelper.showCloseableBottomSheet(
           context,
           ReportBugForm(onReportSent: (success) {
             if (!mounted) return;
-            showSnackBar(context, success ? 'Report sent!' : 'Failed to send report!');
+            AppHelper.showSnackBar(context, success ? 'Report sent!' : 'Failed to send report!');
           }),
           title: 'Bug/Feature Report',
         ),
@@ -74,7 +75,7 @@ class _DebugScaffoldState extends State<DebugScaffold> {
       body: SafeArea(
         bottom: true,
         child: GestureDetector(
-          onTap: () => closeKeyboard(),
+          onTap: () => AppHelper.closeKeyboard(),
           child: Stack(children: [
             Padding(padding: const EdgeInsets.fromLTRB(10, 10, 10, 5), child: widget.body),
             if (widget.showActiveWorkout) const ActiveWorkoutDraggableSheet()

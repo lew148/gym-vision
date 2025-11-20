@@ -2,8 +2,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/exercise.dart';
+import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
-import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/category_filter.dart';
 import 'package:gymvision/widgets/components/stateless/scroll_bottom_padding.dart';
@@ -232,7 +232,7 @@ class _ExercisesState extends State<Exercises> {
             onChanged: (s) => setSearchValue(s),
             suffixIcon: const Icon(Icons.clear_rounded),
             onSuffixTap: () {
-              closeKeyboard();
+              AppHelper.closeKeyboard();
               setSearchValue(null);
               searchTextController.clear();
             },

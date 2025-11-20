@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
-import 'package:gymvision/helpers/common_functions.dart';
+import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
+import 'package:gymvision/helpers/functions/dialog_helper.dart';
+import 'package:gymvision/helpers/functions/picker_helper.dart';
 import 'package:gymvision/models/db_models/workouts/workout_model.dart';
 import 'package:gymvision/providers/global/active_workout_provider.dart';
 import 'package:gymvision/providers/global/rest_timer_provider.dart';
@@ -26,7 +28,7 @@ class WorkoutOptionsMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void showEditTime(Workout workout) => showDateTimePicker(
+    void showEditTime(Workout workout) => PickerHelper.showDateTimePicker(
           context,
           initialDateTime: workout.date,
           CupertinoDatePickerMode.dateAndTime,
@@ -42,7 +44,7 @@ class WorkoutOptionsMenu extends StatelessWidget {
           },
         );
 
-    void showEditEndTime(Workout workout) => showDateTimePicker(
+    void showEditEndTime(Workout workout) => PickerHelper.showDateTimePicker(
           context,
           initialDateTime: workout.endDate,
           CupertinoDatePickerMode.dateAndTime,
@@ -62,7 +64,7 @@ class WorkoutOptionsMenu extends StatelessWidget {
         Button(
           onTap: () async {
             Navigator.pop(context);
-            await showCloseableBottomSheet(context, SharableWorkoutSummary(workoutId: workout.id!));
+            await BottomSheetHelper.showCloseableBottomSheet(context, SharableWorkoutSummary(workoutId: workout.id!));
           },
           icon: Icons.share_rounded,
           style: ButtonCustomStyle.primaryIconOnly(),
@@ -91,7 +93,7 @@ class WorkoutOptionsMenu extends StatelessWidget {
       Button.delete(
         onTap: () async {
           Navigator.pop(context);
-          await showDeleteConfirm(
+          await DialogHelper.showDeleteConfirm(
             context,
             "workout",
             () async {

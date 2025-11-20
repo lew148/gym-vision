@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/constants.dart';
-import 'package:gymvision/helpers/common_functions.dart';
+import 'package:gymvision/helpers/functions/app_helper.dart';
+import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/models/db_models/user_settings_model.dart';
 import 'package:gymvision/models/db_models/workouts/workout_set_model.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
@@ -38,12 +39,12 @@ class WorkoutSetWidget extends StatelessWidget {
 
         if (done) {
           if (isInFuture) {
-            showSnackBar(context, 'Cannot complete sets in the future');
+            AppHelper.showSnackBar(context, 'Cannot complete sets in the future');
             return false;
           }
 
           if (!isCardio && (set.reps == null || set.reps == 0)) {
-            showSnackBar(context, 'Sets must have reps');
+            AppHelper.showSnackBar(context, 'Sets must have reps');
             return false;
           }
         }
@@ -54,7 +55,7 @@ class WorkoutSetWidget extends StatelessWidget {
 
         final settings = await UserSettingsModel.getUserSettings();
         if (done && settings.intraSetRestTimer != null && context.mounted) {
-          setRestTimer(context, settings.intraSetRestTimer!);
+          AppHelper.setRestTimer(context, settings.intraSetRestTimer!);
         }
 
         reloadParent();
@@ -106,7 +107,7 @@ class WorkoutSetWidget extends StatelessWidget {
           ),
         );
 
-    void onEditWorkoutSetTap() async => await showCloseableBottomSheet(
+    void onEditWorkoutSetTap() async => await BottomSheetHelper.showCloseableBottomSheet(
           context,
           WorkoutSetForm(
             exerciseIdentifier: exerciseIdentifier,
@@ -132,7 +133,7 @@ class WorkoutSetWidget extends StatelessWidget {
         );
       } catch (ex) {
         if (!context.mounted) return;
-        showSnackBar(context, 'Failed add set to workout: ${ex.toString()}');
+        AppHelper.showSnackBar(context, 'Failed add set to workout: ${ex.toString()}');
       }
 
       reloadParent();
@@ -167,11 +168,11 @@ class WorkoutSetWidget extends StatelessWidget {
                   style: ButtonCustomStyle.redIconOnly(),
                   onTap: () async {
                     Navigator.pop(context);
-                    
+
                     try {
                       await WorkoutSetModel.delete(set.id!);
                     } catch (ex) {
-                      if (context.mounted) showSnackBar(context, 'Failed to remove set from workout');
+                      if (context.mounted) AppHelper.showSnackBar(context, 'Failed to remove set from workout');
                     }
 
                     reloadParent();

@@ -5,8 +5,10 @@ import 'package:gymvision/classes/db/schedules/schedule_item.dart';
 import 'package:gymvision/constants.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
+import 'package:gymvision/helpers/functions/app_helper.dart';
+import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
+import 'package:gymvision/helpers/functions/dialog_helper.dart';
 import 'package:gymvision/models/db_models/schedule_model.dart';
-import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:gymvision/widgets/components/stateless/header.dart';
@@ -188,9 +190,9 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
     return Row(children: [Expanded(child: widget)]);
   }
 
-  void addScheduleOnTap() => showCloseableBottomSheet(context, ScheduleForm(reloadParent: reload));
+  void addScheduleOnTap() => BottomSheetHelper.showCloseableBottomSheet(context, ScheduleForm(reloadParent: reload));
 
-  void editScheduleOnTap(Schedule schedule) => showCloseableBottomSheet(
+  void editScheduleOnTap(Schedule schedule) => BottomSheetHelper.showCloseableBottomSheet(
         context,
         ScheduleForm(reloadParent: reload, schedule: schedule),
       );
@@ -203,7 +205,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
       await ScheduleModel.setActiveSchedule(newActiveScheduleId);
     } catch (ex) {
       if (!mounted) return;
-      showSnackBar(context, 'Failed to set active Schedule');
+      AppHelper.showSnackBar(context, 'Failed to set active Schedule');
     }
 
     reload();
@@ -260,7 +262,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
                       style: ButtonCustomStyle.primaryIconOnly(),
                     ),
                     Button.delete(
-                      onTap: () => showDeleteConfirm(
+                      onTap: () => DialogHelper.showDeleteConfirm(
                         context,
                         'Schedule',
                         () async => await ScheduleModel.delete(activeScheduleSnapshot.data!.id!),

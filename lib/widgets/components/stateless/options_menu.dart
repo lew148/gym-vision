@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gymvision/helpers/common_functions.dart';
+import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/header.dart';
@@ -31,7 +31,7 @@ class OptionsMenu extends StatelessWidget {
       items.add(buttons[i]);
     }
 
-    showCloseableBottomSheet(context, Column(children: items));
+    BottomSheetHelper.showCloseableBottomSheet(context, Column(children: items));
   }
 
   @override

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/constants.dart';
-import 'package:gymvision/helpers/app_helper.dart';
-import 'package:gymvision/helpers/common_functions.dart';
+import 'package:gymvision/helpers/functions/app_helper.dart';
+import 'package:gymvision/helpers/functions/workout_helper.dart';
 import 'package:gymvision/static_data/helpers.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
@@ -28,7 +28,7 @@ class WorkoutCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final summary = workout.summary;
 
-    void openWorkout({bool autofocusNotes = false, int? focusWe}) => openWorkoutView(
+    void openWorkout({bool autofocusNotes = false, int? focusWe}) => WorkoutHelper.openWorkoutView(
           context,
           workout.id!,
           autofocusNotes: autofocusNotes,

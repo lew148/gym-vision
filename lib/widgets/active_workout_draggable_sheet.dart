@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/constants.dart';
-import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
+import 'package:gymvision/helpers/functions/workout_helper.dart';
 import 'package:gymvision/providers/global/active_workout_provider.dart';
 import 'package:gymvision/widgets/components/animated/pulsing_dot.dart';
 import 'package:gymvision/widgets/components/stateless/drag_handle.dart';
@@ -39,12 +39,12 @@ class ActiveWorkoutDraggableSheet extends StatelessWidget {
                   ),
                   child: GestureDetector(
                     behavior: HitTestBehavior.translucent,
-                    onTap: () => openWorkoutView(context, workout.id!),
+                    onTap: () => WorkoutHelper.openWorkoutView(context, workout.id!),
                     onVerticalDragUpdate: (details) {
                       // only react if user drags upward
                       if (!hasTriggeredSwipeUp && details.delta.dy < 0) {
                         hasTriggeredSwipeUp = true;
-                        openWorkoutView(context, workout.id!);
+                        WorkoutHelper.openWorkoutView(context, workout.id!);
                       }
                     },
                     onVerticalDragEnd: (_) {

@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/bodyweight.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/constants.dart';
-import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
+import 'package:gymvision/helpers/functions/dialog_helper.dart';
+import 'package:gymvision/helpers/functions/picker_helper.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/models/db_models/workouts/workout_model.dart';
 import 'package:gymvision/providers/global/active_workout_provider.dart';
@@ -57,7 +58,7 @@ class _HistoryState extends State<History> {
                   ),
                 ),
                 Button.calendar(
-                  onTap: () => showCalendarView(
+                  onTap: () => PickerHelper.showCalendarView(
                     context,
                     events: getEvents(workouts),
                     onDateSelected: setDate,
@@ -98,7 +99,7 @@ class _HistoryState extends State<History> {
                         ? const Button(text: 'All Time')
                         : Button(
                             text: DateTimeHelper.getDateStr(date!),
-                            onTap: () => showConfirm(
+                            onTap: () => DialogHelper.showConfirm(
                               context,
                               title: 'Remove date filter?',
                               onConfirm: () => setDate(null),

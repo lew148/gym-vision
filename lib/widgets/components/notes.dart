@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/note.dart';
-import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/enums.dart';
+import 'package:gymvision/helpers/functions/app_helper.dart';
+import 'package:gymvision/helpers/functions/dialog_helper.dart';
 import 'package:gymvision/models/db_models/note_model.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:gymvision/widgets/components/stateless/shimmer_load.dart';
@@ -52,7 +53,7 @@ class _NotesState extends State<Notes> {
 
   Future onSave(Note? note, {bool delete = false}) async {
     try {
-      closeKeyboard();
+      AppHelper.closeKeyboard();
 
       if (delete || controller.text.isEmpty) {
         if (note != null) {
@@ -74,7 +75,7 @@ class _NotesState extends State<Notes> {
       reload();
     } catch (ex) {
       if (!mounted) return;
-      showSnackBar(context, 'Failed to save note');
+      AppHelper.showSnackBar(context, 'Failed to save note');
     }
   }
 
@@ -107,7 +108,7 @@ class _NotesState extends State<Notes> {
                         padding: const EdgeInsetsGeometry.all(5),
                         child: Icon(Icons.clear_rounded, size: 16, color: Theme.of(context).colorScheme.shadow),
                       ),
-                      onTap: () => showDeleteConfirm(
+                      onTap: () => DialogHelper.showDeleteConfirm(
                         context,
                         'note',
                         () {

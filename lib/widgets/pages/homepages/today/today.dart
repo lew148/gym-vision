@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/bodyweight.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/constants.dart';
+import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
+import 'package:gymvision/helpers/functions/dialog_helper.dart';
+import 'package:gymvision/helpers/functions/workout_helper.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/models/db_models/schedule_model.dart';
 import 'package:gymvision/models/db_models/workouts/workout_model.dart';
-import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/providers/global/active_workout_provider.dart';
 import 'package:gymvision/widgets/components/flavour_text_card.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
@@ -34,7 +36,7 @@ class _TodayState extends State<Today> {
   void reload() => setState(() {});
 
   void onAddWeightTap() async {
-    await showCloseableBottomSheet(context, AddBodyWeightForm(), title: 'Add Bodyweight');
+    await BottomSheetHelper.showCloseableBottomSheet(context, AddBodyWeightForm(), title: 'Add Bodyweight');
     reload();
   }
 
@@ -57,7 +59,7 @@ class _TodayState extends State<Today> {
                         icon: Icons.add_rounded,
                         text: 'Start a workout',
                         onTap: () async {
-                          await createActiveWorkout(context);
+                          await WorkoutHelper.createActiveWorkout(context);
                           reload();
                         },
                       ),
@@ -103,7 +105,7 @@ class _TodayState extends State<Today> {
                             icon: Icons.add_rounded,
                             text: 'Start scheduled workout',
                             onTap: () async {
-                              await createActiveWorkout(context, categories: todayCategories);
+                              await WorkoutHelper.createActiveWorkout(context, categories: todayCategories);
                               reload();
                             },
                           ),
@@ -185,7 +187,7 @@ class _TodayState extends State<Today> {
 
                           return GestureDetector(
                             onTap: () async {
-                              await showDeleteConfirm(
+                              await DialogHelper.showDeleteConfirm(
                                 context,
                                 'bodyweight',
                                 () => BodyweightModel.delete(bwsnapshot.data!.id!),
@@ -239,7 +241,7 @@ class _TodayState extends State<Today> {
                 'Today',
                 actions: [
                   Button.add(onTap: () async {
-                    await createActiveWorkout(context);
+                    await WorkoutHelper.createActiveWorkout(context);
                     reload();
                   }),
                 ],

@@ -6,9 +6,11 @@ import 'package:gymvision/constants.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/database_helper.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
+import 'package:gymvision/helpers/functions/app_helper.dart';
+import 'package:gymvision/helpers/functions/dialog_helper.dart';
+import 'package:gymvision/helpers/functions/picker_helper.dart';
 import 'package:gymvision/services/local_notification_service.dart';
 import 'package:gymvision/models/db_models/flavour_text_schedule_model.dart';
-import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/header.dart';
@@ -67,7 +69,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                       text: settings.intraSetRestTimer == null
                           ? 'Set Timer'
                           : DateTimeHelper.getDurationString(settings.intraSetRestTimer!, noHours: true),
-                      onTap: () => showDurationPicker(
+                      onTap: () => PickerHelper.showDurationPicker(
                         context,
                         initialDuration: settings.intraSetRestTimer,
                         CupertinoTimerPickerMode.ms,
@@ -76,7 +78,9 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                             settings.intraSetRestTimer = d.inSeconds == 0 ? null : d;
                             await UserSettingsModel.update(settings);
                           } catch (ex) {
-                            if (context.mounted) showSnackBar(context, 'Failed to update Intra-Set Rest Timer.');
+                            if (context.mounted) {
+                              AppHelper.showSnackBar(context, 'Failed to update Intra-Set Rest Timer.');
+                            }
                           }
 
                           reloadState();
@@ -117,7 +121,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
 
                     await UserSettingsModel.update(settings);
                   } catch (ex) {
-                    if (context.mounted) showSnackBar(context, 'Failed to update theme.');
+                    if (context.mounted) AppHelper.showSnackBar(context, 'Failed to update theme.');
                   }
 
                   reloadState();
@@ -130,14 +134,14 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                 onTap: () async {
                   await FlavourTextScheduleModel.setRecentFlavourTextScheduleNotDismissed();
                   if (!context.mounted) return;
-                  showSnackBar(context, 'Flavour Text Un-dismissed!');
+                  AppHelper.showSnackBar(context, 'Flavour Text Un-dismissed!');
                 },
                 text: 'Un-Dismiss Flavour Text',
               ),
               Button.elevated(
                 onTap: () async {
                   await Sentry.captureMessage('(Ignore) This message was sent manually by a developer.');
-                  if (context.mounted) showSnackBar(context, 'Sentry message sent!');
+                  if (context.mounted) AppHelper.showSnackBar(context, 'Sentry message sent!');
                 },
                 text: 'Send Error to Sentry',
               ),
@@ -150,27 +154,28 @@ class _UserSettingsViewState extends State<UserSettingsView> {
               const CustomDivider(),
               Button.elevated(
                 text: 'Update Database',
-                onTap: () => showConfirm(
+                onTap: () => DialogHelper.showConfirm(
                   context,
                   title: 'Update Database',
                   content: 'This will persist existing data. Please wait for success message!',
                   onConfirm: () async {
                     final success = await DatabaseHelper.resetWhilePersistingData();
                     if (!context.mounted) return;
-                    showSnackBar(context, success ? 'Successfully updated database' : 'Failed to update database');
+                    AppHelper.showSnackBar(
+                        context, success ? 'Successfully updated database' : 'Failed to update database');
                   },
                 ),
               ),
               Button.elevated(
                 text: 'Reset Database',
                 style: ButtonCustomStyle.redIconAndText(),
-                onTap: () => showDeleteConfirm(
+                onTap: () => DialogHelper.showDeleteConfirm(
                   context,
                   "database",
                   () async {
                     await DatabaseHelper.resetDatabase();
                     if (!context.mounted) return;
-                    showSnackBar(context, 'Successfully reset database');
+                    AppHelper.showSnackBar(context, 'Successfully reset database');
                   },
                 ),
               ),

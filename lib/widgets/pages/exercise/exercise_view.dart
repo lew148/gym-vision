@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/classes/exercise_details.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
+import 'package:gymvision/helpers/functions/workout_helper.dart';
 import 'package:gymvision/widgets/components/notes.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
-import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/header.dart';
 import 'package:gymvision/widgets/components/stateless/splash_text.dart';
@@ -87,7 +87,7 @@ class _ExerciseViewState extends State<ExerciseView> {
 
   Widget getPrSection(WorkoutSet pr) => GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () => openWorkoutView(context, pr.getWorkout()!.id!).then((x) => reload()),
+        onTap: () => WorkoutHelper.openWorkoutView(context, pr.getWorkout()!.id!).then((x) => reload()),
         child: Padding(
           padding: const EdgeInsetsGeometry.symmetric(vertical: 5),
           child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [

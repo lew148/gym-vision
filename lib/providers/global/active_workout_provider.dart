@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
-import 'package:gymvision/helpers/common_functions.dart';
+import 'package:gymvision/helpers/functions/workout_helper.dart';
 import 'package:gymvision/models/db_models/workouts/workout_model.dart';
 import 'package:gymvision/providers/global/navigation_provider.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +20,7 @@ class ActiveWorkoutProvider extends ChangeNotifier {
     final activeWorkout = await WorkoutModel.getActiveWorkout();
     if (activeWorkout == null || globalContext == null || !globalContext.mounted) return;
     setOpen();
-    openWorkoutView(globalContext, activeWorkout.id!);
+    WorkoutHelper.openWorkoutView(globalContext, activeWorkout.id!);
   }
 
   Future<bool> isActiveWorkout(int workoutId) async => (await WorkoutModel.getActiveWorkout())?.id == workoutId;

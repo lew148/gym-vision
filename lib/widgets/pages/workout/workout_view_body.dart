@@ -4,6 +4,10 @@ import 'package:gymvision/classes/db/workouts/workout_category.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
+import 'package:gymvision/helpers/functions/app_helper.dart';
+import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
+import 'package:gymvision/helpers/functions/dialog_helper.dart';
+import 'package:gymvision/helpers/functions/workout_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workouts/workout_category_model.dart';
 import 'package:gymvision/models/db_models/workouts/workout_exercise_model.dart';
@@ -30,7 +34,6 @@ import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/splash_text.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/forms/fields/category_picker.dart';
-import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/components/notes.dart';
 
 class WorkoutViewBody extends StatelessWidget {
@@ -75,7 +78,7 @@ class WorkoutViewBody extends StatelessWidget {
 
     void onFinishOrResumeTap(bool resuming) async {
       try {
-        var confirmed = await showConfirm(
+        var confirmed = await DialogHelper.showConfirm(
           context,
           title: resuming ? 'Resume Workout?' : 'Finish Workout?',
           content: resuming
@@ -96,7 +99,7 @@ class WorkoutViewBody extends StatelessWidget {
           if (context.mounted) {
             Navigator.pop(context);
             Confetti.launch(context, options: const ConfettiOptions(particleCount: 200, spread: 70, y: 0.8));
-            await showCloseableBottomSheet(context, SharableWorkoutSummary(workoutId: workout.id!));
+            await BottomSheetHelper.showCloseableBottomSheet(context, SharableWorkoutSummary(workoutId: workout.id!));
           }
 
           return;
@@ -104,7 +107,7 @@ class WorkoutViewBody extends StatelessWidget {
 
         provider.reload();
       } catch (e) {
-        if (context.mounted) showSnackBar(context, 'Failed to ${resuming ? 'resume' : 'finish'} workout.');
+        if (context.mounted) AppHelper.showSnackBar(context, 'Failed to ${resuming ? 'resume' : 'finish'} workout.');
       }
     }
 
@@ -114,7 +117,8 @@ class WorkoutViewBody extends StatelessWidget {
       Navigator.pop(context); // close workout
     }
 
-    Future<void> onAddCategoryClick(List<Category> existingWorkoutCategoryIds) async => await showCloseableBottomSheet(
+    Future<void> onAddCategoryClick(List<Category> existingWorkoutCategoryIds) async =>
+        await BottomSheetHelper.showCloseableBottomSheet(
           context,
           CategoryPicker(
             selectedCategories: existingWorkoutCategoryIds,
@@ -123,7 +127,7 @@ class WorkoutViewBody extends StatelessWidget {
                 await WorkoutCategoryModel.setWorkoutCategories(workout.id!, newCategories);
                 provider.reload();
               } catch (ex) {
-                if (context.mounted) showSnackBar(context, 'Failed to add Categories to workout.');
+                if (context.mounted) AppHelper.showSnackBar(context, 'Failed to add Categories to workout.');
               }
             },
           ),
@@ -147,7 +151,7 @@ class WorkoutViewBody extends StatelessWidget {
                     ),
                   );
                 } catch (ex) {
-                  if (context.mounted) showSnackBar(context, 'Failed to add set(s) to workout');
+                  if (context.mounted) AppHelper.showSnackBar(context, 'Failed to add set(s) to workout');
                 } finally {
                   if (context.mounted) Navigator.pop(context);
                 }
@@ -160,7 +164,7 @@ class WorkoutViewBody extends StatelessWidget {
       provider.reload();
     }
 
-    Future<void> onCopyPreviousWorkoutTap() => showCloseableBottomSheet(
+    Future<void> onCopyPreviousWorkoutTap() => BottomSheetHelper.showCloseableBottomSheet(
         context,
         Column(children: [
           Button.elevated(
@@ -173,7 +177,7 @@ class WorkoutViewBody extends StatelessWidget {
                 return;
               }
 
-              if (context.mounted) showSnackBar(context, 'There is nothing to copy');
+              if (context.mounted) AppHelper.showSnackBar(context, 'There is nothing to copy');
             },
           ),
           Button.elevated(
@@ -186,7 +190,7 @@ class WorkoutViewBody extends StatelessWidget {
                 return;
               }
 
-              if (context.mounted) showSnackBar(context, 'There is nothing to copy');
+              if (context.mounted) AppHelper.showSnackBar(context, 'There is nothing to copy');
             },
           ),
         ]));
@@ -199,11 +203,11 @@ class WorkoutViewBody extends StatelessWidget {
             filterCategories: workout.getCategories(),
             onAddTap: (int templateId) async {
               try {
-                await copyTemplateToworkout(workoutId: workout.id!, templateId: templateId);
+                await WorkoutHelper.copyTemplateToworkout(workoutId: workout.id!, templateId: templateId);
                 if (context.mounted) Navigator.pop(context);
                 provider.reload();
               } catch (ex) {
-                if (context.mounted) showSnackBar(context, 'Failed to copy Template');
+                if (context.mounted) AppHelper.showSnackBar(context, 'Failed to copy Template');
               }
             },
           ),

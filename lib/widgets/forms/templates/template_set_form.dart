@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/workout_templates/workout_template_set.dart';
 import 'package:gymvision/classes/exercise.dart';
+import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/number_helper.dart';
 import 'package:gymvision/models/db_models/workout_template_model.dart';
 import 'package:gymvision/models/db_models/workouts/workout_set_model.dart';
-import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/static_data/enums.dart';
@@ -145,7 +145,7 @@ class _TemplateSetFormState extends State<TemplateSetForm> {
       widget.onSuccess();
     } catch (ex) {
       if (!mounted) return;
-      showSnackBar(context, 'Failed to add set(s) to template');
+      AppHelper.showSnackBar(context, 'Failed to add set(s) to template');
     }
   }
 
@@ -194,7 +194,7 @@ class _TemplateSetFormState extends State<TemplateSetForm> {
       widget.onSuccess();
     } catch (ex) {
       if (!mounted) return;
-      showSnackBar(context, 'Failed to edit template set');
+      AppHelper.showSnackBar(context, 'Failed to edit template set');
     }
   }
 
@@ -204,7 +204,7 @@ class _TemplateSetFormState extends State<TemplateSetForm> {
       await WorkoutSetModel.delete(widget.templateSet!.id!);
     } catch (ex) {
       if (!mounted) return;
-      showSnackBar(context, 'Failed to remove set from template');
+      AppHelper.showSnackBar(context, 'Failed to remove set from template');
     }
 
     widget.onSuccess();
@@ -227,7 +227,7 @@ class _TemplateSetFormState extends State<TemplateSetForm> {
       );
     } catch (ex) {
       if (!mounted) return;
-      showSnackBar(context, 'Failed add set to template');
+      AppHelper.showSnackBar(context, 'Failed add set to template');
     }
 
     widget.onSuccess();

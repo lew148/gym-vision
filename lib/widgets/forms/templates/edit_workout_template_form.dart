@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workout_templates/workout_template.dart';
-import 'package:gymvision/helpers/common_functions.dart';
+import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/models/db_models/workout_template_model.dart';
 import 'package:gymvision/static_data/helpers.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
@@ -52,7 +52,9 @@ class _EditWorkoutTemplateFormState extends State<EditWorkoutTemplateForm> {
             ),
           ),
           const Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: 5)),
-          Button.edit(onTap: () => showCloseableBottomSheet(context, WorkoutTemplateCoreForm(template: template))),
+          Button.edit(
+              onTap: () =>
+                  BottomSheetHelper.showCloseableBottomSheet(context, WorkoutTemplateCoreForm(template: template))),
         ]),
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

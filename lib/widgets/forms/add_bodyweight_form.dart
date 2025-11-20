@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/bodyweight.dart';
+import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
-import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/forms/fields/custom_form_field.dart';
 
@@ -42,7 +42,7 @@ class AddBodyWeightForm extends StatelessWidget {
                     }
                   } catch (ex) {
                     if (!context.mounted) return;
-                    showSnackBar(context, 'Failed to add Bodyweight');
+                    AppHelper.showSnackBar(context, 'Failed to add Bodyweight');
                   }
 
                   if (!context.mounted) return;

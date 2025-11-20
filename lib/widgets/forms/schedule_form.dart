@@ -3,8 +3,9 @@ import 'package:gymvision/classes/db/schedules/schedule.dart';
 import 'package:gymvision/classes/db/schedules/schedule_item.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
+import 'package:gymvision/helpers/functions/app_helper.dart';
+import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/models/db_models/schedule_model.dart';
-import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
@@ -65,7 +66,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
       if (!formKey.currentState!.validate() || nameController.text.isEmpty) return;
       if (categoriesByDay.entries.every((e) => e.value.isEmpty)) {
         Navigator.pop(context);
-        showSnackBar(context, 'Schedule is empty!');
+        AppHelper.showSnackBar(context, 'Schedule is empty!');
         return;
       }
 
@@ -101,7 +102,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
       }
     } catch (ex) {
       if (!mounted) return;
-      showSnackBar(context, 'Failed to add Schedule');
+      AppHelper.showSnackBar(context, 'Failed to add Schedule');
     }
 
     if (!mounted) return;
@@ -110,7 +111,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
   }
 
   void onTypeTap(ScheduleType type) {
-    closeKeyboard();
+    AppHelper.closeKeyboard();
     int numDays;
 
     switch (type) {
@@ -140,7 +141,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
     return CustomCard(
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
-        onTap: () => showCloseableBottomSheet(
+        onTap: () => BottomSheetHelper.showCloseableBottomSheet(
           context,
           CategoryPicker(
             selectedCategories: categoriesForDay,

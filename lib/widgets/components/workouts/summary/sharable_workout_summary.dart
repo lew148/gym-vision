@@ -4,8 +4,8 @@ import 'package:flutter_confetti/flutter_confetti.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/workout_summary.dart';
 import 'package:gymvision/constants.dart';
-import 'package:gymvision/helpers/common_functions.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
+import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workouts/workout_model.dart';
 import 'package:gymvision/static_data/helpers.dart';
@@ -62,7 +62,7 @@ class SharableWorkoutSummary extends StatelessWidget {
                 text: '${DateTimeHelper.getDateOrDayStr(workout.date)}\'s ${workout.getWorkoutTitle()} 🏋️ #Forged',
               ));
             } catch (e) {
-              if (context.mounted) showSnackBar(context, 'Could not share summary');
+              if (context.mounted) AppHelper.showSnackBar(context, 'Could not share summary');
             }
           }
 

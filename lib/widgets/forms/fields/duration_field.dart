@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gymvision/helpers/common_functions.dart';
+import 'package:gymvision/helpers/functions/picker_helper.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 
@@ -27,7 +27,7 @@ class DurationField extends StatelessWidget {
           child: CustomCard.field(
             child: GestureDetector(
               behavior: HitTestBehavior.translucent,
-              onTap: () => showDurationPicker(context, CupertinoTimerPickerMode.hms, onChange: onChange),
+              onTap: () => PickerHelper.showDurationPicker(context, CupertinoTimerPickerMode.hms, onChange: onChange),
               child: Row(children: [
                 Icon(Icons.timer_rounded, color: Theme.of(context).colorScheme.secondary),
                 const Padding(padding: EdgeInsetsGeometry.all(8)), // in line with Material FormField's padding

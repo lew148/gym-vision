@@ -2,7 +2,8 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/constants.dart';
-import 'package:gymvision/helpers/common_functions.dart';
+import 'package:gymvision/helpers/functions/dialog_helper.dart';
+import 'package:gymvision/helpers/functions/picker_helper.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/providers/global/rest_timer_provider.dart';
@@ -47,7 +48,7 @@ class _RestTimerState extends State<RestTimer> {
     }
   }
 
-  void showPicker() => showDurationPicker(
+  void showPicker() => PickerHelper.showDurationPicker(
         context,
         CupertinoTimerPickerMode.ms,
         onSubmit: (Duration d) => provider.setTimer(context: context, duration: d),
@@ -65,7 +66,7 @@ class _RestTimerState extends State<RestTimer> {
           )
         : GestureDetector(
             behavior: HitTestBehavior.translucent,
-            onTap: () async => await showDeleteConfirm(context, 'Timer', onTimerDelete),
+            onTap: () async => await DialogHelper.showDeleteConfirm(context, 'Timer', onTimerDelete),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(smallBorderRadius),
               child: Stack(children: [
