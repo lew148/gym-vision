@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workout_templates/workout_template.dart';
+import 'package:gymvision/classes/db/workout_templates/workout_template_exercise.dart';
+import 'package:gymvision/classes/db/workout_templates/workout_template_set.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
+import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/helpers/functions/dialog_helper.dart';
@@ -16,6 +19,7 @@ import 'package:gymvision/models/db_models/workouts/workout_set_model.dart';
 import 'package:gymvision/providers/global/active_workout_provider.dart';
 import 'package:gymvision/widgets/pages/workout/workout_view.dart';
 import 'package:gymvision/static_data/enums.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class WorkoutHelper {
@@ -121,6 +125,43 @@ class WorkoutHelper {
       if (context.mounted) await openWorkoutView(context, newWorkoutId);
     } catch (ex) {
       if (context.mounted) AppHelper.showSnackBar(context, 'Failed to add Workout from Template');
+    }
+  }
+
+  static Future<int?> createTemplateFromWorkout(int workoutId) async {
+    try {
+      final workout = await WorkoutModel.getWorkout(workoutId, withCategories: true, withExercises: true);
+      if (workout == null) return null;
+
+      final newTemplate = WorkoutTemplate(
+        name: 'Template from ${DateFormat(DateTimeHelper.dmyFormat).format(workout.date)}',
+      );
+
+      newTemplate.setCategories(workout.getCategories());
+      final newTemplateId = await WorkoutTemplateModel.insert(newTemplate);
+
+      for (final we in workout.getWorkoutExercises()) {
+        final newWteId = await WorkoutTemplateModel.insertWorkoutTemplateExercise(WorkoutTemplateExercise(
+          workoutTemplateId: newTemplateId,
+          exerciseIdentifier: we.exerciseIdentifier,
+          setOrder: '',
+        ));
+
+        for (final set in we.getSets()) {
+          await WorkoutTemplateModel.insertWorkoutTemplateSet(WorkoutTemplateSet(
+            workoutTemplateExerciseId: newWteId,
+            weight: set.weight,
+            reps: set.reps,
+            time: set.time,
+            distance: set.distance,
+            calsBurned: set.calsBurned,
+          ));
+        }
+      }
+      
+      return newTemplateId;
+    } catch (ex) {
+      return null;
     }
   }
 

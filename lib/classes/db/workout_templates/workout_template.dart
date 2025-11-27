@@ -18,11 +18,14 @@ class WorkoutTemplate extends DBO {
     super.updatedAt,
     super.createdAt,
     required this.name,
-    required this.categories,
-    required this.exerciseOrder,
+    this.categories = '',
+    this.exerciseOrder = '',
     this.workoutTemplateExercises,
     this.note,
   });
+
+  void setCategories(List<Category> cats) =>
+      categories = cats.map((c) => EnumHelper.enumToString(c)).toList().join(',');
 
   List<Category> getCategories() =>
       categories.split(',').map((c) => EnumHelper.stringToEnum(c, Category.values)).whereType<Category>().toList();

@@ -64,18 +64,16 @@ class _WorkoutTemplateCoreFormState extends State<WorkoutTemplateCoreForm> {
       Navigator.pop(context);
       final template = widget.template!;
       template.name = name;
-      template.categories = categories;
+      template.setCategories(_categories);
       await WorkoutTemplateModel.update(template);
       return;
     }
 
     var nav = Navigator.of(context);
 
-    final id = await WorkoutTemplateModel.insert(WorkoutTemplate(
-      name: name,
-      categories: categories,
-      exerciseOrder: '',
-    ));
+    final newTemplate = WorkoutTemplate(name: name);
+    newTemplate.setCategories(_categories);
+    final id = await WorkoutTemplateModel.insert(newTemplate);
 
     nav.pop(id);
   }

@@ -241,7 +241,7 @@ class _TemplatesState extends State<Templates> {
               Expanded(
                 child: CupertinoSearchTextField(
                   controller: _searchTextController,
-                  placeholder: 'Search for exercise...',
+                  placeholder: 'Search for template...',
                   style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                   onChanged: (s) => setSearchValue(s),
                   suffixIcon: const Icon(Icons.clear_rounded),

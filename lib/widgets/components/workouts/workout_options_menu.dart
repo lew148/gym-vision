@@ -1,15 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
+import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/helpers/functions/dialog_helper.dart';
 import 'package:gymvision/helpers/functions/picker_helper.dart';
+import 'package:gymvision/helpers/functions/workout_helper.dart';
 import 'package:gymvision/models/db_models/workouts/workout_model.dart';
 import 'package:gymvision/providers/global/active_workout_provider.dart';
 import 'package:gymvision/providers/global/rest_timer_provider.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/options_menu.dart';
 import 'package:gymvision/widgets/components/workouts/summary/sharable_workout_summary.dart';
+import 'package:gymvision/widgets/forms/templates/edit_workout_template_form.dart';
 import 'package:provider/provider.dart';
 
 class WorkoutOptionsMenu extends StatelessWidget {
@@ -60,7 +63,7 @@ class WorkoutOptionsMenu extends StatelessWidget {
         );
 
     return OptionsMenu(buttons: [
-      if (workout.isFinished())
+      if (workout.isFinished()) ...[
         Button(
           onTap: () async {
             Navigator.pop(context);
@@ -70,6 +73,27 @@ class WorkoutOptionsMenu extends StatelessWidget {
           style: ButtonCustomStyle.primaryIconOnly(),
           text: 'Share / Summary',
         ),
+        Button(
+          onTap: () async {
+            Navigator.pop(context);
+            final newTemplateId = await WorkoutHelper.createTemplateFromWorkout(workout.id!);
+            if (!context.mounted) return;
+
+            if (newTemplateId == null) {
+              AppHelper.showSnackBar(context, 'Failed to create template.');
+              return;
+            }
+
+            await BottomSheetHelper.showFullScreenBottomSheet(
+              context,
+              child: EditWorkoutTemplateForm(templateId: newTemplateId),
+            );
+          },
+          icon: Icons.description_rounded,
+          style: ButtonCustomStyle.primaryIconOnly(),
+          text: 'Create Template from Workout',
+        ),
+      ],
       ...?extraButtons,
       Button(
         onTap: () {
