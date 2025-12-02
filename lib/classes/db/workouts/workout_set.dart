@@ -30,6 +30,16 @@ class WorkoutSet extends DBO {
     this.workoutExercise,
   });
 
+  Map toMap() => {
+        'id': id,
+        'weight': weight,
+        'reps': reps,
+        'time': time?.toString(),
+        'distance': distance,
+        'calsBurned': calsBurned,
+        'done': done ? 1 : 0,
+      };
+
   Exercise? getExercise() {
     if (workoutExercise == null) return null;
     if (workoutExercise!.exercise != null) return workoutExercise!.exercise;

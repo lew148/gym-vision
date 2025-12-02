@@ -29,6 +29,13 @@ class Workout extends DBO {
     this.summary,
   });
 
+  Map toMap() => {
+        'id': id,
+        'date': date.toString(),
+        'endDate': endDate.toString(),
+        'exerciseOrder': exerciseOrder,
+      };
+
   bool isFinished() => endDate != null;
   Duration getDuration() =>
       endDate == null ? DateTimeHelper.timeBetween(date, DateTime.now()) : DateTimeHelper.timeBetween(date, endDate!);

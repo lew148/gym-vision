@@ -93,8 +93,9 @@ class WorkoutModel {
   }
 
   static Future<List<Workout>> getAllWorkouts({
+    bool withExercises = false,
     bool withSummary = false,
-    List<Category>? filterCategories,
+    List<Category>? whereCategoriesAre,
     DateTime? date,
   }) async {
     final db = DatabaseHelper.db;
@@ -109,8 +110,8 @@ class WorkoutModel {
       ..groupBy([db.driftWorkouts.id])
       ..orderBy([OrderingTerm.desc(db.driftWorkouts.date)]);
 
-    if (filterCategories != null && filterCategories.isNotEmpty) {
-      query = query..where(db.driftWorkoutCategories.category.isInValues(filterCategories));
+    if (whereCategoriesAre != null && whereCategoriesAre.isNotEmpty) {
+      query = query..where(db.driftWorkoutCategories.category.isInValues(whereCategoriesAre));
     }
 
     if (date != null) {
@@ -126,10 +127,12 @@ class WorkoutModel {
 
     await Future.wait(workouts.map((workout) async {
       workout.workoutCategories = await WorkoutCategoryModel.getWorkoutCategoriesByWorkout(workout.id!);
-      if (withSummary) {
+
+      if (withExercises) {
         workout.workoutExercises = await WorkoutExerciseModel.getWorkoutExercisesByWorkout(workout.id!, withSets: true);
-        workout.summary = await getWorkoutSummary(workout: workout);
       }
+
+      if (withSummary) workout.summary = await getWorkoutSummary(workout: workout);
     }));
 
     return workouts;
@@ -323,8 +326,4 @@ class WorkoutModel {
       return false;
     }
   }
-
-  static Future<String?> getWorkoutExportString(int id) async => '';
-
-  static Future<bool> importWorkout(String s) async => true;
 }

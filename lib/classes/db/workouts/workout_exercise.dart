@@ -28,6 +28,13 @@ class WorkoutExercise extends DBO {
     this.workoutSets,
   });
 
+  Map toMap() => {
+        'id': id,
+        'exerciseIdentifier': exerciseIdentifier,
+        'done': done ? 1 : 0,
+        'setOrder': setOrder,
+      };
+
   bool isCardio() => exercise?.type == ExerciseType.cardio;
 
   List<WorkoutSet> getSets() => workoutSets ?? [];

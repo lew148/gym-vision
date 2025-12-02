@@ -44,7 +44,11 @@ class _HistoryState extends State<History> {
       return Consumer<HistoryProvider>(builder: (context, historyProvider, child) {
         Future<(List<Bodyweight>, List<Workout>)> loadFuture() async => (
               await BodyweightModel.getBodyweights(),
-              await WorkoutModel.getAllWorkouts(withSummary: true, filterCategories: historyProvider.categoryFilters)
+              await WorkoutModel.getAllWorkouts(
+                withExercises: true,
+                withSummary: true,
+                whereCategoriesAre: historyProvider.categoryFilters,
+              )
             );
 
         Widget getFilterRow(List<Workout> workouts) => Row(

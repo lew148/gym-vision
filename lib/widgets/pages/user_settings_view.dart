@@ -7,6 +7,7 @@ import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/database_helper.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
+import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/helpers/functions/dialog_helper.dart';
 import 'package:gymvision/helpers/functions/picker_helper.dart';
 import 'package:gymvision/services/local_notification_service.dart';
@@ -16,7 +17,9 @@ import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/header.dart';
 import 'package:gymvision/widgets/debug_scaffold.dart';
 import 'package:gymvision/widgets/forms/fields/custom_dropdown.dart';
+import 'package:gymvision/widgets/forms/import_data_form.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../models/db_models/user_settings_model.dart';
 
 class UserSettingsView extends StatefulWidget {
@@ -130,6 +133,33 @@ class _UserSettingsViewState extends State<UserSettingsView> {
               const Padding(padding: EdgeInsets.all(5)),
               const Header(title: 'Developer Settings'),
               const CustomDivider(),
+              Row(children: [
+                Expanded(
+                  child: Button.elevated(
+                    icon: Icons.upload_rounded,
+                    text: 'Export Data',
+                    onTap: () async {
+                      try {
+                        final exportString = await AppHelper.getFullExportString();
+                        if (exportString == null) throw Exception();
+                        await SharePlus.instance.share(ShareParams(text: exportString));
+                      } catch (ex) {
+                        if (context.mounted) AppHelper.showSnackBar(context, 'Failed to export');
+                      }
+                    },
+                  ),
+                ),
+                Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: 5)),
+                Expanded(
+                  child: Button.elevated(
+                    icon: Icons.download_rounded,
+                    text: 'Import Data',
+                    onTap: () async {
+                      await BottomSheetHelper.showCloseableBottomSheet(context, const ImportDataForm());
+                    },
+                  ),
+                ),
+              ]),
               Button.elevated(
                 onTap: () async {
                   await FlavourTextScheduleModel.setRecentFlavourTextScheduleNotDismissed();

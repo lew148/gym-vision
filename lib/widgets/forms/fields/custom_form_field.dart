@@ -151,6 +151,7 @@ class CustomFormField extends StatelessWidget {
               autofocus: autofocus,
               maxLength: maxLength,
               maxLines: maxLines,
+              minLines: 1,
               style: TextStyle(color: colorScheme.onSurface),
               decoration: InputDecoration(
                 prefixIcon: prefixIcon == null ? null : Icon(prefixIcon, color: colorScheme.secondary),

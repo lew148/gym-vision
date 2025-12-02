@@ -19,6 +19,11 @@ class DateTimeHelper {
 
   static DateTime parseDateTime(String s) => DateTime.parse(s);
 
+  static DateTime? tryParseDateTime(String? s) {
+    if (s == null || s == '' || s == 'null') return null;
+    return DateTime.tryParse(s);
+  }
+
   static DateTime roundToDay(DateTime dt) => DateTime.utc(dt.year, dt.month, dt.day);
 
   static String getDateStr(DateTime dt) =>
@@ -106,10 +111,5 @@ class DateTimeHelper {
     } catch (e) {
       return null;
     }
-  }
-
-  static DateTime? tryParseDateTime(String? s) {
-    if (s == null || s == '' || s == 'null') return null;
-    return DateTime.tryParse(s);
   }
 }
