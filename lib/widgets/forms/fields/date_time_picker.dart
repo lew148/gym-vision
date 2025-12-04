@@ -54,7 +54,7 @@ class _DateTimePickerState extends State<DateTimePicker> {
                 value = DateTime.now();
               }),
             ),
-            Button.done(onTap: () {
+            Button.submit(onTap: () {
               Navigator.pop(context);
               widget.onChange(value);
             }),

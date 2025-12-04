@@ -106,14 +106,12 @@ class _TemplateSetFormState extends State<TemplateSetForm> {
           label: 'Distance',
           unit: 'km',
           prefixIcon: Icons.timeline_rounded,
-          buttons: [Button.clear(onTap: () => _distanceController.clear())],
         ),
         CustomFormField.int(
           controller: _calsBurnedController,
           label: 'Cals Burned',
           unit: 'kcal',
           prefixIcon: Icons.local_fire_department_rounded,
-          buttons: [Button.clear(onTap: () => _calsBurnedController.clear())],
         ),
       ];
 
@@ -290,13 +288,13 @@ class _TemplateSetFormState extends State<TemplateSetForm> {
                             Button.delete(onTap: onDeleteButtonTap),
                             Button(icon: Icons.copy_rounded, onTap: onCopySetButtonTap),
                           ]),
-                          Button.done(onTap: onEditSubmit),
+                          Button.submit(onTap: onEditSubmit),
                         ]
                       : [
                           exercise.type != ExerciseType.cardio
                               ? Button(onTap: () => onAddSubmit(exercise, addThree: true), text: 'Add 3')
                               : const SizedBox.shrink(),
-                          Button.done(onTap: () => onAddSubmit(exercise), isAdd: true),
+                          Button.submit(onTap: () => onAddSubmit(exercise), text: 'Add'),
                         ],
                 ),
               ),

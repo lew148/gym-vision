@@ -43,16 +43,18 @@ class Button extends StatelessWidget {
   final Function()? onLongTap;
   final bool disabled;
   final bool elevated;
+  final bool isSubmit;
 
   const Button({
     super.key,
-    this.elevated = false,
     this.onTap,
     this.onLongTap,
     this.icon,
     this.text,
     this.style,
     this.disabled = false,
+    this.elevated = false,
+    this.isSubmit = false,
   }) : assert(text != null || icon != null, 'Must provide text and/or icon to Button');
 
   factory Button.elevated({
@@ -87,9 +89,10 @@ class Button extends StatelessWidget {
         style: ButtonCustomStyle.primaryIconOnly(),
       );
 
-  factory Button.done({required Function() onTap, bool isAdd = false, String? customTitle}) => Button(
+  factory Button.submit({required Function() onTap, String? text}) => Button(
         onTap: onTap,
-        text: customTitle ?? (isAdd ? 'Add' : 'Done'),
+        text: text ?? 'Done',
+        isSubmit: true,
       );
 
   factory Button.cancel({required Function() onTap}) => Button(
@@ -98,9 +101,13 @@ class Button extends StatelessWidget {
         style: ButtonCustomStyle.redIconAndText(),
       );
 
-  factory Button.x({required Function() onTap}) => Button(icon: Icons.close_rounded, onTap: onTap);
+  factory Button.clear({required Function() onTap, bool useIcon = false}) => Button(
+        icon: useIcon ? Icons.clear_rounded : null,
+        text: useIcon ? null : 'Clear',
+        onTap: onTap,
+      );
+
   factory Button.calendar({required Function() onTap}) => Button(icon: Icons.calendar_today_rounded, onTap: onTap);
-  factory Button.clear({required Function() onTap}) => Button(text: 'Clear', onTap: onTap);
   factory Button.check({required Function() onTap}) => Button(icon: Icons.check_rounded, onTap: onTap);
 
   factory Button.edit({required Function() onTap, String? text}) => Button(
@@ -113,6 +120,37 @@ class Button extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final altColour = Theme.of(context).colorScheme.secondary;
+
+    if (isSubmit) {
+      return Container(
+        padding: const EdgeInsetsGeometry.symmetric(vertical: 2.5),
+        child: ElevatedButton(
+          onPressed: disabled ? null : onTap,
+          onLongPress: disabled ? null : onLongTap,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 20),
+            minimumSize: Size.zero,
+            tapTargetSize: MaterialTapTargetSize.padded,
+            shadowColor: Colors.transparent,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius)),
+            overlayColor: Colors.grey,
+          ),
+          child: Row(
+            mainAxisAlignment: elevated ? MainAxisAlignment.center : MainAxisAlignment.start,
+            children: [
+              if (icon != null) Icon(icon, size: style?.iconSize ?? 25, color: Theme.of(context).colorScheme.onPrimary),
+              if (icon != null && text != null) const Padding(padding: EdgeInsets.all(5)),
+              if (text != null)
+                Text(
+                  text!,
+                  style: TextStyle(color: Theme.of(context).colorScheme.onPrimary, fontSize: style?.textSize),
+                ),
+            ],
+          ),
+        ),
+      );
+    }
 
     Widget getInner() => Row(
           mainAxisAlignment: elevated ? MainAxisAlignment.center : MainAxisAlignment.start,

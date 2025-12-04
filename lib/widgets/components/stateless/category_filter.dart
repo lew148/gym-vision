@@ -35,7 +35,7 @@ class CategoryFilter extends StatelessWidget {
                   .toList(),
             ),
           ),
-          Button.x(onTap: () => onChange([])),
+          Button.clear(useIcon: true, onTap: () => onChange([])),
         ],
         Button(
           icon: Icons.category_rounded,

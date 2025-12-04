@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workout_templates/workout_template.dart';
-import 'package:gymvision/helpers/enum_helper.dart';
 import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/models/db_models/workout_template_model.dart';
 import 'package:gymvision/static_data/enums.dart';
@@ -58,7 +57,6 @@ class _WorkoutTemplateCoreFormState extends State<WorkoutTemplateCoreForm> {
     if (!_formKey.currentState!.validate()) return;
 
     final name = _nameController.text;
-    final categories = _categories.map((c) => EnumHelper.enumToString(c)).toList().join(',');
 
     if (_isEdit) {
       Navigator.pop(context);
@@ -131,7 +129,7 @@ class _WorkoutTemplateCoreFormState extends State<WorkoutTemplateCoreForm> {
           padding: EdgeInsetsGeometry.only(top: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
-            children: [Button.done(isAdd: !_isEdit, onTap: onSubmit)],
+            children: [Button.submit(text: _isEdit ? null : 'Add', onTap: onSubmit)],
           ),
         )
       ]),

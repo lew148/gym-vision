@@ -30,7 +30,8 @@ class AddBodyWeightForm extends StatelessWidget {
                 ),
               ),
               const Padding(padding: EdgeInsetsGeometry.all(20)),
-              Button.done(
+              Button.submit(
+                text: 'Add',
                 onTap: () async {
                   try {
                     if (!formKey.currentState!.validate()) return;
@@ -48,7 +49,6 @@ class AddBodyWeightForm extends StatelessWidget {
                   if (!context.mounted) return;
                   Navigator.pop(context);
                 },
-                isAdd: true,
               ),
             ]),
           ],

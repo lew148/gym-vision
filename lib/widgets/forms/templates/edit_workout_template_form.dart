@@ -39,7 +39,7 @@ class _EditWorkoutTemplateFormState extends State<EditWorkoutTemplateForm> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Button(icon: Icons.refresh, onTap: reload),
-          Button.done(onTap: () => Navigator.pop(context)),
+          Button.submit(onTap: () => Navigator.pop(context)),
         ],
       );
 

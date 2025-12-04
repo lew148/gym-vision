@@ -92,7 +92,7 @@ class _CategoryPickerState extends State<CategoryPicker> {
                     widget.onChange([]);
                   },
                 ),
-                Button.done(onTap: () {
+                Button.submit(onTap: () {
                   Navigator.pop(context);
                   widget.onChange(selectedCategories);
                 }),

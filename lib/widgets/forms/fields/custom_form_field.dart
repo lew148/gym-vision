@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/constants.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 
-class CustomFormField extends StatelessWidget {
+class CustomFormField extends StatefulWidget {
   final TextEditingController controller;
   final String label;
   final FormFieldValidator<String>? validator;
@@ -121,7 +121,14 @@ class CustomFormField extends StatelessWidget {
         prefixIcon: prefixIcon,
       );
 
+  @override
+  State<StatefulWidget> createState() => _CustomFormField();
+}
+
+class _CustomFormField extends State<CustomFormField> {
   static const Color errorColor = Colors.redAccent;
+
+  void reload() => setState(() {});
 
   @override
   Widget build(BuildContext context) {
@@ -132,6 +139,17 @@ class CustomFormField extends StatelessWidget {
           borderSide: BorderSide(color: errored ? errorColor : colorScheme.shadow, width: 1.5),
         );
 
+    List<Widget> renderableButtons = [
+      if (widget.controller.text.isNotEmpty)
+        Button.clear(
+            useIcon: true,
+            onTap: () {
+              widget.controller.clear();
+              reload();
+            }),
+      if (widget.buttons != null) ...widget.buttons!,
+    ];
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
@@ -139,28 +157,29 @@ class CustomFormField extends StatelessWidget {
         children: [
           Expanded(
             child: TextFormField(
-              controller: controller,
+              controller: widget.controller,
+              onChanged: (v) => reload(),
               validator: (String? s) {
-                if (!canBeBlank && (s == null || s.isEmpty)) return '$label cannot be blank';
-                if (validator != null) return validator!(s);
+                if (!widget.canBeBlank && (s == null || s.isEmpty)) return '$widget.label cannot be blank';
+                if (widget.validator != null) return widget.validator!(s);
                 return null;
               },
-              keyboardType: keyboardType,
+              keyboardType: widget.keyboardType,
               cursorErrorColor: errorColor,
               // obscureText: true, // for passwords
-              autofocus: autofocus,
-              maxLength: maxLength,
-              maxLines: maxLines,
+              autofocus: widget.autofocus,
+              maxLength: widget.maxLength,
+              maxLines: widget.maxLines,
               minLines: 1,
               style: TextStyle(color: colorScheme.onSurface),
               decoration: InputDecoration(
-                prefixIcon: prefixIcon == null ? null : Icon(prefixIcon, color: colorScheme.secondary),
+                prefixIcon: widget.prefixIcon == null ? null : Icon(widget.prefixIcon, color: colorScheme.secondary),
                 filled: true,
                 fillColor: colorScheme.surface,
-                labelText: label,
+                labelText: widget.label,
                 labelStyle: TextStyle(color: colorScheme.secondary),
                 errorStyle: const TextStyle(color: errorColor, fontSize: 10, fontWeight: FontWeight.w500),
-                suffixText: suffix,
+                suffixText: widget.suffix,
                 suffixStyle: TextStyle(color: colorScheme.secondary, fontWeight: FontWeight.w500),
                 contentPadding: const EdgeInsets.all(10),
                 enabledBorder: getBorder(),
@@ -170,13 +189,13 @@ class CustomFormField extends StatelessWidget {
               ),
             ),
           ),
-          buttons == null
+          renderableButtons.isEmpty
               ? const SizedBox.shrink()
               : Padding(
                   padding: const EdgeInsetsGeometry.only(left: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: buttons!
+                    children: renderableButtons
                         .map((b) => Padding(padding: const EdgeInsetsGeometry.symmetric(horizontal: 5), child: b))
                         .toList(),
                   ),

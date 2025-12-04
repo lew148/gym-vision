@@ -273,7 +273,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
                                 style: ButtonCustomStyle.redIconOnly(),
                               ),
                           ]),
-                        Button.done(onTap: onSubmit, isAdd: !isEdit),
+                        Button.submit(onTap: onSubmit, text: isEdit ? null : 'Add'),
                       ],
                     ),
                   ]),

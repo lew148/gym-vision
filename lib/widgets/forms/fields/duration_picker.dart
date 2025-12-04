@@ -26,6 +26,7 @@ class DurationPicker extends StatefulWidget {
 }
 
 class _DurationPickerState extends State<DurationPicker> {
+  bool killed = false;
   late GlobalKey key;
   late Duration value;
 
@@ -47,6 +48,8 @@ class _DurationPickerState extends State<DurationPicker> {
       ];
 
   void onChange(Duration d, {bool fromButton = false}) {
+    if (killed) return;
+
     setState(() {
       if (fromButton) key = GlobalKey(); // new key to flush cache
       value = d;
@@ -81,20 +84,22 @@ class _DurationPickerState extends State<DurationPicker> {
                 .toList(),
           ),
         ),
-        if (widget.onSubmit != null)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Button.clear(onTap: () {
-                Navigator.pop(context);
-                widget.onSubmit!(Duration.zero);
-              }),
-              Button.done(onTap: () {
-                Navigator.pop(context);
-                widget.onSubmit!(value);
-              })
-            ],
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Button.clear(onTap: () {
+              onChange(Duration.zero, fromButton: true);
+              killed = true;
+              if (widget.onSubmit != null) widget.onSubmit!(Duration.zero);
+              Navigator.pop(context);
+            }),
+            Button.submit(onTap: () {
+              killed = true;
+              if (widget.onSubmit != null) widget.onSubmit!(value);
+              Navigator.pop(context);
+            })
+          ],
+        ),
       ],
     );
   }
