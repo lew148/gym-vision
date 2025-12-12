@@ -5,7 +5,7 @@ import 'package:gymvision/helpers/functions/workout_helper.dart';
 import 'package:gymvision/providers/global/active_workout_provider.dart';
 import 'package:gymvision/widgets/components/animated/pulsing_dot.dart';
 import 'package:gymvision/widgets/components/stateless/drag_handle.dart';
-import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
+import 'package:gymvision/widgets/components/stateless/stat_display.dart';
 import 'package:gymvision/widgets/components/time_elapsed.dart';
 import 'package:provider/provider.dart';
 
@@ -69,7 +69,7 @@ class ActiveWorkoutDraggableSheet extends StatelessWidget {
                                       : workout.getWorkoutTitle(),
                                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                                 ),
-                                TextWithIcon.time(workout.date),
+                                StatDisplay.time(workout.date),
                               ],
                             ),
                             Column(

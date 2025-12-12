@@ -4,6 +4,7 @@ import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/helpers/number_helper.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
+import 'package:gymvision/widgets/components/workouts/set_info_widget.dart';
 
 class WorkoutExerciseSummary extends StatefulWidget {
   final WorkoutExercise workoutExercise;
@@ -39,6 +40,7 @@ class _WorkoutExerciseSummaryState extends State<WorkoutExerciseSummary> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              SetInfoWidget(info: set.info, small: true),
               if (isBest)
                 Padding(
                   padding: EdgeInsetsGeometry.only(right: 5),
@@ -117,7 +119,7 @@ class _WorkoutExerciseSummaryState extends State<WorkoutExerciseSummary> {
                   Padding(
                     padding: EdgeInsetsGeometry.only(top: 1),
                     child: getGroupedSetsBreakdown(
-                      widget.workoutExercise.getSets(),
+                      widget.workoutExercise.getDoneSets(),
                       betSetKey: widget.bestSet == null ? null : getSetGroupKey(widget.bestSet!),
                     ),
                   ),

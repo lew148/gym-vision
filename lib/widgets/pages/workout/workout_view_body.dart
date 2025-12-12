@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_confetti/flutter_confetti.dart';
 import 'package:gymvision/classes/db/workouts/workout_category.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
+import 'package:gymvision/helpers/functions/confetti_helper.dart';
 import 'package:gymvision/helpers/functions/dialog_helper.dart';
 import 'package:gymvision/helpers/functions/workout_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
@@ -20,7 +20,7 @@ import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/widgets/components/custom_reorderable_list.dart';
 import 'package:gymvision/widgets/components/rest_timer.dart';
 import 'package:gymvision/widgets/components/stateless/prop_display.dart';
-import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
+import 'package:gymvision/widgets/components/stateless/stat_display.dart';
 import 'package:gymvision/widgets/components/time_elapsed.dart';
 import 'package:gymvision/widgets/components/workouts/workout_exercise_widget.dart';
 import 'package:gymvision/widgets/components/workouts/workout_options_menu.dart';
@@ -98,7 +98,7 @@ class WorkoutViewBody extends StatelessWidget {
           if (context.mounted && wasActiveWorkout) await context.read<RestTimerProvider>().clearTimer();
           if (context.mounted) {
             Navigator.pop(context);
-            Confetti.launch(context, options: const ConfettiOptions(particleCount: 200, spread: 70, y: 0.8));
+            ConfettiHelper.straightUp(context);
             await BottomSheetHelper.showCloseableBottomSheet(context, SharableWorkoutSummary(workoutId: workout.id!));
           }
 
@@ -272,10 +272,10 @@ class WorkoutViewBody extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextWithIcon.date(workout.date, muted: false),
-                TextWithIcon.time(workout.date, dtEnd: workout.endDate),
+                StatDisplay.date(workout.date, muted: false),
+                StatDisplay.time(workout.date, dtEnd: workout.endDate),
                 workout.isFinished()
-                    ? TextWithIcon.timeElapsed(workout.getDuration())
+                    ? StatDisplay.timeElapsed(workout.getDuration())
                     : TimeElapsed(
                         since: workout.date,
                         end: workout.endDate,

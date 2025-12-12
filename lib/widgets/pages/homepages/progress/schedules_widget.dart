@@ -14,7 +14,7 @@ import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:gymvision/widgets/components/stateless/header.dart';
 import 'package:gymvision/widgets/components/stateless/options_menu.dart';
 import 'package:gymvision/widgets/components/stateless/splash_text.dart';
-import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
+import 'package:gymvision/widgets/components/stateless/stat_display.dart';
 import 'package:gymvision/widgets/forms/schedule_form.dart';
 import 'package:gymvision/static_data/helpers.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -63,7 +63,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
             children: [
               Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
               si?.scheduleCategories == null || si!.scheduleCategories!.isEmpty
-                  ? TextWithIcon.rest()
+                  ? StatDisplay.rest()
                   : Expanded(
                       child: Wrap(
                         alignment: WrapAlignment.end,

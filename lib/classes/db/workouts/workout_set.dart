@@ -2,6 +2,7 @@ import 'package:gymvision/classes/db/_dbo.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/classes/exercise.dart';
+import 'package:gymvision/classes/set_info.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 
 class WorkoutSet extends DBO {
@@ -15,6 +16,7 @@ class WorkoutSet extends DBO {
 
   // non-db props
   WorkoutExercise? workoutExercise;
+  SetInfo? info;
 
   WorkoutSet({
     super.id,
@@ -47,4 +49,28 @@ class WorkoutSet extends DBO {
   }
 
   Workout? getWorkout() => workoutExercise?.workout;
+
+  bool isGreaterThan(WorkoutSet set) {
+    final thisWeight = weight ?? 0;
+    final thisReps = reps ?? 0;
+    final compareWeight = set.weight ?? 0;
+    final compareReps = set.reps ?? 0;
+
+    if (thisWeight > compareWeight) return true; // greater weight
+    if (thisWeight < compareWeight) return false; // smaller weight
+
+    // same weight
+    return thisReps > compareReps;
+  }
+
+  void setInfo({WorkoutSet? pr, WorkoutSet? first}) {
+    if (!done) return;
+
+    info = SetInfo(isFirstUse: id == first?.id);
+
+    if (pr != null) {
+      if (id == pr.id) info!.isPR = true;
+      if (weight == pr.weight && reps == pr.reps) info!.isPRMatch = true;
+    }
+  }
 }

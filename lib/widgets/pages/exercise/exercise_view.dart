@@ -10,7 +10,7 @@ import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/header.dart';
 import 'package:gymvision/widgets/components/stateless/splash_text.dart';
-import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
+import 'package:gymvision/widgets/components/stateless/stat_display.dart';
 import 'package:gymvision/widgets/debug_scaffold.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
@@ -97,9 +97,9 @@ class _ExerciseViewState extends State<ExerciseView> {
             ),
             Row(
               children: [
-                TextWithIcon.weight(pr.weight),
+                StatDisplay.weight(pr.weight),
                 const Padding(padding: EdgeInsets.all(5)),
-                TextWithIcon.reps(pr.reps),
+                StatDisplay.reps(pr.reps),
               ],
             ),
           ]),

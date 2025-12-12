@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
+import 'package:gymvision/helpers/functions/confetti_helper.dart';
 import 'package:gymvision/helpers/number_helper.dart';
 import 'package:gymvision/models/db_models/workouts/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workouts/workout_set_model.dart';
@@ -118,43 +119,59 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
         ),
       ];
 
-  void onAddSubmit(Exercise exercise, {bool addThree = false}) async {
-    if (!_formKey.currentState!.validate()) return;
+  Future onSubmit({Exercise? exercise, bool addThree = false}) async {
+    WorkoutSet? set;
+    final max = await WorkoutSetModel.getPR(widget.exerciseIdentifier);
 
-    Navigator.pop(context);
+    if (exercise == null) {
+      set = await onEditSubmit();
+    } else {
+      set = await onAddSubmit(exercise, addThree: addThree);
+    }
+
+    if (set == null) return;
+    if (mounted) Navigator.pop(context);
+
+    if (max != null && set.done && set.isGreaterThan(max)) {
+      if (mounted) ConfettiHelper.bothSidesInward(context);
+    }
+  }
+
+  Future<WorkoutSet?> onAddSubmit(Exercise exercise, {bool addThree = false}) async {
+    if (!_formKey.currentState!.validate()) return null;
 
     try {
-      var we = await WorkoutExerciseModel.getWorkoutExerciseByWorkoutAndExercise(
+      final we = await WorkoutExerciseModel.getWorkoutExerciseByWorkoutAndExercise(
         widget.workoutId,
         exercise.identifier,
         createIfNotFound: true,
       );
 
+      final set = WorkoutSet(
+        workoutExerciseId: we!.id!,
+        weight: NumberHelper.parseDouble(_weightController.text),
+        reps: int.parse(NumberHelper.getNumberString(_repsController.text)),
+        time: _duration,
+        distance: NumberHelper.parseDouble(_distanceController.text),
+        calsBurned: int.parse(NumberHelper.getNumberString(_calsBurnedController.text)),
+        done: _complete,
+      );
+
       for (int i = 0; i < (addThree ? 3 : 1); i++) {
-        await WorkoutSetModel.insert(
-          WorkoutSet(
-            workoutExerciseId: we!.id!,
-            weight: NumberHelper.parseDouble(_weightController.text),
-            reps: int.parse(NumberHelper.getNumberString(_repsController.text)),
-            time: _duration,
-            distance: NumberHelper.parseDouble(_distanceController.text),
-            calsBurned: int.parse(NumberHelper.getNumberString(_calsBurnedController.text)),
-            done: _complete,
-          ),
-        );
+        await WorkoutSetModel.insert(set);
       }
 
       widget.onSuccess();
+      return set;
     } catch (ex) {
-      if (!mounted) return;
-      AppHelper.showSnackBar(context, 'Failed to add set(s) to workout');
+      if (mounted) AppHelper.showSnackBar(context, 'Failed to add set(s) to workout');
+      return null;
     }
   }
 
-  void onEditSubmit() async {
-    if (!_formKey.currentState!.validate()) return;
+  Future<WorkoutSet?> onEditSubmit() async {
+    if (!_formKey.currentState!.validate()) return null;
 
-    Navigator.pop(context);
     bool hasChanges = false;
 
     try {
@@ -195,13 +212,14 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
         hasChanges = true;
       }
 
-      if (!hasChanges) return;
+      if (!hasChanges) return set;
 
       await WorkoutSetModel.update(set);
       widget.onSuccess();
+      return set;
     } catch (ex) {
-      if (!mounted) return;
-      AppHelper.showSnackBar(context, 'Failed to edit workout set');
+      if (mounted) AppHelper.showSnackBar(context, 'Failed to edit workout set');
+      return null;
     }
   }
 
@@ -309,13 +327,13 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
                             Button.delete(onTap: onDeleteButtonTap),
                             Button(icon: Icons.copy_rounded, onTap: onCopySetButtonTap),
                           ]),
-                          Button.submit(onTap: onEditSubmit),
+                          Button.submit(onTap: onSubmit),
                         ]
                       : [
                           exercise.type != ExerciseType.cardio
-                              ? Button(onTap: () => onAddSubmit(exercise, addThree: true), text: 'Add 3')
+                              ? Button(onTap: () => onSubmit(exercise: exercise, addThree: true), text: 'Add 3')
                               : const SizedBox.shrink(),
-                          Button.submit(onTap: () => onAddSubmit(exercise), text: 'Add'),
+                          Button.submit(onTap: () => onSubmit(exercise: exercise), text: 'Add'),
                         ],
                 ),
               ),

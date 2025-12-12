@@ -9,7 +9,7 @@ import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/custom_vertical_divider.dart';
 import 'package:gymvision/widgets/components/stateless/prop_display.dart';
-import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
+import 'package:gymvision/widgets/components/stateless/stat_display.dart';
 import 'package:gymvision/widgets/components/workouts/workout_options_menu.dart';
 
 class WorkoutCard extends StatelessWidget {
@@ -57,9 +57,9 @@ class WorkoutCard extends StatelessWidget {
                           children: [
                             Text(summary.bestSetExercise!.getFullName()),
                             Row(children: [
-                              TextWithIcon.weight(summary.bestSet!.weight, muted: true),
+                              StatDisplay.weight(summary.bestSet!.weight, muted: true),
                               const Padding(padding: EdgeInsets.symmetric(horizontal: 10)),
-                              TextWithIcon.reps(summary.bestSet!.reps, muted: true),
+                              StatDisplay.reps(summary.bestSet!.reps, muted: true),
                             ]),
                           ],
                         ),
@@ -160,12 +160,12 @@ class WorkoutCard extends StatelessWidget {
                           workout.getWorkoutTitle(),
                           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                         ),
-                        if (isDisplay) TextWithIcon.date(workout.date),
+                        if (isDisplay) StatDisplay.date(workout.date),
                         Row(children: [
-                          TextWithIcon.time(workout.date),
+                          StatDisplay.time(workout.date),
                           if (workout.isFinished()) ...[
                             const Padding(padding: EdgeInsetsGeometry.all(5)),
-                            TextWithIcon.timeElapsed(workout.getDuration()),
+                            StatDisplay.timeElapsed(workout.getDuration()),
                           ],
                         ]),
                       ],

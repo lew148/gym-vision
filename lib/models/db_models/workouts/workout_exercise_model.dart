@@ -49,7 +49,10 @@ class WorkoutExerciseModel {
 
     if (withSets) {
       for (final we in workoutExercises) {
-        we.workoutSets = await WorkoutSetModel.getSetsForWorkoutExercise(we.id!);
+        we.workoutSets = await WorkoutSetModel.getSetsForWorkoutExercise(
+          we.id!,
+          exerciseIdentifier: we.exerciseIdentifier,
+        );
       }
     }
 

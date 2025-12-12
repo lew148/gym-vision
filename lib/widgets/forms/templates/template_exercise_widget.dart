@@ -15,7 +15,7 @@ import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/options_menu.dart';
 import 'package:gymvision/widgets/components/stateless/shimmer_load.dart';
-import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
+import 'package:gymvision/widgets/components/stateless/stat_display.dart';
 import 'package:gymvision/widgets/forms/templates/template_set_form.dart';
 import 'package:gymvision/widgets/pages/exercise/exercise_view.dart';
 import 'package:gymvision/static_data/enums.dart';
@@ -124,15 +124,15 @@ class _TemplateExerciseWidgetState extends State<TemplateExerciseWidget> {
 
   List<Widget> getWeightedSetContents(WorkoutTemplateSet set, int setNumber) => [
         getCheckAndIndex(3, set, setNumber),
-        Expanded(flex: 4, child: TextWithIcon.weight(set.weight, alignment: MainAxisAlignment.start)),
-        Expanded(flex: 4, child: TextWithIcon.reps(set.reps, alignment: MainAxisAlignment.start)),
+        Expanded(flex: 4, child: StatDisplay.weight(set.weight, alignment: MainAxisAlignment.start)),
+        Expanded(flex: 4, child: StatDisplay.reps(set.reps, alignment: MainAxisAlignment.start)),
       ];
 
   List<Widget> getCardioSetContents(WorkoutTemplateSet set, int setNumber) => [
         getCheckAndIndex(2, set, setNumber),
-        Expanded(flex: 4, child: TextWithIcon.duration(set.time, alignment: MainAxisAlignment.center)),
-        Expanded(flex: 4, child: TextWithIcon.distance(set.distance, alignment: MainAxisAlignment.center)),
-        Expanded(flex: 4, child: TextWithIcon.caloriesBurned(set.calsBurned, alignment: MainAxisAlignment.center)),
+        Expanded(flex: 4, child: StatDisplay.duration(set.time, alignment: MainAxisAlignment.center)),
+        Expanded(flex: 4, child: StatDisplay.distance(set.distance, alignment: MainAxisAlignment.center)),
+        Expanded(flex: 4, child: StatDisplay.caloriesBurned(set.calsBurned, alignment: MainAxisAlignment.center)),
       ];
 
   Widget getSetWidgetInner(WorkoutTemplateSet set, int setNumber) => Padding(

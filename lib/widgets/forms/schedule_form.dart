@@ -9,7 +9,7 @@ import 'package:gymvision/models/db_models/schedule_model.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
-import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
+import 'package:gymvision/widgets/components/stateless/stat_display.dart';
 import 'package:gymvision/widgets/forms/fields/category_picker.dart';
 import 'package:gymvision/widgets/forms/fields/custom_form_field.dart';
 import 'package:gymvision/static_data/enums.dart';
@@ -160,7 +160,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
               children: [
                 Text(selectedType == ScheduleType.split ? 'Day $day' : DateTimeHelper.dayStrings[day - 1]),
                 categoriesForDay == null || categoriesForDay.isEmpty
-                    ? TextWithIcon.rest()
+                    ? StatDisplay.rest()
                     : Expanded(
                         child: Padding(
                           padding: const EdgeInsetsGeometry.only(left: 10),

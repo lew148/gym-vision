@@ -16,7 +16,7 @@ import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/options_menu.dart';
 import 'package:gymvision/widgets/components/stateless/shimmer_load.dart';
-import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
+import 'package:gymvision/widgets/components/stateless/stat_display.dart';
 import 'package:gymvision/widgets/components/workouts/workout_set_widget.dart';
 import 'package:gymvision/widgets/forms/fields/custom_checkbox.dart';
 import 'package:gymvision/widgets/forms/workout_set_form.dart';
@@ -56,7 +56,10 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   @override
   void initState() {
     super.initState();
-    workoutSetsFuture = WorkoutSetModel.getSetsForWorkoutExercise(widget.workoutExercise.id!);
+    workoutSetsFuture = WorkoutSetModel.getSetsForWorkoutExercise(
+      widget.workoutExercise.id!,
+      exerciseIdentifier: widget.workoutExercise.exerciseIdentifier,
+    );
     exerciseIdentifier = widget.workoutExercise.exerciseIdentifier;
     exercise = widget.workoutExercise.exercise ?? DefaultExercisesModel.getExerciseByIdentifier(exerciseIdentifier)!;
     isDisplay = widget.isDisplay;
@@ -64,7 +67,10 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
   }
 
   void reload() => setState(() {
-        workoutSetsFuture = WorkoutSetModel.getSetsForWorkoutExercise(widget.workoutExercise.id!);
+        workoutSetsFuture = WorkoutSetModel.getSetsForWorkoutExercise(
+          widget.workoutExercise.id!,
+          exerciseIdentifier: widget.workoutExercise.exerciseIdentifier,
+        );
       });
 
   void onAddSetsButtonTap() async {
@@ -76,7 +82,10 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         onSuccess: () {
           setState(() {
             if (!dropped) dropped = true;
-            workoutSetsFuture = WorkoutSetModel.getSetsForWorkoutExercise(widget.workoutExercise.id!);
+            workoutSetsFuture = WorkoutSetModel.getSetsForWorkoutExercise(
+              widget.workoutExercise.id!,
+              exerciseIdentifier: widget.workoutExercise.exerciseIdentifier,
+            );
           });
 
           if (widget.onDrop != null) widget.onDrop!(widget.workoutExercise.id!);
@@ -153,8 +162,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                 Expanded(
                   child: isDisplay
                       ? Column(children: [
-                          TextWithIcon.date(widget.workoutExercise.workout!.date, muted: false),
-                          TextWithIcon.time(
+                          StatDisplay.date(widget.workoutExercise.workout!.date, muted: false),
+                          StatDisplay.time(
                             widget.workoutExercise.workout!.date,
                             dtEnd: widget.workoutExercise.workout?.endDate,
                           ),

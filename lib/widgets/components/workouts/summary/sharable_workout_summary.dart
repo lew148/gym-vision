@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_confetti/flutter_confetti.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/workout_summary.dart';
 import 'package:gymvision/constants.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
+import 'package:gymvision/helpers/functions/confetti_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workouts/workout_model.dart';
 import 'package:gymvision/static_data/helpers.dart';
@@ -15,7 +15,7 @@ import 'package:gymvision/widgets/components/stateless/logo.dart';
 import 'package:gymvision/widgets/components/stateless/prop_display.dart';
 import 'package:gymvision/widgets/components/stateless/shimmer_load.dart';
 import 'package:gymvision/widgets/components/stateless/splash_text.dart';
-import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
+import 'package:gymvision/widgets/components/stateless/stat_display.dart';
 import 'package:gymvision/widgets/components/workouts/summary/workout_exercise_summary.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
@@ -59,7 +59,7 @@ class SharableWorkoutSummary extends StatelessWidget {
 
               await SharePlus.instance.share(ShareParams(
                 files: [XFile(file.path)],
-                text: '${DateTimeHelper.getDateOrDayStr(workout.date)}\'s ${workout.getWorkoutTitle()} 🏋️ #Forged',
+                text: '${DateTimeHelper.getDateOrDayStr(workout.date)}\'s ${workout.getWorkoutTitle()}',
               ));
             } catch (e) {
               if (context.mounted) AppHelper.showSnackBar(context, 'Could not share summary');
@@ -149,12 +149,12 @@ class SharableWorkoutSummary extends StatelessWidget {
                                       workout.getWorkoutTitle(),
                                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                                     ),
-                                    TextWithIcon.date(workout.date),
+                                    StatDisplay.date(workout.date),
                                     Row(children: [
-                                      TextWithIcon.time(workout.date),
+                                      StatDisplay.time(workout.date),
                                       if (workout.isFinished()) ...[
                                         const Padding(padding: EdgeInsetsGeometry.all(5)),
-                                        TextWithIcon.timeElapsed(workout.getDuration()),
+                                        StatDisplay.timeElapsed(workout.getDuration()),
                                       ],
                                     ]),
                                   ],
@@ -208,8 +208,7 @@ class SharableWorkoutSummary extends StatelessWidget {
                   Button.elevated(
                     icon: Icons.celebration_rounded,
                     text: 'Relive the Glory!',
-                    onTap: () => Confetti.launch(context,
-                        options: const ConfettiOptions(particleCount: 200, spread: 70, y: 0.8)),
+                    onTap: () => ConfettiHelper.straightUp(context),
                   ),
                   Button.elevated(icon: Icons.share_rounded, text: 'Share Workout', onTap: shareCard),
                 ],

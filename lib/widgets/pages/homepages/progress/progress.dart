@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
-import 'package:gymvision/widgets/components/stateless/text_with_icon.dart';
+import 'package:gymvision/widgets/components/stateless/stat_display.dart';
 import 'package:gymvision/widgets/pages/homepages/progress/schedules_widget.dart';
 import 'package:gymvision/widgets/pages/homepages/progress/templates.dart';
 
@@ -22,7 +22,7 @@ class _ProgressState extends State<Progress> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextWithIcon(icon: icon, text: text, iconSize: 20, primary: true),
+                StatDisplay(icon: icon, text: text, iconSize: 20, primary: true),
                 Icon(Icons.chevron_right_rounded, color: Theme.of(context).colorScheme.primary),
               ],
             ),
