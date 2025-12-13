@@ -48,12 +48,15 @@ class _RestTimerState extends State<RestTimer> {
     }
   }
 
-  void showPicker() => PickerHelper.showDurationPicker(
-        context,
-        CupertinoTimerPickerMode.ms,
-        onSubmit: (Duration d) => provider.setTimer(context: context, duration: d),
-        isTimer: true,
-      );
+  void showPicker() => PickerHelper.showDurationPicker(context, CupertinoTimerPickerMode.ms,
+          onSubmit: (Duration d) => provider.setTimer(context: context, duration: d),
+          isTimer: true,
+          sampleDurations: [
+            Duration(minutes: 5),
+            Duration(minutes: 3),
+            Duration(minutes: 1),
+            Duration(seconds: 30),
+          ]);
 
   void onTimerDelete() async => await provider.clearTimer();
 

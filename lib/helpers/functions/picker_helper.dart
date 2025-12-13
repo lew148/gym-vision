@@ -38,6 +38,7 @@ class PickerHelper {
     Function(Duration)? onSubmit,
     Duration? initialDuration,
     bool isTimer = false,
+    List<Duration>? sampleDurations,
   }) async =>
       await BottomSheetHelper.showCloseableBottomSheet(
         context,
@@ -47,6 +48,7 @@ class PickerHelper {
           mode: mode,
           initialValue: initialDuration,
           isTimer: isTimer,
+          sampleDurations: sampleDurations,
         ),
       );
 }

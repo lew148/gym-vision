@@ -8,6 +8,7 @@ class DurationPicker extends StatefulWidget {
   final Function(Duration d)? onChange;
   final Duration? initialValue;
   final bool isTimer;
+  final List<Duration>? sampleDurations;
 
   const DurationPicker({
     super.key,
@@ -16,6 +17,7 @@ class DurationPicker extends StatefulWidget {
     this.onChange,
     this.initialValue,
     this.isTimer = false,
+    this.sampleDurations,
   }) : assert(
           (onChange != null || onSubmit != null) || (onChange == null || onSubmit == null),
           'Must provide EITHER onChange OR onSubmit to DurationPicker',
@@ -37,7 +39,9 @@ class _DurationPickerState extends State<DurationPicker> {
     value = widget.initialValue ?? Duration.zero;
   }
 
-  List<Duration> getSampleDurations() => [
+  List<Duration> getSampleDurations() =>
+      widget.sampleDurations ??
+      [
         if (widget.mode != CupertinoTimerPickerMode.ms) const Duration(hours: 1),
         const Duration(minutes: 30),
         const Duration(minutes: 15),

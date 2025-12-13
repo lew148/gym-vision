@@ -8,12 +8,14 @@ class DurationField extends StatelessWidget {
   final String label;
   final Duration duration;
   final Function(Duration newDuration) onChange;
+  final List<Duration>? sampleDurations;
 
   const DurationField({
     super.key,
     required this.label,
     required this.duration,
     required this.onChange,
+    this.sampleDurations,
   });
 
   final double _adjustmentPadding = 2.5;
@@ -34,6 +36,7 @@ class DurationField extends StatelessWidget {
                   CupertinoTimerPickerMode.hms,
                   onChange: onChange,
                   initialDuration: duration,
+                  sampleDurations: sampleDurations,
                 ),
                 child: Padding(
                   padding: EdgeInsetsGeometry.symmetric(vertical: _adjustmentPadding),

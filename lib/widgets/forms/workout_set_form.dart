@@ -74,8 +74,11 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
     _duration = widget.workoutSet?.time ?? const Duration();
   }
 
-  void setWeight(String s) => _weightController.text = s;
-  void setReps(String s) => _repsController.text = s;
+  void setWeight(String? s) => _weightController.text = s ?? '';
+  void setReps(String? s) => _repsController.text = s ?? '';
+  void setDuration(Duration? d) => setState(() => _duration = d ?? Duration.zero);
+  void setDistance(String? s) => _distanceController.text = s ?? '';
+  void setCalsBurned(String? s) => _calsBurnedController.text = s ?? '';
 
   List<Widget> getWeightFields(Exercise ex) {
     return [
@@ -103,7 +106,14 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
         DurationField(
           label: 'Time',
           duration: _duration,
-          onChange: (Duration newDuration) => setState(() => _duration = newDuration),
+          onChange: setDuration,
+          sampleDurations: [
+            Duration(hours: 1),
+            Duration(minutes: 30),
+            Duration(minutes: 15),
+            Duration(minutes: 10),
+            Duration(minutes: 5),
+          ],
         ),
         CustomFormField.double(
           controller: _distanceController,
@@ -259,6 +269,17 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
     widget.onSuccess();
   }
 
+  Button getOverrideButton(String name, WorkoutSet set) => Button(
+        text: name,
+        onTap: () {
+          setWeight(NumberHelper.doubleToString(set.weight));
+          setReps(set.reps?.toString());
+          setDuration(set.time);
+          setDistance(set.distance?.toString());
+          setCalsBurned(set.calsBurned?.toString());
+        },
+      );
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Exercise?>(
@@ -274,8 +295,8 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
         }
 
         final Exercise exercise = snapshot.data!;
-        final MapEntry? maxStrings = exercise.exerciseDetails?.getMaxStrings();
-        final MapEntry? lastStrings = exercise.exerciseDetails?.getLastStrings();
+        final WorkoutSet? last = exercise.exerciseDetails?.last;
+        final WorkoutSet? max = exercise.type == ExerciseType.cardio ? null : exercise.exerciseDetails?.max;
 
         return Form(
           key: _formKey,
@@ -293,26 +314,14 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
                       _complete = value;
                     }),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      if (lastStrings != null)
-                        Button(
-                          text: 'Last',
-                          onTap: () {
-                            if (lastStrings.key != null) setWeight(lastStrings.key);
-                            if (lastStrings.value != null) setReps(lastStrings.value);
-                          },
-                        ),
-                      if (maxStrings != null)
-                        Button(
-                            text: 'Max',
-                            onTap: () {
-                              if (maxStrings.key != null) setWeight(maxStrings.key);
-                              if (maxStrings.value != null) setReps(maxStrings.value);
-                            }),
-                    ],
-                  ),
+                  if (exercise.exerciseDetails != null)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        if (last != null) getOverrideButton('Last', last),
+                        if (max != null) getOverrideButton('Max', max),
+                      ],
+                    ),
                 ],
               ),
               if (exercise.type == ExerciseType.strength) ...getWeightFields(exercise),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/workout_templates/workout_template_set.dart';
+import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/number_helper.dart';
@@ -70,8 +71,11 @@ class _TemplateSetFormState extends State<TemplateSetForm> {
     _duration = widget.templateSet?.time ?? const Duration();
   }
 
-  void setWeight(String s) => _weightController.text = s;
-  void setReps(String s) => _repsController.text = s;
+  void setWeight(String? s) => _weightController.text = s ?? '';
+  void setReps(String? s) => _repsController.text = s ?? '';
+  void setDuration(Duration? d) => setState(() => _duration = d ?? Duration.zero);
+  void setDistance(String? s) => _distanceController.text = s ?? '';
+  void setCalsBurned(String? s) => _calsBurnedController.text = s ?? '';
 
   List<Widget> getWeightFields(Exercise ex) {
     return [
@@ -99,7 +103,7 @@ class _TemplateSetFormState extends State<TemplateSetForm> {
         DurationField(
           label: 'Time',
           duration: _duration,
-          onChange: (Duration newDuration) => setState(() => _duration = newDuration),
+          onChange: setDuration,
         ),
         CustomFormField.double(
           controller: _distanceController,
@@ -231,6 +235,17 @@ class _TemplateSetFormState extends State<TemplateSetForm> {
     widget.onSuccess();
   }
 
+  Button getOverrideButton(String name, WorkoutSet set) => Button(
+        text: name,
+        onTap: () {
+          setWeight(NumberHelper.doubleToString(set.weight));
+          setReps(set.reps?.toString());
+          setDuration(set.time);
+          setDistance(set.distance?.toString());
+          setCalsBurned(set.calsBurned?.toString());
+        },
+      );
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Exercise?>(
@@ -246,8 +261,8 @@ class _TemplateSetFormState extends State<TemplateSetForm> {
         }
 
         final Exercise exercise = snapshot.data!;
-        final MapEntry? maxStrings = exercise.exerciseDetails?.getMaxStrings();
-        final MapEntry? lastStrings = exercise.exerciseDetails?.getLastStrings();
+        final WorkoutSet? last = exercise.exerciseDetails?.last;
+        final WorkoutSet? max = exercise.exerciseDetails?.max;
 
         return Form(
           key: _formKey,
@@ -258,22 +273,8 @@ class _TemplateSetFormState extends State<TemplateSetForm> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  if (lastStrings != null)
-                    Button(
-                      text: 'Last',
-                      onTap: () {
-                        if (lastStrings.key != null) setWeight(lastStrings.key);
-                        if (lastStrings.value != null) setReps(lastStrings.value);
-                      },
-                    ),
-                  if (maxStrings != null)
-                    Button(
-                      text: 'Max',
-                      onTap: () {
-                        if (maxStrings.key != null) setWeight(maxStrings.key);
-                        if (maxStrings.value != null) setReps(maxStrings.value);
-                      },
-                    ),
+                  if (last != null) getOverrideButton('Last', last),
+                  if (max != null) getOverrideButton('Max', max),
                 ],
               ),
               if (exercise.type == ExerciseType.strength) ...getWeightFields(exercise),
