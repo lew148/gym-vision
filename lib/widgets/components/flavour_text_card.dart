@@ -46,7 +46,10 @@ class _FlavourTextCardState extends State<FlavourTextCard> {
                       Flexible(
                         child: Text(
                           snapshot.data!.getFlavourText()!.message,
-                          style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
                       const Padding(padding: EdgeInsetsGeometry.all(5)),
@@ -55,6 +58,7 @@ class _FlavourTextCardState extends State<FlavourTextCard> {
                         child: Icon(
                           Icons.close_rounded,
                           size: 20,
+                          weight: 20,
                           color: Theme.of(context).colorScheme.onPrimary,
                         ),
                       ),
