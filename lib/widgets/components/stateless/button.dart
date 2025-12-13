@@ -43,7 +43,7 @@ class Button extends StatelessWidget {
   final Function()? onLongTap;
   final bool disabled;
   final bool elevated;
-  final bool isSubmit;
+  final bool solid;
 
   const Button({
     super.key,
@@ -54,7 +54,7 @@ class Button extends StatelessWidget {
     this.style,
     this.disabled = false,
     this.elevated = false,
-    this.isSubmit = false,
+    this.solid = false,
   }) : assert(text != null || icon != null, 'Must provide text and/or icon to Button');
 
   factory Button.elevated({
@@ -92,7 +92,7 @@ class Button extends StatelessWidget {
   factory Button.submit({required Function() onTap, String? text}) => Button(
         onTap: onTap,
         text: text ?? 'Done',
-        isSubmit: true,
+        solid: true,
       );
 
   factory Button.cancel({required Function() onTap}) => Button(
@@ -121,7 +121,7 @@ class Button extends StatelessWidget {
   Widget build(BuildContext context) {
     final altColour = Theme.of(context).colorScheme.secondary;
 
-    if (isSubmit) {
+    if (solid) {
       return Container(
         padding: const EdgeInsetsGeometry.symmetric(vertical: 2.5),
         child: ElevatedButton(

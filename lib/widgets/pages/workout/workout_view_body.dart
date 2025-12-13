@@ -19,6 +19,7 @@ import 'package:gymvision/providers/history_provider.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/widgets/components/custom_reorderable_list.dart';
 import 'package:gymvision/widgets/components/rest_timer.dart';
+import 'package:gymvision/widgets/components/stateless/options_menu.dart';
 import 'package:gymvision/widgets/components/stateless/prop_display.dart';
 import 'package:gymvision/widgets/components/stateless/stat_display.dart';
 import 'package:gymvision/widgets/components/time_elapsed.dart';
@@ -164,36 +165,41 @@ class WorkoutViewBody extends StatelessWidget {
       provider.reload();
     }
 
-    Future<void> onCopyPreviousWorkoutTap() => BottomSheetHelper.showCloseableBottomSheet(
-        context,
-        Column(children: [
-          Button.elevated(
-            text: 'Last Similar Workout',
-            onTap: () async {
-              Navigator.pop(context);
-              final success = await WorkoutModel.copyLastSimilarWorkout(workout.id!, categories);
-              if (success) {
-                provider.reload();
-                return;
-              }
+    void onCopyPreviousWorkoutTap() => OptionsMenu.showOptionsMenu(
+          context,
+          buttons: [
+            Button(
+              icon: Icons.stream_rounded,
+              text: 'Last Similar Workout',
+              style: ButtonCustomStyle.primaryIconOnly(),
+              onTap: () async {
+                Navigator.pop(context);
+                final success = await WorkoutModel.copyLastSimilarWorkout(workout.id!, categories);
+                if (success) {
+                  provider.reload();
+                  return;
+                }
 
-              if (context.mounted) AppHelper.showSnackBar(context, 'There is nothing to copy');
-            },
-          ),
-          Button.elevated(
-            text: 'Last Workout',
-            onTap: () async {
-              Navigator.pop(context);
-              final success = await WorkoutModel.copyLastWorkout(workout.id!);
-              if (success) {
-                provider.reload();
-                return;
-              }
+                if (context.mounted) AppHelper.showSnackBar(context, 'There is nothing to copy');
+              },
+            ),
+            Button(
+              icon: Icons.first_page_rounded,
+              text: 'Last Workout',
+              style: ButtonCustomStyle.primaryIconOnly(),
+              onTap: () async {
+                Navigator.pop(context);
+                final success = await WorkoutModel.copyLastWorkout(workout.id!);
+                if (success) {
+                  provider.reload();
+                  return;
+                }
 
-              if (context.mounted) AppHelper.showSnackBar(context, 'There is nothing to copy');
-            },
-          ),
-        ]));
+                if (context.mounted) AppHelper.showSnackBar(context, 'There is nothing to copy');
+              },
+            ),
+          ],
+        );
 
     Future onCreateFromTemplateTap() async {
       Navigator.push(

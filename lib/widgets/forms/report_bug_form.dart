@@ -68,7 +68,7 @@ class _ReportBugFormState extends State<ReportBugForm> {
           padding: const EdgeInsetsGeometry.only(top: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
-            children: [Button(text: 'Report', onTap: onSubmit)],
+            children: [Button.submit(text: 'Report', onTap: onSubmit)],
           ),
         ),
       ]),
