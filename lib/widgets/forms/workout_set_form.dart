@@ -56,7 +56,7 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
     _complete = _isEdit ? widget.workoutSet?.done ?? false : false;
 
     _weightController = TextEditingController(
-      text: _isEdit ? NumberHelper.blankIfZero(NumberHelper.truncateDouble(widget.workoutSet!.weight)) : null,
+      text: _isEdit ? NumberHelper.blankIfZero(NumberHelper.doubleToString(widget.workoutSet!.weight)) : null,
     );
 
     _repsController = TextEditingController(
@@ -64,7 +64,7 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
     );
 
     _distanceController = TextEditingController(
-      text: _isEdit ? NumberHelper.blankIfZero(NumberHelper.truncateDouble(widget.workoutSet!.distance)) : null,
+      text: _isEdit ? NumberHelper.blankIfZero(NumberHelper.doubleToString(widget.workoutSet!.distance)) : null,
     );
 
     _calsBurnedController = TextEditingController(

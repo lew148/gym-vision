@@ -52,7 +52,7 @@ class _TemplateSetFormState extends State<TemplateSetForm> {
     _isEdit = widget.templateSet != null;
 
     _weightController = TextEditingController(
-      text: _isEdit ? NumberHelper.blankIfZero(NumberHelper.truncateDouble(widget.templateSet!.weight)) : null,
+      text: _isEdit ? NumberHelper.blankIfZero(NumberHelper.doubleToString(widget.templateSet!.weight)) : null,
     );
 
     _repsController = TextEditingController(
@@ -60,7 +60,7 @@ class _TemplateSetFormState extends State<TemplateSetForm> {
     );
 
     _distanceController = TextEditingController(
-      text: _isEdit ? NumberHelper.blankIfZero(NumberHelper.truncateDouble(widget.templateSet!.distance)) : null,
+      text: _isEdit ? NumberHelper.blankIfZero(NumberHelper.doubleToString(widget.templateSet!.distance)) : null,
     );
 
     _calsBurnedController = TextEditingController(

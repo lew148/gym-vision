@@ -18,14 +18,14 @@ class ExerciseDetails {
   MapEntry<String?, String?>? getMaxStrings() => max == null
       ? null
       : MapEntry(
-          max!.weight! == 0 ? null : NumberHelper.truncateDouble(max!.weight),
+          max!.weight! == 0 ? null : NumberHelper.doubleToString(max!.weight),
           max!.reps! == 0 ? null : max!.reps.toString(),
         );
 
   MapEntry<String?, String?>? getLastStrings() => last == null
       ? null
       : MapEntry(
-          last!.weight! == 0 ? null : NumberHelper.truncateDouble(last!.weight),
+          last!.weight! == 0 ? null : NumberHelper.doubleToString(last!.weight),
           last!.reps! == 0 ? null : last!.reps.toString(),
         );
 }

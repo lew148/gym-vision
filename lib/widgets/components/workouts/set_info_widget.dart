@@ -26,7 +26,7 @@ class SetInfoWidget extends StatelessWidget {
           ),
         if (info?.isFirstUse ?? false)
           Icon(
-            Icons.flag_rounded,
+            Icons.fiber_new_outlined,
             color: Theme.of(context).colorScheme.primary,
             size: small ? 16 : null,
           ),

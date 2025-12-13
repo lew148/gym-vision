@@ -5,6 +5,8 @@ import 'package:gymvision/db/table_extensions.dart';
 import 'package:gymvision/helpers/database_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workouts/workout_exercise_model.dart';
+import 'package:gymvision/models/default_exercises_model.dart';
+import 'package:gymvision/static_data/enums.dart';
 
 class WorkoutSetModel {
   static Future<List<WorkoutSet>> getSetsForWorkoutExercise(int workoutExerciseId, {String? exerciseIdentifier}) async {
@@ -19,10 +21,11 @@ class WorkoutSetModel {
 
     final allSets = await getSetsForExercise(exerciseIdentifier);
     final pr = await getPR(exerciseIdentifier, sets: allSets);
-    var first = await getFirst(exerciseIdentifier, sets: allSets);
+    final first = await getFirst(exerciseIdentifier, sets: allSets);
+    final isCardio = DefaultExercisesModel.getExerciseByIdentifier(exerciseIdentifier)?.type == ExerciseType.cardio;
 
     for (final set in sets) {
-      set.setInfo(pr: pr, first: first);
+      set.setInfo(pr: isCardio ? null : pr, first: first);
     }
 
     return sets;

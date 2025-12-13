@@ -75,40 +75,45 @@ class WorkoutSetWidget extends StatelessWidget {
       }
     }
 
-    Widget getCheckAndIndex() => Expanded(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              CustomCheckbox(
-                value: set.done,
-                onChangeAsync: isDisplay ? null : (value) => onSetDoneTap(value),
+    Widget getCheckAndIndex() => Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            CustomCheckbox(
+              value: set.done,
+              onChangeAsync: isDisplay ? null : (value) => onSetDoneTap(value),
+            ),
+            const Padding(padding: EdgeInsetsGeometry.all(5)),
+            Text(
+              setNumber.toString(),
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.secondary,
               ),
-              const Padding(padding: EdgeInsetsGeometry.all(5)),
-              Text(
-                setNumber.toString(),
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-              )
-            ],
-          ),
+            ),
+          ],
         );
+
+    SizedBox endPadding = const SizedBox(width: 15);
 
     List<Widget> getCardioSetContents() => [
           getCheckAndIndex(),
+          Expanded(child: SetInfoWidget(info: set.info)),
           Expanded(child: StatDisplay.duration(set.time, useIcon: false, alignment: MainAxisAlignment.end)),
+          endPadding,
           Expanded(child: StatDisplay.distance(set.distance, useIcon: false, alignment: MainAxisAlignment.end)),
+          endPadding,
           Expanded(child: StatDisplay.caloriesBurned(set.calsBurned, useIcon: false, alignment: MainAxisAlignment.end)),
+          endPadding,
         ];
 
     List<Widget> getWeightedSetContents() => [
           getCheckAndIndex(),
           Expanded(child: SetInfoWidget(info: set.info)),
           Expanded(child: StatDisplay.weight(set.weight, useIcon: false, alignment: MainAxisAlignment.end)),
-          const Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: 25)),
+          const SizedBox(width: 60),
           Expanded(child: StatDisplay.reps(set.reps, useIcon: false, alignment: MainAxisAlignment.end)),
+          endPadding,
         ];
 
     Widget getSetWidgetInner() => Padding(

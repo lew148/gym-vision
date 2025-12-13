@@ -1,14 +1,14 @@
 class NumberHelper {
   static String getNumberString(String value) => value == '' ? '0' : value;
 
-  static String truncateDouble(double? d) {
+  static String doubleToString(double? d) {
     if (d == null) return '0';
     return d % 1 == 0 ? d.toStringAsFixed(0) : d.toStringAsFixed(2);
   }
 
-  static String blankIfZero(String s) => s == '0'  || s == '00' ? '' : s;
+  static String intToDoublePaddedString(int n) => n.toString().padLeft(2, "0");
 
-  static String getDoubleDigit(int n) => n.toString().padLeft(2, "0");
+  static String blankIfZero(String s) => s == '0' || s == '00' ? '' : s;
 
   static List<int> distinctIntList(Iterable<int> i) => i.toSet().toList();
 

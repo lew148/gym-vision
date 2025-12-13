@@ -49,7 +49,7 @@ class _WorkoutExerciseSummaryState extends State<WorkoutExerciseSummary> {
               if (set.weight != null && set.weight != 0)
                 Row(children: [
                   Text(
-                    '${NumberHelper.truncateDouble(set.weight)}kg',
+                    '${NumberHelper.doubleToString(set.weight)}kg',
                     style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                   ),
                   Padding(

@@ -41,7 +41,7 @@ class StatDisplay extends StatelessWidget {
 
   factory StatDisplay.timeElapsed(Duration timeElapsed, {bool muted = true}) => StatDisplay(
         icon: Icons.hourglass_empty_rounded,
-        text: DateTimeHelper.getHoursAndMinsDurationString(timeElapsed),
+        text: DateTimeHelper.getHMSDurationString(timeElapsed),
         muted: muted,
       );
 
@@ -53,7 +53,7 @@ class StatDisplay extends StatelessWidget {
   }) =>
       StatDisplay(
         icon: useIcon ? Icons.fitness_center_rounded : null,
-        text: weight == null || weight == 0 ? null : '${NumberHelper.truncateDouble(weight)}kg',
+        text: weight == null || weight == 0 ? null : '${NumberHelper.doubleToString(weight)}kg',
         alignment: alignment,
         muted: muted,
       );
@@ -78,7 +78,12 @@ class StatDisplay extends StatelessWidget {
   }) =>
       StatDisplay(
         icon: useIcon ? Icons.timer_rounded : null,
-        text: duration == null || duration.inSeconds == 0 ? null : duration.toString().split('.').first.padLeft(8, "0"),
+        text: duration == null || duration.inSeconds == 0
+            ? null
+            : DateTimeHelper.getHMSDurationString(
+                duration,
+                includeSeconds: true,
+              ),
         alignment: alignment,
         muted: false,
       );
@@ -90,7 +95,7 @@ class StatDisplay extends StatelessWidget {
   }) =>
       StatDisplay(
         icon: useIcon ? Icons.timeline_rounded : null,
-        text: distance == null || distance == 0 ? null : '${distance.toStringAsFixed(2)}km',
+        text: distance == null || distance == 0 ? null : '${NumberHelper.doubleToString(distance)}km',
         alignment: alignment,
         muted: false,
       );
@@ -128,7 +133,7 @@ class StatDisplay extends StatelessWidget {
           text ?? '-',
           style: TextStyle(
             fontSize: 15,
-            color: muted
+            color: text == null || muted
                 ? Theme.of(context).colorScheme.secondary
                 : (primary ? Theme.of(context).colorScheme.primary : null),
           ),

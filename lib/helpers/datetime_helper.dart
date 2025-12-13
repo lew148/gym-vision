@@ -66,19 +66,31 @@ class DateTimeHelper {
   static String getDurationString(Duration duration, {bool noHours = false, bool useNegativeSymbol = true}) {
     String hours = noHours ? '' : duration.inHours.abs().toString();
     String minutes = noHours
-        ? NumberHelper.getDoubleDigit(duration.inMinutes.abs())
-        : NumberHelper.getDoubleDigit(duration.inMinutes.remainder(60).abs());
-    String seconds = NumberHelper.getDoubleDigit(duration.inSeconds.remainder(60).abs());
+        ? NumberHelper.intToDoublePaddedString(duration.inMinutes.abs())
+        : NumberHelper.intToDoublePaddedString(duration.inMinutes.remainder(60).abs());
+    String seconds = NumberHelper.intToDoublePaddedString(duration.inSeconds.remainder(60).abs());
     return "${useNegativeSymbol && duration.isNegative ? '-' : ''}${noHours || duration.inHours == 0 ? '' : '$hours:'}$minutes:$seconds";
   }
 
-  static String getHoursAndMinsDurationString(Duration duration) {
-    String gap = '';
-    String hours = duration.inHours == 0 ? '' : '${duration.inHours}h';
-    String minutes = duration.inMinutes.remainder(60) == 0 ? '' : '${duration.inMinutes.remainder(60).abs()}m';
-    if (hours != '' && minutes != '') gap = ' ';
-    if (hours == '' && minutes == '') minutes = '<1m';
-    return "$hours$gap$minutes";
+  static String getHMSDurationString(Duration duration, {bool includeSeconds = false}) {
+    final inHours = duration.inHours;
+    final inMinutes = duration.inMinutes;
+    final inSeconds = duration.inSeconds;
+    final List<String> parts = [];
+
+    if (inHours == 0 && inMinutes < 1 && !includeSeconds) return '<1m';
+
+    if (duration.inHours != 0) parts.add('${inHours}h');
+
+    final minRemainder = inMinutes.remainder(60);
+    if (minRemainder != 0) parts.add('${minRemainder.abs()}m');
+
+    if (includeSeconds) {
+      final secRemainder = inSeconds.remainder(60);
+      if (secRemainder != 0) parts.add('${secRemainder.abs()}s');
+    }
+
+    return parts.join(' ');
   }
 
   static int daysBetween(DateTime from, DateTime to) {

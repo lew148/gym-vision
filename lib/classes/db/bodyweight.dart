@@ -24,5 +24,5 @@ class Bodyweight extends DBO {
       };
 
   String getTimeString() => DateFormat('Hm').format(date);
-  String getWeightDisplay() => '${NumberHelper.truncateDouble(weight)}$units';
+  String getWeightDisplay() => '${NumberHelper.doubleToString(weight)}$units';
 }
