@@ -114,8 +114,8 @@ class MyApp extends StatelessWidget {
   final secondary = const Color.fromARGB(255, 146, 146, 146);
   final tertiary = const Color.fromARGB(255, 255, 101, 101);
   final shadow = const Color.fromARGB(255, 77, 77, 77);
-  final lightBackground = Colors.white;
-  final lightSurface = const Color.fromARGB(255, 235, 235, 235);
+  final lightSurface = Colors.white;
+  final lightBackground = const Color.fromARGB(255, 235, 235, 235);
   final darkBackground = Colors.black;
   final darkSurface = const Color.fromARGB(255, 22, 22, 22);
 
@@ -156,9 +156,9 @@ class MyApp extends StatelessWidget {
         splashColor: Colors.transparent,
         scaffoldBackgroundColor: darkBackground,
         bottomSheetTheme: BottomSheetThemeData(backgroundColor: darkSurface),
-        // cardTheme: CardThemeData(color: darkCard),
         colorScheme: ColorScheme.dark(
           primary: primary,
+          onPrimary: Colors.black,
           secondary: secondary,
           tertiary: tertiary,
           shadow: shadow,

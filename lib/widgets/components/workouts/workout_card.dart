@@ -177,19 +177,24 @@ class WorkoutCard extends StatelessWidget {
               if (workout.workoutCategories != null && workout.workoutCategories!.isNotEmpty)
                 Padding(
                   padding: const EdgeInsetsGeometry.only(top: 5),
-                  child: Row(children: [
-                    Expanded(
-                      child: Wrap(
-                        children: workout
-                            .getCategories()
-                            .map((c) => PropDisplay(
-                                  text: c.displayName,
-                                  onCard: true,
-                                ))
-                            .toList(),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: Wrap(
+                          children: workout
+                              .getCategories()
+                              .map((c) => PropDisplay(
+                                    text: c.displayName,
+                                    onCard: true,
+                                  ))
+                              .toList(),
+                        ),
                       ),
-                    ),
-                  ]),
+                      if (workout.workoutExercises?.any((we) => we.isCardio() && we.isDone()) ?? false)
+                        Icon(Icons.local_fire_department_rounded, color: Colors.red[300]!),
+                    ],
+                  ),
                 ),
               ...getBestSetAndNote(),
               if (!isDisplay)

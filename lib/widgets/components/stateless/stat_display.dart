@@ -8,7 +8,7 @@ class StatDisplay extends StatelessWidget {
   final double? iconSize;
   final String? text;
   final bool muted;
-  final bool primary;
+  final Color? color;
   final MainAxisAlignment? alignment;
 
   const StatDisplay({
@@ -17,7 +17,7 @@ class StatDisplay extends StatelessWidget {
     this.iconSize,
     this.text,
     this.muted = false,
-    this.primary = false,
+    this.color,
     this.alignment,
   });
 
@@ -123,9 +123,7 @@ class StatDisplay extends StatelessWidget {
           Icon(
             icon,
             size: iconSize ?? 15,
-            color: muted
-                ? Theme.of(context).colorScheme.secondary
-                : (primary ? Theme.of(context).colorScheme.primary : null),
+            color: muted ? Theme.of(context).colorScheme.secondary : color,
           ),
           const Padding(padding: EdgeInsets.all(2.5)),
         ],
@@ -133,9 +131,7 @@ class StatDisplay extends StatelessWidget {
           text ?? '-',
           style: TextStyle(
             fontSize: 15,
-            color: text == null || muted
-                ? Theme.of(context).colorScheme.secondary
-                : (primary ? Theme.of(context).colorScheme.primary : null),
+            color: text == null || muted ? Theme.of(context).colorScheme.secondary : color,
           ),
         ),
       ],

@@ -177,7 +177,7 @@ class WorkoutViewBody extends StatelessWidget {
                 final success = await WorkoutModel.copyLastSimilarWorkout(workout.id!, categories);
                 if (success) {
                   provider.reload();
-                  return;
+                return;
                 }
 
                 if (context.mounted) AppHelper.showSnackBar(context, 'There is nothing to copy');

@@ -22,7 +22,7 @@ class _ProgressState extends State<Progress> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                StatDisplay(icon: icon, text: text, iconSize: 20, primary: true),
+                StatDisplay(icon: icon, text: text, iconSize: 20, color: Theme.of(context).colorScheme.primary),
                 Icon(Icons.chevron_right_rounded, color: Theme.of(context).colorScheme.primary),
               ],
             ),

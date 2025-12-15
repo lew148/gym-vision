@@ -90,19 +90,26 @@ class _ExerciseViewState extends State<ExerciseView> {
         onTap: () => WorkoutHelper.openWorkoutView(context, pr.getWorkout()!.id!).then((x) => reload()),
         child: Padding(
           padding: const EdgeInsetsGeometry.symmetric(vertical: 5),
-          child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Text(
-              'PR (${DateTimeHelper.getDateStr(pr.getWorkout()!.date)})',
-              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-            ),
-            Row(
-              children: [
-                StatDisplay.weight(pr.weight),
-                const Padding(padding: EdgeInsets.all(5)),
-                StatDisplay.reps(pr.reps),
-              ],
-            ),
-          ]),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(children: [
+                Text(
+                  'PR (${DateTimeHelper.getDateStr(pr.getWorkout()!.date)})',
+                  style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                ),
+                Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: 5)),
+                Icon(Icons.emoji_events_rounded, color: Theme.of(context).colorScheme.primary),
+              ]),
+              Row(
+                children: [
+                  StatDisplay.weight(pr.weight),
+                  const Padding(padding: EdgeInsets.all(5)),
+                  StatDisplay.reps(pr.reps),
+                ],
+              ),
+            ],
+          ),
         ),
       );
 

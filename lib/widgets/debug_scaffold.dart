@@ -78,7 +78,7 @@ class _DebugScaffoldState extends State<DebugScaffold> {
           onTap: () => AppHelper.closeKeyboard(),
           child: Stack(children: [
             Padding(padding: const EdgeInsets.fromLTRB(10, 10, 10, 5), child: widget.body),
-            if (widget.showActiveWorkout) const ActiveWorkoutDraggableSheet()
+            if (widget.showActiveWorkout) const ActiveWorkoutDraggableSheet(),
           ]),
         ),
       ),
