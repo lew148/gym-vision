@@ -33,7 +33,7 @@ class TodoistService {
       });
 
       if (name.isNotEmpty) description = description.isEmpty ? name : '$name: $description';
-      description = '$description \nVersion Number: $appVersion';
+      description = '$description\n\\---\nApp Version: $appVersion';
 
       request.body =
           'commands=[{"type": "item_add","uuid": "${requestUuid.toString()}","temp_id": "${tempId.toString()}","args": {"project_id": "$_projectId","content": ${jsonEncode(title)},"description": ${jsonEncode(description)},"labels": ${isBug ? '["$_bugTag"]' : '[]'}}}]';

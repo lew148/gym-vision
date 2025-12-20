@@ -29,13 +29,13 @@ class ActiveWorkoutDraggableSheet extends StatelessWidget {
               alignment: Alignment.bottomCenter,
               child: Container(
                 height: height,
-                margin: EdgeInsets.all(5),
+                margin: EdgeInsets.all(0),
                 padding: EdgeInsetsGeometry.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
-                  borderRadius: const BorderRadius.all(Radius.circular(largeBorderRadius)),
-                  border: Border.all(color: Theme.of(context).colorScheme.shadow, width: .5),
-                  boxShadow: [BoxShadow(blurRadius: smallBorderRadius, color: Theme.of(context).colorScheme.shadow)],
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(largeBorderRadius)),
+                  border: Border(top: BorderSide(color: Theme.of(context).colorScheme.shadow, width: 1)),
+                  // boxShadow: [BoxShadow(blurRadius: smallBorderRadius, color: Theme.of(context).colorScheme.shadow)],
                 ),
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
