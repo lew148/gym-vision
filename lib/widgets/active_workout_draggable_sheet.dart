@@ -4,12 +4,13 @@ import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/helpers/functions/workout_helper.dart';
 import 'package:gymvision/providers/global/active_workout_provider.dart';
 import 'package:gymvision/widgets/components/animated/pulsing_dot.dart';
+import 'package:gymvision/widgets/components/stateless/drag_handle.dart';
 import 'package:gymvision/widgets/components/stateless/stat_display.dart';
 import 'package:gymvision/widgets/components/time_elapsed.dart';
 import 'package:provider/provider.dart';
 
 class ActiveWorkoutDraggableSheet extends StatelessWidget {
-  static const double height = 65; // used for padding behind sheet
+  static const double height = 70; // used for padding behind sheet
 
   const ActiveWorkoutDraggableSheet({super.key});
 
@@ -29,13 +30,12 @@ class ActiveWorkoutDraggableSheet extends StatelessWidget {
               alignment: Alignment.bottomCenter,
               child: Container(
                 height: height,
-                margin: EdgeInsets.all(0),
                 padding: EdgeInsetsGeometry.symmetric(horizontal: 20),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
                   borderRadius: const BorderRadius.vertical(top: Radius.circular(largeBorderRadius)),
-                  border: Border(top: BorderSide(color: Theme.of(context).colorScheme.shadow, width: 1)),
-                  // boxShadow: [BoxShadow(blurRadius: smallBorderRadius, color: Theme.of(context).colorScheme.shadow)],
+                  border: Border(top: BorderSide(color: Theme.of(context).colorScheme.shadow, width: .5)),
+                  boxShadow: [BoxShadow(blurRadius: smallBorderRadius, color: Theme.of(context).colorScheme.shadow)],
                 ),
                 child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
@@ -55,8 +55,9 @@ class ActiveWorkoutDraggableSheet extends StatelessWidget {
                   },
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      DragHandle(),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
