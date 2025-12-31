@@ -17,6 +17,7 @@ import 'package:gymvision/widgets/components/stateless/shimmer_load.dart';
 import 'package:gymvision/widgets/components/stateless/splash_text.dart';
 import 'package:gymvision/widgets/components/stateless/stat_display.dart';
 import 'package:gymvision/widgets/components/workouts/summary/workout_exercise_summary.dart';
+import 'package:gymvision/widgets/components/workouts/summary/workout_summary_stats.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
@@ -97,33 +98,6 @@ class SharableWorkoutSummary extends StatelessWidget {
             );
           }
 
-          Widget getStatsBreakdown(WorkoutSummary summary) => summary.totalExercises == 0
-              ? const SizedBox.shrink()
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: summary.totalReps + summary.totalSets == 0
-                      ? [
-                          Text(
-                            summary.getTotalExercisesString(),
-                            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                          ),
-                        ]
-                      : [
-                          Text(
-                            summary.getTotalExercisesString(),
-                            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                          ),
-                          Text(
-                            summary.getTotalSetsString(),
-                            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                          ),
-                          Text(
-                            summary.getTotalRepsString(),
-                            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                          ),
-                        ],
-                );
-
           Widget getSharableSection(WorkoutSummary? summary) => Screenshot(
                 controller: screenshotController,
                 child: Container(
@@ -159,7 +133,7 @@ class SharableWorkoutSummary extends StatelessWidget {
                                     ]),
                                   ],
                                 ),
-                                getStatsBreakdown(summary),
+                                WorkoutSummaryStats(summary: summary),
                               ],
                             ),
                             if (workout.getWorkoutCategories().isNotEmpty)

@@ -23,6 +23,7 @@ import 'package:gymvision/widgets/components/stateless/options_menu.dart';
 import 'package:gymvision/widgets/components/stateless/prop_display.dart';
 import 'package:gymvision/widgets/components/stateless/stat_display.dart';
 import 'package:gymvision/widgets/components/time_elapsed.dart';
+import 'package:gymvision/widgets/components/workouts/summary/workout_summary_stats.dart';
 import 'package:gymvision/widgets/components/workouts/workout_exercise_widget.dart';
 import 'package:gymvision/widgets/components/workouts/workout_options_menu.dart';
 import 'package:gymvision/widgets/components/workouts/summary/sharable_workout_summary.dart';
@@ -177,7 +178,7 @@ class WorkoutViewBody extends StatelessWidget {
                 final success = await WorkoutModel.copyLastSimilarWorkout(workout.id!, categories);
                 if (success) {
                   provider.reload();
-                return;
+                  return;
                 }
 
                 if (context.mounted) AppHelper.showSnackBar(context, 'There is nothing to copy');
@@ -273,12 +274,11 @@ class WorkoutViewBody extends StatelessWidget {
         // summary
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                StatDisplay.date(workout.date, muted: false),
+                Text(workout.getWorkoutName(), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                 StatDisplay.time(workout.date, dtEnd: workout.endDate),
                 workout.isFinished()
                     ? StatDisplay.timeElapsed(workout.getDuration())
@@ -290,8 +290,11 @@ class WorkoutViewBody extends StatelessWidget {
                       ),
               ],
             ),
+            WorkoutSummaryStats(summary: workout.summary),
           ],
         ),
+
+        const Padding(padding: EdgeInsetsGeometry.all(2.5)),
 
         // categories, notes and actions
         if (workout.hasCategories())

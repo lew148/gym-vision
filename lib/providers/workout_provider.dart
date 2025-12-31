@@ -17,7 +17,7 @@ class WorkoutProvider extends ChangeNotifier {
     _loading = true;
     notifyListeners();
 
-    _workout = await WorkoutModel.getWorkout(workoutId, withCategories: true, withExercises: true);
+    _workout = await WorkoutModel.getWorkout(workoutId, withCategories: true, withExercises: true, withSummary: true);
     if (focusedWorkoutExerciseId != null) _droppedWorkoutExerciseIds.add(focusedWorkoutExerciseId);
     _loading = false;
     notifyListeners();

@@ -66,9 +66,7 @@ class ActiveWorkoutDraggableSheet extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                !DateTimeHelper.isToday(workout.date)
-                                    ? '${DateTimeHelper.getDateOrDayStr(workout.date)}\'s Workout'
-                                    : workout.getWorkoutTitle(),
+                                workout.getWorkoutName(),
                                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                               ),
                               StatDisplay.time(workout.date),
