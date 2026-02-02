@@ -65,4 +65,6 @@ class Workout extends DBO {
       !DateTimeHelper.isToday(date) ? '${DateTimeHelper.getDateOrDayStr(date)}\'s Workout' : getWorkoutTitle();
 
   bool hasCategories() => workoutCategories != null && workoutCategories!.isNotEmpty;
+
+  bool didCardio() => workoutExercises?.any((we) => we.isCardio() && we.isDone()) ?? false;
 }

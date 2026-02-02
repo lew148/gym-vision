@@ -191,8 +191,7 @@ class WorkoutCard extends StatelessWidget {
                               .toList(),
                         ),
                       ),
-                      if (workout.workoutExercises?.any((we) => we.isCardio() && we.isDone()) ?? false)
-                        Icon(Icons.local_fire_department_rounded, color: Colors.red[300]!),
+                      if (workout.didCardio()) Icon(Icons.local_fire_department_rounded, color: Colors.red[300]!),
                     ],
                   ),
                 ),

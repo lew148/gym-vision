@@ -5,6 +5,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 enum CalendarViewEvent {
   workout,
+  cardio,
 }
 
 class CalendarView extends StatelessWidget {
@@ -31,6 +32,12 @@ class CalendarView extends StatelessWidget {
         case CalendarViewEvent.workout:
           icon = Icons.fitness_center_rounded;
           break;
+        case CalendarViewEvent.cardio:
+          {
+            icon = Icons.local_fire_department_rounded;
+            color = Colors.red[300]!;
+            break;
+          }
       }
 
       return Icon(icon, color: color, size: 10);

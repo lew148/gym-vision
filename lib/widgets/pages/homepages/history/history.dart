@@ -36,7 +36,14 @@ class _HistoryState extends State<History> {
       });
 
   Map<DateTime, List<CalendarViewEvent>> getEvents(List<Workout> workouts) => groupBy(workouts, (w) => w.date).map(
-      (key, value) => MapEntry(DateTimeHelper.roundToDay(key), value.map((w) => (CalendarViewEvent.workout)).toList()));
+        (key, value) => MapEntry(
+          DateTimeHelper.roundToDay(key),
+          [
+            ...value.map((w) => (CalendarViewEvent.workout)),
+            if (value.any((w) => w.didCardio())) CalendarViewEvent.cardio,
+          ],
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
