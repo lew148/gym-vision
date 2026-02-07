@@ -7,7 +7,7 @@ import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/database_helper.dart';
 import 'package:gymvision/models/db_models/user_settings_model.dart';
 import 'package:gymvision/providers/global/active_workout_provider.dart';
-import 'package:gymvision/providers/history_provider.dart';
+import 'package:gymvision/providers/global/history_provider.dart';
 import 'package:gymvision/services/local_notification_service.dart';
 import 'package:gymvision/widgets/coming_soon.dart';
 import 'package:gymvision/widgets/debug_scaffold.dart';

@@ -7,12 +7,14 @@ import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/helpers/functions/confetti_helper.dart';
 import 'package:gymvision/models/db_models/user_settings_model.dart';
 import 'package:gymvision/models/db_models/workouts/workout_set_model.dart';
+import 'package:gymvision/providers/workout_stats_provider.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/options_menu.dart';
 import 'package:gymvision/widgets/components/stateless/stat_display.dart';
 import 'package:gymvision/widgets/components/workouts/set_info_widget.dart';
 import 'package:gymvision/widgets/forms/fields/custom_checkbox.dart';
 import 'package:gymvision/widgets/forms/workout_set_form.dart';
+import 'package:provider/provider.dart';
 
 class WorkoutSetWidget extends StatelessWidget {
   final WorkoutSet set;
@@ -58,16 +60,15 @@ class WorkoutSetWidget extends StatelessWidget {
         if (!success) throw Exception();
 
         if (context.mounted && done) {
-          if (max != null && set.isGreaterThan(max)) {
-            if (context.mounted) ConfettiHelper.bothSidesInward(context);
-          }
+          if (max != null && set.isGreaterThan(max)) ConfettiHelper.bothSidesInward(context);
 
           final settings = await UserSettingsModel.getUserSettings();
           if (context.mounted && settings.intraSetRestTimer != null) {
             AppHelper.setRestTimer(context, settings.intraSetRestTimer!);
           }
         }
-
+        
+        if (context.mounted) context.read<WorkoutStatsProvider>().reload();
         reloadParent();
         return true;
       } catch (ex) {

@@ -158,7 +158,7 @@ class WorkoutHelper {
           ));
         }
       }
-      
+
       return newTemplateId;
     } catch (ex) {
       return null;

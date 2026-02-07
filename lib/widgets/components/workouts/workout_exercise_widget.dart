@@ -11,6 +11,7 @@ import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workouts/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workouts/workout_set_model.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
+import 'package:gymvision/providers/workout_stats_provider.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
@@ -23,6 +24,7 @@ import 'package:gymvision/widgets/forms/workout_set_form.dart';
 import 'package:gymvision/widgets/pages/exercise/exercise_view.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
+import 'package:provider/provider.dart';
 
 class WorkoutExerciseWidget extends StatefulWidget {
   final WorkoutExercise workoutExercise;
@@ -71,6 +73,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           widget.workoutExercise.id!,
           exerciseIdentifier: widget.workoutExercise.exerciseIdentifier,
         );
+        
+        context.read<WorkoutStatsProvider>().reload();
       });
 
   void onAddSetsButtonTap() async {

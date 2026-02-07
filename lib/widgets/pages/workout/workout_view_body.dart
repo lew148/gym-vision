@@ -15,7 +15,7 @@ import 'package:gymvision/models/db_models/workouts/workout_model.dart';
 import 'package:gymvision/providers/global/active_workout_provider.dart';
 import 'package:gymvision/providers/global/navigation_provider.dart';
 import 'package:gymvision/providers/global/rest_timer_provider.dart';
-import 'package:gymvision/providers/history_provider.dart';
+import 'package:gymvision/providers/global/history_provider.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/widgets/components/custom_reorderable_list.dart';
 import 'package:gymvision/widgets/components/rest_timer.dart';
@@ -274,6 +274,7 @@ class WorkoutViewBody extends StatelessWidget {
         // summary
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -290,7 +291,7 @@ class WorkoutViewBody extends StatelessWidget {
                       ),
               ],
             ),
-            WorkoutSummaryStats(summary: workout.summary),
+            WorkoutSummaryStats(workoutId: workout.id),
           ],
         ),
 

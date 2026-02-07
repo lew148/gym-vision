@@ -9,7 +9,7 @@ import 'package:gymvision/helpers/functions/picker_helper.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/models/db_models/workouts/workout_model.dart';
 import 'package:gymvision/providers/global/active_workout_provider.dart';
-import 'package:gymvision/providers/history_provider.dart';
+import 'package:gymvision/providers/global/history_provider.dart';
 import 'package:gymvision/widgets/components/stateless/calendar_view.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/category_filter.dart';

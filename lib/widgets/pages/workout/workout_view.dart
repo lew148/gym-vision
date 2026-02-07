@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gymvision/providers/workout_stats_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:gymvision/providers/workout_provider.dart';
 import 'package:gymvision/widgets/pages/workout/workout_view_body.dart';
@@ -21,7 +22,10 @@ class WorkoutView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => WorkoutProvider()..loadWorkout(workoutId, focusedWorkoutExerciseId: focusedWorkoutExerciseId),
-      child: WorkoutViewBody(autofocusNotes: autofocusNotes),
+      child: ChangeNotifierProvider(
+        create: (_) => WorkoutStatsProvider(),
+        child: WorkoutViewBody(autofocusNotes: autofocusNotes),
+      ),
     );
   }
 }

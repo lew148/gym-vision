@@ -140,10 +140,9 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
     }
 
     if (set == null) return;
-    if (mounted) Navigator.pop(context);
-
-    if (max != null && set.done && set.isGreaterThan(max)) {
-      if (mounted) ConfettiHelper.bothSidesInward(context);
+    if (mounted) {
+      if (max != null && set.done && set.isGreaterThan(max)) ConfettiHelper.bothSidesInward(context);
+      Navigator.pop(context);
     }
   }
 
