@@ -22,35 +22,35 @@ class WorkoutSummaryStats extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: summary.totalReps + summary.totalSets == 0
-                  ? [
-                      Text(
-                        summary.getTotalExercisesString(),
-                        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                      ),
-                    ]
-                  : [
-                      Text(
-                        summary.getTotalExercisesString(),
-                        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                      ),
-                      Text(
-                        summary.getTotalSetsString(),
-                        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                      ),
-                      Text(
-                        summary.getTotalRepsString(),
-                        style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                      ),
-                    ],
+                ? [
+                    Text(
+                      summary.getTotalExercisesString(),
+                      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                    ),
+                  ]
+                : [
+                    Text(
+                      summary.getTotalExercisesString(),
+                      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                    ),
+                    Text(
+                      summary.getTotalSetsString(),
+                      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                    ),
+                    Text(
+                      summary.getTotalRepsString(),
+                      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                    ),
+                  ],
           );
 
-    return Consumer<WorkoutStatsProvider>(
-      builder: (_, state, __) => summary == null
-          ? FutureBuilder(
+    return summary == null // no summary = expect provider
+        ? Consumer<WorkoutStatsProvider>(
+            builder: (_, state, __) => FutureBuilder(
               future: WorkoutModel.getWorkoutSummary(id: workoutId, fullSummary: false),
               builder: (context, snapshot) => getStatsColumn(snapshot.data),
-            )
-          : getStatsColumn(summary),
-    );
+            ),
+          )
+        : getStatsColumn(summary);
   }
 }
