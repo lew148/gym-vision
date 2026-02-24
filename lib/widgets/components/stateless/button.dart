@@ -177,17 +177,18 @@ class Button extends StatelessWidget {
         ? Container(
             padding: const EdgeInsetsGeometry.symmetric(vertical: 2.5),
             child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: style?.backgroundColor ?? Theme.of(context).colorScheme.primary,
+                foregroundColor: style?.textColor ?? Theme.of(context).colorScheme.onPrimary,
+                padding: style?.padding ?? const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius)),
+                textStyle: TextStyle(
+                  fontSize: style?.textSize ?? 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
               onPressed: disabled ? null : onTap,
               onLongPress: disabled ? null : onLongTap,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: style?.backgroundColor,
-                padding: style?.padding ?? const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-                minimumSize: Size.zero,
-                tapTargetSize: MaterialTapTargetSize.padded,
-                shadowColor: Colors.transparent,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius)),
-                overlayColor: Colors.grey,
-              ),
               child: getInner(),
             ),
           )
@@ -199,7 +200,10 @@ class Button extends StatelessWidget {
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               shadowColor: Colors.transparent,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius)),
-              overlayColor: Colors.grey,
+              textStyle: TextStyle(
+                fontSize: style?.textSize ?? 16,
+                fontWeight: FontWeight.w500,
+              ),
             ),
             onPressed: disabled ? null : onTap,
             onLongPress: disabled ? null : onLongTap,

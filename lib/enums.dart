@@ -16,3 +16,12 @@ enum NoteType {
   other,
   template,
 }
+
+enum ImageStorageType {
+  local,
+  cloud,
+}
+
+enum UserImageType {
+  progressPic,
+}

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/constants.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
+import 'package:gymvision/helpers/functions/image_helper.dart';
 import 'package:gymvision/helpers/functions/workout_helper.dart';
 import 'package:gymvision/static_data/helpers.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
@@ -214,7 +215,18 @@ class WorkoutCard extends StatelessWidget {
                       text: 'Add Progress Pic',
                       icon: Icons.add_rounded,
                       style: ButtonCustomStyle.noPadding(),
-                      onTap: () => null,
+                      onTap: () => ImageHelper.openImagePicker(context, (images) {
+                        ImageHelper.addProgressPic(workout.id!, images.first).then((success) {
+                          if (context.mounted) {
+                            AppHelper.showSnackBar(
+                              context,
+                              success ? 'Progress pic added' : 'Failed to add progress pic',
+                            );
+                          }
+
+                          if (success && reloadParent != null) reloadParent!();
+                        });
+                      }),
                     ),
                   ]),
                 ),
