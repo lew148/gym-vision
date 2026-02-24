@@ -189,7 +189,7 @@ class _TodayState extends State<Today> {
                             onTap: () async {
                               await DialogHelper.showDeleteConfirm(
                                 context,
-                                'bodyweight',
+                                'Bodyweight',
                                 () => BodyweightModel.delete(bwsnapshot.data!.id!),
                               );
 

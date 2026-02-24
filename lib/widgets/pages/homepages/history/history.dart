@@ -17,6 +17,7 @@ import 'package:gymvision/widgets/components/stateless/scroll_bottom_padding.dar
 import 'package:gymvision/widgets/components/stateless/shimmer_load.dart';
 import 'package:gymvision/widgets/components/stateless/splash_text.dart';
 import 'package:gymvision/widgets/components/workouts/workout_card.dart';
+import 'package:gymvision/widgets/pages/bodyweights.dart';
 import 'package:provider/provider.dart';
 
 class History extends StatefulWidget {
@@ -43,6 +44,26 @@ class _HistoryState extends State<History> {
             if (value.any((w) => w.didCardio())) CalendarViewEvent.cardio,
           ],
         ),
+      );
+
+  Widget getSpacerRow([DateTime? date]) => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Button.elevated(
+            text: 'Bodyweights',
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const Bodyweights())),
+          ),
+          date == null
+              ? const Button(text: 'All Time')
+              : Button(
+                  text: DateTimeHelper.getDateStr(date!),
+                  onTap: () => DialogHelper.showConfirm(
+                    context,
+                    title: 'Remove date filter?',
+                    onConfirm: () => setDate(null),
+                  ),
+                ),
+        ],
       );
 
   @override
@@ -86,7 +107,7 @@ class _HistoryState extends State<History> {
               return ListView(
                 children: [
                   getFilterRow([]),
-                  const Row(mainAxisAlignment: MainAxisAlignment.end, children: [Button(text: 'All Time')]),
+                  getSpacerRow(),
                   ...List.generate(5, (i) => const ShimmerLoad(height: 200)),
                   const ScrollBottomPadding(),
                 ],
@@ -103,21 +124,7 @@ class _HistoryState extends State<History> {
             return Column(
               children: [
                 getFilterRow(allWorkouts),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    date == null
-                        ? const Button(text: 'All Time')
-                        : Button(
-                            text: DateTimeHelper.getDateStr(date!),
-                            onTap: () => DialogHelper.showConfirm(
-                              context,
-                              title: 'Remove date filter?',
-                              onConfirm: () => setDate(null),
-                            ),
-                          ),
-                  ],
-                ),
+                getSpacerRow(date),
                 workoutsToDisplay.isEmpty
                     ? const SplashText(
                         icon: Icons.hotel_rounded,
