@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/bodyweight.dart';
 import 'package:gymvision/constants.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
+import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/helpers/functions/dialog_helper.dart' show DialogHelper;
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
@@ -12,6 +12,7 @@ import 'package:gymvision/widgets/components/stateless/scroll_bottom_padding.dar
 import 'package:gymvision/widgets/components/stateless/splash_text.dart';
 import 'package:gymvision/widgets/components/stateless/stat_display.dart';
 import 'package:gymvision/widgets/debug_scaffold.dart';
+import 'package:gymvision/widgets/forms/add_bodyweight_form.dart';
 
 class Bodyweights extends StatefulWidget {
   final Function(int templateId)? onAddTap;
@@ -41,8 +42,16 @@ class _BodyweightsState extends State<Bodyweights> {
   @override
   Widget build(BuildContext context) {
     return DebugScaffold(
-      // ignoreDefaults: true,
       customAppBarTitle: Text('Bodyweights'),
+      customAppBarActions: [
+        IconButton(
+          icon: const Icon(Icons.add_rounded),
+          onPressed: () async {
+            await BottomSheetHelper.showCloseableBottomSheet(context, AddBodyWeightForm(date: DateTime.now()));
+            reload();
+          },
+        ),
+      ],
       body: FutureBuilder(
         future: _bodyweightsFuture,
         builder: (context, snapshot) {
@@ -54,6 +63,7 @@ class _BodyweightsState extends State<Bodyweights> {
           }
 
           var bodyweights = snapshot.data!;
+          bodyweights.sort((a, b) => b.date.compareTo(a.date));
 
           return Column(
             children: [

@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/widgets/components/stateless/calendar_view.dart';
-import 'package:gymvision/widgets/forms/fields/date_time_picker.dart';
-import 'package:gymvision/widgets/forms/fields/duration_picker.dart';
+import 'package:gymvision/widgets/forms/pickers/date_time_picker.dart';
+import 'package:gymvision/widgets/forms/pickers/duration_picker.dart';
 
 class PickerHelper {
   static Future showCalendarView(

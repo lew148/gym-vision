@@ -35,7 +35,7 @@ import 'package:gymvision/providers/workout_provider.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/splash_text.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
-import 'package:gymvision/widgets/forms/fields/category_picker.dart';
+import 'package:gymvision/widgets/forms/pickers/category_picker.dart';
 import 'package:gymvision/widgets/components/notes.dart';
 
 class WorkoutViewBody extends StatelessWidget {

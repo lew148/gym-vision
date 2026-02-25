@@ -35,8 +35,7 @@ class StatDisplay extends StatelessWidget {
   factory StatDisplay.time(DateTime dt, {DateTime? dtEnd, bool muted = true}) => StatDisplay(
         icon: Icons.access_time_rounded,
         muted: muted,
-        text:
-            '${DateFormat(DateTimeHelper.hmFormat).format(dt)}${dtEnd == null ? '' : ' - ${DateFormat(DateTimeHelper.hmFormat).format(dtEnd)}'}',
+        text: '${DateTimeHelper.getTimeStr(dt)}${dtEnd == null ? '' : ' - ${DateTimeHelper.getTimeStr(dtEnd)}'}',
       );
 
   factory StatDisplay.timeElapsed(Duration timeElapsed, {bool muted = true}) => StatDisplay(

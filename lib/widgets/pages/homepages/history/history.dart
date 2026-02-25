@@ -47,12 +47,8 @@ class _HistoryState extends State<History> {
       );
 
   Widget getSpacerRow([DateTime? date]) => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          Button.elevated(
-            text: 'Bodyweights',
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => const Bodyweights())),
-          ),
           date == null
               ? const Button(text: 'All Time')
               : Button(

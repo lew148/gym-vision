@@ -1,15 +1,34 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/bodyweight.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/forms/fields/custom_form_field.dart';
+import 'package:gymvision/widgets/forms/fields/datetime_field.dart';
 
-class AddBodyWeightForm extends StatelessWidget {
+class AddBodyWeightForm extends StatefulWidget {
+  final DateTime? date;
+
+  const AddBodyWeightForm({
+    super.key,
+    this.date,
+  });
+
+  @override
+  State<AddBodyWeightForm> createState() => _AddBodyWeightFormState();
+}
+
+class _AddBodyWeightFormState extends State<AddBodyWeightForm> {
   final formKey = GlobalKey<FormState>();
   final TextEditingController weightController = TextEditingController();
+  DateTime? date;
 
-  AddBodyWeightForm({super.key});
+  @override
+  void initState() {
+    super.initState();
+    date = widget.date;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,36 +38,44 @@ class AddBodyWeightForm extends StatelessWidget {
         padding: const EdgeInsetsGeometry.symmetric(vertical: 10),
         child: Column(
           children: [
-            Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-              Expanded(
-                child: CustomFormField.double(
-                  controller: weightController,
-                  label: 'BW',
-                  unit: 'kg',
-                  autofocus: true,
-                  prefixIcon: Icons.monitor_weight_rounded,
-                ),
+            Column(children: [
+              DateTimeField(
+                label: 'Date & Time',
+                mode: CupertinoDatePickerMode.dateAndTime,
+                dateTime: date,
+                onChange: (v) => setState(() => date = v),
               ),
-              const Padding(padding: EdgeInsetsGeometry.all(20)),
-              Button.submit(
-                text: 'Add',
-                onTap: () async {
-                  try {
-                    if (!formKey.currentState!.validate()) return;
+              CustomFormField.double(
+                controller: weightController,
+                label: 'BW',
+                unit: 'kg',
+                autofocus: true,
+                prefixIcon: Icons.monitor_weight_rounded,
+                canBeBlank: false,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Button.submit(
+                    text: 'Add',
+                    onTap: () async {
+                      try {
+                        if (!formKey.currentState!.validate() || date == null) return;
 
-                    var now = DateTime.now();
-                    var weight = double.tryParse(weightController.text);
-                    if (weight != null) {
-                      await BodyweightModel.insert(Bodyweight(date: now, weight: weight, units: 'kg'));
-                    }
-                  } catch (ex) {
-                    if (!context.mounted) return;
-                    AppHelper.showSnackBar(context, 'Failed to add Bodyweight');
-                  }
+                        var weight = double.tryParse(weightController.text);
+                        if (weight != null) {
+                          await BodyweightModel.insert(Bodyweight(date: date!, weight: weight, units: 'kg'));
+                        }
+                      } catch (ex) {
+                        if (!context.mounted) return;
+                        AppHelper.showSnackBar(context, 'Failed to add Bodyweight');
+                      }
 
-                  if (!context.mounted) return;
-                  Navigator.pop(context);
-                },
+                      if (!context.mounted) return;
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
               ),
             ]),
           ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/stat_display.dart';
+import 'package:gymvision/widgets/pages/bodyweights.dart';
 import 'package:gymvision/widgets/pages/homepages/progress/schedules_widget.dart';
 import 'package:gymvision/widgets/pages/homepages/progress/templates.dart';
 
@@ -35,6 +36,11 @@ class _ProgressState extends State<Progress> {
     return Column(
       children: [
         Row(children: [
+          getPill(
+            Icons.monitor_weight_rounded,
+            'Bodyweight',
+            () => Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const Bodyweights())),
+          ),
           getPill(
             Icons.description_rounded,
             'Templates',

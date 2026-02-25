@@ -160,7 +160,7 @@ class _CustomFormField extends State<CustomFormField> {
               controller: widget.controller,
               onChanged: (v) => reload(),
               validator: (String? s) {
-                if (!widget.canBeBlank && (s == null || s.isEmpty)) return '$widget.label cannot be blank';
+                if (!widget.canBeBlank && (s == null || s.isEmpty)) return '${widget.label} cannot be blank';
                 if (widget.validator != null) return widget.validator!(s);
                 return null;
               },

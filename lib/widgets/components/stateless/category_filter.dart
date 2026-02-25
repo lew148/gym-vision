@@ -4,7 +4,7 @@ import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/prop_display.dart';
-import 'package:gymvision/widgets/forms/fields/category_picker.dart';
+import 'package:gymvision/widgets/forms/pickers/category_picker.dart';
 
 class CategoryFilter extends StatelessWidget {
   final List<Category> filterCategories;
