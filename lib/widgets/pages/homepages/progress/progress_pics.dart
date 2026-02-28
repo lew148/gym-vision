@@ -44,24 +44,21 @@ class _ProgressPicsState extends State<ProgressPics> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _future,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData || snapshot.hasError) {
-          return Text(snapshot.data.toString());
-        }
+    return DebugScaffold(
+      customAppBarTitle: Text('Progress Pics'),
+      customAppBarActions: [
+        IconButton(
+          icon: const Icon(Icons.add_rounded),
+          onPressed: _addProgressPic,
+        )
+      ],
+      body: FutureBuilder(
+        future: _future,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData || snapshot.hasError) return SplashText.wentWrong();
 
-        final List<UserImage> progressPics = snapshot.data!;
-
-        return DebugScaffold(
-          customAppBarTitle: Text('Progress Pics'),
-          customAppBarActions: [
-            IconButton(
-              icon: const Icon(Icons.add_rounded),
-              onPressed: _addProgressPic,
-            )
-          ],
-          body: Column(children: [
+          final List<UserImage> progressPics = snapshot.data!;
+          return Column(children: [
             Expanded(
               child: progressPics.isEmpty
                   ? _getEmptyState()
@@ -100,9 +97,9 @@ class _ProgressPicsState extends State<ProgressPics> {
                         ]);
                       }),
             ),
-          ]),
-        );
-      },
+          ]);
+        },
+      ),
     );
   }
 }

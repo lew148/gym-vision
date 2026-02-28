@@ -24,6 +24,12 @@ class SplashText extends StatelessWidget {
         description: description ?? 'Tap + to get started',
       );
 
+  factory SplashText.wentWrong({String? item, String? description}) => SplashText(
+        icon: Icons.heart_broken_rounded,
+        title: 'Something went wrong',
+        description: 'Update your database and try again!',
+      );
+
   @override
   Widget build(BuildContext context) {
     return Row(
