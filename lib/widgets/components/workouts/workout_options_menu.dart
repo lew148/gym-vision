@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
-import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/helpers/functions/dialog_helper.dart';
 import 'package:gymvision/helpers/functions/picker_helper.dart';

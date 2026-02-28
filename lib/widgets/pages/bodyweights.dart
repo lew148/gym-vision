@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/bodyweight.dart';
 import 'package:gymvision/constants.dart';
-import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/helpers/functions/dialog_helper.dart' show DialogHelper;
 import 'package:gymvision/helpers/functions/toast_helper.dart';

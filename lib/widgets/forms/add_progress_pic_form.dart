@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
-import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/image_helper.dart';
 import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';

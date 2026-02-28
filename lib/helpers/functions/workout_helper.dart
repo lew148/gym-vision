@@ -7,7 +7,6 @@ import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/db/workouts/workout_exercise.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
-import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/helpers/functions/dialog_helper.dart';
 import 'package:gymvision/helpers/functions/toast_helper.dart';

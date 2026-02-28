@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/bodyweight.dart';
-import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';

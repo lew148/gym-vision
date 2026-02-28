@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/classes/exercise.dart';
-import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/confetti_helper.dart';
 import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/helpers/number_helper.dart';

@@ -45,9 +45,10 @@ class _HistoryState extends State<History> {
         ),
       );
 
-  Widget getSpacerRow([DateTime? date]) => Row(
-        mainAxisAlignment: MainAxisAlignment.end,
+  Widget getSpacerRow({DateTime? date, int? numWorkouts}) => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          Text('${numWorkouts.toString()} workouts', style: TextStyle(color: Theme.of(context).colorScheme.secondary)),
           date == null
               ? const Button(text: 'All Time')
               : Button(
@@ -115,7 +116,7 @@ class _HistoryState extends State<History> {
             return Column(
               children: [
                 getFilterRow(allWorkouts),
-                getSpacerRow(date),
+                getSpacerRow(date: date, numWorkouts: workoutsToDisplay.length),
                 workoutsToDisplay.isEmpty
                     ? const SplashText(
                         icon: Icons.hotel_rounded,

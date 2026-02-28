@@ -5,7 +5,6 @@ import 'package:gymvision/classes/db/schedules/schedule_item.dart';
 import 'package:gymvision/constants.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
-import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/helpers/functions/dialog_helper.dart';
 import 'package:gymvision/helpers/functions/toast_helper.dart';

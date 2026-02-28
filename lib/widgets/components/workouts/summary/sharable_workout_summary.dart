@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/workout_summary.dart';
 import 'package:gymvision/constants.dart';
-import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/confetti_helper.dart';
 import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
@@ -175,13 +174,8 @@ class SharableWorkoutSummary extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Button.elevated(
-                    icon: Icons.celebration_rounded,
-                    text: 'Relive the Glory!',
-                    onTap: () => ConfettiHelper.straightUp(context),
-                  ),
-                  const Padding(padding: EdgeInsetsGeometry.all(5)),
-                  Button.elevated(icon: Icons.share_rounded, text: 'Share Workout', onTap: shareCard),
+                  Button(icon: Icons.celebration_rounded, onTap: () => ConfettiHelper.straightUp(context)),
+                  Button(icon: Icons.share_rounded, text: 'Share Workout', onTap: shareCard),
                 ],
               ),
             ]),

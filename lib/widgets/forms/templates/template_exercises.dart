@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workout_templates/workout_template.dart';
 import 'package:gymvision/classes/db/workout_templates/workout_template_exercise.dart';
 import 'package:gymvision/enums.dart';
-import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workout_template_model.dart';
