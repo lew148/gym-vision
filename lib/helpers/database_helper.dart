@@ -52,6 +52,7 @@ class DatabaseHelper {
 
   static Future<bool> resetWhilePersistingData() async {
     var db = DatabaseHelper.db;
+
     final workouts = await db.select(db.driftWorkouts).get();
     final workoutCategories = await db.select(db.driftWorkoutCategories).get();
     final workoutExercises = await db.select(db.driftWorkoutExercises).get();
@@ -63,6 +64,10 @@ class DatabaseHelper {
     final bodyweights = await db.select(db.driftBodyweights).get();
     final notes = await db.select(db.driftNotes).get();
     final settings = await db.select(db.driftSettings).getSingleOrNull();
+    final templates = await db.select(db.driftWorkoutTemplates).get();
+    final templateExercises = await db.select(db.driftWorkoutTemplateExercises).get();
+    final templateSets = await db.select(db.driftWorkoutTemplateSets).get();
+    final userImages = await db.select(db.driftUserImages).get();
 
     try {
       await resetDatabase();
@@ -186,6 +191,55 @@ class DatabaseHelper {
               theme: Value(settings.theme),
               intraSetRestTimer: Value(settings.intraSetRestTimer),
             ));
+      }
+
+      for (final t in templates) {
+        await db.into(db.driftWorkoutTemplates).insert(DriftWorkoutTemplatesCompanion.insert(
+              id: Value(t.id),
+              createdAt: Value(t.createdAt),
+              updatedAt: Value(t.updatedAt),
+              name: t.name,
+              categories: t.categories,
+              exerciseOrder: t.exerciseOrder,
+            ));
+      }
+
+      for (final te in templateExercises) {
+        await db.into(db.driftWorkoutTemplateExercises).insert(DriftWorkoutTemplateExercisesCompanion.insert(
+              id: Value(te.id),
+              createdAt: Value(te.createdAt),
+              updatedAt: Value(te.updatedAt),
+              workoutTemplateId: te.workoutTemplateId,
+              exerciseIdentifier: te.exerciseIdentifier,
+              setOrder: te.setOrder,
+            ));
+      }
+
+      for (final ts in templateSets) {
+        await db.into(db.driftWorkoutTemplateSets).insert(DriftWorkoutTemplateSetsCompanion.insert(
+              id: Value(ts.id),
+              createdAt: Value(ts.createdAt),
+              updatedAt: Value(ts.updatedAt),
+              workoutTemplateExerciseId: ts.workoutTemplateExerciseId,
+              weight: Value(ts.weight),
+              reps: Value(ts.reps),
+              time: Value(ts.time),
+              distance: Value(ts.distance),
+              calsBurned: Value(ts.calsBurned),
+              done: Value(ts.done),
+            ));
+      }
+
+      for (final ui in userImages) {
+        await db.into(db.driftUserImages).insert(DriftUserImagesCompanion.insert(
+              id: Value(ui.id),
+              createdAt: Value(ui.createdAt),
+              updatedAt: Value(ui.updatedAt),
+              path: ui.path,
+              storageType: ui.storageType,
+              imageType: ui.imageType,
+              takenAt: Value(ui.takenAt),
+        ));
       }
 
       return true;
