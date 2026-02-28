@@ -21,9 +21,10 @@ class StatDisplay extends StatelessWidget {
     this.alignment,
   });
 
-  factory StatDisplay.dateTime(DateTime dt) => StatDisplay(
+  factory StatDisplay.dateTime(DateTime dt, {bool muted = true}) => StatDisplay(
         icon: Icons.calendar_month_rounded,
         text: '${DateFormat(DateTimeHelper.dmyFormat).format(dt)} @ ${DateFormat(DateTimeHelper.hmFormat).format(dt)}',
+        muted: muted,
       );
 
   factory StatDisplay.date(DateTime dt, {bool muted = true}) => StatDisplay(

@@ -5140,6 +5140,391 @@ class DriftWorkoutTemplateSetsCompanion
   }
 }
 
+class $DriftUserImagesTable extends DriftUserImages
+    with TableInfo<$DriftUserImagesTable, DriftUserImage> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DriftUserImagesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _createdAtMeta =
+      const VerificationMeta('createdAt');
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+      'created_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _pathMeta = const VerificationMeta('path');
+  @override
+  late final GeneratedColumn<String> path = GeneratedColumn<String>(
+      'path', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  @override
+  late final GeneratedColumnWithTypeConverter<ImageStorageType, String>
+      storageType = GeneratedColumn<String>('storage_type', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<ImageStorageType>(
+              $DriftUserImagesTable.$converterstorageType);
+  @override
+  late final GeneratedColumnWithTypeConverter<UserImageType, String> imageType =
+      GeneratedColumn<String>('image_type', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<UserImageType>(
+              $DriftUserImagesTable.$converterimageType);
+  static const VerificationMeta _takenAtMeta =
+      const VerificationMeta('takenAt');
+  @override
+  late final GeneratedColumn<DateTime> takenAt = GeneratedColumn<DateTime>(
+      'taken_at', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, updatedAt, createdAt, path, storageType, imageType, takenAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'user_image';
+  @override
+  VerificationContext validateIntegrity(Insertable<DriftUserImage> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(_createdAtMeta,
+          createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
+    }
+    if (data.containsKey('path')) {
+      context.handle(
+          _pathMeta, path.isAcceptableOrUnknown(data['path']!, _pathMeta));
+    } else if (isInserting) {
+      context.missing(_pathMeta);
+    }
+    if (data.containsKey('taken_at')) {
+      context.handle(_takenAtMeta,
+          takenAt.isAcceptableOrUnknown(data['taken_at']!, _takenAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DriftUserImage map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DriftUserImage(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at']),
+      createdAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at']),
+      path: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}path'])!,
+      storageType: $DriftUserImagesTable.$converterstorageType.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}storage_type'])!),
+      imageType: $DriftUserImagesTable.$converterimageType.fromSql(
+          attachedDatabase.typeMapping.read(
+              DriftSqlType.string, data['${effectivePrefix}image_type'])!),
+      takenAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}taken_at']),
+    );
+  }
+
+  @override
+  $DriftUserImagesTable createAlias(String alias) {
+    return $DriftUserImagesTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<ImageStorageType, String, String>
+      $converterstorageType =
+      const EnumNameConverter<ImageStorageType>(ImageStorageType.values);
+  static JsonTypeConverter2<UserImageType, String, String> $converterimageType =
+      const EnumNameConverter<UserImageType>(UserImageType.values);
+}
+
+class DriftUserImage extends DataClass implements Insertable<DriftUserImage> {
+  final int id;
+  final DateTime? updatedAt;
+  final DateTime? createdAt;
+  final String path;
+  final ImageStorageType storageType;
+  final UserImageType imageType;
+  final DateTime? takenAt;
+  const DriftUserImage(
+      {required this.id,
+      this.updatedAt,
+      this.createdAt,
+      required this.path,
+      required this.storageType,
+      required this.imageType,
+      this.takenAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
+    }
+    if (!nullToAbsent || createdAt != null) {
+      map['created_at'] = Variable<DateTime>(createdAt);
+    }
+    map['path'] = Variable<String>(path);
+    {
+      map['storage_type'] = Variable<String>(
+          $DriftUserImagesTable.$converterstorageType.toSql(storageType));
+    }
+    {
+      map['image_type'] = Variable<String>(
+          $DriftUserImagesTable.$converterimageType.toSql(imageType));
+    }
+    if (!nullToAbsent || takenAt != null) {
+      map['taken_at'] = Variable<DateTime>(takenAt);
+    }
+    return map;
+  }
+
+  DriftUserImagesCompanion toCompanion(bool nullToAbsent) {
+    return DriftUserImagesCompanion(
+      id: Value(id),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
+      createdAt: createdAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdAt),
+      path: Value(path),
+      storageType: Value(storageType),
+      imageType: Value(imageType),
+      takenAt: takenAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(takenAt),
+    );
+  }
+
+  factory DriftUserImage.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DriftUserImage(
+      id: serializer.fromJson<int>(json['id']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
+      createdAt: serializer.fromJson<DateTime?>(json['createdAt']),
+      path: serializer.fromJson<String>(json['path']),
+      storageType: $DriftUserImagesTable.$converterstorageType
+          .fromJson(serializer.fromJson<String>(json['storageType'])),
+      imageType: $DriftUserImagesTable.$converterimageType
+          .fromJson(serializer.fromJson<String>(json['imageType'])),
+      takenAt: serializer.fromJson<DateTime?>(json['takenAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
+      'createdAt': serializer.toJson<DateTime?>(createdAt),
+      'path': serializer.toJson<String>(path),
+      'storageType': serializer.toJson<String>(
+          $DriftUserImagesTable.$converterstorageType.toJson(storageType)),
+      'imageType': serializer.toJson<String>(
+          $DriftUserImagesTable.$converterimageType.toJson(imageType)),
+      'takenAt': serializer.toJson<DateTime?>(takenAt),
+    };
+  }
+
+  DriftUserImage copyWith(
+          {int? id,
+          Value<DateTime?> updatedAt = const Value.absent(),
+          Value<DateTime?> createdAt = const Value.absent(),
+          String? path,
+          ImageStorageType? storageType,
+          UserImageType? imageType,
+          Value<DateTime?> takenAt = const Value.absent()}) =>
+      DriftUserImage(
+        id: id ?? this.id,
+        updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
+        createdAt: createdAt.present ? createdAt.value : this.createdAt,
+        path: path ?? this.path,
+        storageType: storageType ?? this.storageType,
+        imageType: imageType ?? this.imageType,
+        takenAt: takenAt.present ? takenAt.value : this.takenAt,
+      );
+  DriftUserImage copyWithCompanion(DriftUserImagesCompanion data) {
+    return DriftUserImage(
+      id: data.id.present ? data.id.value : this.id,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      path: data.path.present ? data.path.value : this.path,
+      storageType:
+          data.storageType.present ? data.storageType.value : this.storageType,
+      imageType: data.imageType.present ? data.imageType.value : this.imageType,
+      takenAt: data.takenAt.present ? data.takenAt.value : this.takenAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DriftUserImage(')
+          ..write('id: $id, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('path: $path, ')
+          ..write('storageType: $storageType, ')
+          ..write('imageType: $imageType, ')
+          ..write('takenAt: $takenAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      id, updatedAt, createdAt, path, storageType, imageType, takenAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DriftUserImage &&
+          other.id == this.id &&
+          other.updatedAt == this.updatedAt &&
+          other.createdAt == this.createdAt &&
+          other.path == this.path &&
+          other.storageType == this.storageType &&
+          other.imageType == this.imageType &&
+          other.takenAt == this.takenAt);
+}
+
+class DriftUserImagesCompanion extends UpdateCompanion<DriftUserImage> {
+  final Value<int> id;
+  final Value<DateTime?> updatedAt;
+  final Value<DateTime?> createdAt;
+  final Value<String> path;
+  final Value<ImageStorageType> storageType;
+  final Value<UserImageType> imageType;
+  final Value<DateTime?> takenAt;
+  const DriftUserImagesCompanion({
+    this.id = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.path = const Value.absent(),
+    this.storageType = const Value.absent(),
+    this.imageType = const Value.absent(),
+    this.takenAt = const Value.absent(),
+  });
+  DriftUserImagesCompanion.insert({
+    this.id = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    required String path,
+    required ImageStorageType storageType,
+    required UserImageType imageType,
+    this.takenAt = const Value.absent(),
+  })  : path = Value(path),
+        storageType = Value(storageType),
+        imageType = Value(imageType);
+  static Insertable<DriftUserImage> custom({
+    Expression<int>? id,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? createdAt,
+    Expression<String>? path,
+    Expression<String>? storageType,
+    Expression<String>? imageType,
+    Expression<DateTime>? takenAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (createdAt != null) 'created_at': createdAt,
+      if (path != null) 'path': path,
+      if (storageType != null) 'storage_type': storageType,
+      if (imageType != null) 'image_type': imageType,
+      if (takenAt != null) 'taken_at': takenAt,
+    });
+  }
+
+  DriftUserImagesCompanion copyWith(
+      {Value<int>? id,
+      Value<DateTime?>? updatedAt,
+      Value<DateTime?>? createdAt,
+      Value<String>? path,
+      Value<ImageStorageType>? storageType,
+      Value<UserImageType>? imageType,
+      Value<DateTime?>? takenAt}) {
+    return DriftUserImagesCompanion(
+      id: id ?? this.id,
+      updatedAt: updatedAt ?? this.updatedAt,
+      createdAt: createdAt ?? this.createdAt,
+      path: path ?? this.path,
+      storageType: storageType ?? this.storageType,
+      imageType: imageType ?? this.imageType,
+      takenAt: takenAt ?? this.takenAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (path.present) {
+      map['path'] = Variable<String>(path.value);
+    }
+    if (storageType.present) {
+      map['storage_type'] = Variable<String>(
+          $DriftUserImagesTable.$converterstorageType.toSql(storageType.value));
+    }
+    if (imageType.present) {
+      map['image_type'] = Variable<String>(
+          $DriftUserImagesTable.$converterimageType.toSql(imageType.value));
+    }
+    if (takenAt.present) {
+      map['taken_at'] = Variable<DateTime>(takenAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DriftUserImagesCompanion(')
+          ..write('id: $id, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('path: $path, ')
+          ..write('storageType: $storageType, ')
+          ..write('imageType: $imageType, ')
+          ..write('takenAt: $takenAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -5167,6 +5552,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $DriftWorkoutTemplateExercisesTable(this);
   late final $DriftWorkoutTemplateSetsTable driftWorkoutTemplateSets =
       $DriftWorkoutTemplateSetsTable(this);
+  late final $DriftUserImagesTable driftUserImages =
+      $DriftUserImagesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -5185,7 +5572,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         driftScheduleCategories,
         driftWorkoutTemplates,
         driftWorkoutTemplateExercises,
-        driftWorkoutTemplateSets
+        driftWorkoutTemplateSets,
+        driftUserImages
       ];
 }
 
@@ -9263,6 +9651,209 @@ typedef $$DriftWorkoutTemplateSetsTableProcessedTableManager
         (DriftWorkoutTemplateSet, $$DriftWorkoutTemplateSetsTableReferences),
         DriftWorkoutTemplateSet,
         PrefetchHooks Function({bool workoutTemplateExerciseId})>;
+typedef $$DriftUserImagesTableCreateCompanionBuilder = DriftUserImagesCompanion
+    Function({
+  Value<int> id,
+  Value<DateTime?> updatedAt,
+  Value<DateTime?> createdAt,
+  required String path,
+  required ImageStorageType storageType,
+  required UserImageType imageType,
+  Value<DateTime?> takenAt,
+});
+typedef $$DriftUserImagesTableUpdateCompanionBuilder = DriftUserImagesCompanion
+    Function({
+  Value<int> id,
+  Value<DateTime?> updatedAt,
+  Value<DateTime?> createdAt,
+  Value<String> path,
+  Value<ImageStorageType> storageType,
+  Value<UserImageType> imageType,
+  Value<DateTime?> takenAt,
+});
+
+class $$DriftUserImagesTableFilterComposer
+    extends Composer<_$AppDatabase, $DriftUserImagesTable> {
+  $$DriftUserImagesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get path => $composableBuilder(
+      column: $table.path, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<ImageStorageType, ImageStorageType, String>
+      get storageType => $composableBuilder(
+          column: $table.storageType,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnWithTypeConverterFilters<UserImageType, UserImageType, String>
+      get imageType => $composableBuilder(
+          column: $table.imageType,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<DateTime> get takenAt => $composableBuilder(
+      column: $table.takenAt, builder: (column) => ColumnFilters(column));
+}
+
+class $$DriftUserImagesTableOrderingComposer
+    extends Composer<_$AppDatabase, $DriftUserImagesTable> {
+  $$DriftUserImagesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+      column: $table.updatedAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+      column: $table.createdAt, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get path => $composableBuilder(
+      column: $table.path, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get storageType => $composableBuilder(
+      column: $table.storageType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get imageType => $composableBuilder(
+      column: $table.imageType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get takenAt => $composableBuilder(
+      column: $table.takenAt, builder: (column) => ColumnOrderings(column));
+}
+
+class $$DriftUserImagesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DriftUserImagesTable> {
+  $$DriftUserImagesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get path =>
+      $composableBuilder(column: $table.path, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<ImageStorageType, String> get storageType =>
+      $composableBuilder(
+          column: $table.storageType, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<UserImageType, String> get imageType =>
+      $composableBuilder(column: $table.imageType, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get takenAt =>
+      $composableBuilder(column: $table.takenAt, builder: (column) => column);
+}
+
+class $$DriftUserImagesTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $DriftUserImagesTable,
+    DriftUserImage,
+    $$DriftUserImagesTableFilterComposer,
+    $$DriftUserImagesTableOrderingComposer,
+    $$DriftUserImagesTableAnnotationComposer,
+    $$DriftUserImagesTableCreateCompanionBuilder,
+    $$DriftUserImagesTableUpdateCompanionBuilder,
+    (
+      DriftUserImage,
+      BaseReferences<_$AppDatabase, $DriftUserImagesTable, DriftUserImage>
+    ),
+    DriftUserImage,
+    PrefetchHooks Function()> {
+  $$DriftUserImagesTableTableManager(
+      _$AppDatabase db, $DriftUserImagesTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DriftUserImagesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DriftUserImagesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DriftUserImagesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime?> updatedAt = const Value.absent(),
+            Value<DateTime?> createdAt = const Value.absent(),
+            Value<String> path = const Value.absent(),
+            Value<ImageStorageType> storageType = const Value.absent(),
+            Value<UserImageType> imageType = const Value.absent(),
+            Value<DateTime?> takenAt = const Value.absent(),
+          }) =>
+              DriftUserImagesCompanion(
+            id: id,
+            updatedAt: updatedAt,
+            createdAt: createdAt,
+            path: path,
+            storageType: storageType,
+            imageType: imageType,
+            takenAt: takenAt,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<DateTime?> updatedAt = const Value.absent(),
+            Value<DateTime?> createdAt = const Value.absent(),
+            required String path,
+            required ImageStorageType storageType,
+            required UserImageType imageType,
+            Value<DateTime?> takenAt = const Value.absent(),
+          }) =>
+              DriftUserImagesCompanion.insert(
+            id: id,
+            updatedAt: updatedAt,
+            createdAt: createdAt,
+            path: path,
+            storageType: storageType,
+            imageType: imageType,
+            takenAt: takenAt,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$DriftUserImagesTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $DriftUserImagesTable,
+    DriftUserImage,
+    $$DriftUserImagesTableFilterComposer,
+    $$DriftUserImagesTableOrderingComposer,
+    $$DriftUserImagesTableAnnotationComposer,
+    $$DriftUserImagesTableCreateCompanionBuilder,
+    $$DriftUserImagesTableUpdateCompanionBuilder,
+    (
+      DriftUserImage,
+      BaseReferences<_$AppDatabase, $DriftUserImagesTable, DriftUserImage>
+    ),
+    DriftUserImage,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -9301,4 +9892,6 @@ class $AppDatabaseManager {
   $$DriftWorkoutTemplateSetsTableTableManager get driftWorkoutTemplateSets =>
       $$DriftWorkoutTemplateSetsTableTableManager(
           _db, _db.driftWorkoutTemplateSets);
+  $$DriftUserImagesTableTableManager get driftUserImages =>
+      $$DriftUserImagesTableTableManager(_db, _db.driftUserImages);
 }

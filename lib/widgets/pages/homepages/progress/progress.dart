@@ -3,6 +3,7 @@ import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/stat_display.dart';
 import 'package:gymvision/widgets/pages/bodyweights.dart';
+import 'package:gymvision/widgets/pages/homepages/progress/progress_pics.dart';
 import 'package:gymvision/widgets/pages/homepages/progress/schedules_widget.dart';
 import 'package:gymvision/widgets/pages/homepages/progress/templates.dart';
 
@@ -15,11 +16,12 @@ class Progress extends StatefulWidget {
 
 class _ProgressState extends State<Progress> {
   Widget getPill(IconData icon, String text, GestureTapCallback onTap) => Expanded(
-        child: CustomCard(
-          padding: EdgeInsets.all(10),
-          child: GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            onTap: onTap,
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: onTap,
+          child: CustomCard(
+            margin: EdgeInsets.all(5),
+            padding: EdgeInsets.all(10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -42,15 +44,22 @@ class _ProgressState extends State<Progress> {
             () => Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const Bodyweights())),
           ),
           getPill(
-            Icons.description_rounded,
-            'Templates',
-            () => Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const Templates())),
+            Icons.image_rounded,
+            'Progress Pics',
+            () => Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const ProgressPics())),
           ),
           // getPill(
           //   Icons.event_note_rounded,
           //   'Schedules',
           //   () => Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const Schedules())),
           // ),
+        ]),
+        Row(children: [
+          getPill(
+            Icons.description_rounded,
+            'Templates',
+            () => Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const Templates())),
+          ),
         ]),
         CustomDivider(),
         SchedulesWidget(),

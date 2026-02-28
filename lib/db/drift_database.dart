@@ -22,6 +22,7 @@ part 'drift_database.g.dart';
   DriftWorkoutTemplates,
   DriftWorkoutTemplateExercises,
   DriftWorkoutTemplateSets,
+  DriftUserImages,
 ])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.executor);
@@ -190,4 +191,14 @@ class DriftWorkoutTemplateSets extends Table with CoreColumns {
   RealColumn get distance => real().nullable()();
   IntColumn get calsBurned => integer().nullable()();
   BoolColumn get done => boolean().withDefault(const Constant(false))();
+}
+
+class DriftUserImages extends Table with CoreColumns {
+  @override
+  String get tableName => 'user_image';
+
+  TextColumn get path => text()();
+  TextColumn get storageType => textEnum<ImageStorageType>()();
+  TextColumn get imageType => textEnum<UserImageType>()();
+  DateTimeColumn get takenAt => dateTime().nullable()();
 }

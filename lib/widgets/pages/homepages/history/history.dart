@@ -17,7 +17,6 @@ import 'package:gymvision/widgets/components/stateless/scroll_bottom_padding.dar
 import 'package:gymvision/widgets/components/stateless/shimmer_load.dart';
 import 'package:gymvision/widgets/components/stateless/splash_text.dart';
 import 'package:gymvision/widgets/components/workouts/workout_card.dart';
-import 'package:gymvision/widgets/pages/bodyweights.dart';
 import 'package:provider/provider.dart';
 
 class History extends StatefulWidget {
@@ -52,7 +51,7 @@ class _HistoryState extends State<History> {
           date == null
               ? const Button(text: 'All Time')
               : Button(
-                  text: DateTimeHelper.getDateStr(date!),
+                  text: DateTimeHelper.getDateStr(date),
                   onTap: () => DialogHelper.showConfirm(
                     context,
                     title: 'Remove date filter?',

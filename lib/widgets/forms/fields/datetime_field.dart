@@ -19,12 +19,13 @@ class DateTimeField extends StatelessWidget {
     required this.mode,
   });
 
-  final double _adjustmentPadding = 2.5;
+  final double _materialFieldPadding = 2.5;
+  final double _materialIconToValuePadding = 8.0;
 
-  Widget getIcon() => switch (mode) {
-        CupertinoDatePickerMode.date => const Icon(Icons.calendar_today_rounded),
-        CupertinoDatePickerMode.time => const Icon(Icons.access_time_rounded),
-        CupertinoDatePickerMode.dateAndTime => const Icon(Icons.calendar_today_rounded),
+  IconData getIcon() => switch (mode) {
+        CupertinoDatePickerMode.date => Icons.calendar_today_rounded,
+        CupertinoDatePickerMode.time => Icons.access_time_rounded,
+        CupertinoDatePickerMode.dateAndTime => Icons.calendar_today_rounded,
         CupertinoDatePickerMode.monthYear => throw UnimplementedError(),
       };
 
@@ -39,7 +40,7 @@ class DateTimeField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsetsGeometry.symmetric(vertical: _adjustmentPadding),
+      padding: EdgeInsetsGeometry.symmetric(vertical: _materialFieldPadding),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -49,10 +50,10 @@ class DateTimeField extends StatelessWidget {
                 behavior: HitTestBehavior.translucent,
                 onTap: () => PickerHelper.showDateTimePicker(context, mode, onChange, initialDateTime: dateTime),
                 child: Padding(
-                  padding: EdgeInsetsGeometry.symmetric(vertical: _adjustmentPadding),
+                  padding: EdgeInsetsGeometry.symmetric(vertical: _materialFieldPadding),
                   child: Row(children: [
-                    getIcon(),
-                    const Padding(padding: EdgeInsetsGeometry.all(8)), // in line with Material FormField's padding
+                    Icon(getIcon(), color: Theme.of(context).colorScheme.secondary),
+                    Padding(padding: EdgeInsetsGeometry.all(_materialIconToValuePadding)),
                     dateTime == null
                         ? Text(label, style: TextStyle(fontSize: 15, color: Theme.of(context).colorScheme.secondary))
                         : Text(getDisplay(), style: const TextStyle(fontSize: 15)),

@@ -29,30 +29,32 @@ class SplashText extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Padding(
-          padding: const EdgeInsetsGeometry.symmetric(vertical: 10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              if (icon != null) ...[
-                Icon(icon, size: 60, color: Theme.of(context).colorScheme.primary),
-                const Padding(padding: EdgeInsetsGeometry.all(10)),
-              ],
-              Text(
-                title,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-                softWrap: true,
-              ),
-              if (description != null)
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsetsGeometry.all(10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                if (icon != null) ...[
+                  Icon(icon, size: 60, color: Theme.of(context).colorScheme.secondary),
+                  const Padding(padding: EdgeInsetsGeometry.all(5)),
+                ],
                 Text(
-                  description!,
-                  style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                  title,
+                  style: TextStyle(fontSize: 20, color: Theme.of(context).colorScheme.secondary),
                   textAlign: TextAlign.center,
                   softWrap: true,
                 ),
-            ],
+                if (description != null)
+                  Text(
+                    description!,
+                    style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                    textAlign: TextAlign.center,
+                    softWrap: true,
+                  ),
+              ],
+            ),
           ),
         ),
       ],

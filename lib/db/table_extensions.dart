@@ -4,6 +4,7 @@ import 'package:gymvision/classes/db/note.dart';
 import 'package:gymvision/classes/db/schedules/schedule.dart';
 import 'package:gymvision/classes/db/schedules/schedule_category.dart';
 import 'package:gymvision/classes/db/schedules/schedule_item.dart';
+import 'package:gymvision/classes/db/user_image.dart';
 import 'package:gymvision/classes/db/user_settings.dart';
 import 'package:gymvision/classes/db/workout_templates/workout_template.dart';
 import 'package:gymvision/classes/db/workout_templates/workout_template_exercise.dart';
@@ -126,7 +127,7 @@ extension DriftScheduleItemX on DriftScheduleItem {
         createdAt: createdAt,
         scheduleId: scheduleId,
         itemOrder: itemOrder,
-        );
+      );
 }
 
 extension DriftScheduleCategoryX on DriftScheduleCategory {
@@ -173,5 +174,17 @@ extension DriftWorkoutTemplateSetX on DriftWorkoutTemplateSet {
         time: time,
         distance: distance,
         calsBurned: calsBurned,
+      );
+}
+
+extension DriftUserImageX on DriftUserImage {
+  UserImage toObject() => UserImage(
+        id: id,
+        updatedAt: updatedAt,
+        createdAt: createdAt,
+        path: path,
+        storageType: storageType,
+        imageType: imageType,
+        takenAt: takenAt,
       );
 }

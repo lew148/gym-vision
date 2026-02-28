@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/workout_summary.dart';
 import 'package:gymvision/constants.dart';
-import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/confetti_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
@@ -57,11 +56,7 @@ class SharableWorkoutSummary extends StatelessWidget {
               final dir = await getTemporaryDirectory();
               final file = File('${dir.path}/wrokout_summary.png');
               await file.writeAsBytes(image);
-
-              await SharePlus.instance.share(ShareParams(
-                files: [XFile(file.path)],
-                text: '${DateTimeHelper.getDateOrDayStr(workout.date)}\'s ${workout.getWorkoutTitle()}',
-              ));
+              await SharePlus.instance.share(ShareParams(files: [XFile(file.path)]));
             } catch (e) {
               if (context.mounted) AppHelper.showSnackBar(context, 'Could not share summary');
             }
