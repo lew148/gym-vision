@@ -5,6 +5,7 @@ import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
+import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/models/db_models/schedule_model.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
@@ -66,7 +67,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
       if (!formKey.currentState!.validate() || nameController.text.isEmpty) return;
       if (categoriesByDay.entries.every((e) => e.value.isEmpty)) {
         Navigator.pop(context);
-        AppHelper.showSnackBar(context, 'Schedule is empty!');
+        ToastHelper.showDisallowedToast(context, message: 'Schedule is empty!');
         return;
       }
 
@@ -102,7 +103,7 @@ class _ScheduleFormState extends State<ScheduleForm> {
       }
     } catch (ex) {
       if (!mounted) return;
-      AppHelper.showSnackBar(context, 'Failed to add Schedule');
+      ToastHelper.showFailureToast(context, message: 'Failed to add Schedule!');
     }
 
     if (!mounted) return;

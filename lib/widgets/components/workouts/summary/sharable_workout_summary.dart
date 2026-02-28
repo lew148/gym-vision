@@ -5,6 +5,7 @@ import 'package:gymvision/classes/workout_summary.dart';
 import 'package:gymvision/constants.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/confetti_helper.dart';
+import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workouts/workout_model.dart';
 import 'package:gymvision/static_data/helpers.dart';
@@ -58,7 +59,7 @@ class SharableWorkoutSummary extends StatelessWidget {
               await file.writeAsBytes(image);
               await SharePlus.instance.share(ShareParams(files: [XFile(file.path)]));
             } catch (e) {
-              if (context.mounted) AppHelper.showSnackBar(context, 'Could not share summary');
+              if (context.mounted) ToastHelper.showFailureToast(context, message: 'Failed to share summary!');
             }
           }
 

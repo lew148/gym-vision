@@ -6,6 +6,7 @@ import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/helpers/functions/dialog_helper.dart';
+import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/helpers/functions/workout_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workouts/workout_exercise_model.dart';
@@ -124,12 +125,12 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
 
       if (done) {
         if (widget.isInFuture) {
-          AppHelper.showSnackBar(context, 'Cannot complete sets in the future');
+          ToastHelper.showDisallowedToast(context, message: 'Cannot complete sets in the future!');
           return false;
         }
 
         if (!exercise.isCardio() && sets != null && sets.any((s) => s.reps == null || s.reps == 0)) {
-          AppHelper.showSnackBar(context, 'Sets must have reps');
+          ToastHelper.showDisallowedToast(context, message: 'Sets must have reps to be completed!');
           return false;
         }
       }

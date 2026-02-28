@@ -8,6 +8,7 @@ import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/helpers/functions/dialog_helper.dart';
+import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/models/db_models/schedule_model.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
@@ -205,7 +206,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
       await ScheduleModel.setActiveSchedule(newActiveScheduleId);
     } catch (ex) {
       if (!mounted) return;
-      AppHelper.showSnackBar(context, 'Failed to set active Schedule');
+      ToastHelper.showFailureToast(context, message: 'Failed to set active Schedule!');
     }
 
     reload();

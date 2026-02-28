@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/bodyweight.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
+import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/forms/fields/custom_form_field.dart';
@@ -66,9 +67,13 @@ class _AddBodyWeightFormState extends State<AddBodyWeightForm> {
                         if (weight != null) {
                           await BodyweightModel.insert(Bodyweight(date: date!, weight: weight, units: 'kg'));
                         }
+
+                        if (context.mounted) {
+                          ToastHelper.showSuccessToast(context, message: 'Bodyweight added successfully!');
+                        }
                       } catch (ex) {
                         if (!context.mounted) return;
-                        AppHelper.showSnackBar(context, 'Failed to add Bodyweight');
+                        ToastHelper.showFailureToast(context, message: 'Failed to add Bodyweight');
                       }
 
                       if (!context.mounted) return;

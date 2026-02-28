@@ -4,6 +4,7 @@ import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/confetti_helper.dart';
+import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/helpers/number_helper.dart';
 import 'package:gymvision/models/db_models/workouts/workout_exercise_model.dart';
 import 'package:gymvision/models/db_models/workouts/workout_set_model.dart';
@@ -173,7 +174,7 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
       widget.onSuccess();
       return set;
     } catch (ex) {
-      if (mounted) AppHelper.showSnackBar(context, 'Failed to add set(s) to workout');
+      if (mounted) ToastHelper.showFailureToast(context, message: 'Failed to add set(s) to workout!');
       return null;
     }
   }
@@ -227,7 +228,7 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
       widget.onSuccess();
       return set;
     } catch (ex) {
-      if (mounted) AppHelper.showSnackBar(context, 'Failed to edit workout set');
+      if (mounted) ToastHelper.showFailureToast(context, message: 'Failed to edit workout set!');
       return null;
     }
   }
@@ -238,7 +239,7 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
       await WorkoutSetModel.delete(widget.workoutSet!.id!);
     } catch (ex) {
       if (!mounted) return;
-      AppHelper.showSnackBar(context, 'Failed to remove set from workout');
+      ToastHelper.showFailureToast(context, message: 'Failed to remove set from workout!');
     }
 
     widget.onSuccess();
@@ -262,7 +263,7 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
       );
     } catch (ex) {
       if (!mounted) return;
-      AppHelper.showSnackBar(context, 'Failed add set to workout');
+      ToastHelper.showFailureToast(context, message: 'Failed to add set to workout!');
     }
 
     widget.onSuccess();

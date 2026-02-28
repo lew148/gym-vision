@@ -4,6 +4,7 @@ import 'package:gymvision/constants.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/helpers/functions/dialog_helper.dart' show DialogHelper;
+import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/models/db_models/bodyweight_model.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
@@ -108,11 +109,12 @@ class _BodyweightsState extends State<Bodyweights> {
                                               await BodyweightModel.delete(bodyweights[i].id!);
                                             } catch (ex) {
                                               if (!context.mounted) return;
-                                              AppHelper.showSnackBar(
+                                              ToastHelper.showFailureToast(
                                                 context,
-                                                'Failed to delete bodyweight: ${ex.toString()}',
+                                                message: 'Failed to delete bodyweight!',
                                               );
                                             }
+
                                             reload();
                                           },
                                         );

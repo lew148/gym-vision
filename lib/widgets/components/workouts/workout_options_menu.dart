@@ -5,6 +5,7 @@ import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/helpers/functions/dialog_helper.dart';
 import 'package:gymvision/helpers/functions/picker_helper.dart';
+import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/helpers/functions/workout_helper.dart';
 import 'package:gymvision/models/db_models/workouts/workout_model.dart';
 import 'package:gymvision/providers/global/active_workout_provider.dart';
@@ -80,7 +81,7 @@ class WorkoutOptionsMenu extends StatelessWidget {
             if (!context.mounted) return;
 
             if (newTemplateId == null) {
-              AppHelper.showSnackBar(context, 'Failed to create template.');
+              ToastHelper.showFailureToast(context, message: 'Failed to create template!');
               return;
             }
 

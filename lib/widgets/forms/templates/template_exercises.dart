@@ -3,6 +3,7 @@ import 'package:gymvision/classes/db/workout_templates/workout_template.dart';
 import 'package:gymvision/classes/db/workout_templates/workout_template_exercise.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
+import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workout_template_model.dart';
 import 'package:gymvision/widgets/components/custom_reorderable_list.dart';
@@ -44,7 +45,9 @@ class TemplateExercises extends StatelessWidget {
                     ),
                   );
                 } catch (ex) {
-                  if (context.mounted) AppHelper.showSnackBar(context, 'Failed to add set(s) to workout');
+                  if (context.mounted) {
+                    ToastHelper.showFailureToast(context, message: 'Failed to add exercise to template!');
+                  }
                 } finally {
                   if (context.mounted) Navigator.pop(context);
                 }

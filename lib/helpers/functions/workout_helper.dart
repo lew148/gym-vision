@@ -10,6 +10,7 @@ import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/helpers/functions/dialog_helper.dart';
+import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workout_template_model.dart';
 import 'package:gymvision/models/db_models/workouts/workout_category_model.dart';
@@ -54,7 +55,7 @@ class WorkoutHelper {
 
       return continuingAdd;
     } catch (ex) {
-      if (context.mounted) AppHelper.showSnackBar(context, 'Failed to finish Active Workout');
+      if (context.mounted) ToastHelper.showFailureToast(context, message: 'Failed to finish Active Workout');
       return false;
     }
   }
@@ -109,7 +110,7 @@ class WorkoutHelper {
 
       final template = await WorkoutTemplateModel.getTemplate(templateId);
       if (template == null) {
-        if (context.mounted) AppHelper.showSnackBar(context, 'Could\'nt find Template!');
+        if (context.mounted) ToastHelper.showFailureToast(context, message: 'Failed to find Template!');
         return;
       }
 
@@ -118,13 +119,13 @@ class WorkoutHelper {
 
       final success = await _copyTemplateToWorkoutInner(workoutId: newWorkoutId, template: template);
       if (!success) {
-        if (context.mounted) AppHelper.showSnackBar(context, 'Could\'nt copy Template to Workout!');
+        if (context.mounted) ToastHelper.showFailureToast(context, message: 'Failed to copy Template to Workout!');
         return;
       }
 
       if (context.mounted) await openWorkoutView(context, newWorkoutId);
     } catch (ex) {
-      if (context.mounted) AppHelper.showSnackBar(context, 'Failed to add Workout from Template');
+      if (context.mounted) ToastHelper.showFailureToast(context, message: 'Failed to add Workout from Template!');
     }
   }
 
@@ -176,7 +177,7 @@ class WorkoutHelper {
 
       if (context.mounted) await openWorkoutView(context, newWorkoutId);
     } catch (ex) {
-      if (context.mounted) AppHelper.showSnackBar(context, 'Failed to add workout');
+      if (context.mounted) ToastHelper.showFailureToast(context, message: 'Failed to add workout!');
     }
   }
 

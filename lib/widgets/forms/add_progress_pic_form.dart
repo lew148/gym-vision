@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/image_helper.dart';
+import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/header.dart';
@@ -55,14 +56,14 @@ class _AddProgressPicFormState extends State<AddProgressPicForm> {
                       if (!formKey.currentState!.validate() || selectedImage == null) return;
                       var success = await ImageHelper.addProgressPic(selectedImage!, dateTime: selectedDate);
                       if (!success) throw 'Failed to add Progress Pic';
+
+                      if (!context.mounted) return;
+                      ToastHelper.showSuccessToast(context, message: 'Progress Pic added successfully!');
+                      Navigator.pop(context);
                     } catch (ex) {
                       if (!context.mounted) return;
-                      AppHelper.showSnackBar(context, 'Failed to add Progress Pic');
+                      ToastHelper.showFailureToast(context, message: 'Failed to add Progress Pic!');
                     }
-
-                    if (!context.mounted) return;
-                    AppHelper.showSnackBar(context, 'Progress Pic added successfully!');
-                    Navigator.pop(context);
                   },
                 ),
               ],

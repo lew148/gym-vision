@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gymvision/helpers/functions/app_helper.dart';
+import 'package:gymvision/helpers/functions/toast_helper.dart';
 
 class DialogHelper {
   static Future showDeleteConfirm(BuildContext context, String objectName, Function onDelete) async {
@@ -23,9 +23,10 @@ class DialogHelper {
             onPressed: () async {
               try {
                 await onDelete();
+                if (context.mounted) ToastHelper.showSuccessToast(context, message: 'Successfully deleted $objectName');
               } catch (ex) {
                 if (!context.mounted) return;
-                AppHelper.showSnackBar(context, 'Failed to delete $objectName: ${ex.toString()}');
+                ToastHelper.showFailureToast(context, message: 'Failed to delete $objectName!');
               }
 
               if (context.mounted) Navigator.pop(context);

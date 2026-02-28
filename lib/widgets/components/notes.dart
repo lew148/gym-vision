@@ -4,6 +4,7 @@ import 'package:gymvision/classes/db/note.dart';
 import 'package:gymvision/enums.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/dialog_helper.dart';
+import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/models/db_models/note_model.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:gymvision/widgets/components/stateless/shimmer_load.dart';
@@ -75,7 +76,7 @@ class _NotesState extends State<Notes> {
       reload();
     } catch (ex) {
       if (!mounted) return;
-      AppHelper.showSnackBar(context, 'Failed to save note');
+      ToastHelper.showFailureToast(context, message: 'Failed to save note!');
     }
   }
 

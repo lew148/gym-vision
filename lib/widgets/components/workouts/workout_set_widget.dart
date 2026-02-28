@@ -5,6 +5,7 @@ import 'package:gymvision/constants.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/helpers/functions/confetti_helper.dart';
+import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/models/db_models/user_settings_model.dart';
 import 'package:gymvision/models/db_models/workouts/workout_set_model.dart';
 import 'package:gymvision/providers/workout_stats_provider.dart';
@@ -43,12 +44,12 @@ class WorkoutSetWidget extends StatelessWidget {
 
         if (done) {
           if (isInFuture) {
-            AppHelper.showSnackBar(context, 'Cannot complete sets in the future');
+            ToastHelper.showDisallowedToast(context, message: 'Cannot complete sets in the future!');
             return false;
           }
 
           if (!isCardio && (set.reps == null || set.reps == 0)) {
-            AppHelper.showSnackBar(context, 'Sets must have reps');
+            ToastHelper.showDisallowedToast(context, message: 'Sets must have reps to be completed!');
             return false;
           }
         }
@@ -67,7 +68,7 @@ class WorkoutSetWidget extends StatelessWidget {
             AppHelper.setRestTimer(context, settings.intraSetRestTimer!);
           }
         }
-        
+
         if (context.mounted) context.read<WorkoutStatsProvider>().reload();
         reloadParent();
         return true;
@@ -148,7 +149,7 @@ class WorkoutSetWidget extends StatelessWidget {
         );
       } catch (ex) {
         if (!context.mounted) return;
-        AppHelper.showSnackBar(context, 'Failed add set to workout: ${ex.toString()}');
+        ToastHelper.showFailureToast(context, message: 'Failed to add set to workout!');
       }
 
       reloadParent();
@@ -187,7 +188,9 @@ class WorkoutSetWidget extends StatelessWidget {
                     try {
                       await WorkoutSetModel.delete(set.id!);
                     } catch (ex) {
-                      if (context.mounted) AppHelper.showSnackBar(context, 'Failed to remove set from workout');
+                      if (context.mounted) {
+                        ToastHelper.showFailureToast(context, message: 'Failed to remove set from workout');
+                      }
                     }
 
                     reloadParent();

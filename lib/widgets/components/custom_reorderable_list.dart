@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/constants.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
+import 'package:gymvision/helpers/functions/toast_helper.dart';
 
 class CustomReorderableList extends StatefulWidget {
   final void Function(int oldIndex, int newIndex) onReorder;
@@ -44,7 +45,7 @@ class _CustomReorderableListState extends State<CustomReorderableList> {
 
             widget.onReorder(currentIndex, newIndex);
           } catch (ex) {
-            AppHelper.showSnackBar(context, 'Failed to reorder');
+            ToastHelper.showFailureToast(context, message: 'Failed to reorder!');
           }
         },
       ),

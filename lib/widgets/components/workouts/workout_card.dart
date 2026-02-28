@@ -3,6 +3,7 @@ import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/constants.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/image_helper.dart';
+import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/helpers/functions/workout_helper.dart';
 import 'package:gymvision/static_data/helpers.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
@@ -219,10 +220,9 @@ class WorkoutCard extends StatelessWidget {
                         final success = await ImageHelper.addProgressPic(images.first);
 
                         if (context.mounted) {
-                          AppHelper.showSnackBar(
-                            context,
-                            success ? 'Progress pic added' : 'Failed to add progress pic',
-                          );
+                          success
+                              ? ToastHelper.showSuccessToast(context, message: 'Progress pic added!')
+                              : ToastHelper.showFailureToast(context, message: 'Failed to add progress pic!');
                         }
 
                         if (success && reloadParent != null) reloadParent!();

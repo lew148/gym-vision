@@ -1,3 +1,5 @@
+import 'package:delightful_toast/delight_toast.dart';
+import 'package:delightful_toast/toast/components/toast_card.dart';
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,7 @@ import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/helpers/functions/dialog_helper.dart';
 import 'package:gymvision/helpers/functions/picker_helper.dart';
+import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/services/local_notification_service.dart';
 import 'package:gymvision/models/db_models/flavour_text_schedule_model.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
@@ -82,7 +85,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                             await UserSettingsModel.update(settings);
                           } catch (ex) {
                             if (context.mounted) {
-                              AppHelper.showSnackBar(context, 'Failed to update Intra-Set Rest Timer.');
+                              ToastHelper.showFailureToast(context, message: 'Failed to update Intra-Set Rest Timer!');
                             }
                           }
 
@@ -124,7 +127,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
 
                     await UserSettingsModel.update(settings);
                   } catch (ex) {
-                    if (context.mounted) AppHelper.showSnackBar(context, 'Failed to update theme.');
+                    if (context.mounted) ToastHelper.showFailureToast(context, message: 'Failed to update theme!');
                   }
 
                   reloadState();
@@ -144,7 +147,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                         if (exportString == null) throw Exception();
                         await SharePlus.instance.share(ShareParams(text: exportString));
                       } catch (ex) {
-                        if (context.mounted) AppHelper.showSnackBar(context, 'Failed to export');
+                        if (context.mounted) ToastHelper.showFailureToast(context, message: 'Failed to export!');
                       }
                     },
                   ),
@@ -162,16 +165,27 @@ class _UserSettingsViewState extends State<UserSettingsView> {
               ]),
               Button.elevated(
                 onTap: () async {
+                  await ToastHelper.showToast(
+                    context,
+                    message: 'Hi, I\'m Dash!',
+                    subtitle: 'Let\'s get a workout in!',
+                    icon: Icon(Icons.flutter_dash_rounded),
+                  );
+                },
+                text: 'Show Test Toast',
+              ),
+              Button.elevated(
+                onTap: () async {
                   await FlavourTextScheduleModel.setRecentFlavourTextScheduleNotDismissed();
                   if (!context.mounted) return;
-                  AppHelper.showSnackBar(context, 'Flavour Text Un-dismissed!');
+                  ToastHelper.showSuccessToast(context, message: 'Flavour Text Un-dismissed!');
                 },
                 text: 'Un-Dismiss Flavour Text',
               ),
               Button.elevated(
                 onTap: () async {
                   await Sentry.captureMessage('(Ignore) This message was sent manually by a developer.');
-                  if (context.mounted) AppHelper.showSnackBar(context, 'Sentry message sent!');
+                  if (context.mounted) ToastHelper.showSuccessToast(context, message: 'Sentry message sent!');
                 },
                 text: 'Send Error to Sentry',
               ),
@@ -199,10 +213,9 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                     final success = await DatabaseHelper.resetWhilePersistingData();
                     if (!context.mounted) return;
                     Navigator.pop(context);
-                    AppHelper.showSnackBar(
-                      context,
-                      success ? 'Successfully updated database' : 'Failed to update database',
-                    );
+                    success
+                        ? ToastHelper.showSuccessToast(context, message: 'Successfully updated database!')
+                        : ToastHelper.showFailureToast(context, message: 'Failed to update database!');
                   },
                 ),
               ),
@@ -215,7 +228,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                     () async {
                       await DatabaseHelper.resetDatabase();
                       if (!context.mounted) return;
-                      AppHelper.showSnackBar(context, 'Successfully reset database');
+                      ToastHelper.showSuccessToast(context, message: 'Successfully reset database!');
                     },
                   ),
                   child: Column(children: [

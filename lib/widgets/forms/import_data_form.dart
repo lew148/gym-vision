@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/dialog_helper.dart';
+import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/forms/fields/custom_form_field.dart';
 
@@ -39,7 +40,9 @@ class _ImportDataFormState extends State<ImportDataForm> {
     }
 
     if (mounted) {
-      AppHelper.showSnackBar(context, success ? 'Data imported successfully!' : 'Failed to import data.');
+      success
+          ? ToastHelper.showSuccessToast(context, message: 'Data imported successfully!')
+          : ToastHelper.showFailureToast(context, message: 'Failed to import data!');
     }
   }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/flavour_text_schedule.dart';
-import 'package:gymvision/helpers/functions/app_helper.dart';
+import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/models/db_models/flavour_text_schedule_model.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 
@@ -22,7 +22,7 @@ class _FlavourTextCardState extends State<FlavourTextCard> {
       });
     } catch (ex) {
       if (!mounted) return;
-      AppHelper.showSnackBar(context, 'Failed to dismiss Flavour Text');
+      ToastHelper.showFailureToast(context, message: 'Failed to dismiss Flavour Text!');
     }
   }
 

@@ -4,6 +4,7 @@ import 'package:gymvision/classes/db/workout_templates/workout_template_set.dart
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
 import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
+import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/helpers/number_helper.dart';
 import 'package:gymvision/models/db_models/workout_template_model.dart';
 import 'package:gymvision/models/db_models/workouts/workout_set_model.dart';
@@ -147,7 +148,7 @@ class _TemplateSetFormState extends State<TemplateSetForm> {
       widget.onSuccess();
     } catch (ex) {
       if (!mounted) return;
-      AppHelper.showSnackBar(context, 'Failed to add set(s) to template');
+      ToastHelper.showFailureToast(context, message: 'Failed to add set(s) to template!');
     }
   }
 
@@ -196,17 +197,17 @@ class _TemplateSetFormState extends State<TemplateSetForm> {
       widget.onSuccess();
     } catch (ex) {
       if (!mounted) return;
-      AppHelper.showSnackBar(context, 'Failed to edit template set');
+      ToastHelper.showFailureToast(context, message: 'Failed to edit template set!');
     }
   }
 
   void onDeleteButtonTap() async {
     Navigator.pop(context);
     try {
-      await WorkoutSetModel.delete(widget.templateSet!.id!);
+      await WorkoutTemplateModel.deleteWorkoutTemplateSet(widget.templateSet!.id!);
     } catch (ex) {
       if (!mounted) return;
-      AppHelper.showSnackBar(context, 'Failed to remove set from template');
+      ToastHelper.showFailureToast(context, message: 'Failed to remove set from template!');
     }
 
     widget.onSuccess();
@@ -229,7 +230,7 @@ class _TemplateSetFormState extends State<TemplateSetForm> {
       );
     } catch (ex) {
       if (!mounted) return;
-      AppHelper.showSnackBar(context, 'Failed add set to template');
+      ToastHelper.showFailureToast(context, message: 'Failed to add set to template!');
     }
 
     widget.onSuccess();

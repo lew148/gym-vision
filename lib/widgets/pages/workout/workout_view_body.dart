@@ -7,6 +7,7 @@ import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/helpers/functions/confetti_helper.dart';
 import 'package:gymvision/helpers/functions/dialog_helper.dart';
+import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/helpers/functions/workout_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workouts/workout_category_model.dart';
@@ -109,7 +110,9 @@ class WorkoutViewBody extends StatelessWidget {
 
         provider.reload();
       } catch (e) {
-        if (context.mounted) AppHelper.showSnackBar(context, 'Failed to ${resuming ? 'resume' : 'finish'} workout.');
+        if (context.mounted) {
+          ToastHelper.showFailureToast(context, message: 'Failed to ${resuming ? 'resume' : 'finish'} workout!');
+        }
       }
     }
 
@@ -129,7 +132,9 @@ class WorkoutViewBody extends StatelessWidget {
                 await WorkoutCategoryModel.setWorkoutCategories(workout.id!, newCategories);
                 provider.reload();
               } catch (ex) {
-                if (context.mounted) AppHelper.showSnackBar(context, 'Failed to add Categories to workout.');
+                if (context.mounted) {
+                  ToastHelper.showFailureToast(context, message: 'Failed to add Categories to workout!');
+                }
               }
             },
           ),
@@ -153,7 +158,9 @@ class WorkoutViewBody extends StatelessWidget {
                     ),
                   );
                 } catch (ex) {
-                  if (context.mounted) AppHelper.showSnackBar(context, 'Failed to add set(s) to workout');
+                  if (context.mounted) {
+                    ToastHelper.showFailureToast(context, message: 'Failed to add set(s) to workout!');
+                  }
                 } finally {
                   if (context.mounted) Navigator.pop(context);
                 }
@@ -181,7 +188,7 @@ class WorkoutViewBody extends StatelessWidget {
                   return;
                 }
 
-                if (context.mounted) AppHelper.showSnackBar(context, 'There is nothing to copy');
+                if (context.mounted) ToastHelper.showDisallowedToast(context, message: 'There is nothing to copy!');
               },
             ),
             Button(
@@ -196,7 +203,7 @@ class WorkoutViewBody extends StatelessWidget {
                   return;
                 }
 
-                if (context.mounted) AppHelper.showSnackBar(context, 'There is nothing to copy');
+                if (context.mounted) ToastHelper.showDisallowedToast(context, message: 'There is nothing to copy');
               },
             ),
           ],
@@ -214,7 +221,7 @@ class WorkoutViewBody extends StatelessWidget {
                 if (context.mounted) Navigator.pop(context);
                 provider.reload();
               } catch (ex) {
-                if (context.mounted) AppHelper.showSnackBar(context, 'Failed to copy Template');
+                if (context.mounted) ToastHelper.showFailureToast(context, message: 'Failed to copy Template!');
               }
             },
           ),

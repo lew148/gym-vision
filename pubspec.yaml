@@ -45,6 +45,7 @@ dependencies:
   share_plus: ^12.0.1
   flutter_slidable: ^4.0.3
   image_picker: ^1.2.1
+  delightful_toast: ^1.1.0
 
 dev_dependencies:
   flutter_test:

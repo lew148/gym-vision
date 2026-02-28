@@ -7,6 +7,7 @@ import 'package:gymvision/constants.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/helpers/functions/dialog_helper.dart';
+import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workout_template_model.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
@@ -83,7 +84,7 @@ class _TemplateExerciseWidgetState extends State<TemplateExerciseWidget> {
       );
     } catch (ex) {
       if (!mounted) return;
-      AppHelper.showSnackBar(context, 'Failed add set to template: ${ex.toString()}');
+      ToastHelper.showFailureToast(context, message: 'Failed to add set to template!');
     }
 
     reload();
