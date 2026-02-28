@@ -39,12 +39,6 @@ class _AddBodyWeightFormState extends State<AddBodyWeightForm> {
         child: Column(
           children: [
             Column(children: [
-              DateTimeField(
-                label: 'Date & Time',
-                mode: CupertinoDatePickerMode.dateAndTime,
-                dateTime: date,
-                onChange: (v) => setState(() => date = v),
-              ),
               CustomFormField.double(
                 controller: weightController,
                 label: 'BW',
@@ -52,6 +46,12 @@ class _AddBodyWeightFormState extends State<AddBodyWeightForm> {
                 autofocus: true,
                 prefixIcon: Icons.monitor_weight_rounded,
                 canBeBlank: false,
+              ),
+              DateTimeField(
+                label: 'Date & Time',
+                mode: CupertinoDatePickerMode.dateAndTime,
+                dateTime: date,
+                onChange: (v) => setState(() => date = v),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,

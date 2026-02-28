@@ -30,30 +30,34 @@ class ImagePreview extends StatelessWidget {
           ),
         ),
       ),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(smallBorderRadius),
-            child: Image.file(image, fit: BoxFit.cover),
-          ),
-          if (onDelete != null)
-            Positioned(
-              top: 4,
-              right: 4,
-              child: GestureDetector(
-                onTap: () => onDelete!(),
-                child: Container(
-                  padding: const EdgeInsets.all(2.5),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.shadow,
-                    shape: BoxShape.circle,
+      child: SizedBox(
+        width: 100,
+        height: 100,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(smallBorderRadius),
+              child: Image.file(image, fit: BoxFit.cover),
+            ),
+            if (onDelete != null)
+              Positioned(
+                top: 4,
+                right: 4,
+                child: GestureDetector(
+                  onTap: () => onDelete!(),
+                  child: Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.shadow,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.close, color: Colors.white),
                   ),
-                  child: const Icon(Icons.close, color: Colors.white),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }

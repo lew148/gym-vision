@@ -2,8 +2,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/user_image.dart';
 import 'package:gymvision/enums.dart';
+import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/models/db_models/user_image_model.dart';
-import 'package:gymvision/widgets/pages/image_picker_page.dart';
+import 'package:gymvision/widgets/forms/pickers/image_picker_widget.dart';
 import 'package:path_provider/path_provider.dart';
 
 class ImageHelper {
@@ -17,9 +18,9 @@ class ImageHelper {
     return await image.copy(newFile.path);
   }
 
-  static Future<bool> addProgressPic(int workoutId, File image) async {
+  static Future<bool> addProgressPic(File image, {DateTime? dateTime}) async {
     try {
-      final now = DateTime.now();
+      final now = dateTime ?? DateTime.now();
       final savedImage = await ImageHelper.saveImageLocally(
         image,
         await getProgressPicPath(),
@@ -39,15 +40,13 @@ class ImageHelper {
     }
   }
 
-  static Future<void> openImagePicker(BuildContext context, Function(List<File>) onImageSelected) async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ImagePickerPage(
-          multiple: false,
-          onImagesSelected: onImageSelected,
-        ),
-      ),
-    );
-  }
+  static Future<void> openImagePicker(
+    BuildContext context,
+    Function(List<File>) onImageSelected, {
+    bool skipConfirm = false,
+  }) async =>
+      BottomSheetHelper.showCloseableBottomSheet(
+        context,
+        ImagePickerWidget(multiple: false, skipConfirm: skipConfirm, onImagesSelected: onImageSelected),
+      );
 }

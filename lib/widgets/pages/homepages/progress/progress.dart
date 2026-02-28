@@ -20,7 +20,7 @@ class _ProgressState extends State<Progress> {
           behavior: HitTestBehavior.translucent,
           onTap: onTap,
           child: CustomCard(
-            margin: EdgeInsets.symmetric(horizontal: 5),
+            margin: EdgeInsets.all(5),
             padding: EdgeInsets.all(10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -44,11 +44,6 @@ class _ProgressState extends State<Progress> {
             () => Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const Bodyweights())),
           ),
           getPill(
-            Icons.description_rounded,
-            'Templates',
-            () => Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const Templates())),
-          ),
-          getPill(
             Icons.image_rounded,
             'Progress Pics',
             () => Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const ProgressPics())),
@@ -58,6 +53,13 @@ class _ProgressState extends State<Progress> {
           //   'Schedules',
           //   () => Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const Schedules())),
           // ),
+        ]),
+        Row(children: [
+          getPill(
+            Icons.description_rounded,
+            'Templates',
+            () => Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => const Templates())),
+          ),
         ]),
         CustomDivider(),
         SchedulesWidget(),

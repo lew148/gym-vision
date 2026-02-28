@@ -38,7 +38,7 @@ class SplashText extends StatelessWidget {
               children: [
                 if (icon != null) ...[
                   Icon(icon, size: 60, color: Theme.of(context).colorScheme.secondary),
-                  const Padding(padding: EdgeInsetsGeometry.all(10)),
+                  const Padding(padding: EdgeInsetsGeometry.all(5)),
                 ],
                 Text(
                   title,

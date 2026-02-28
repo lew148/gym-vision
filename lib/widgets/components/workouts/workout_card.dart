@@ -215,17 +215,17 @@ class WorkoutCard extends StatelessWidget {
                       text: 'Add Progress Pic',
                       icon: Icons.add_rounded,
                       style: ButtonCustomStyle.noPadding(),
-                      onTap: () => ImageHelper.openImagePicker(context, (images) {
-                        ImageHelper.addProgressPic(workout.id!, images.first).then((success) {
-                          if (context.mounted) {
-                            AppHelper.showSnackBar(
-                              context,
-                              success ? 'Progress pic added' : 'Failed to add progress pic',
-                            );
-                          }
+                      onTap: () async => ImageHelper.openImagePicker(context, (images) async {
+                        final success = await ImageHelper.addProgressPic(images.first);
 
-                          if (success && reloadParent != null) reloadParent!();
-                        });
+                        if (context.mounted) {
+                          AppHelper.showSnackBar(
+                            context,
+                            success ? 'Progress pic added' : 'Failed to add progress pic',
+                          );
+                        }
+
+                        if (success && reloadParent != null) reloadParent!();
                       }),
                     ),
                   ]),

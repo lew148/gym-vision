@@ -20,34 +20,32 @@ class ProgressPics extends StatefulWidget {
 }
 
 class _ProgressPicsState extends State<ProgressPics> {
-  var future = UserImageModel.getAllProgressPics();
+  var _future = UserImageModel.getAllProgressPics();
 
-  void reload() => setState(() {
-        future = UserImageModel.getAllProgressPics();
+  void _reload() => setState(() {
+        _future = UserImageModel.getAllProgressPics();
       });
 
-  Widget getEmptyState() => Column(
+  Future<void> _addProgressPic() async {
+    await BottomSheetHelper.showCloseableBottomSheet(context, const AddProgressPicForm());
+    _reload();
+  }
+
+  Widget _getEmptyState() => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SplashText.none(
             item: 'progress pics',
             description: 'Add photos of your progress to track your gains visually over time',
           ),
-          Button.elevated(
-            icon: Icons.add_rounded,
-            text: 'Add a progress pic',
-            onTap: () async {
-              BottomSheetHelper.showCloseableBottomSheet(context, AddProgressPicForm());
-              // reload();
-            },
-          ),
+          Button.elevated(icon: Icons.add_rounded, text: 'Add a progress pic', onTap: _addProgressPic),
         ],
       );
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: future,
+      future: _future,
       builder: (context, snapshot) {
         if (!snapshot.hasData || snapshot.hasError) {
           return Text(snapshot.data.toString());
@@ -60,13 +58,13 @@ class _ProgressPicsState extends State<ProgressPics> {
           customAppBarActions: [
             IconButton(
               icon: const Icon(Icons.add_rounded),
-              onPressed: () => null,
+              onPressed: _addProgressPic,
             )
           ],
           body: Column(children: [
             Expanded(
               child: progressPics.isEmpty
-                  ? getEmptyState()
+                  ? _getEmptyState()
                   : GridView.builder(
                       padding: const EdgeInsets.all(16),
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -88,7 +86,7 @@ class _ProgressPicsState extends State<ProgressPics> {
                                 'image',
                                 () async {
                                   await UserImageModel.delete(image.id!);
-                                  reload();
+                                  _reload();
                                 },
                               ),
                             ),
