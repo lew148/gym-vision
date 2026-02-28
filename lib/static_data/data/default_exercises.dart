@@ -1145,4 +1145,10 @@ Set<Exercise> defaultExercises = {
     type: ExerciseType.cardio,
     categories: {Category.cardio},
   ),
+  Exercise(
+    identifier: "DNRQX9ANHW8",
+    name: "Dead Hang",
+    type: ExerciseType.cardio,
+    categories: {Category.cardio},
+  ),
 };

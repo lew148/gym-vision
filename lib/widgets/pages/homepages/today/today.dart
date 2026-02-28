@@ -32,15 +32,20 @@ class Today extends StatefulWidget {
 }
 
 class _TodayState extends State<Today> {
-  DateTime today() => DateTime.now();
-  void reload() => setState(() {});
+  DateTime _today() => DateTime.now();
+  void _reload() => setState(() {});
 
-  void onAddWeightTap() async {
-    await BottomSheetHelper.showCloseableBottomSheet(context, AddBodyWeightForm(), title: 'Add Bodyweight');
-    reload();
+  void _onAddWeightTap() async {
+    await BottomSheetHelper.showCloseableBottomSheet(
+      context,
+      AddBodyWeightForm(date: _today()),
+      title: 'Add Bodyweight',
+    );
+
+    _reload();
   }
 
-  Widget getPlaceholder() => Column(
+  Widget _getPlaceholder() => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
@@ -60,7 +65,7 @@ class _TodayState extends State<Today> {
                         text: 'Start a workout',
                         onTap: () async {
                           await WorkoutHelper.createActiveWorkout(context);
-                          reload();
+                          _reload();
                         },
                       ),
                       Padding(
@@ -80,7 +85,7 @@ class _TodayState extends State<Today> {
                   }
 
                   final schedule = snapshot.data!;
-                  final todayCategories = schedule.getCategoriesForDay(today());
+                  final todayCategories = schedule.getCategoriesForDay(_today());
                   return todayCategories.isEmpty
                       ? const SplashText(
                           icon: Icons.hotel_rounded,
@@ -106,7 +111,7 @@ class _TodayState extends State<Today> {
                             text: 'Start scheduled workout',
                             onTap: () async {
                               await WorkoutHelper.createActiveWorkout(context, categories: todayCategories);
-                              reload();
+                              _reload();
                             },
                           ),
                         ]);
@@ -115,23 +120,23 @@ class _TodayState extends State<Today> {
         ],
       );
 
-  Widget getWorkoutsOrPlaceholder(List<Workout>? workouts) {
-    if (workouts == null || workouts.isEmpty) return getPlaceholder();
+  Widget _getWorkoutsOrPlaceholder(List<Workout>? workouts) {
+    if (workouts == null || workouts.isEmpty) return _getPlaceholder();
     workouts.sort((a, b) => a.date.compareTo(b.date)); // sort by date asc
     return ClipRRect(
       borderRadius: BorderRadius.circular(clipRectRadius),
       child: SingleChildScrollView(
           child: Column(children: [
-        ...workouts.map((w) => WorkoutCard(workout: w, reloadParent: reload)),
+        ...workouts.map((w) => WorkoutCard(workout: w, reloadParent: _reload)),
         const ScrollBottomPadding(),
       ])),
     );
   }
 
-  String getTodayTotalCalsString(List<Workout>? workouts) =>
+  String _getTodayTotalCalsString(List<Workout>? workouts) =>
       workouts == null ? '' : workouts.map((w) => w.summary).map((s) => s?.totalCalsBurned ?? 0).sum.toString();
 
-  Widget getCalsAndBodyweightRow(List<Workout>? workouts) => Row(
+  Widget _getCalsAndBodyweightRow(List<Workout>? workouts) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
@@ -148,7 +153,7 @@ class _TodayState extends State<Today> {
                         children: [
                           Icon(Icons.local_fire_department_rounded, color: Colors.red[300]!),
                           Text(
-                            '~${getTodayTotalCalsString(workouts)}',
+                            '~${_getTodayTotalCalsString(workouts)}',
                             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                           )
                         ],
@@ -170,14 +175,14 @@ class _TodayState extends State<Today> {
                   Padding(
                     padding: const EdgeInsetsGeometry.all(15),
                     child: FutureBuilder<Bodyweight?>(
-                        future: BodyweightModel.getBodyweightForDay(today()),
+                        future: BodyweightModel.getBodyweightForDay(_today()),
                         builder: (context, bwsnapshot) {
                           if (!bwsnapshot.hasData) {
                             return Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Button(
-                                  onTap: onAddWeightTap,
+                                  onTap: _onAddWeightTap,
                                   text: 'Add BW',
                                   icon: Icons.monitor_weight_rounded,
                                 ),
@@ -193,7 +198,7 @@ class _TodayState extends State<Today> {
                                 () => BodyweightModel.delete(bwsnapshot.data!.id!),
                               );
 
-                              reload();
+                              _reload();
                             },
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -236,13 +241,13 @@ class _TodayState extends State<Today> {
           padding: const EdgeInsets.only(left: 5, bottom: 5),
           child: Column(
             children: [
-              Header(title: DateFormat('EEEE, MMMM d').format(today())),
+              Header(title: DateFormat('EEEE, MMMM d').format(_today())),
               Header.large(
                 'Today',
                 actions: [
                   Button.add(onTap: () async {
                     await WorkoutHelper.createActiveWorkout(context);
-                    reload();
+                    _reload();
                   }),
                 ],
               ),
@@ -253,17 +258,17 @@ class _TodayState extends State<Today> {
         Expanded(
           child: Consumer<ActiveWorkoutProvider>(builder: (context, activeWorkoutProvider, child) {
             return FutureBuilder<List<Workout>>(
-                future: WorkoutModel.getWorkoutsForDay(today(), withSummary: true),
+                future: WorkoutModel.getWorkoutsForDay(_today(), withSummary: true),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) return const SizedBox.shrink();
 
                   return Column(
                     children: [
-                      SizedBox(height: 100, child: getCalsAndBodyweightRow(snapshot.data)),
+                      SizedBox(height: 100, child: _getCalsAndBodyweightRow(snapshot.data)),
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsetsGeometry.symmetric(vertical: 5),
-                          child: getWorkoutsOrPlaceholder(snapshot.data),
+                          child: _getWorkoutsOrPlaceholder(snapshot.data),
                         ),
                       ),
                     ],
