@@ -180,6 +180,7 @@ class SharableWorkoutSummary extends StatelessWidget {
                     text: 'Relive the Glory!',
                     onTap: () => ConfettiHelper.straightUp(context),
                   ),
+                  const Padding(padding: EdgeInsetsGeometry.all(5)),
                   Button.elevated(icon: Icons.share_rounded, text: 'Share Workout', onTap: shareCard),
                 ],
               ),

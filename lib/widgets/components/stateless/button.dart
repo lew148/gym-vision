@@ -178,14 +178,12 @@ class Button extends StatelessWidget {
             padding: const EdgeInsetsGeometry.symmetric(vertical: 2.5),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: style?.backgroundColor ?? Theme.of(context).colorScheme.primary,
-                foregroundColor: style?.textColor ?? Theme.of(context).colorScheme.onPrimary,
+                // backgroundColor: style?.backgroundColor ?? Theme.of(context).colorScheme.primary,
+                // foregroundColor: style?.textColor ?? Theme.of(context).colorScheme.onPrimary,
                 padding: style?.padding ?? const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                shadowColor: Theme.of(context).colorScheme.secondary,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius)),
-                textStyle: TextStyle(
-                  fontSize: style?.textSize ?? 16,
-                  fontWeight: FontWeight.w500,
-                ),
+                textStyle: TextStyle(fontSize: style?.textSize ?? 16, fontWeight: FontWeight.w500),
               ),
               onPressed: disabled ? null : onTap,
               onLongPress: disabled ? null : onLongTap,
@@ -200,10 +198,7 @@ class Button extends StatelessWidget {
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               shadowColor: Colors.transparent,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(borderRadius)),
-              textStyle: TextStyle(
-                fontSize: style?.textSize ?? 16,
-                fontWeight: FontWeight.w500,
-              ),
+              textStyle: TextStyle(fontSize: style?.textSize ?? 16, fontWeight: FontWeight.w500),
             ),
             onPressed: disabled ? null : onTap,
             onLongPress: disabled ? null : onLongTap,
