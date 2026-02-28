@@ -189,31 +189,45 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                   title: 'Update Database',
                   content: 'This will persist existing data. Please wait for success message!',
                   onConfirm: () async {
+                    DialogHelper.showCustomDialog(
+                      context,
+                      title: 'Updating Database - Do not close app!',
+                      dismissable: false,
+                      content: Center(child: CircularProgressIndicator()),
+                    );
+
                     final success = await DatabaseHelper.resetWhilePersistingData();
                     if (!context.mounted) return;
+                    Navigator.pop(context);
                     AppHelper.showSnackBar(
-                        context, success ? 'Successfully updated database' : 'Failed to update database');
-                  },
-                ),
-              ),
-              Button.elevated(
-                text: 'Reset Database',
-                style: ButtonCustomStyle.redIconAndText(),
-                onTap: () => DialogHelper.showDeleteConfirm(
-                  context,
-                  "database",
-                  () async {
-                    await DatabaseHelper.resetDatabase();
-                    if (!context.mounted) return;
-                    AppHelper.showSnackBar(context, 'Successfully reset database');
+                      context,
+                      success ? 'Successfully updated database' : 'Failed to update database',
+                    );
                   },
                 ),
               ),
               const Padding(padding: EdgeInsets.all(10)),
               Center(
-                child: Text(
-                  'Version: $appVersion',
-                  style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                child: GestureDetector(
+                  onDoubleTap: () => DialogHelper.showDeleteConfirm(
+                    context,
+                    "database",
+                    () async {
+                      await DatabaseHelper.resetDatabase();
+                      if (!context.mounted) return;
+                      AppHelper.showSnackBar(context, 'Successfully reset database');
+                    },
+                  ),
+                  child: Column(children: [
+                    Text(
+                      'Version: $appVersion',
+                      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                    ),
+                    Text(
+                      '(Double tap for DELETE DATABASE)',
+                      style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                    ),
+                  ]),
                 ),
               ),
             ],

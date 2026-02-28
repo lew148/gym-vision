@@ -78,13 +78,14 @@ class DialogHelper {
     BuildContext context, {
     required String title,
     IconData? icon,
-    String? content,
+    Widget? content,
     List<CupertinoDialogAction>? customActions,
-    bool includeOK = true,
+    bool dismissable = true,
   }) async {
     HapticFeedback.heavyImpact();
     await showDialog(
       context: context,
+      barrierDismissible: dismissable,
       builder: (context) => CupertinoAlertDialog(
           title: icon == null
               ? Text(title)
@@ -96,10 +97,10 @@ class DialogHelper {
                     Text(title),
                   ],
                 ),
-          content: (content == null ? null : Text(content)),
+          content: Padding(padding: EdgeInsetsGeometry.only(top: 10), child: content),
           actions: [
             if (customActions != null) ...customActions,
-            if (includeOK)
+            if (dismissable)
               CupertinoDialogAction(
                 child: Text(
                   'OK',

@@ -34,7 +34,7 @@ class WorkoutHelper {
           context,
           icon: Icons.directions_run_rounded,
           title: 'Active Workout',
-          content: 'Finish the active workout before creating another!',
+          content: Text('Finish the active workout before creating another!'),
           customActions: [
             CupertinoDialogAction(
               child: Text(

@@ -16,6 +16,7 @@ import 'package:gymvision/models/db_models/workouts/workout_set_model.dart';
 import 'package:gymvision/providers/global/rest_timer_provider.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:provider/provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 class AppHelper {
   static bool isDarkMode(BuildContext context) => Theme.of(context).brightness == Brightness.dark;
@@ -134,5 +135,20 @@ class AppHelper {
     }
 
     return true;
+  }
+
+  static Future<bool> runAsyncVoidWithRetries(Future<void> Function() task, {int retries = 3}) async {
+    try {
+      await task();
+      return true;
+    } catch (e) {
+      if (retries > 0) {
+        await Future.delayed(const Duration(seconds: 1));
+        return await runAsyncVoidWithRetries(task, retries: retries - 1);
+      } else {
+        Sentry.captureException(e);
+        return false;
+      }
+    }
   }
 }

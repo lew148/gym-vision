@@ -81,7 +81,7 @@ class RestTimerProvider extends ChangeNotifier {
             globalContext,
             title: restTimerTitle,
             icon: Icons.alarm_on_rounded,
-            content: restTimerBody,
+            content: Text(restTimerBody),
             customActions: [
               if (!activeWorkoutProvider.activeWorkoutIsOpen)
                 CupertinoDialogAction(
