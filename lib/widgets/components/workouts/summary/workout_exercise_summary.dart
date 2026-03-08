@@ -35,6 +35,7 @@ class _WorkoutExerciseSummaryState extends State<WorkoutExerciseSummary> {
         final isBest = betSetKey == getSetGroupKey(set);
 
         return CustomCard(
+          customElevation: 1,
           padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2.5),
           child: Row(
             mainAxisSize: MainAxisSize.min,

@@ -9,6 +9,7 @@ class CustomCard extends StatelessWidget {
   final EdgeInsets? margin;
   final double? borderWidth;
   final bool primaryborder;
+  final double? customElevation;
 
   const CustomCard({
     super.key,
@@ -19,6 +20,7 @@ class CustomCard extends StatelessWidget {
     this.borderWidth,
     this.margin,
     this.primaryborder = false,
+    this.customElevation,
   });
 
   factory CustomCard.display({required Widget child, Function()? onTap}) => CustomCard(
@@ -31,7 +33,7 @@ class CustomCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card.filled(
-      elevation: 4,
+      elevation: customElevation ?? 4,
       shadowColor: Colors.black.withValues(alpha: 0.5),
       margin: margin ?? const EdgeInsets.symmetric(horizontal: 2.5, vertical: 5),
       color: customColor,
