@@ -141,7 +141,7 @@ class _TodayState extends State<Today> {
         children: [
           Expanded(
             flex: 6,
-            child: CustomCard(
+            child: CustomCard.display(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -168,7 +168,7 @@ class _TodayState extends State<Today> {
           const Padding(padding: EdgeInsetsGeometry.all(2.5)),
           Expanded(
             flex: 6,
-            child: CustomCard(
+            child: CustomCard.display(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

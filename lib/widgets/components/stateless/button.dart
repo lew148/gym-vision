@@ -229,7 +229,7 @@ class Button extends StatelessWidget {
               tapTargetSize: tapTargetSize,
               shape: shape,
               backgroundColor: primary.withValues(alpha: 0.95),
-              elevation: 8,
+              elevation: 4,
               shadowColor: shadow.withValues(alpha: 0.5),
             ),
             onPressed: disabled ? null : onTap,

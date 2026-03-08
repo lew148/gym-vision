@@ -8,7 +8,7 @@ class CustomCard extends StatelessWidget {
   final EdgeInsets? padding;
   final EdgeInsets? margin;
   final double? borderWidth;
-  final bool isField;
+  final bool primaryborder;
 
   const CustomCard({
     super.key,
@@ -18,14 +18,12 @@ class CustomCard extends StatelessWidget {
     this.padding,
     this.borderWidth,
     this.margin,
-    this.isField = false,
+    this.primaryborder = false,
   });
 
-  factory CustomCard.field({required Widget child, Function()? onTap}) => CustomCard(
-        isField: true,
-        padding: const EdgeInsets.all(10),
-        margin: const EdgeInsets.symmetric(vertical: 2.5),
-        borderWidth: 1.5,
+  factory CustomCard.display({required Widget child, Function()? onTap}) => CustomCard(
+        primaryborder: true,
+        borderWidth: 3,
         onTap: onTap,
         child: child,
       );
@@ -33,11 +31,16 @@ class CustomCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card.filled(
+      elevation: 4,
+      shadowColor: Colors.black.withValues(alpha: 0.5),
       margin: margin ?? const EdgeInsets.symmetric(horizontal: 2.5, vertical: 5),
-      color: isField ? Theme.of(context).colorScheme.surface : customColor,
+      color: customColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadius),
-        side: BorderSide(color: Theme.of(context).colorScheme.shadow, width: borderWidth ?? 0.25),
+        side: BorderSide(
+          color: primaryborder ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.shadow,
+          width: borderWidth ?? 0.25,
+        ),
       ),
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,

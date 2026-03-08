@@ -30,7 +30,7 @@ class PropDisplay extends StatelessWidget {
         onTap: onTap,
         child: Container(
           decoration: BoxDecoration(
-            color: onCard && AppHelper.isDarkMode(context) ? darkPropOnCardColor : null,
+            color: onCard && AppHelper.isDarkMode(context) ? darkOnCardColor : null,
             borderRadius: const BorderRadius.all(Radius.circular(borderRadius)),
           ),
           padding: EdgeInsets.all(size == PropDisplaySize.small ? 5 : 10),

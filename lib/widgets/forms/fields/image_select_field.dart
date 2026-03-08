@@ -2,8 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gymvision/helpers/functions/image_helper.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
-import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:gymvision/widgets/components/stateless/image_preview.dart';
+import 'package:gymvision/widgets/forms/fields/custom_field.dart';
 
 class ImageSelectField extends StatelessWidget {
   final String label;
@@ -31,7 +31,7 @@ class ImageSelectField extends StatelessWidget {
         children: [
           Expanded(
             child: images == null || images!.isEmpty
-                ? CustomCard.field(
+                ? CustomField(
                     child: GestureDetector(
                       behavior: HitTestBehavior.translucent,
                       onTap: onOpenPicker,

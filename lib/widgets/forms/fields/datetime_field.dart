@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/helpers/functions/picker_helper.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
-import 'package:gymvision/widgets/components/stateless/custom_card.dart';
+import 'package:gymvision/widgets/forms/fields/custom_field.dart';
 
 class DateTimeField extends StatelessWidget {
   final String label;
@@ -45,7 +45,7 @@ class DateTimeField extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Expanded(
-            child: CustomCard.field(
+            child: CustomField(
               child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
                 onTap: () => PickerHelper.showDateTimePicker(context, mode, onChange, initialDateTime: dateTime),
