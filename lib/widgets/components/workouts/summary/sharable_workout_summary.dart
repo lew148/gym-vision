@@ -9,6 +9,7 @@ import 'package:gymvision/helpers/ordering_helper.dart';
 import 'package:gymvision/models/db_models/workouts/workout_model.dart';
 import 'package:gymvision/static_data/helpers.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
+import 'package:gymvision/widgets/components/stateless/custom_card.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/logo.dart';
 import 'package:gymvision/widgets/components/stateless/prop_display.dart';
@@ -95,12 +96,8 @@ class SharableWorkoutSummary extends StatelessWidget {
 
           Widget getSharableSection(WorkoutSummary? summary) => Screenshot(
                 controller: screenshotController,
-                child: Container(
-                  padding: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(borderRadius),
-                    color: Theme.of(context).colorScheme.surface,
-                  ),
+                child: CustomCard(
+                  padding: const EdgeInsets.all(8),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: summary == null
@@ -161,16 +158,8 @@ class SharableWorkoutSummary extends StatelessWidget {
             child: Column(children: [
               FutureBuilder(
                 future: WorkoutModel.getWorkoutSummary(id: workout.id!),
-                builder: (context, snapshot) => Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                    borderRadius: BorderRadius.circular(borderRadius),
-                    border: BoxBorder.all(color: Theme.of(context).colorScheme.shadow),
-                  ),
-                  child: getSharableSection(snapshot.data),
-                ),
+                builder: (context, snapshot) => getSharableSection(snapshot.data),
               ),
-              const Padding(padding: EdgeInsets.all(2.5)),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
