@@ -60,7 +60,7 @@ class _TodayState extends State<Today> {
                         title: 'Ready to crush your goals?',
                         description: 'One step closer to greatness!',
                       ),
-                      Button.elevated(
+                      Button.outlined(
                         icon: Icons.add_rounded,
                         text: 'Start a workout',
                         onTap: () async {
@@ -76,7 +76,7 @@ class _TodayState extends State<Today> {
                           textAlign: TextAlign.center,
                         ),
                       ),
-                      Button.elevated(
+                      Button.outlined(
                         icon: Icons.calendar_month_rounded,
                         text: 'Create a Schedule',
                         onTap: () => Provider.of<NavigationProvider>(context, listen: false).toTab(3),

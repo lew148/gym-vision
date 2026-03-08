@@ -50,7 +50,7 @@ class BottomSheetHelper {
         builder: (BuildContext context) => Container(
           height: MediaQuery.of(context).size.height,
           decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.vertical(top: Radius.circular(largeBorderRadius)),
           ),
           padding: EdgeInsets.fromLTRB(

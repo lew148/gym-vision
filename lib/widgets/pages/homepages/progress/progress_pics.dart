@@ -38,7 +38,7 @@ class _ProgressPicsState extends State<ProgressPics> {
             item: 'progress pics',
             description: 'Add photos of your progress to track your gains visually over time',
           ),
-          Button.elevated(icon: Icons.add_rounded, text: 'Add a progress pic', onTap: _addProgressPic),
+          Button.outlined(icon: Icons.add_rounded, text: 'Add a progress pic', onTap: _addProgressPic),
         ],
       );
 

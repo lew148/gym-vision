@@ -136,7 +136,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
               const CustomDivider(),
               Row(children: [
                 Expanded(
-                  child: Button.elevated(
+                  child: Button.centered(
                     icon: Icons.upload_rounded,
                     text: 'Export Data',
                     onTap: () async {
@@ -152,7 +152,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                 ),
                 Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: 5)),
                 Expanded(
-                  child: Button.elevated(
+                  child: Button.centered(
                     icon: Icons.download_rounded,
                     text: 'Import Data',
                     onTap: () async {
@@ -161,7 +161,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                   ),
                 ),
               ]),
-              Button.elevated(
+              Button.outlined(
                 onTap: () async {
                   await ToastHelper.showToast(
                     context,
@@ -172,7 +172,7 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                 },
                 text: 'Show Test Toast',
               ),
-              Button.elevated(
+              Button.outlined(
                 onTap: () async {
                   await FlavourTextScheduleModel.setRecentFlavourTextScheduleNotDismissed();
                   if (!context.mounted) return;
@@ -180,14 +180,14 @@ class _UserSettingsViewState extends State<UserSettingsView> {
                 },
                 text: 'Un-Dismiss Flavour Text',
               ),
-              Button.elevated(
+              Button.outlined(
                 onTap: () async {
                   await Sentry.captureMessage('(Ignore) This message was sent manually by a developer.');
                   if (context.mounted) ToastHelper.showSuccessToast(context, message: 'Sentry message sent!');
                 },
                 text: 'Send Error to Sentry',
               ),
-              Button.elevated(
+              Button.outlined(
                 onTap: () => LocalNotificationService.showTestNotification(),
                 text: 'Show Test Notification',
               ),

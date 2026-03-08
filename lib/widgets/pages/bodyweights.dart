@@ -97,7 +97,7 @@ class _BodyweightsState extends State<Bodyweights> {
                                     Button(
                                       text: 'Delete Bodyweight',
                                       icon: Icons.delete_rounded,
-                                      style: ButtonCustomStyle.redIconOnly(),
+                                      style: ButtonCustomStyle.redIconMutedText(),
                                       onTap: () {
                                         Navigator.pop(context);
                                         DialogHelper.showDeleteConfirm(

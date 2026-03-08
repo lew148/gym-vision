@@ -159,13 +159,13 @@ class _TemplateExerciseWidgetState extends State<TemplateExerciseWidget> {
             Button(
               text: 'Copy Set',
               icon: Icons.content_copy_rounded,
-              style: ButtonCustomStyle.primaryIconOnly(),
+              style: ButtonCustomStyle.mutedTextOnly(),
               onTap: () => onCopySetButtonTap(set),
             ),
             Button(
               text: 'Edit Set',
               icon: Icons.edit_rounded,
-              style: ButtonCustomStyle.primaryIconOnly(),
+              style: ButtonCustomStyle.mutedTextOnly(),
               onTap: () async {
                 Navigator.pop(context);
                 await onEditWorkoutSetTap(set);
@@ -174,7 +174,7 @@ class _TemplateExerciseWidgetState extends State<TemplateExerciseWidget> {
             Button(
               text: 'Delete Set',
               icon: Icons.delete_rounded,
-              style: ButtonCustomStyle.redIconOnly(),
+              style: ButtonCustomStyle.redIconMutedText(),
               onTap: () async {
                 await DialogHelper.showDeleteConfirm(
                     context, "set", () => WorkoutTemplateModel.deleteWorkoutTemplateSet(set.id!));
@@ -235,7 +235,7 @@ class _TemplateExerciseWidgetState extends State<TemplateExerciseWidget> {
 
                         reload();
                       },
-                      style: ButtonCustomStyle.primaryIconOnly(),
+                      style: ButtonCustomStyle.mutedTextOnly(),
                     ),
                     Button.delete(
                       onTap: () async {

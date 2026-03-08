@@ -236,14 +236,14 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
                       Navigator.pop(context);
                       addScheduleOnTap();
                     },
-                    style: ButtonCustomStyle.primaryIconOnly(),
+                    style: ButtonCustomStyle.mutedTextOnly(),
                   ),
                   ...schedules.map(
                     (s) => Button(
                       text: s.name,
                       icon: s.active ? Icons.chevron_right_rounded : null,
                       onTap: () => setActiveSchedule(s.id!, activeScheduleSnapshot.data?.id),
-                      style: s.active ? null : ButtonCustomStyle.primaryIconOnly(),
+                      style: s.active ? null : ButtonCustomStyle.mutedTextOnly(),
                     ),
                   ),
                 ],
@@ -259,7 +259,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
                         Navigator.pop(context);
                         editScheduleOnTap(activeScheduleSnapshot.data!);
                       },
-                      style: ButtonCustomStyle.primaryIconOnly(),
+                      style: ButtonCustomStyle.mutedTextOnly(),
                     ),
                     Button.delete(
                       onTap: () => DialogHelper.showDeleteConfirm(
@@ -287,7 +287,7 @@ class _SchedulesWidgetState extends State<SchedulesWidget> {
                           title: 'No Active Schedule set',
                           description: 'Set an Active Schedule to begin!',
                         ),
-                        Button.elevated(icon: Icons.add_rounded, text: 'Add a Schedule', onTap: addScheduleOnTap),
+                        Button.outlined(icon: Icons.add_rounded, text: 'Add a Schedule', onTap: addScheduleOnTap),
                       ]
                     : [
                         Header(

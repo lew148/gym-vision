@@ -153,7 +153,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
               child: Row(
                 children: [
                   Expanded(
-                    child: Button.elevated(
+                    child: Button.outlined(
                       text: 'Camera',
                       icon: Icons.photo_camera_rounded,
                       onTap: _pickImageFromCamera,
@@ -161,7 +161,7 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                   ),
                   const Padding(padding: EdgeInsetsGeometry.all(10)),
                   Expanded(
-                    child: Button.elevated(
+                    child: Button.outlined(
                       text: 'Gallery',
                       icon: Icons.photo_library_rounded,
                       onTap: widget.multiple ? _pickImagesFromGallery : _pickImageFromGallery,

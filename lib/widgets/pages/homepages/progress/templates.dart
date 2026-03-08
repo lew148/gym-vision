@@ -84,11 +84,11 @@ class _TemplatesState extends State<Templates> {
         ],
       );
 
-  Widget getEmptyTemplatesView() => searchString != null
+  Widget getEmptyTemplatesView() => searchString != null && searchString != ''
       ? Column(children: [
           Text('No results for: ${_searchTextController.text}'),
           const Padding(padding: EdgeInsetsGeometry.all(5)),
-          Button.elevated(
+          Button.outlined(
             icon: Icons.add_rounded,
             text: 'Add ${_searchTextController.text}',
             onTap: () => onAddTemplate(name: _searchTextController.text),
@@ -102,7 +102,7 @@ class _TemplatesState extends State<Templates> {
                     title: 'No Template for these Categories',
                     description: 'Tap + to get started',
                   ),
-                  Button.elevated(
+                  Button.outlined(
                     icon: Icons.add_rounded,
                     text: 'Add a Template',
                     onTap: onAddTemplate,
@@ -110,7 +110,7 @@ class _TemplatesState extends State<Templates> {
                 ]
               : [
                   SplashText.none(item: 'Templates'),
-                  Button.elevated(
+                  Button.outlined(
                     icon: Icons.add_rounded,
                     text: 'Add a Template',
                     onTap: onAddTemplate,
@@ -169,7 +169,7 @@ class _TemplatesState extends State<Templates> {
                             ? Button(
                                 icon: Icons.copy_rounded,
                                 onTap: () => widget.onAddTap!(wt.id!),
-                                style: ButtonCustomStyle.primaryIconOnly(),
+                                style: ButtonCustomStyle.mutedTextOnly(),
                               )
                             : OptionsMenu(
                                 title: wt.name,

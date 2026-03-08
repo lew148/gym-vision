@@ -70,7 +70,7 @@ class WorkoutOptionsMenu extends StatelessWidget {
             await BottomSheetHelper.showCloseableBottomSheet(context, SharableWorkoutSummary(workoutId: workout.id!));
           },
           icon: Icons.share_rounded,
-          style: ButtonCustomStyle.primaryIconOnly(),
+          style: ButtonCustomStyle.mutedTextOnly(),
           text: 'Share / Summary',
         ),
         Button(
@@ -90,7 +90,7 @@ class WorkoutOptionsMenu extends StatelessWidget {
             );
           },
           icon: Icons.description_rounded,
-          style: ButtonCustomStyle.primaryIconOnly(),
+          style: ButtonCustomStyle.mutedTextOnly(),
           text: 'Create Template from Workout',
         ),
       ],
@@ -101,7 +101,7 @@ class WorkoutOptionsMenu extends StatelessWidget {
           showEditTime(workout);
         },
         icon: Icons.access_time_rounded,
-        style: ButtonCustomStyle.primaryIconOnly(),
+        style: ButtonCustomStyle.mutedTextOnly(),
         text: 'Change Start Date/Time',
       ),
       if (workout.isFinished())
@@ -111,7 +111,7 @@ class WorkoutOptionsMenu extends StatelessWidget {
             showEditEndTime(workout);
           },
           icon: Icons.access_time_rounded,
-          style: ButtonCustomStyle.primaryIconOnly(),
+          style: ButtonCustomStyle.mutedTextOnly(),
           text: 'Change End Time',
         ),
       Button.delete(

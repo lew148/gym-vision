@@ -178,7 +178,7 @@ class WorkoutViewBody extends StatelessWidget {
             Button(
               icon: Icons.stream_rounded,
               text: 'Last Similar Workout',
-              style: ButtonCustomStyle.primaryIconOnly(),
+              style: ButtonCustomStyle.mutedTextOnly(),
               onTap: () async {
                 Navigator.pop(context);
                 final success = await WorkoutModel.copyLastSimilarWorkout(workout.id!, categories);
@@ -193,7 +193,7 @@ class WorkoutViewBody extends StatelessWidget {
             Button(
               icon: Icons.first_page_rounded,
               text: 'Last Workout',
-              style: ButtonCustomStyle.primaryIconOnly(),
+              style: ButtonCustomStyle.mutedTextOnly(),
               onTap: () async {
                 Navigator.pop(context);
                 final success = await WorkoutModel.copyLastWorkout(workout.id!);
@@ -269,7 +269,7 @@ class WorkoutViewBody extends StatelessWidget {
                         Navigator.pop(context);
                         onFinishOrResumeTap(true);
                       },
-                      style: ButtonCustomStyle.primaryIconOnly(),
+                      style: ButtonCustomStyle.mutedTextOnly(),
                     ),
                 ],
               ),
@@ -339,12 +339,12 @@ class WorkoutViewBody extends StatelessWidget {
                         description: 'One workout closer to your goals!',
                       ),
                       if (!workout.hasCategories()) ...[
-                        Button.elevated(
+                        Button.outlined(
                           icon: Icons.category_rounded,
                           text: 'Select categories',
                           onTap: () => onAddCategoryClick(categories),
                         ),
-                        Button.elevated(icon: Icons.add_rounded, text: 'Add exercises', onTap: onAddExerciseClick),
+                        Button.outlined(icon: Icons.add_rounded, text: 'Add exercises', onTap: onAddExerciseClick),
                         Padding(
                           padding: const EdgeInsetsGeometry.all(5),
                           child: Text(
@@ -354,8 +354,8 @@ class WorkoutViewBody extends StatelessWidget {
                           ),
                         ),
                       ],
-                      Button.elevated(icon: Icons.copy_rounded, text: 'Copy Workout', onTap: onCopyPreviousWorkoutTap),
-                      Button.elevated(
+                      Button.outlined(icon: Icons.copy_rounded, text: 'Copy Workout', onTap: onCopyPreviousWorkoutTap),
+                      Button.outlined(
                         icon: Icons.description_rounded,
                         text: 'Create from Template',
                         onTap: onCreateFromTemplateTap,

@@ -6,7 +6,7 @@ class Logo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      'FORGED.',
+      'VESSEL.',
       style: TextStyle(
         color: Theme.of(context).colorScheme.primary,
         fontWeight: FontWeight.bold,

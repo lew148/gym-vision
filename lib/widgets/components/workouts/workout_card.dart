@@ -47,7 +47,7 @@ class WorkoutCard extends StatelessWidget {
                 padding: const EdgeInsetsGeometry.only(top: 5),
                 child: CustomCard(
                   onTap: () => openWorkout(focusWe: summary.bestSet!.workoutExerciseId),
-                  color: AppHelper.isDarkMode(context) ? darkPropOnCardColor : null,
+                  customColor: AppHelper.isDarkMode(context) ? darkPropOnCardColor : null,
                   child: Padding(
                     padding: const EdgeInsets.all(5),
                     child: Row(

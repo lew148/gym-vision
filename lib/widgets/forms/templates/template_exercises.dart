@@ -78,7 +78,7 @@ class TemplateExercises extends StatelessWidget {
                 child: Column(
                   children: [
                     const SplashText(title: 'Plan your perfect workout!', description: 'Create, customize, and reuse!'),
-                    Button.elevated(icon: Icons.add_rounded, text: 'Add exercises', onTap: onAddExerciseClick),
+                    Button.outlined(icon: Icons.add_rounded, text: 'Add exercises', onTap: onAddExerciseClick),
                   ],
                 ),
               )

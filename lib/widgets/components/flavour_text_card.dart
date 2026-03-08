@@ -37,7 +37,7 @@ class _FlavourTextCardState extends State<FlavourTextCard> {
           children: [
             Expanded(
               child: CustomCard(
-                color: Theme.of(context).colorScheme.primary,
+                customColor: Theme.of(context).colorScheme.primary,
                 child: Padding(
                   padding: const EdgeInsets.all(15),
                   child: Row(

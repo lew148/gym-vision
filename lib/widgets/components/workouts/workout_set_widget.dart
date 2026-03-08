@@ -166,13 +166,13 @@ class WorkoutSetWidget extends StatelessWidget {
                 Button(
                   text: 'Copy Set',
                   icon: Icons.content_copy_rounded,
-                  style: ButtonCustomStyle.primaryIconOnly(),
+                  style: ButtonCustomStyle.mutedTextOnly(),
                   onTap: () => onCopySetButtonTap(),
                 ),
                 Button(
                   text: 'Edit Set',
                   icon: Icons.edit_rounded,
-                  style: ButtonCustomStyle.primaryIconOnly(),
+                  style: ButtonCustomStyle.mutedTextOnly(),
                   onTap: () {
                     Navigator.pop(context);
                     onEditWorkoutSetTap();
@@ -181,7 +181,7 @@ class WorkoutSetWidget extends StatelessWidget {
                 Button(
                   text: 'Delete Set',
                   icon: Icons.delete_rounded,
-                  style: ButtonCustomStyle.redIconOnly(),
+                  style: ButtonCustomStyle.redIconMutedText(),
                   onTap: () async {
                     Navigator.pop(context);
 

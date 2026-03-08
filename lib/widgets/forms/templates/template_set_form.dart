@@ -89,10 +89,10 @@ class _TemplateSetFormState extends State<TemplateSetForm> {
         label: 'Reps',
         prefixIcon: Icons.repeat_rounded,
         buttons: [
-          Button(text: '1', onTap: () => setReps('1'), style: ButtonCustomStyle.noPrimary()),
-          Button(text: '8', onTap: () => setReps('8'), style: ButtonCustomStyle.noPrimary()),
-          Button(text: '10', onTap: () => setReps('10'), style: ButtonCustomStyle.noPrimary()),
-          Button(text: '12', onTap: () => setReps('12'), style: ButtonCustomStyle.noPrimary()),
+          Button(text: '1', onTap: () => setReps('1'), style: ButtonCustomStyle.muted()),
+          Button(text: '8', onTap: () => setReps('8'), style: ButtonCustomStyle.muted()),
+          Button(text: '10', onTap: () => setReps('10'), style: ButtonCustomStyle.muted()),
+          Button(text: '12', onTap: () => setReps('12'), style: ButtonCustomStyle.muted()),
         ],
       ),
     ];

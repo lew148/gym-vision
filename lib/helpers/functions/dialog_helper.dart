@@ -13,13 +13,13 @@ class DialogHelper {
         content: Text("Are you sure you would like to delete this $objectName?"),
         actions: [
           CupertinoDialogAction(
-            child: const Text("Keep"),
+            child: Text("Cancel", style: TextStyle(color: Theme.of(context).colorScheme.onSurface)),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
           CupertinoDialogAction(
-            child: const Text("Delete", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
+            child: const Text("DELETE", style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
             onPressed: () async {
               try {
                 await onDelete();

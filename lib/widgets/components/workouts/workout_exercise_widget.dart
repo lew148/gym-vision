@@ -73,7 +73,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           widget.workoutExercise.id!,
           exerciseIdentifier: widget.workoutExercise.exerciseIdentifier,
         );
-        
+
         context.read<WorkoutStatsProvider>().reload();
       });
 
@@ -219,7 +219,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
 
                               reload();
                             },
-                            style: ButtonCustomStyle.primaryIconOnly(),
+                            style: ButtonCustomStyle.mutedTextOnly(),
                           ),
                           Button.delete(
                             onTap: () async {

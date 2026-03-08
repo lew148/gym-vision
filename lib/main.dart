@@ -110,14 +110,32 @@ Future start() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  final primary = const Color.fromARGB(255, 252, 150, 55);
-  final secondary = const Color.fromARGB(255, 146, 146, 146);
-  final tertiary = const Color.fromARGB(255, 255, 101, 101);
-  final shadow = const Color.fromARGB(255, 77, 77, 77);
-  final lightSurface = Colors.white;
-  final lightBackground = const Color.fromARGB(255, 235, 235, 235);
-  final darkBackground = Colors.black;
-  final darkSurface = const Color.fromARGB(255, 22, 22, 22);
+  // light
+  // cherry red: 0xFF9B1B30
+  // Persimmon & slate: #EC5840 & #4A5568
+  // Jade & icy blue: #006865 & #A8DADC
+  // Sage & sand (matcha): #7D9D85 & #D7C4A3
+  // Slate & lime: #475569 & #8BBB32
+  // monotone: #475569 & #94A3B8
+
+  // dark
+  // Mint: #81E6D9 && #D7CCC8
+  // indigo & rose: #9FA8DA & #EF9A9A
+  // slate & gold: #898AA6 & #F3D692
+  // monotone: #94A3B8 & #64748B
+
+  final primary = const Color(0xFFEE4545);
+  final darksecondary = const Color(0xFFF4F4F5);
+  final darkshadow = const Color(0xFF696969);
+  final darkBackground = const Color(0xFF1A1A1C);
+  final darkSurface = const Color(0xFF1E1E1C);
+  final darkCard = const Color(0xFF2A2A28);
+
+  final lightSecondary = const Color(0xFF18181B);
+  final lightShadow = const Color(0xFFA5A5A5);
+  final lightBackground = const Color(0xFFFAF9F6);
+  final lightSurface = const Color(0xFFF5F5F0);
+  final lightCard = const Color(0xFFFFFFFF);
 
   static const List<Widget> widgetPages = [
     Today(),
@@ -141,36 +159,37 @@ class MyApp extends StatelessWidget {
       navigatorKey: navProvider.navKey,
       title: 'Forged',
       theme: ThemeData(
-        splashColor: Colors.transparent,
-        scaffoldBackgroundColor: lightBackground,
-        bottomSheetTheme: BottomSheetThemeData(backgroundColor: lightSurface),
-        colorScheme: ColorScheme.light(
-          primary: primary,
-          secondary: secondary,
-          tertiary: tertiary,
-          shadow: shadow,
-          surface: lightSurface,
-        ),
-      ),
+          splashColor: Colors.transparent,
+          scaffoldBackgroundColor: lightBackground,
+          bottomSheetTheme: BottomSheetThemeData(backgroundColor: lightSurface),
+          colorScheme: ColorScheme.light(
+            primary: primary,
+            secondary: lightSecondary,
+            shadow: lightShadow,
+            surface: lightSurface,
+          ),
+          cardTheme: CardThemeData(
+            color: lightCard,
+          )),
       darkTheme: ThemeData(
-        splashColor: Colors.transparent,
-        scaffoldBackgroundColor: darkBackground,
-        bottomSheetTheme: BottomSheetThemeData(backgroundColor: darkSurface),
-        colorScheme: ColorScheme.dark(
-          primary: primary,
-          onPrimary: Colors.black,
-          secondary: secondary,
-          tertiary: tertiary,
-          shadow: shadow,
-          surface: darkSurface,
-        ),
-      ),
+          splashColor: Colors.transparent,
+          scaffoldBackgroundColor: darkBackground,
+          bottomSheetTheme: BottomSheetThemeData(backgroundColor: darkSurface),
+          colorScheme: ColorScheme.dark(
+            primary: primary,
+            secondary: darksecondary,
+            shadow: darkshadow,
+            surface: darkSurface,
+          ),
+          cardTheme: CardThemeData(
+            color: darkCard,
+          )),
       themeMode: EasyDynamicTheme.of(context).themeMode,
       home: DebugScaffold(
         showActiveWorkout: navProvider.selectedIndex < 4,
         body: MyApp.widgetPages.elementAt(navProvider.selectedIndex),
         bottomNavigationBar: Container(
-          decoration: BoxDecoration(border: BoxBorder.fromLTRB(top: BorderSide(color: shadow, width: 0.25))),
+          decoration: BoxDecoration(border: BoxBorder.fromLTRB(top: BorderSide(color: darkshadow, width: 0.25))),
           child: NavigationBar(
             onDestinationSelected: navProvider.toTab,
             labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,

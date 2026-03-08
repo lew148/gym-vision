@@ -25,3 +25,9 @@ enum ImageStorageType {
 enum UserImageType {
   progressPic,
 }
+
+enum ButtonType {
+  text,
+  outlined,
+  elevated,
+}

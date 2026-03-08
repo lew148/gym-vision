@@ -82,7 +82,7 @@ class _DurationPickerState extends State<DurationPicker> {
             children: getSampleDurations()
                 .map((d) => Button(
                       text: DateTimeHelper.getDurationString(d),
-                      style: ButtonCustomStyle.noPrimary(),
+                      style: ButtonCustomStyle.muted(),
                       onTap: () => onChange(d, fromButton: true),
                     ))
                 .toList(),
