@@ -31,43 +31,56 @@ class _FlavourTextCardState extends State<FlavourTextCard> {
     return FutureBuilder<FlavourTextSchedule>(
       future: flavourTextSchedule,
       builder: (context, snapshot) {
-        if (!snapshot.hasData || snapshot.data!.dismissed) return const SizedBox.shrink();
+        if (!snapshot.hasData) return SizedBox.shrink();
 
-        return Row(
-          children: [
-            Expanded(
-              child: CustomCard(
-                customColor: Theme.of(context).colorScheme.primary,
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        child: Text(
-                          snapshot.data!.getFlavourText()!.message,
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            fontWeight: FontWeight.w600,
+        final fts = snapshot.data!;
+
+        return AnimatedSize(
+          onEnd: () => setState(() {
+            flavourTextSchedule = FlavourTextScheduleModel.getTodaysFlavourTextSchedule();
+          }),
+          duration: const Duration(milliseconds: 300),
+          reverseDuration: Duration.zero,
+          curve: Curves.easeInOut,
+          child: fts.dismissed
+              ? SizedBox.shrink()
+              : Row(
+                  children: [
+                    Expanded(
+                      child: CustomCard(
+                        customColor: Theme.of(context).colorScheme.primary,
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  fts.getFlavourText()!.message,
+                                  style: TextStyle(
+                                    color: Theme.of(context).colorScheme.onPrimary,
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 18.00,
+                                  ),
+                                ),
+                              ),
+                              const Padding(padding: EdgeInsetsGeometry.all(5)),
+                              InkWell(
+                                onTap: () => onDismissTap(fts),
+                                child: Icon(
+                                  Icons.close_rounded,
+                                  size: 20,
+                                  weight: 20,
+                                  color: Theme.of(context).colorScheme.onPrimary,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                      const Padding(padding: EdgeInsetsGeometry.all(5)),
-                      InkWell(
-                        onTap: () => onDismissTap(snapshot.data!),
-                        child: Icon(
-                          Icons.close_rounded,
-                          size: 20,
-                          weight: 20,
-                          color: Theme.of(context).colorScheme.onPrimary,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ),
-            ),
-          ],
         );
       },
     );

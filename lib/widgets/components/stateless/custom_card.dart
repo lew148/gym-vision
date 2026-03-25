@@ -23,9 +23,17 @@ class CustomCard extends StatelessWidget {
     this.customElevation,
   });
 
-  factory CustomCard.display({required Widget child, Function()? onTap}) => CustomCard(
+  factory CustomCard.display({
+    required Widget child,
+    Function()? onTap,
+    EdgeInsets? padding,
+    EdgeInsets? margin,
+  }) =>
+      CustomCard(
         primaryborder: true,
-        borderWidth: 3,
+        padding: padding,
+        margin: margin,
+        borderWidth: 2,
         onTap: onTap,
         child: child,
       );

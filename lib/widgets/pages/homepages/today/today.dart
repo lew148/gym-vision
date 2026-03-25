@@ -138,6 +138,7 @@ class _TodayState extends State<Today> {
 
   Widget _getCalsAndBodyweightRow(List<Workout>? workouts) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Expanded(
             flex: 6,
@@ -172,59 +173,57 @@ class _TodayState extends State<Today> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: const EdgeInsetsGeometry.all(15),
-                    child: FutureBuilder<Bodyweight?>(
-                        future: BodyweightModel.getBodyweightForDay(_today()),
-                        builder: (context, bwsnapshot) {
-                          if (!bwsnapshot.hasData) {
-                            return Row(
+                  FutureBuilder<Bodyweight?>(
+                    future: BodyweightModel.getBodyweightForDay(_today()),
+                    builder: (context, bwsnapshot) {
+                      if (!bwsnapshot.hasData) {
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Button(
+                              onTap: _onAddWeightTap,
+                              text: 'Add BW',
+                              icon: Icons.monitor_weight_rounded,
+                            ),
+                          ],
+                        );
+                      }
+
+                      return GestureDetector(
+                        onTap: () async {
+                          await DialogHelper.showDeleteConfirm(
+                            context,
+                            'Bodyweight',
+                            () => BodyweightModel.delete(bwsnapshot.data!.id!),
+                          );
+
+                          _reload();
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Button(
-                                  onTap: _onAddWeightTap,
-                                  text: 'Add BW',
-                                  icon: Icons.monitor_weight_rounded,
-                                ),
-                              ],
-                            );
-                          }
-
-                          return GestureDetector(
-                            onTap: () async {
-                              await DialogHelper.showDeleteConfirm(
-                                context,
-                                'Bodyweight',
-                                () => BodyweightModel.delete(bwsnapshot.data!.id!),
-                              );
-
-                              _reload();
-                            },
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.monitor_weight_rounded, color: Theme.of(context).colorScheme.primary),
-                                    const Padding(padding: EdgeInsetsGeometry.all(2.5)),
-                                    Text(
-                                      bwsnapshot.data!.getWeightDisplay(),
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                Icon(Icons.monitor_weight_rounded, color: Theme.of(context).colorScheme.primary),
+                                const Padding(padding: EdgeInsetsGeometry.all(2.5)),
                                 Text(
-                                  '@ ${bwsnapshot.data!.getTimeString()}',
-                                  style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                                  bwsnapshot.data!.getWeightDisplay(),
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
                                 ),
                               ],
                             ),
-                          );
-                        }),
+                            Text(
+                              '@ ${bwsnapshot.data!.getTimeString()}',
+                              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
