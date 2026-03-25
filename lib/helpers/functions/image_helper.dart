@@ -18,6 +18,22 @@ class ImageHelper {
     return await image.copy(newFile.path);
   }
 
+  static Future<List<File>> getAllSavedImages() async {
+  final directory = Directory(await getProgressPicPath());
+  final List<FileSystemEntity> entities = await directory.list().toList();
+  final List<File> imageFiles = entities
+      .whereType<File>()
+      .where((file) {
+        final path = file.path.toLowerCase();
+        return path.endsWith('.jpg') || 
+               path.endsWith('.jpeg') || 
+               path.endsWith('.png');
+      })
+      .toList();
+
+  return imageFiles;
+}
+
   static Future<bool> addProgressPic(File image, {DateTime? dateTime}) async {
     try {
       final now = dateTime ?? DateTime.now();
