@@ -87,10 +87,10 @@ class _ProgressPicsState extends State<ProgressPics> {
                                 Expanded(
                                   child: ImagePreview(image: File(file.path)),
                                 ),
-                                  Column(children: [
-                                    CustomDivider(shadow: true),
-                                    Text(file.path),
-                                  ]),
+                                Column(children: [
+                                  CustomDivider(shadow: true),
+                                  Text(file.path),
+                                ]),
                               ]);
                             }),
                   ),
@@ -137,6 +137,8 @@ class _ProgressPicsState extends State<ProgressPics> {
                                     CustomDivider(shadow: true),
                                     StatDisplay.date(dateTime),
                                     StatDisplay.time(dateTime),
+                                    CustomDivider(shadow: true),
+                                    Text(image.path),
                                   ]),
                               ]);
                             }),
