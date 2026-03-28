@@ -60,7 +60,7 @@ class _FlavourTextCardState extends State<FlavourTextCard> {
                                   style: TextStyle(
                                     color: Theme.of(context).colorScheme.onPrimary,
                                     fontWeight: FontWeight.w700,
-                                    fontSize: 16.00,
+                                    fontSize: 14.00,
                                   ),
                                 ),
                               ),
