@@ -5167,10 +5167,10 @@ class $DriftUserImagesTable extends DriftUserImages
   late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
       'created_at', aliasedName, true,
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
-  static const VerificationMeta _pathMeta = const VerificationMeta('path');
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
   @override
-  late final GeneratedColumn<String> path = GeneratedColumn<String>(
-      'path', aliasedName, false,
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
   @override
   late final GeneratedColumnWithTypeConverter<ImageStorageType, String>
@@ -5184,6 +5184,17 @@ class $DriftUserImagesTable extends DriftUserImages
               type: DriftSqlType.string, requiredDuringInsert: true)
           .withConverter<UserImageType>(
               $DriftUserImagesTable.$converterimageType);
+  static const VerificationMeta _sourceMeta = const VerificationMeta('source');
+  @override
+  late final GeneratedColumn<String> source = GeneratedColumn<String>(
+      'source', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _relativePathMeta =
+      const VerificationMeta('relativePath');
+  @override
+  late final GeneratedColumn<String> relativePath = GeneratedColumn<String>(
+      'relative_path', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
   static const VerificationMeta _takenAtMeta =
       const VerificationMeta('takenAt');
   @override
@@ -5191,8 +5202,17 @@ class $DriftUserImagesTable extends DriftUserImages
       'taken_at', aliasedName, true,
       type: DriftSqlType.dateTime, requiredDuringInsert: false);
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, updatedAt, createdAt, path, storageType, imageType, takenAt];
+  List<GeneratedColumn> get $columns => [
+        id,
+        updatedAt,
+        createdAt,
+        name,
+        storageType,
+        imageType,
+        source,
+        relativePath,
+        takenAt
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -5214,11 +5234,21 @@ class $DriftUserImagesTable extends DriftUserImages
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
     }
-    if (data.containsKey('path')) {
+    if (data.containsKey('name')) {
       context.handle(
-          _pathMeta, path.isAcceptableOrUnknown(data['path']!, _pathMeta));
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
     } else if (isInserting) {
-      context.missing(_pathMeta);
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('source')) {
+      context.handle(_sourceMeta,
+          source.isAcceptableOrUnknown(data['source']!, _sourceMeta));
+    }
+    if (data.containsKey('relative_path')) {
+      context.handle(
+          _relativePathMeta,
+          relativePath.isAcceptableOrUnknown(
+              data['relative_path']!, _relativePathMeta));
     }
     if (data.containsKey('taken_at')) {
       context.handle(_takenAtMeta,
@@ -5239,14 +5269,18 @@ class $DriftUserImagesTable extends DriftUserImages
           .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at']),
       createdAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}created_at']),
-      path: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}path'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
       storageType: $DriftUserImagesTable.$converterstorageType.fromSql(
           attachedDatabase.typeMapping.read(
               DriftSqlType.string, data['${effectivePrefix}storage_type'])!),
       imageType: $DriftUserImagesTable.$converterimageType.fromSql(
           attachedDatabase.typeMapping.read(
               DriftSqlType.string, data['${effectivePrefix}image_type'])!),
+      source: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}source']),
+      relativePath: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}relative_path']),
       takenAt: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}taken_at']),
     );
@@ -5268,17 +5302,21 @@ class DriftUserImage extends DataClass implements Insertable<DriftUserImage> {
   final int id;
   final DateTime? updatedAt;
   final DateTime? createdAt;
-  final String path;
+  final String name;
   final ImageStorageType storageType;
   final UserImageType imageType;
+  final String? source;
+  final String? relativePath;
   final DateTime? takenAt;
   const DriftUserImage(
       {required this.id,
       this.updatedAt,
       this.createdAt,
-      required this.path,
+      required this.name,
       required this.storageType,
       required this.imageType,
+      this.source,
+      this.relativePath,
       this.takenAt});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -5290,7 +5328,7 @@ class DriftUserImage extends DataClass implements Insertable<DriftUserImage> {
     if (!nullToAbsent || createdAt != null) {
       map['created_at'] = Variable<DateTime>(createdAt);
     }
-    map['path'] = Variable<String>(path);
+    map['name'] = Variable<String>(name);
     {
       map['storage_type'] = Variable<String>(
           $DriftUserImagesTable.$converterstorageType.toSql(storageType));
@@ -5298,6 +5336,12 @@ class DriftUserImage extends DataClass implements Insertable<DriftUserImage> {
     {
       map['image_type'] = Variable<String>(
           $DriftUserImagesTable.$converterimageType.toSql(imageType));
+    }
+    if (!nullToAbsent || source != null) {
+      map['source'] = Variable<String>(source);
+    }
+    if (!nullToAbsent || relativePath != null) {
+      map['relative_path'] = Variable<String>(relativePath);
     }
     if (!nullToAbsent || takenAt != null) {
       map['taken_at'] = Variable<DateTime>(takenAt);
@@ -5314,9 +5358,14 @@ class DriftUserImage extends DataClass implements Insertable<DriftUserImage> {
       createdAt: createdAt == null && nullToAbsent
           ? const Value.absent()
           : Value(createdAt),
-      path: Value(path),
+      name: Value(name),
       storageType: Value(storageType),
       imageType: Value(imageType),
+      source:
+          source == null && nullToAbsent ? const Value.absent() : Value(source),
+      relativePath: relativePath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(relativePath),
       takenAt: takenAt == null && nullToAbsent
           ? const Value.absent()
           : Value(takenAt),
@@ -5330,11 +5379,13 @@ class DriftUserImage extends DataClass implements Insertable<DriftUserImage> {
       id: serializer.fromJson<int>(json['id']),
       updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
       createdAt: serializer.fromJson<DateTime?>(json['createdAt']),
-      path: serializer.fromJson<String>(json['path']),
+      name: serializer.fromJson<String>(json['name']),
       storageType: $DriftUserImagesTable.$converterstorageType
           .fromJson(serializer.fromJson<String>(json['storageType'])),
       imageType: $DriftUserImagesTable.$converterimageType
           .fromJson(serializer.fromJson<String>(json['imageType'])),
+      source: serializer.fromJson<String?>(json['source']),
+      relativePath: serializer.fromJson<String?>(json['relativePath']),
       takenAt: serializer.fromJson<DateTime?>(json['takenAt']),
     );
   }
@@ -5345,11 +5396,13 @@ class DriftUserImage extends DataClass implements Insertable<DriftUserImage> {
       'id': serializer.toJson<int>(id),
       'updatedAt': serializer.toJson<DateTime?>(updatedAt),
       'createdAt': serializer.toJson<DateTime?>(createdAt),
-      'path': serializer.toJson<String>(path),
+      'name': serializer.toJson<String>(name),
       'storageType': serializer.toJson<String>(
           $DriftUserImagesTable.$converterstorageType.toJson(storageType)),
       'imageType': serializer.toJson<String>(
           $DriftUserImagesTable.$converterimageType.toJson(imageType)),
+      'source': serializer.toJson<String?>(source),
+      'relativePath': serializer.toJson<String?>(relativePath),
       'takenAt': serializer.toJson<DateTime?>(takenAt),
     };
   }
@@ -5358,17 +5411,22 @@ class DriftUserImage extends DataClass implements Insertable<DriftUserImage> {
           {int? id,
           Value<DateTime?> updatedAt = const Value.absent(),
           Value<DateTime?> createdAt = const Value.absent(),
-          String? path,
+          String? name,
           ImageStorageType? storageType,
           UserImageType? imageType,
+          Value<String?> source = const Value.absent(),
+          Value<String?> relativePath = const Value.absent(),
           Value<DateTime?> takenAt = const Value.absent()}) =>
       DriftUserImage(
         id: id ?? this.id,
         updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
         createdAt: createdAt.present ? createdAt.value : this.createdAt,
-        path: path ?? this.path,
+        name: name ?? this.name,
         storageType: storageType ?? this.storageType,
         imageType: imageType ?? this.imageType,
+        source: source.present ? source.value : this.source,
+        relativePath:
+            relativePath.present ? relativePath.value : this.relativePath,
         takenAt: takenAt.present ? takenAt.value : this.takenAt,
       );
   DriftUserImage copyWithCompanion(DriftUserImagesCompanion data) {
@@ -5376,10 +5434,14 @@ class DriftUserImage extends DataClass implements Insertable<DriftUserImage> {
       id: data.id.present ? data.id.value : this.id,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-      path: data.path.present ? data.path.value : this.path,
+      name: data.name.present ? data.name.value : this.name,
       storageType:
           data.storageType.present ? data.storageType.value : this.storageType,
       imageType: data.imageType.present ? data.imageType.value : this.imageType,
+      source: data.source.present ? data.source.value : this.source,
+      relativePath: data.relativePath.present
+          ? data.relativePath.value
+          : this.relativePath,
       takenAt: data.takenAt.present ? data.takenAt.value : this.takenAt,
     );
   }
@@ -5390,17 +5452,19 @@ class DriftUserImage extends DataClass implements Insertable<DriftUserImage> {
           ..write('id: $id, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('createdAt: $createdAt, ')
-          ..write('path: $path, ')
+          ..write('name: $name, ')
           ..write('storageType: $storageType, ')
           ..write('imageType: $imageType, ')
+          ..write('source: $source, ')
+          ..write('relativePath: $relativePath, ')
           ..write('takenAt: $takenAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
-      id, updatedAt, createdAt, path, storageType, imageType, takenAt);
+  int get hashCode => Object.hash(id, updatedAt, createdAt, name, storageType,
+      imageType, source, relativePath, takenAt);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -5408,9 +5472,11 @@ class DriftUserImage extends DataClass implements Insertable<DriftUserImage> {
           other.id == this.id &&
           other.updatedAt == this.updatedAt &&
           other.createdAt == this.createdAt &&
-          other.path == this.path &&
+          other.name == this.name &&
           other.storageType == this.storageType &&
           other.imageType == this.imageType &&
+          other.source == this.source &&
+          other.relativePath == this.relativePath &&
           other.takenAt == this.takenAt);
 }
 
@@ -5418,46 +5484,56 @@ class DriftUserImagesCompanion extends UpdateCompanion<DriftUserImage> {
   final Value<int> id;
   final Value<DateTime?> updatedAt;
   final Value<DateTime?> createdAt;
-  final Value<String> path;
+  final Value<String> name;
   final Value<ImageStorageType> storageType;
   final Value<UserImageType> imageType;
+  final Value<String?> source;
+  final Value<String?> relativePath;
   final Value<DateTime?> takenAt;
   const DriftUserImagesCompanion({
     this.id = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.createdAt = const Value.absent(),
-    this.path = const Value.absent(),
+    this.name = const Value.absent(),
     this.storageType = const Value.absent(),
     this.imageType = const Value.absent(),
+    this.source = const Value.absent(),
+    this.relativePath = const Value.absent(),
     this.takenAt = const Value.absent(),
   });
   DriftUserImagesCompanion.insert({
     this.id = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.createdAt = const Value.absent(),
-    required String path,
+    required String name,
     required ImageStorageType storageType,
     required UserImageType imageType,
+    this.source = const Value.absent(),
+    this.relativePath = const Value.absent(),
     this.takenAt = const Value.absent(),
-  })  : path = Value(path),
+  })  : name = Value(name),
         storageType = Value(storageType),
         imageType = Value(imageType);
   static Insertable<DriftUserImage> custom({
     Expression<int>? id,
     Expression<DateTime>? updatedAt,
     Expression<DateTime>? createdAt,
-    Expression<String>? path,
+    Expression<String>? name,
     Expression<String>? storageType,
     Expression<String>? imageType,
+    Expression<String>? source,
+    Expression<String>? relativePath,
     Expression<DateTime>? takenAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (createdAt != null) 'created_at': createdAt,
-      if (path != null) 'path': path,
+      if (name != null) 'name': name,
       if (storageType != null) 'storage_type': storageType,
       if (imageType != null) 'image_type': imageType,
+      if (source != null) 'source': source,
+      if (relativePath != null) 'relative_path': relativePath,
       if (takenAt != null) 'taken_at': takenAt,
     });
   }
@@ -5466,17 +5542,21 @@ class DriftUserImagesCompanion extends UpdateCompanion<DriftUserImage> {
       {Value<int>? id,
       Value<DateTime?>? updatedAt,
       Value<DateTime?>? createdAt,
-      Value<String>? path,
+      Value<String>? name,
       Value<ImageStorageType>? storageType,
       Value<UserImageType>? imageType,
+      Value<String?>? source,
+      Value<String?>? relativePath,
       Value<DateTime?>? takenAt}) {
     return DriftUserImagesCompanion(
       id: id ?? this.id,
       updatedAt: updatedAt ?? this.updatedAt,
       createdAt: createdAt ?? this.createdAt,
-      path: path ?? this.path,
+      name: name ?? this.name,
       storageType: storageType ?? this.storageType,
       imageType: imageType ?? this.imageType,
+      source: source ?? this.source,
+      relativePath: relativePath ?? this.relativePath,
       takenAt: takenAt ?? this.takenAt,
     );
   }
@@ -5493,8 +5573,8 @@ class DriftUserImagesCompanion extends UpdateCompanion<DriftUserImage> {
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
-    if (path.present) {
-      map['path'] = Variable<String>(path.value);
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
     }
     if (storageType.present) {
       map['storage_type'] = Variable<String>(
@@ -5503,6 +5583,12 @@ class DriftUserImagesCompanion extends UpdateCompanion<DriftUserImage> {
     if (imageType.present) {
       map['image_type'] = Variable<String>(
           $DriftUserImagesTable.$converterimageType.toSql(imageType.value));
+    }
+    if (source.present) {
+      map['source'] = Variable<String>(source.value);
+    }
+    if (relativePath.present) {
+      map['relative_path'] = Variable<String>(relativePath.value);
     }
     if (takenAt.present) {
       map['taken_at'] = Variable<DateTime>(takenAt.value);
@@ -5516,9 +5602,11 @@ class DriftUserImagesCompanion extends UpdateCompanion<DriftUserImage> {
           ..write('id: $id, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('createdAt: $createdAt, ')
-          ..write('path: $path, ')
+          ..write('name: $name, ')
           ..write('storageType: $storageType, ')
           ..write('imageType: $imageType, ')
+          ..write('source: $source, ')
+          ..write('relativePath: $relativePath, ')
           ..write('takenAt: $takenAt')
           ..write(')'))
         .toString();
@@ -9656,9 +9744,11 @@ typedef $$DriftUserImagesTableCreateCompanionBuilder = DriftUserImagesCompanion
   Value<int> id,
   Value<DateTime?> updatedAt,
   Value<DateTime?> createdAt,
-  required String path,
+  required String name,
   required ImageStorageType storageType,
   required UserImageType imageType,
+  Value<String?> source,
+  Value<String?> relativePath,
   Value<DateTime?> takenAt,
 });
 typedef $$DriftUserImagesTableUpdateCompanionBuilder = DriftUserImagesCompanion
@@ -9666,9 +9756,11 @@ typedef $$DriftUserImagesTableUpdateCompanionBuilder = DriftUserImagesCompanion
   Value<int> id,
   Value<DateTime?> updatedAt,
   Value<DateTime?> createdAt,
-  Value<String> path,
+  Value<String> name,
   Value<ImageStorageType> storageType,
   Value<UserImageType> imageType,
+  Value<String?> source,
+  Value<String?> relativePath,
   Value<DateTime?> takenAt,
 });
 
@@ -9690,8 +9782,8 @@ class $$DriftUserImagesTableFilterComposer
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<String> get path => $composableBuilder(
-      column: $table.path, builder: (column) => ColumnFilters(column));
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<ImageStorageType, ImageStorageType, String>
       get storageType => $composableBuilder(
@@ -9702,6 +9794,12 @@ class $$DriftUserImagesTableFilterComposer
       get imageType => $composableBuilder(
           column: $table.imageType,
           builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<String> get source => $composableBuilder(
+      column: $table.source, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get relativePath => $composableBuilder(
+      column: $table.relativePath, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<DateTime> get takenAt => $composableBuilder(
       column: $table.takenAt, builder: (column) => ColumnFilters(column));
@@ -9725,14 +9823,21 @@ class $$DriftUserImagesTableOrderingComposer
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
       column: $table.createdAt, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<String> get path => $composableBuilder(
-      column: $table.path, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get storageType => $composableBuilder(
       column: $table.storageType, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get imageType => $composableBuilder(
       column: $table.imageType, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get source => $composableBuilder(
+      column: $table.source, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get relativePath => $composableBuilder(
+      column: $table.relativePath,
+      builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<DateTime> get takenAt => $composableBuilder(
       column: $table.takenAt, builder: (column) => ColumnOrderings(column));
@@ -9756,8 +9861,8 @@ class $$DriftUserImagesTableAnnotationComposer
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
-  GeneratedColumn<String> get path =>
-      $composableBuilder(column: $table.path, builder: (column) => column);
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<ImageStorageType, String> get storageType =>
       $composableBuilder(
@@ -9765,6 +9870,12 @@ class $$DriftUserImagesTableAnnotationComposer
 
   GeneratedColumnWithTypeConverter<UserImageType, String> get imageType =>
       $composableBuilder(column: $table.imageType, builder: (column) => column);
+
+  GeneratedColumn<String> get source =>
+      $composableBuilder(column: $table.source, builder: (column) => column);
+
+  GeneratedColumn<String> get relativePath => $composableBuilder(
+      column: $table.relativePath, builder: (column) => column);
 
   GeneratedColumn<DateTime> get takenAt =>
       $composableBuilder(column: $table.takenAt, builder: (column) => column);
@@ -9800,36 +9911,44 @@ class $$DriftUserImagesTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             Value<DateTime?> updatedAt = const Value.absent(),
             Value<DateTime?> createdAt = const Value.absent(),
-            Value<String> path = const Value.absent(),
+            Value<String> name = const Value.absent(),
             Value<ImageStorageType> storageType = const Value.absent(),
             Value<UserImageType> imageType = const Value.absent(),
+            Value<String?> source = const Value.absent(),
+            Value<String?> relativePath = const Value.absent(),
             Value<DateTime?> takenAt = const Value.absent(),
           }) =>
               DriftUserImagesCompanion(
             id: id,
             updatedAt: updatedAt,
             createdAt: createdAt,
-            path: path,
+            name: name,
             storageType: storageType,
             imageType: imageType,
+            source: source,
+            relativePath: relativePath,
             takenAt: takenAt,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<DateTime?> updatedAt = const Value.absent(),
             Value<DateTime?> createdAt = const Value.absent(),
-            required String path,
+            required String name,
             required ImageStorageType storageType,
             required UserImageType imageType,
+            Value<String?> source = const Value.absent(),
+            Value<String?> relativePath = const Value.absent(),
             Value<DateTime?> takenAt = const Value.absent(),
           }) =>
               DriftUserImagesCompanion.insert(
             id: id,
             updatedAt: updatedAt,
             createdAt: createdAt,
-            path: path,
+            name: name,
             storageType: storageType,
             imageType: imageType,
+            source: source,
+            relativePath: relativePath,
             takenAt: takenAt,
           ),
           withReferenceMapper: (p0) => p0

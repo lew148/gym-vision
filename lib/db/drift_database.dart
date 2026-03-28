@@ -197,8 +197,12 @@ class DriftUserImages extends Table with CoreColumns {
   @override
   String get tableName => 'user_image';
 
-  TextColumn get path => text()();
+  TextColumn get name => text()();
   TextColumn get storageType => textEnum<ImageStorageType>()();
   TextColumn get imageType => textEnum<UserImageType>()();
+
+  TextColumn get source => text().nullable()();
+  TextColumn get relativePath => text().nullable()();
+
   DateTimeColumn get takenAt => dateTime().nullable()();
 }

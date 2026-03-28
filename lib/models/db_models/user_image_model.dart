@@ -12,7 +12,9 @@ class UserImageModel {
     return await db.into(db.driftUserImages).insert(DriftUserImagesCompanion(
           createdAt: Value(now),
           updatedAt: Value(now),
-          path: Value(image.path),
+          source: Value(image.source),
+          relativePath: Value(image.relativePath),
+          name: Value(image.name),
           storageType: Value(image.storageType),
           imageType: Value(image.imageType),
           takenAt: Value(image.takenAt),
@@ -24,7 +26,9 @@ class UserImageModel {
     final db = DatabaseHelper.db;
     await (db.update(db.driftUserImages)..where((s) => s.id.equals(image.id!))).write(DriftUserImagesCompanion(
       updatedAt: Value(DateTime.now()),
-      path: Value(image.path),
+      source: Value(image.source),
+      relativePath: Value(image.relativePath),
+      name: Value(image.name),
       storageType: Value(image.storageType),
       imageType: Value(image.imageType),
       takenAt: Value(image.takenAt),

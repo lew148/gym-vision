@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/workouts/workout.dart';
 import 'package:gymvision/classes/workout_summary.dart';
-import 'package:gymvision/constants.dart';
 import 'package:gymvision/helpers/functions/confetti_helper.dart';
 import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/helpers/ordering_helper.dart';

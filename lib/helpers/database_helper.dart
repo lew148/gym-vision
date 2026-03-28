@@ -286,9 +286,11 @@ class DatabaseHelper {
               id: Value(ui.id),
               createdAt: Value(ui.createdAt),
               updatedAt: Value(ui.updatedAt),
-              path: ui.path,
+              name: ui.name,
               storageType: ui.storageType,
               imageType: ui.imageType,
+              source: Value(ui.source),
+              relativePath: Value(ui.relativePath),
               takenAt: Value(ui.takenAt),
             )),
       );

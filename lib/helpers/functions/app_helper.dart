@@ -15,6 +15,7 @@ import 'package:gymvision/models/db_models/workouts/workout_model.dart';
 import 'package:gymvision/models/db_models/workouts/workout_set_model.dart';
 import 'package:gymvision/providers/global/rest_timer_provider.dart';
 import 'package:gymvision/static_data/enums.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -32,6 +33,8 @@ class AppHelper {
     exportMap['workouts'] = await getWorkoutsExportString();
     return jsonEncode(exportMap);
   }
+
+  static Future<String> getAppDocumentsPath() async => (await getApplicationDocumentsDirectory()).path;
 
   static Future<List<Map>> getWorkoutsExportString() async {
     final List<Map> workoutMaps = [];

@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gymvision/classes/db/user_image.dart';
+import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
 import 'package:gymvision/helpers/functions/dialog_helper.dart';
-import 'package:gymvision/helpers/functions/image_helper.dart';
 import 'package:gymvision/models/db_models/user_image_model.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
@@ -21,12 +21,12 @@ class ProgressPics extends StatefulWidget {
 }
 
 class _ProgressPicsState extends State<ProgressPics> {
-  var _future = UserImageModel.getAllProgressPics();
-  var _showAll = false;
+  void _reload() => setState(() {});
 
-  void _reload() => setState(() {
-        _future = UserImageModel.getAllProgressPics();
-      });
+  Future<(String, List<UserImage>)> _loadFuture() async => (
+        await AppHelper.getAppDocumentsPath(),
+        await UserImageModel.getAllProgressPics(),
+      );
 
   Future<void> _addProgressPic() async {
     await BottomSheetHelper.showCloseableBottomSheet(context, const AddProgressPicForm());
@@ -50,102 +50,59 @@ class _ProgressPicsState extends State<ProgressPics> {
       customAppBarTitle: Text('Progress Pics'),
       customAppBarActions: [
         IconButton(
-          icon: Icon(Icons.change_circle_outlined),
-          onPressed: () => setState(() {
-            _showAll = !_showAll;
-          }),
-        ),
-        IconButton(
           icon: const Icon(Icons.add_rounded),
           onPressed: _addProgressPic,
         ),
       ],
-      body: _showAll
-          ? FutureBuilder(
-              future: ImageHelper.getAllSavedImages(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData || snapshot.hasError) return SplashText.wentWrong();
+      body: FutureBuilder(
+        future: _loadFuture(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData || snapshot.hasError) return SplashText.wentWrong();
 
-                final files = snapshot.data!;
+          final (String docsPath, List<UserImage> progressPics) = snapshot.data!;
+          return Column(children: [
+            Expanded(
+              child: progressPics.isEmpty
+                  ? _getEmptyState()
+                  : GridView.builder(
+                      padding: const EdgeInsets.all(16),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                      ),
+                      itemCount: progressPics.length,
+                      itemBuilder: (context, index) {
+                        final image = progressPics[index];
+                        final dateTime = image.takenAt ?? image.createdAt;
 
-                return Column(children: [
-                  Expanded(
-                    child: files.isEmpty
-                        ? _getEmptyState()
-                        : GridView.builder(
-                            padding: const EdgeInsets.all(16),
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 12,
-                              mainAxisSpacing: 12,
+                        return Column(children: [
+                          Expanded(
+                            child: ImagePreview(
+                              image: File('$docsPath${image.relativePath}'),
+                              onDelete: () async => await DialogHelper.showDeleteConfirm(
+                                context,
+                                'image',
+                                () async {
+                                  // todo: delete image from device?
+                                  await UserImageModel.delete(image.id!);
+                                  _reload();
+                                },
+                              ),
                             ),
-                            itemCount: files.length,
-                            itemBuilder: (context, index) {
-                              final file = files[index];
-
-                              return Column(children: [
-                                Expanded(
-                                  child: ImagePreview(image: File(file.path)),
-                                ),
-                                Column(children: [
-                                  CustomDivider(shadow: true),
-                                  Text(file.path),
-                                ]),
-                              ]);
-                            }),
-                  ),
-                ]);
-              })
-          : FutureBuilder(
-              future: _future,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData || snapshot.hasError) return SplashText.wentWrong();
-
-                final List<UserImage> progressPics = snapshot.data!;
-                return Column(children: [
-                  Expanded(
-                    child: progressPics.isEmpty
-                        ? _getEmptyState()
-                        : GridView.builder(
-                            padding: const EdgeInsets.all(16),
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              crossAxisSpacing: 12,
-                              mainAxisSpacing: 12,
-                            ),
-                            itemCount: progressPics.length,
-                            itemBuilder: (context, index) {
-                              final image = progressPics[index];
-                              final dateTime = image.takenAt ?? image.createdAt;
-
-                              return Column(children: [
-                                Expanded(
-                                  child: ImagePreview(
-                                    image: File(image.path),
-                                    onDelete: () async => await DialogHelper.showDeleteConfirm(
-                                      context,
-                                      'image',
-                                      () async {
-                                        await UserImageModel.delete(image.id!);
-                                        _reload();
-                                      },
-                                    ),
-                                  ),
-                                ),
-                                if (dateTime != null)
-                                  Column(children: [
-                                    CustomDivider(shadow: true),
-                                    StatDisplay.date(dateTime),
-                                    StatDisplay.time(dateTime),
-                                    CustomDivider(shadow: true),
-                                    Text(image.path),
-                                  ]),
-                              ]);
-                            }),
-                  ),
-                ]);
-              },
+                          ),
+                          if (dateTime != null)
+                            Column(children: [
+                              CustomDivider(shadow: true),
+                              StatDisplay.date(dateTime),
+                              StatDisplay.time(dateTime),
+                            ]),
+                        ]);
+                      }),
             ),
+          ]);
+        },
+      ),
     );
   }
 }
