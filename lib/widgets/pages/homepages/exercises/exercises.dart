@@ -114,7 +114,7 @@ class _ExercisesState extends State<Exercises> {
                       if (exercise.equipment != Equipment.other)
                         Text(
                           exercise.equipment.displayName,
-                          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                          style: TextStyle(color: Theme.of(context).colorScheme.shadow),
                         ),
                       // if (exercise.primaryMuscleGroup != MuscleGroup.other && exercise.equipment != Equipment.other)
                       //   const Padding(padding: EdgeInsetsGeometry.symmetric(horizontal: 5), child: Text('-')),

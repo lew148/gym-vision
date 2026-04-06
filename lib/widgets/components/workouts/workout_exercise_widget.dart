@@ -179,7 +179,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                             if (exercise.equipment != Equipment.other)
                               Text(
                                 exercise.equipment.displayName,
-                                style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                                style: TextStyle(color: Theme.of(context).colorScheme.shadow),
                               ),
                           ],
                         ),

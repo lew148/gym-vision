@@ -1,6 +1,8 @@
+// concerned with tracking metrics
 enum ExerciseType {
   strength,
   cardio,
+  // duration,
   stretch,
   other,
 }
@@ -36,11 +38,11 @@ enum MuscleGroup {
   calves,
   abductors,
   adductors,
-  other,
   lats,
   lowerBack,
   // traps,
   upperBack,
+  other,
 }
 
 enum Equipment {

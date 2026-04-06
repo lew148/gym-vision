@@ -3,12 +3,16 @@ import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/static_data/helpers.dart';
 
 class Exercise {
-  String identifier; // gymvision-made exercise identifier
+  String identifier; // internal identifier
   String name;
   ExerciseType type;
-  MuscleGroup primaryMuscleGroup;
-  Equipment equipment;
   Set<Category> categories;
+
+  MuscleGroup primaryMuscleGroup;
+  Set<MuscleGroup>? secondaryMuscleGroups;
+  
+  Equipment equipment;
+
   ExerciseDetails? exerciseDetails;
 
   Exercise({
@@ -16,6 +20,7 @@ class Exercise {
     required this.name,
     this.type = ExerciseType.other,
     this.primaryMuscleGroup = MuscleGroup.other,
+    this.secondaryMuscleGroups,
     this.equipment = Equipment.other,
     this.categories = const <Category>{Category.other},
     this.exerciseDetails,
@@ -23,5 +28,5 @@ class Exercise {
 
   bool isCardio() => categories.contains(Category.cardio);
 
-  String getFullName() => '$name (${equipment.displayName})';
+  String getFullName() => '${equipment == Equipment.other ? '' : ' (${equipment.displayName})'}$name';
 }

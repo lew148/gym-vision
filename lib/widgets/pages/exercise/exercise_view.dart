@@ -9,6 +9,7 @@ import 'package:gymvision/helpers/datetime_helper.dart';
 import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/header.dart';
+import 'package:gymvision/widgets/components/stateless/prop_display.dart';
 import 'package:gymvision/widgets/components/stateless/splash_text.dart';
 import 'package:gymvision/widgets/components/stateless/stat_display.dart';
 import 'package:gymvision/widgets/debug_scaffold.dart';
@@ -159,6 +160,16 @@ class _ExerciseViewState extends State<ExerciseView> {
                     ),
 
                     Padding(padding: EdgeInsetsGeometry.symmetric(vertical: 10)),
+
+                    Wrap(
+                      children: exercise.categories
+                          .map((c) => PropDisplay(
+                                text: c.displayName,
+                                onCard: true,
+                              ))
+                          .toList(),
+                    ),
+
                     // if (god)
                     getInfoWidget(
                         context,
@@ -169,6 +180,7 @@ class _ExerciseViewState extends State<ExerciseView> {
                         )),
                     getInfoWidget(context, 'Type', Text(exercise.type.displayName)),
                     getInfoWidget(context, 'Primary Muscle', Text(exercise.primaryMuscleGroup.displayName)),
+                    getInfoWidget(context, 'Secondary Muscle', Text('N/A')),
                     getInfoWidget(context, 'Equipment', Text(exercise.equipment.displayName)),
                     if (exercise.type == ExerciseType.strength && exercise.exerciseDetails?.max != null)
                       getPrSection(exercise.exerciseDetails!.max!),

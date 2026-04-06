@@ -9,6 +9,8 @@ extension ExerciseTypeHelper on ExerciseType {
         return '💦 Cardio';
       case ExerciseType.strength:
         return '🏋️ Strength';
+      // case ExerciseType.duration:
+      //   return '⏱️ Duration';
       case ExerciseType.stretch:
         return '🧘 Stretch';
       case ExerciseType.other:

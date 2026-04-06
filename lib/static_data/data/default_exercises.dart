@@ -1150,5 +1150,26 @@ Set<Exercise> defaultExercises = {
     name: "Dead Hang",
     type: ExerciseType.cardio,
     categories: {Category.cardio},
+    // primaryMuscleGroup: MuscleGroup.forearms,
+  ),
+  Exercise(
+    identifier: "9Z7K8QG2X5P",
+    name: "Plank",
+    type: ExerciseType.cardio,
+    categories: {Category.cardio},
+    // primaryMuscleGroup: MuscleGroup.core,
+  ),
+  Exercise(
+    identifier: "FA9454PRXAT",
+    name: "Cable Wood Chop",
+    type: ExerciseType.strength,
+    equipment: Equipment.cable,
+    primaryMuscleGroup: MuscleGroup.core,
+  ),
+  Exercise(
+    identifier: "E2HBX8X29PJ",
+    name: "Dead Bug",
+    type: ExerciseType.strength,
+    primaryMuscleGroup: MuscleGroup.core,
   ),
 };
