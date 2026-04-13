@@ -25,22 +25,27 @@ class WorkoutSummaryStats extends StatelessWidget {
                 ? [
                     Text(
                       summary.getTotalExercisesString(),
-                      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                      style: TextStyle(color: Theme.of(context).colorScheme.shadow),
                     ),
                   ]
                 : [
                     Text(
                       summary.getTotalExercisesString(),
-                      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                      style: TextStyle(color: Theme.of(context).colorScheme.shadow),
                     ),
                     Text(
                       summary.getTotalSetsString(),
-                      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                      style: TextStyle(color: Theme.of(context).colorScheme.shadow),
                     ),
                     Text(
                       summary.getTotalRepsString(),
-                      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                      style: TextStyle(color: Theme.of(context).colorScheme.shadow),
                     ),
+                    if (summary.totalWeightLifted != null)
+                      Text(
+                        summary.getTotalWeightLiftedString()!,
+                        style: TextStyle(color: Theme.of(context).colorScheme.shadow),
+                      ),
                   ],
           );
 

@@ -89,6 +89,7 @@ class WorkoutModel {
     }
 
     summary.bestSet = bestSet;
+    summary.totalWeightLifted = allDoneSets.map((s) => (s.weight ?? 0) * (s.reps ?? 0)).sum;
     return summary;
   }
 
