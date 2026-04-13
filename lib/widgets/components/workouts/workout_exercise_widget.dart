@@ -128,7 +128,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         if (exercise.trackingMetrics.contains(TrackingMetric.reps) &&
             sets != null &&
             sets.any((s) => s.reps == null || s.reps == 0)) {
-          ToastHelper.showDisallowedToast(context, message: 'Sets must have reps to be completed!');
+          ToastHelper.showDisallowedToast(context, message: 'Set(s) must have reps to be completed!');
           return false;
         }
       }

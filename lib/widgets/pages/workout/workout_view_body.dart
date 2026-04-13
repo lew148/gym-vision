@@ -19,6 +19,7 @@ import 'package:gymvision/providers/global/history_provider.dart';
 import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/widgets/components/custom_reorderable_list.dart';
 import 'package:gymvision/widgets/components/rest_timer.dart';
+import 'package:gymvision/widgets/components/stateless/logo.dart';
 import 'package:gymvision/widgets/components/stateless/options_menu.dart';
 import 'package:gymvision/widgets/components/stateless/prop_display.dart';
 import 'package:gymvision/widgets/components/stateless/stat_display.dart';
@@ -378,6 +379,7 @@ class WorkoutViewBody extends StatelessWidget {
                       .toList(),
                 ),
         ),
+        const Padding(padding: EdgeInsetsGeometry.all(10)),
       ],
     );
   }

@@ -126,6 +126,7 @@ class CustomFormField extends StatefulWidget {
         canBeBlank: canBeBlank,
         buttons: buttons,
         prefixIcon: prefixIcon,
+        prefixText: prefixText,
       );
 
   @override

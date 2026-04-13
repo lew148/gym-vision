@@ -339,7 +339,9 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
 
         final Exercise exercise = snapshot.data!;
         final WorkoutSet? last = exercise.exerciseDetails?.last;
-        final WorkoutSet? max = exercise.type == ExerciseType.cardio ? null : exercise.exerciseDetails?.max;
+        final WorkoutSet? max = exercise.type == ExerciseType.cardio || exercise.loadType != LoadType.weighted
+            ? null
+            : exercise.exerciseDetails?.max;
 
         return Form(
           key: _formKey,
@@ -367,7 +369,7 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
                     ),
                 ],
               ),
-              ...exercise.trackingMetrics.map((tm) => _getFieldFromTrackingMetric(exercise, tm)),
+              ...exercise.getOrderedTrackingMetrics().map((tm) => _getFieldFromTrackingMetric(exercise, tm)),
               Padding(
                 padding: const EdgeInsets.only(top: 10),
                 child: Row(
