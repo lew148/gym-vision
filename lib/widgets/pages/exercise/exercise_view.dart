@@ -179,9 +179,19 @@ class _ExerciseViewState extends State<ExerciseView> {
                           style: TextStyle(color: Theme.of(context).colorScheme.shadow),
                         )),
                     getInfoWidget(context, 'Type', Text(exercise.type.displayName)),
-                    getInfoWidget(context, 'Primary Muscle', Text(exercise.primaryMuscleGroup.displayName)),
-                    getInfoWidget(context, 'Secondary Muscle', Text('N/A')),
-                    getInfoWidget(context, 'Equipment', Text(exercise.equipment.displayName)),
+                    if (exercise.primaryMuscleGroup != null)
+                      getInfoWidget(
+                        context,
+                        'Primary Muscle',
+                        Text(exercise.primaryMuscleGroup!.displayName),
+                      ),
+                    if (exercise.secondaryMuscleGroups != null && exercise.secondaryMuscleGroups!.isNotEmpty)
+                      getInfoWidget(
+                        context,
+                        'Secondary Muscles',
+                        Text(exercise.getSecondaryMuscleGroupsString()),
+                      ),
+                    getInfoWidget(context, 'Equipment', Text(exercise.getEquipmentString())),
                     if (exercise.type == ExerciseType.strength && exercise.exerciseDetails?.max != null)
                       getPrSection(exercise.exerciseDetails!.max!),
                     Padding(

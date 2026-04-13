@@ -57,7 +57,7 @@ class WorkoutCard extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(summary.bestSetExercise!.getFullName()),
+                            Text(summary.bestSetExercise!.name),
                             Row(children: [
                               StatDisplay.weight(summary.bestSet!.weight, muted: true),
                               const Padding(padding: EdgeInsets.symmetric(horizontal: 10)),

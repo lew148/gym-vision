@@ -71,13 +71,13 @@ class _ExercisesState extends State<Exercises> {
 
         if (filteredExercises.isEmpty) {
           filteredExercises = getFilteredExercises()
-              .where((e) => e.primaryMuscleGroup.displayName.contains(RegExp(string, caseSensitive: false)))
+              .where((e) => e.primaryMuscleGroup?.displayName.contains(RegExp(string, caseSensitive: false)) == true)
               .toList();
         }
 
         if (filteredExercises.isEmpty) {
           filteredExercises = getFilteredExercises()
-              .where((e) => e.equipment.displayName.contains(RegExp(string, caseSensitive: false)))
+              .where((e) => e.getEquipmentString().contains(RegExp(string, caseSensitive: false)))
               .toList();
         }
 
@@ -111,9 +111,9 @@ class _ExercisesState extends State<Exercises> {
                       style: const TextStyle(fontWeight: FontWeight.w500),
                     ),
                     Row(children: [
-                      if (exercise.equipment != Equipment.other)
+                      if (exercise.hasEquipment())
                         Text(
-                          exercise.equipment.displayName,
+                          exercise.getEquipmentString(),
                           style: TextStyle(color: Theme.of(context).colorScheme.shadow),
                         ),
                       // if (exercise.primaryMuscleGroup != MuscleGroup.other && exercise.equipment != Equipment.other)
@@ -146,7 +146,7 @@ class _ExercisesState extends State<Exercises> {
   Widget getExercisesScrollView() {
     final List<Widget> sections = [];
     final Map<int, List<Exercise>> groups =
-        groupBy<Exercise, int>(filteredExercises, (e) => e.primaryMuscleGroup.index);
+        groupBy<Exercise, int>(filteredExercises, (e) => e.primaryMuscleGroup?.index ?? -1);
 
     if (groups.isEmpty) {
       return Padding(
@@ -165,8 +165,8 @@ class _ExercisesState extends State<Exercises> {
       if (group == null || group.isEmpty) continue;
 
       group.sort((a, b) {
-        final aString = '${a.equipment.index}${a.name}';
-        final bString = '${b.equipment.index}${b.name}';
+        final aString = '${a.getEquipmentString()}${a.name}';
+        final bString = '${b.getEquipmentString()}${b.name}';
         return aString.compareTo(bString);
       });
 
@@ -178,7 +178,7 @@ class _ExercisesState extends State<Exercises> {
               Row(children: [
                 Text(
                   group.first.type == ExerciseType.strength
-                      ? group.first.primaryMuscleGroup.displayName
+                      ? group.first.primaryMuscleGroup?.displayName ?? 'Other'
                       : group.first.type.displayName,
                 ),
               ]),

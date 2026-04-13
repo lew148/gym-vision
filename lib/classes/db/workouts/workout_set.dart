@@ -7,12 +7,16 @@ import 'package:gymvision/models/default_exercises_model.dart';
 
 class WorkoutSet extends DBO {
   int workoutExerciseId;
+  bool done;
+
   double? weight;
   int? reps;
+  double? addedWeight;
+  double? assistedWeight;
+
   Duration? time;
   double? distance;
   int? calsBurned;
-  bool done;
 
   // non-db props
   WorkoutExercise? workoutExercise;
@@ -30,6 +34,8 @@ class WorkoutSet extends DBO {
     this.distance,
     this.calsBurned,
     this.workoutExercise,
+    this.addedWeight,
+    this.assistedWeight,
   });
 
   Map toMap() => {

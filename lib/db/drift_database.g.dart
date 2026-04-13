@@ -2431,6 +2431,18 @@ class $DriftWorkoutSetsTable extends DriftWorkoutSets
   late final GeneratedColumn<int> reps = GeneratedColumn<int>(
       'reps', aliasedName, true,
       type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _addedWeightMeta =
+      const VerificationMeta('addedWeight');
+  @override
+  late final GeneratedColumn<double> addedWeight = GeneratedColumn<double>(
+      'added_weight', aliasedName, true,
+      type: DriftSqlType.double, requiredDuringInsert: false);
+  static const VerificationMeta _assistedWeightMeta =
+      const VerificationMeta('assistedWeight');
+  @override
+  late final GeneratedColumn<double> assistedWeight = GeneratedColumn<double>(
+      'assisted_weight', aliasedName, true,
+      type: DriftSqlType.double, requiredDuringInsert: false);
   @override
   late final GeneratedColumnWithTypeConverter<Duration?, String> time =
       GeneratedColumn<String>('time', aliasedName, true,
@@ -2465,6 +2477,8 @@ class $DriftWorkoutSetsTable extends DriftWorkoutSets
         workoutExerciseId,
         weight,
         reps,
+        addedWeight,
+        assistedWeight,
         time,
         distance,
         calsBurned,
@@ -2507,6 +2521,18 @@ class $DriftWorkoutSetsTable extends DriftWorkoutSets
       context.handle(
           _repsMeta, reps.isAcceptableOrUnknown(data['reps']!, _repsMeta));
     }
+    if (data.containsKey('added_weight')) {
+      context.handle(
+          _addedWeightMeta,
+          addedWeight.isAcceptableOrUnknown(
+              data['added_weight']!, _addedWeightMeta));
+    }
+    if (data.containsKey('assisted_weight')) {
+      context.handle(
+          _assistedWeightMeta,
+          assistedWeight.isAcceptableOrUnknown(
+              data['assisted_weight']!, _assistedWeightMeta));
+    }
     if (data.containsKey('distance')) {
       context.handle(_distanceMeta,
           distance.isAcceptableOrUnknown(data['distance']!, _distanceMeta));
@@ -2542,6 +2568,10 @@ class $DriftWorkoutSetsTable extends DriftWorkoutSets
           .read(DriftSqlType.double, data['${effectivePrefix}weight']),
       reps: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}reps']),
+      addedWeight: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}added_weight']),
+      assistedWeight: attachedDatabase.typeMapping
+          .read(DriftSqlType.double, data['${effectivePrefix}assisted_weight']),
       time: $DriftWorkoutSetsTable.$convertertime.fromSql(attachedDatabase
           .typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}time'])),
@@ -2570,6 +2600,8 @@ class DriftWorkoutSet extends DataClass implements Insertable<DriftWorkoutSet> {
   final int workoutExerciseId;
   final double? weight;
   final int? reps;
+  final double? addedWeight;
+  final double? assistedWeight;
   final Duration? time;
   final double? distance;
   final int? calsBurned;
@@ -2581,6 +2613,8 @@ class DriftWorkoutSet extends DataClass implements Insertable<DriftWorkoutSet> {
       required this.workoutExerciseId,
       this.weight,
       this.reps,
+      this.addedWeight,
+      this.assistedWeight,
       this.time,
       this.distance,
       this.calsBurned,
@@ -2601,6 +2635,12 @@ class DriftWorkoutSet extends DataClass implements Insertable<DriftWorkoutSet> {
     }
     if (!nullToAbsent || reps != null) {
       map['reps'] = Variable<int>(reps);
+    }
+    if (!nullToAbsent || addedWeight != null) {
+      map['added_weight'] = Variable<double>(addedWeight);
+    }
+    if (!nullToAbsent || assistedWeight != null) {
+      map['assisted_weight'] = Variable<double>(assistedWeight);
     }
     if (!nullToAbsent || time != null) {
       map['time'] =
@@ -2629,6 +2669,12 @@ class DriftWorkoutSet extends DataClass implements Insertable<DriftWorkoutSet> {
       weight:
           weight == null && nullToAbsent ? const Value.absent() : Value(weight),
       reps: reps == null && nullToAbsent ? const Value.absent() : Value(reps),
+      addedWeight: addedWeight == null && nullToAbsent
+          ? const Value.absent()
+          : Value(addedWeight),
+      assistedWeight: assistedWeight == null && nullToAbsent
+          ? const Value.absent()
+          : Value(assistedWeight),
       time: time == null && nullToAbsent ? const Value.absent() : Value(time),
       distance: distance == null && nullToAbsent
           ? const Value.absent()
@@ -2650,6 +2696,8 @@ class DriftWorkoutSet extends DataClass implements Insertable<DriftWorkoutSet> {
       workoutExerciseId: serializer.fromJson<int>(json['workoutExerciseId']),
       weight: serializer.fromJson<double?>(json['weight']),
       reps: serializer.fromJson<int?>(json['reps']),
+      addedWeight: serializer.fromJson<double?>(json['addedWeight']),
+      assistedWeight: serializer.fromJson<double?>(json['assistedWeight']),
       time: serializer.fromJson<Duration?>(json['time']),
       distance: serializer.fromJson<double?>(json['distance']),
       calsBurned: serializer.fromJson<int?>(json['calsBurned']),
@@ -2666,6 +2714,8 @@ class DriftWorkoutSet extends DataClass implements Insertable<DriftWorkoutSet> {
       'workoutExerciseId': serializer.toJson<int>(workoutExerciseId),
       'weight': serializer.toJson<double?>(weight),
       'reps': serializer.toJson<int?>(reps),
+      'addedWeight': serializer.toJson<double?>(addedWeight),
+      'assistedWeight': serializer.toJson<double?>(assistedWeight),
       'time': serializer.toJson<Duration?>(time),
       'distance': serializer.toJson<double?>(distance),
       'calsBurned': serializer.toJson<int?>(calsBurned),
@@ -2680,6 +2730,8 @@ class DriftWorkoutSet extends DataClass implements Insertable<DriftWorkoutSet> {
           int? workoutExerciseId,
           Value<double?> weight = const Value.absent(),
           Value<int?> reps = const Value.absent(),
+          Value<double?> addedWeight = const Value.absent(),
+          Value<double?> assistedWeight = const Value.absent(),
           Value<Duration?> time = const Value.absent(),
           Value<double?> distance = const Value.absent(),
           Value<int?> calsBurned = const Value.absent(),
@@ -2691,6 +2743,9 @@ class DriftWorkoutSet extends DataClass implements Insertable<DriftWorkoutSet> {
         workoutExerciseId: workoutExerciseId ?? this.workoutExerciseId,
         weight: weight.present ? weight.value : this.weight,
         reps: reps.present ? reps.value : this.reps,
+        addedWeight: addedWeight.present ? addedWeight.value : this.addedWeight,
+        assistedWeight:
+            assistedWeight.present ? assistedWeight.value : this.assistedWeight,
         time: time.present ? time.value : this.time,
         distance: distance.present ? distance.value : this.distance,
         calsBurned: calsBurned.present ? calsBurned.value : this.calsBurned,
@@ -2706,6 +2761,11 @@ class DriftWorkoutSet extends DataClass implements Insertable<DriftWorkoutSet> {
           : this.workoutExerciseId,
       weight: data.weight.present ? data.weight.value : this.weight,
       reps: data.reps.present ? data.reps.value : this.reps,
+      addedWeight:
+          data.addedWeight.present ? data.addedWeight.value : this.addedWeight,
+      assistedWeight: data.assistedWeight.present
+          ? data.assistedWeight.value
+          : this.assistedWeight,
       time: data.time.present ? data.time.value : this.time,
       distance: data.distance.present ? data.distance.value : this.distance,
       calsBurned:
@@ -2723,6 +2783,8 @@ class DriftWorkoutSet extends DataClass implements Insertable<DriftWorkoutSet> {
           ..write('workoutExerciseId: $workoutExerciseId, ')
           ..write('weight: $weight, ')
           ..write('reps: $reps, ')
+          ..write('addedWeight: $addedWeight, ')
+          ..write('assistedWeight: $assistedWeight, ')
           ..write('time: $time, ')
           ..write('distance: $distance, ')
           ..write('calsBurned: $calsBurned, ')
@@ -2732,8 +2794,19 @@ class DriftWorkoutSet extends DataClass implements Insertable<DriftWorkoutSet> {
   }
 
   @override
-  int get hashCode => Object.hash(id, updatedAt, createdAt, workoutExerciseId,
-      weight, reps, time, distance, calsBurned, done);
+  int get hashCode => Object.hash(
+      id,
+      updatedAt,
+      createdAt,
+      workoutExerciseId,
+      weight,
+      reps,
+      addedWeight,
+      assistedWeight,
+      time,
+      distance,
+      calsBurned,
+      done);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2744,6 +2817,8 @@ class DriftWorkoutSet extends DataClass implements Insertable<DriftWorkoutSet> {
           other.workoutExerciseId == this.workoutExerciseId &&
           other.weight == this.weight &&
           other.reps == this.reps &&
+          other.addedWeight == this.addedWeight &&
+          other.assistedWeight == this.assistedWeight &&
           other.time == this.time &&
           other.distance == this.distance &&
           other.calsBurned == this.calsBurned &&
@@ -2757,6 +2832,8 @@ class DriftWorkoutSetsCompanion extends UpdateCompanion<DriftWorkoutSet> {
   final Value<int> workoutExerciseId;
   final Value<double?> weight;
   final Value<int?> reps;
+  final Value<double?> addedWeight;
+  final Value<double?> assistedWeight;
   final Value<Duration?> time;
   final Value<double?> distance;
   final Value<int?> calsBurned;
@@ -2768,6 +2845,8 @@ class DriftWorkoutSetsCompanion extends UpdateCompanion<DriftWorkoutSet> {
     this.workoutExerciseId = const Value.absent(),
     this.weight = const Value.absent(),
     this.reps = const Value.absent(),
+    this.addedWeight = const Value.absent(),
+    this.assistedWeight = const Value.absent(),
     this.time = const Value.absent(),
     this.distance = const Value.absent(),
     this.calsBurned = const Value.absent(),
@@ -2780,6 +2859,8 @@ class DriftWorkoutSetsCompanion extends UpdateCompanion<DriftWorkoutSet> {
     required int workoutExerciseId,
     this.weight = const Value.absent(),
     this.reps = const Value.absent(),
+    this.addedWeight = const Value.absent(),
+    this.assistedWeight = const Value.absent(),
     this.time = const Value.absent(),
     this.distance = const Value.absent(),
     this.calsBurned = const Value.absent(),
@@ -2792,6 +2873,8 @@ class DriftWorkoutSetsCompanion extends UpdateCompanion<DriftWorkoutSet> {
     Expression<int>? workoutExerciseId,
     Expression<double>? weight,
     Expression<int>? reps,
+    Expression<double>? addedWeight,
+    Expression<double>? assistedWeight,
     Expression<String>? time,
     Expression<double>? distance,
     Expression<int>? calsBurned,
@@ -2804,6 +2887,8 @@ class DriftWorkoutSetsCompanion extends UpdateCompanion<DriftWorkoutSet> {
       if (workoutExerciseId != null) 'workout_exercise_id': workoutExerciseId,
       if (weight != null) 'weight': weight,
       if (reps != null) 'reps': reps,
+      if (addedWeight != null) 'added_weight': addedWeight,
+      if (assistedWeight != null) 'assisted_weight': assistedWeight,
       if (time != null) 'time': time,
       if (distance != null) 'distance': distance,
       if (calsBurned != null) 'cals_burned': calsBurned,
@@ -2818,6 +2903,8 @@ class DriftWorkoutSetsCompanion extends UpdateCompanion<DriftWorkoutSet> {
       Value<int>? workoutExerciseId,
       Value<double?>? weight,
       Value<int?>? reps,
+      Value<double?>? addedWeight,
+      Value<double?>? assistedWeight,
       Value<Duration?>? time,
       Value<double?>? distance,
       Value<int?>? calsBurned,
@@ -2829,6 +2916,8 @@ class DriftWorkoutSetsCompanion extends UpdateCompanion<DriftWorkoutSet> {
       workoutExerciseId: workoutExerciseId ?? this.workoutExerciseId,
       weight: weight ?? this.weight,
       reps: reps ?? this.reps,
+      addedWeight: addedWeight ?? this.addedWeight,
+      assistedWeight: assistedWeight ?? this.assistedWeight,
       time: time ?? this.time,
       distance: distance ?? this.distance,
       calsBurned: calsBurned ?? this.calsBurned,
@@ -2857,6 +2946,12 @@ class DriftWorkoutSetsCompanion extends UpdateCompanion<DriftWorkoutSet> {
     if (reps.present) {
       map['reps'] = Variable<int>(reps.value);
     }
+    if (addedWeight.present) {
+      map['added_weight'] = Variable<double>(addedWeight.value);
+    }
+    if (assistedWeight.present) {
+      map['assisted_weight'] = Variable<double>(assistedWeight.value);
+    }
     if (time.present) {
       map['time'] = Variable<String>(
           $DriftWorkoutSetsTable.$convertertime.toSql(time.value));
@@ -2882,6 +2977,8 @@ class DriftWorkoutSetsCompanion extends UpdateCompanion<DriftWorkoutSet> {
           ..write('workoutExerciseId: $workoutExerciseId, ')
           ..write('weight: $weight, ')
           ..write('reps: $reps, ')
+          ..write('addedWeight: $addedWeight, ')
+          ..write('assistedWeight: $assistedWeight, ')
           ..write('time: $time, ')
           ..write('distance: $distance, ')
           ..write('calsBurned: $calsBurned, ')
@@ -7417,6 +7514,8 @@ typedef $$DriftWorkoutSetsTableCreateCompanionBuilder
   required int workoutExerciseId,
   Value<double?> weight,
   Value<int?> reps,
+  Value<double?> addedWeight,
+  Value<double?> assistedWeight,
   Value<Duration?> time,
   Value<double?> distance,
   Value<int?> calsBurned,
@@ -7430,6 +7529,8 @@ typedef $$DriftWorkoutSetsTableUpdateCompanionBuilder
   Value<int> workoutExerciseId,
   Value<double?> weight,
   Value<int?> reps,
+  Value<double?> addedWeight,
+  Value<double?> assistedWeight,
   Value<Duration?> time,
   Value<double?> distance,
   Value<int?> calsBurned,
@@ -7482,6 +7583,13 @@ class $$DriftWorkoutSetsTableFilterComposer
 
   ColumnFilters<int> get reps => $composableBuilder(
       column: $table.reps, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get addedWeight => $composableBuilder(
+      column: $table.addedWeight, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<double> get assistedWeight => $composableBuilder(
+      column: $table.assistedWeight,
+      builder: (column) => ColumnFilters(column));
 
   ColumnWithTypeConverterFilters<Duration?, Duration, String> get time =>
       $composableBuilder(
@@ -7543,6 +7651,13 @@ class $$DriftWorkoutSetsTableOrderingComposer
   ColumnOrderings<int> get reps => $composableBuilder(
       column: $table.reps, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<double> get addedWeight => $composableBuilder(
+      column: $table.addedWeight, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<double> get assistedWeight => $composableBuilder(
+      column: $table.assistedWeight,
+      builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get time => $composableBuilder(
       column: $table.time, builder: (column) => ColumnOrderings(column));
 
@@ -7600,6 +7715,12 @@ class $$DriftWorkoutSetsTableAnnotationComposer
 
   GeneratedColumn<int> get reps =>
       $composableBuilder(column: $table.reps, builder: (column) => column);
+
+  GeneratedColumn<double> get addedWeight => $composableBuilder(
+      column: $table.addedWeight, builder: (column) => column);
+
+  GeneratedColumn<double> get assistedWeight => $composableBuilder(
+      column: $table.assistedWeight, builder: (column) => column);
 
   GeneratedColumnWithTypeConverter<Duration?, String> get time =>
       $composableBuilder(column: $table.time, builder: (column) => column);
@@ -7665,6 +7786,8 @@ class $$DriftWorkoutSetsTableTableManager extends RootTableManager<
             Value<int> workoutExerciseId = const Value.absent(),
             Value<double?> weight = const Value.absent(),
             Value<int?> reps = const Value.absent(),
+            Value<double?> addedWeight = const Value.absent(),
+            Value<double?> assistedWeight = const Value.absent(),
             Value<Duration?> time = const Value.absent(),
             Value<double?> distance = const Value.absent(),
             Value<int?> calsBurned = const Value.absent(),
@@ -7677,6 +7800,8 @@ class $$DriftWorkoutSetsTableTableManager extends RootTableManager<
             workoutExerciseId: workoutExerciseId,
             weight: weight,
             reps: reps,
+            addedWeight: addedWeight,
+            assistedWeight: assistedWeight,
             time: time,
             distance: distance,
             calsBurned: calsBurned,
@@ -7689,6 +7814,8 @@ class $$DriftWorkoutSetsTableTableManager extends RootTableManager<
             required int workoutExerciseId,
             Value<double?> weight = const Value.absent(),
             Value<int?> reps = const Value.absent(),
+            Value<double?> addedWeight = const Value.absent(),
+            Value<double?> assistedWeight = const Value.absent(),
             Value<Duration?> time = const Value.absent(),
             Value<double?> distance = const Value.absent(),
             Value<int?> calsBurned = const Value.absent(),
@@ -7701,6 +7828,8 @@ class $$DriftWorkoutSetsTableTableManager extends RootTableManager<
             workoutExerciseId: workoutExerciseId,
             weight: weight,
             reps: reps,
+            addedWeight: addedWeight,
+            assistedWeight: assistedWeight,
             time: time,
             distance: distance,
             calsBurned: calsBurned,

@@ -9,8 +9,6 @@ extension ExerciseTypeHelper on ExerciseType {
         return '💦 Cardio';
       case ExerciseType.strength:
         return '🏋️ Strength';
-      // case ExerciseType.duration:
-      //   return '⏱️ Duration';
       case ExerciseType.stretch:
         return '🧘 Stretch';
       case ExerciseType.other:
@@ -46,18 +44,18 @@ extension MuscleGroupHelper on MuscleGroup {
         return 'Glutes';
       case MuscleGroup.hamstrings:
         return 'Hamstrings';
-      // case MuscleGroup.lats:
-      //   return 'Lats';
-      // case MuscleGroup.lowerBack:
-      //   return 'Lower Back';
       case MuscleGroup.quadriceps:
         return 'Quads';
-      case MuscleGroup.shoulders:
-        return 'Shoulders';
+      case MuscleGroup.frontDelts:
+        return 'Front Delts';
+      case MuscleGroup.sideDelts:
+        return 'Side Delts';
+      case MuscleGroup.rearDelts:
+        return 'Rear Delts';
       case MuscleGroup.triceps:
         return 'Triceps';
-      // case MuscleGroup.upperBack:
-      //   return 'Upper Back';
+      case MuscleGroup.traps:
+        return 'Traps';
       case MuscleGroup.other:
         return otherDisplayName;
     }
@@ -66,9 +64,9 @@ extension MuscleGroupHelper on MuscleGroup {
   String get displayName {
     switch (this) {
       case MuscleGroup.abductors:
-        return '⬅️➡️ Abductors';
+        return 'Abductors';
       case MuscleGroup.adductors:
-        return '➡️⬅️ Adductors';
+        return 'Adductors';
       case MuscleGroup.upperBack:
         return '🎒 Upper Back';
       case MuscleGroup.lowerBack:
@@ -78,7 +76,7 @@ extension MuscleGroupHelper on MuscleGroup {
       case MuscleGroup.biceps:
         return '💪 Biceps';
       case MuscleGroup.calves:
-        return '🦵🐮 Calves';
+        return 'Calves';
       case MuscleGroup.chest:
         return '🍒 Chest';
       case MuscleGroup.core:
@@ -88,13 +86,19 @@ extension MuscleGroupHelper on MuscleGroup {
       case MuscleGroup.glutes:
         return '🍑 Glutes';
       case MuscleGroup.hamstrings:
-        return '🐷🦵 Hamstrings';
+        return '🦵 Hamstrings';
       case MuscleGroup.quadriceps:
-        return '4️⃣🦵 Quads';
-      case MuscleGroup.shoulders:
-        return '🪨 Shoulders';
+        return '🦵 Quads';
+      case MuscleGroup.frontDelts:
+        return '🪨 Front Delts';
+      case MuscleGroup.sideDelts:
+        return '🪨 Side Delts';
+      case MuscleGroup.rearDelts:
+        return '🪨 Rear Delts';
       case MuscleGroup.triceps:
         return '🔱 Triceps';
+      case MuscleGroup.traps:
+        return '🗻 Traps';
       case MuscleGroup.other:
         return otherDisplayName;
     }
@@ -196,6 +200,10 @@ extension EquipmentHelper on Equipment {
         return 'Resistance Band';
       case Equipment.other:
         return otherDisplayName;
+      case Equipment.medicineBall:
+        return 'Medicine Ball';
+      case Equipment.smithMachine:
+        return 'Smith Machine';
     }
   }
 }

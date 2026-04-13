@@ -146,6 +146,8 @@ class DatabaseHelper {
               distance: Value(ws.distance),
               calsBurned: Value(ws.calsBurned),
               done: Value(ws.done),
+              addedWeight: Value(ws.addedWeight),
+              assistedWeight: Value(ws.assistedWeight),
             )),
       );
     }

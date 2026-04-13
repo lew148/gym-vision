@@ -50,10 +50,11 @@ class StatDisplay extends StatelessWidget {
     MainAxisAlignment? alignment,
     bool useIcon = true,
     bool muted = false,
+    bool showUnits = true,
   }) =>
       StatDisplay(
         icon: useIcon ? Icons.fitness_center_rounded : null,
-        text: weight == null || weight == 0 ? null : '${NumberHelper.doubleToString(weight)}kg',
+        text: weight == null || weight == 0 ? null : '${NumberHelper.doubleToString(weight)}${showUnits ? 'kg' : ''}',
         alignment: alignment,
         muted: muted,
       );
@@ -63,10 +64,11 @@ class StatDisplay extends StatelessWidget {
     MainAxisAlignment? alignment,
     bool useIcon = true,
     bool muted = false,
+    bool showUnits = true,
   }) =>
       StatDisplay(
         icon: useIcon ? Icons.repeat_rounded : null,
-        text: reps == null || reps == 0 ? null : '$reps rep${reps == 1 ? '' : 's'}',
+        text: reps == null || reps == 0 ? null : '$reps${showUnits ? ' reps' : ''}',
         alignment: alignment,
         muted: muted,
       );
@@ -92,10 +94,13 @@ class StatDisplay extends StatelessWidget {
     double? distance, {
     MainAxisAlignment? alignment,
     bool useIcon = true,
+    bool showUnits = true,
   }) =>
       StatDisplay(
         icon: useIcon ? Icons.timeline_rounded : null,
-        text: distance == null || distance == 0 ? null : '${NumberHelper.doubleToString(distance)}km',
+        text: distance == null || distance == 0
+            ? null
+            : '${NumberHelper.doubleToString(distance)}${showUnits ? 'km' : ''}',
         alignment: alignment,
         muted: false,
       );
@@ -104,10 +109,11 @@ class StatDisplay extends StatelessWidget {
     int? cals, {
     MainAxisAlignment? alignment,
     bool useIcon = true,
+    bool showUnits = true,
   }) =>
       StatDisplay(
         icon: useIcon ? Icons.local_fire_department_rounded : null,
-        text: cals == null || cals == 0 ? null : '${cals}kcals',
+        text: cals == null || cals == 0 ? null : '$cals${showUnits ? 'kcal' : ''}',
         alignment: alignment,
         muted: false,
       );
@@ -123,7 +129,7 @@ class StatDisplay extends StatelessWidget {
           Icon(
             icon,
             size: iconSize ?? 15,
-            color: muted ? Theme.of(context).colorScheme.secondary : color,
+            color: muted ? Theme.of(context).colorScheme.shadow : color,
           ),
           const Padding(padding: EdgeInsets.all(2.5)),
         ],
@@ -131,7 +137,7 @@ class StatDisplay extends StatelessWidget {
           text ?? '-',
           style: TextStyle(
             fontSize: 15,
-            color: text == null || muted ? Theme.of(context).colorScheme.secondary : color,
+            color: text == null || muted ? Theme.of(context).colorScheme.shadow : color,
           ),
         ),
       ],

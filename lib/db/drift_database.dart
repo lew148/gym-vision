@@ -124,6 +124,8 @@ class DriftWorkoutSets extends Table with CoreColumns {
   // weight fields
   RealColumn get weight => real().nullable()();
   IntColumn get reps => integer().nullable()();
+  RealColumn get addedWeight => real().nullable()();
+  RealColumn get assistedWeight => real().nullable()();
 
   // cardio fields
   TextColumn get time => text().map(const DurationConverter()).nullable()();

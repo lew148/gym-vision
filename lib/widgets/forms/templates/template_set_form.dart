@@ -267,7 +267,7 @@ class _TemplateSetFormState extends State<TemplateSetForm> {
           key: _formKey,
           child: Column(
             children: [
-              Header(title: exercise.getFullName()),
+              Header(title: exercise.name),
               const CustomDivider(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,

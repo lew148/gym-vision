@@ -14,7 +14,6 @@ import 'package:gymvision/models/default_exercises_model.dart';
 import 'package:gymvision/providers/workout_stats_provider.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
 import 'package:gymvision/widgets/components/stateless/custom_card.dart';
-import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/options_menu.dart';
 import 'package:gymvision/widgets/components/stateless/shimmer_load.dart';
 import 'package:gymvision/widgets/components/stateless/stat_display.dart';
@@ -23,7 +22,6 @@ import 'package:gymvision/widgets/forms/fields/custom_checkbox.dart';
 import 'package:gymvision/widgets/forms/workout_set_form.dart';
 import 'package:gymvision/widgets/pages/exercise/exercise_view.dart';
 import 'package:gymvision/static_data/enums.dart';
-import 'package:gymvision/static_data/helpers.dart';
 import 'package:provider/provider.dart';
 
 class WorkoutExerciseWidget extends StatefulWidget {
@@ -107,9 +105,8 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
         set: orderedSets[i],
         reloadParent: reload,
         isDisplay: isDisplay,
-        isCardio: exercise.isCardio(),
+        exercise: exercise,
         isInFuture: widget.isInFuture,
-        exerciseIdentifier: exerciseIdentifier,
         workoutId: widget.workoutExercise.workoutId,
         setNumber: i + 1,
       ));
@@ -128,7 +125,9 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
           return false;
         }
 
-        if (!exercise.isCardio() && sets != null && sets.any((s) => s.reps == null || s.reps == 0)) {
+        if (exercise.trackingMetrics.contains(TrackingMetric.reps) &&
+            sets != null &&
+            sets.any((s) => s.reps == null || s.reps == 0)) {
           ToastHelper.showDisallowedToast(context, message: 'Sets must have reps to be completed!');
           return false;
         }
@@ -176,9 +175,9 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(exercise.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                            if (exercise.equipment != Equipment.other)
+                            if (exercise.hasEquipment())
                               Text(
-                                exercise.equipment.displayName,
+                                exercise.getEquipmentString(),
                                 style: TextStyle(color: Theme.of(context).colorScheme.shadow),
                               ),
                           ],
@@ -206,7 +205,7 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                     children: [
                       Button(icon: Icons.add_rounded, onTap: onAddSetsButtonTap),
                       OptionsMenu(
-                        title: exercise.getFullName(),
+                        title: exercise.name,
                         buttons: [
                           Button(
                             icon: Icons.visibility_rounded,
@@ -271,7 +270,6 @@ class _WorkoutExerciseWidgetState extends State<WorkoutExerciseWidget> {
                         child: getHeader(standalone: false, sets: sets),
                       ),
                       if (dropped) ...[
-                        const CustomDivider(shadow: true, height: 0),
                         Column(children: getSetWidgets(sets)),
                       ],
                     ],

@@ -14,6 +14,7 @@ class CustomFormField extends StatefulWidget {
   final int? maxLength;
   final int? maxLines;
   final IconData? prefixIcon;
+  final String? prefixText;
 
   const CustomFormField({
     super.key,
@@ -28,6 +29,7 @@ class CustomFormField extends StatefulWidget {
     this.maxLength,
     this.maxLines,
     this.prefixIcon,
+    this.prefixText,
   });
 
   factory CustomFormField.string({
@@ -40,6 +42,7 @@ class CustomFormField extends StatefulWidget {
     List<Button>? buttons,
     int? maxLength,
     IconData prefixIcon = Icons.abc_rounded,
+    String? prefixText,
   }) =>
       CustomFormField(
         controller: controller,
@@ -50,6 +53,7 @@ class CustomFormField extends StatefulWidget {
         canBeBlank: canBeBlank,
         buttons: buttons,
         prefixIcon: prefixIcon,
+        prefixText: prefixText,
       );
 
   factory CustomFormField.textArea({
@@ -86,6 +90,7 @@ class CustomFormField extends StatefulWidget {
     bool canBeBlank = true,
     List<Button>? buttons,
     IconData prefixIcon = Icons.numbers_rounded,
+    String? prefixText,
   }) =>
       CustomFormField(
         controller: controller,
@@ -97,6 +102,7 @@ class CustomFormField extends StatefulWidget {
         canBeBlank: canBeBlank,
         buttons: buttons,
         prefixIcon: prefixIcon,
+        prefixText: prefixText,
       );
 
   factory CustomFormField.double({
@@ -108,6 +114,7 @@ class CustomFormField extends StatefulWidget {
     bool canBeBlank = true,
     List<Button>? buttons,
     IconData prefixIcon = Icons.numbers_rounded,
+    String? prefixText,
   }) =>
       CustomFormField(
         controller: controller,
@@ -174,6 +181,7 @@ class _CustomFormField extends State<CustomFormField> {
               style: TextStyle(color: colorScheme.onSurface),
               decoration: InputDecoration(
                 prefixIcon: widget.prefixIcon == null ? null : Icon(widget.prefixIcon, color: colorScheme.secondary),
+                prefixText: widget.prefixText,
                 filled: true,
                 fillColor: colorScheme.surface,
                 labelText: widget.label,

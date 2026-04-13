@@ -47,6 +47,8 @@ class WorkoutSetModel {
           updatedAt: Value(now),
           workoutExerciseId: workoutExercise.id!,
           weight: Value(set.weight),
+          addedWeight: Value(set.addedWeight),
+          assistedWeight: Value(set.assistedWeight),
           reps: Value(set.reps),
           time: Value(set.time),
           distance: Value(set.distance),
@@ -65,6 +67,8 @@ class WorkoutSetModel {
     await (db.update(db.driftWorkoutSets)..where((s) => s.id.equals(set.id!))).write(DriftWorkoutSetsCompanion(
       updatedAt: Value(DateTime.now()),
       weight: Value(set.weight),
+      addedWeight: Value(set.addedWeight),
+      assistedWeight: Value(set.assistedWeight),
       reps: Value(set.reps),
       time: Value(set.time),
       distance: Value(set.distance),

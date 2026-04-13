@@ -105,6 +105,8 @@ extension DriftWorkoutSetX on DriftWorkoutSet {
         distance: distance,
         calsBurned: calsBurned,
         done: done,
+        addedWeight: addedWeight,
+        assistedWeight: assistedWeight,
       );
 }
 

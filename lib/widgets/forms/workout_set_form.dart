@@ -42,6 +42,8 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
 
   late bool _complete;
   late TextEditingController _weightController;
+  late TextEditingController _addedWeightController;
+  late TextEditingController _assistedWeightController;
   late TextEditingController _repsController;
   late TextEditingController _distanceController;
   late TextEditingController _calsBurnedController;
@@ -57,6 +59,14 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
 
     _weightController = TextEditingController(
       text: _isEdit ? NumberHelper.blankIfZero(NumberHelper.doubleToString(widget.workoutSet!.weight)) : null,
+    );
+
+    _addedWeightController = TextEditingController(
+      text: _isEdit ? NumberHelper.blankIfZero(NumberHelper.doubleToString(widget.workoutSet!.addedWeight)) : null,
+    );
+
+    _assistedWeightController = TextEditingController(
+      text: _isEdit ? NumberHelper.blankIfZero(NumberHelper.doubleToString(widget.workoutSet!.assistedWeight)) : null,
     );
 
     _repsController = TextEditingController(
@@ -75,35 +85,52 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
   }
 
   void setWeight(String? s) => _weightController.text = s ?? '';
+  void setAddedWeight(String? s) => _addedWeightController.text = s ?? '';
+  void setAssistedWeight(String? s) => _assistedWeightController.text = s ?? '';
   void setReps(String? s) => _repsController.text = s ?? '';
   void setDuration(Duration? d) => setState(() => _duration = d ?? Duration.zero);
   void setDistance(String? s) => _distanceController.text = s ?? '';
   void setCalsBurned(String? s) => _calsBurnedController.text = s ?? '';
 
-  List<Widget> getWeightFields(Exercise ex) {
-    return [
-      CustomFormField.double(
-        controller: _weightController,
-        label: 'Weight',
-        unit: 'kg',
-        prefixIcon: Icons.fitness_center_rounded,
-      ),
-      CustomFormField.int(
-        controller: _repsController,
-        label: 'Reps',
-        prefixIcon: Icons.repeat_rounded,
-        buttons: [
-          Button(text: '1', onTap: () => setReps('1'), style: ButtonCustomStyle.muted()),
-          Button(text: '8', onTap: () => setReps('8'), style: ButtonCustomStyle.muted()),
-          Button(text: '10', onTap: () => setReps('10'), style: ButtonCustomStyle.muted()),
-          Button(text: '12', onTap: () => setReps('12'), style: ButtonCustomStyle.muted()),
-        ],
-      ),
-    ];
-  }
-
-  List<Widget> getCardioFields(Exercise ex) => [
-        DurationField(
+  Widget _getFieldFromTrackingMetric(Exercise exercise, TrackingMetric tm) {
+    switch (tm) {
+      case TrackingMetric.weight:
+        return CustomFormField.double(
+          controller: _weightController,
+          label: 'Weight',
+          unit: 'kg',
+          prefixIcon: Icons.fitness_center_rounded,
+        );
+      case TrackingMetric.addedWeight:
+        return CustomFormField.double(
+          controller: _addedWeightController,
+          label: 'Added Weight',
+          unit: 'kg',
+          prefixIcon: Icons.fitness_center_rounded,
+          prefixText: '+',
+        );
+      case TrackingMetric.assistedWeight:
+        return CustomFormField.double(
+          controller: _assistedWeightController,
+          label: 'Assisted Weight',
+          unit: 'kg',
+          prefixIcon: Icons.fitness_center_rounded,
+          prefixText: '-',
+        );
+      case TrackingMetric.reps:
+        return CustomFormField.int(
+          controller: _repsController,
+          label: 'Reps',
+          prefixIcon: Icons.repeat_rounded,
+          buttons: [
+            Button(text: '1', onTap: () => setReps('1'), style: ButtonCustomStyle.muted()),
+            Button(text: '8', onTap: () => setReps('8'), style: ButtonCustomStyle.muted()),
+            Button(text: '10', onTap: () => setReps('10'), style: ButtonCustomStyle.muted()),
+            Button(text: '12', onTap: () => setReps('12'), style: ButtonCustomStyle.muted()),
+          ],
+        );
+      case TrackingMetric.time:
+        return DurationField(
           label: 'Time',
           duration: _duration,
           onChange: setDuration,
@@ -114,20 +141,23 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
             Duration(minutes: 10),
             Duration(minutes: 5),
           ],
-        ),
-        CustomFormField.double(
+        );
+      case TrackingMetric.distance:
+        return CustomFormField.double(
           controller: _distanceController,
           label: 'Distance',
           unit: 'km',
           prefixIcon: Icons.timeline_rounded,
-        ),
-        CustomFormField.int(
+        );
+      case TrackingMetric.calsBurned:
+        return CustomFormField.int(
           controller: _calsBurnedController,
           label: 'Cals Burned',
           unit: 'kcal',
           prefixIcon: Icons.local_fire_department_rounded,
-        ),
-      ];
+        );
+    }
+  }
 
   Future onSubmit({Exercise? exercise, bool addThree = false}) async {
     WorkoutSet? set;
@@ -159,6 +189,8 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
       final set = WorkoutSet(
         workoutExerciseId: we!.id!,
         weight: NumberHelper.parseDouble(_weightController.text),
+        addedWeight: NumberHelper.parseDouble(_addedWeightController.text),
+        assistedWeight: NumberHelper.parseDouble(_assistedWeightController.text),
         reps: int.parse(NumberHelper.getNumberString(_repsController.text)),
         time: _duration,
         distance: NumberHelper.parseDouble(_distanceController.text),
@@ -185,6 +217,8 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
 
     try {
       final newWeight = NumberHelper.parseDouble(_weightController.text);
+      final newAddedWeight = NumberHelper.parseDouble(_addedWeightController.text);
+      final newAssistedWeight = NumberHelper.parseDouble(_assistedWeightController.text);
       final newReps = int.parse(NumberHelper.getNumberString(_repsController.text));
       final newDistance = NumberHelper.parseDouble(_distanceController.text);
       final newCalsBurned = int.parse(NumberHelper.getNumberString(_calsBurnedController.text));
@@ -193,6 +227,16 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
       final set = widget.workoutSet!;
       if (set.weight != newWeight) {
         set.weight = newWeight;
+        hasChanges = true;
+      }
+
+      if (set.addedWeight != newAddedWeight) {
+        set.addedWeight = newAddedWeight;
+        hasChanges = true;
+      }
+
+      if (set.assistedWeight != newAssistedWeight) {
+        set.assistedWeight = newAssistedWeight;
         hasChanges = true;
       }
 
@@ -301,7 +345,7 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
           key: _formKey,
           child: Column(
             children: [
-              Header(title: exercise.getFullName()),
+              Header(title: exercise.name),
               const CustomDivider(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -323,8 +367,7 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
                     ),
                 ],
               ),
-              if (exercise.type == ExerciseType.strength) ...getWeightFields(exercise),
-              if (exercise.type == ExerciseType.cardio) ...getCardioFields(exercise),
+              ...exercise.trackingMetrics.map((tm) => _getFieldFromTrackingMetric(exercise, tm)),
               Padding(
                 padding: const EdgeInsets.only(top: 10),
                 child: Row(

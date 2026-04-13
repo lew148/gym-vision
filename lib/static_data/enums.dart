@@ -1,10 +1,27 @@
-// concerned with tracking metrics
 enum ExerciseType {
   strength,
   cardio,
-  // duration,
   stretch,
   other,
+}
+
+// trackable fields for WorkoutSet
+enum TrackingMetric {
+  weight,
+  addedWeight,
+  assistedWeight,
+  reps,
+  time,
+  distance,
+  calsBurned,
+}
+
+enum LoadType {
+  externalWeight, // only external weight (DBs, machines, etc.)
+  bodyweightOnly, // only BW
+  assisted, // BW - assistance
+  weighted, // BW + external weight
+  noLoad, // no load (e.g. cardio, stretches)
 }
 
 enum Category {
@@ -27,7 +44,9 @@ enum Category {
 
 enum MuscleGroup {
   chest,
-  shoulders,
+  frontDelts,
+  sideDelts,
+  rearDelts,
   biceps,
   triceps,
   quadriceps,
@@ -40,7 +59,7 @@ enum MuscleGroup {
   adductors,
   lats,
   lowerBack,
-  // traps,
+  traps,
   upperBack,
   other,
 }
@@ -55,5 +74,7 @@ enum Equipment {
   machine,
   plates,
   resistanceBand,
+  medicineBall,
+  smithMachine,
   other,
 }

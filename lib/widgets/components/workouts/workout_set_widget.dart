@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
+import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/constants.dart';
 import 'package:gymvision/helpers/functions/app_helper.dart';
 import 'package:gymvision/helpers/functions/bottom_sheet_helper.dart';
@@ -9,7 +10,9 @@ import 'package:gymvision/helpers/functions/toast_helper.dart';
 import 'package:gymvision/models/db_models/user_settings_model.dart';
 import 'package:gymvision/models/db_models/workouts/workout_set_model.dart';
 import 'package:gymvision/providers/workout_stats_provider.dart';
+import 'package:gymvision/static_data/enums.dart';
 import 'package:gymvision/widgets/components/stateless/button.dart';
+import 'package:gymvision/widgets/components/stateless/custom_divider.dart';
 import 'package:gymvision/widgets/components/stateless/options_menu.dart';
 import 'package:gymvision/widgets/components/stateless/stat_display.dart';
 import 'package:gymvision/widgets/components/workouts/set_info_widget.dart';
@@ -20,24 +23,27 @@ import 'package:provider/provider.dart';
 class WorkoutSetWidget extends StatelessWidget {
   final WorkoutSet set;
   final Function reloadParent;
-  final bool isDisplay, isCardio, isInFuture;
-  final String exerciseIdentifier;
+  final bool isDisplay, isInFuture;
   final int workoutId, setNumber;
+  final Exercise exercise;
 
   const WorkoutSetWidget({
     super.key,
     required this.set,
     required this.reloadParent,
     required this.isDisplay,
-    required this.isCardio,
     required this.isInFuture,
-    required this.exerciseIdentifier,
     required this.workoutId,
     required this.setNumber,
+    required this.exercise,
   });
+
+  static const int flex = 6;
 
   @override
   Widget build(BuildContext context) {
+    final bool showHeaders = setNumber == 1;
+
     Future<bool> onSetDoneTap(bool done) async {
       try {
         HapticFeedback.lightImpact();
@@ -48,13 +54,13 @@ class WorkoutSetWidget extends StatelessWidget {
             return false;
           }
 
-          if (!isCardio && (set.reps == null || set.reps == 0)) {
+          if (exercise.trackingMetrics.contains(TrackingMetric.reps) && (set.reps == null || set.reps == 0)) {
             ToastHelper.showDisallowedToast(context, message: 'Sets must have reps to be completed!');
             return false;
           }
         }
 
-        final max = await WorkoutSetModel.getPR(exerciseIdentifier);
+        final max = await WorkoutSetModel.getPR(exercise.identifier);
 
         set.done = done;
         final success = await WorkoutSetModel.update(set);
@@ -77,56 +83,191 @@ class WorkoutSetWidget extends StatelessWidget {
       }
     }
 
-    Widget getCheckAndIndex() => Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+    Widget getContentsFromTrackingMetric(TrackingMetric tm) {
+      switch (tm) {
+        case TrackingMetric.weight:
+          return Expanded(
+            flex: flex,
+            child: Column(children: [
+              StatDisplay.weight(
+                set.weight,
+                useIcon: false,
+                alignment: MainAxisAlignment.end,
+                showUnits: false,
+              ),
+            ]),
+          );
+        case TrackingMetric.addedWeight:
+          return Expanded(
+            flex: flex,
+            child: Column(children: [
+              StatDisplay.weight(
+                set.addedWeight,
+                useIcon: false,
+                alignment: MainAxisAlignment.end,
+                showUnits: false,
+              ),
+            ]),
+          );
+        case TrackingMetric.assistedWeight:
+          return Expanded(
+            flex: flex,
+            child: Column(children: [
+              StatDisplay.weight(
+                set.assistedWeight,
+                useIcon: false,
+                alignment: MainAxisAlignment.end,
+                showUnits: false,
+              ),
+            ]),
+          );
+        case TrackingMetric.reps:
+          return Expanded(
+            flex: flex,
+            child: Column(children: [
+              StatDisplay.reps(
+                set.reps,
+                useIcon: false,
+                alignment: MainAxisAlignment.end,
+                showUnits: false,
+              ),
+            ]),
+          );
+        case TrackingMetric.time:
+          return Expanded(
+            flex: flex,
+            child: Column(children: [
+              StatDisplay.duration(
+                set.time,
+                useIcon: false,
+                alignment: MainAxisAlignment.end,
+              ),
+            ]),
+          );
+        case TrackingMetric.distance:
+          return Expanded(
+            flex: flex,
+            child: Column(children: [
+              StatDisplay.distance(
+                set.distance,
+                useIcon: false,
+                alignment: MainAxisAlignment.end,
+                showUnits: false,
+              ),
+            ]),
+          );
+        case TrackingMetric.calsBurned:
+          return Expanded(
+            flex: flex,
+            child: Column(children: [
+              StatDisplay.caloriesBurned(
+                set.calsBurned,
+                useIcon: false,
+                alignment: MainAxisAlignment.end,
+                showUnits: false,
+              ),
+            ]),
+          );
+      }
+    }
+
+    String getHeaderLabelForMetric(TrackingMetric tm) {
+      switch (tm) {
+        case TrackingMetric.weight:
+          return 'kg';
+        case TrackingMetric.addedWeight:
+          return '+kg';
+        case TrackingMetric.assistedWeight:
+          return '-kg';
+        case TrackingMetric.reps:
+          return 'reps';
+        case TrackingMetric.time:
+          return 'h:m:s';
+        case TrackingMetric.distance:
+          return 'km';
+        case TrackingMetric.calsBurned:
+          return 'kcal';
+      }
+    }
+
+    IconData getHeaderIconForMetric(TrackingMetric tm) {
+      switch (tm) {
+        case TrackingMetric.weight:
+        case TrackingMetric.addedWeight:
+        case TrackingMetric.assistedWeight:
+          return Icons.fitness_center_rounded;
+        case TrackingMetric.reps:
+          return Icons.repeat_rounded;
+        case TrackingMetric.time:
+          return Icons.timer_rounded;
+        case TrackingMetric.distance:
+          return Icons.timeline_rounded;
+        case TrackingMetric.calsBurned:
+          return Icons.local_fire_department_rounded;
+      }
+    }
+
+    Widget getCheckboxAndInfoBox({bool header = false}) => SizedBox(
+          width: 100,
+          child: header
+              ? null
+              : Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    CustomCheckbox(
+                      value: set.done,
+                      onChangeAsync: isDisplay ? null : (value) => onSetDoneTap(value),
+                    ),
+                    SizedBox(width: 50, child: SetInfoWidget(info: set.info)),
+                  ],
+                ),
+        );
+
+    Widget getHeaderRow(List<TrackingMetric> metrics) => Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            CustomCheckbox(
-              value: set.done,
-              onChangeAsync: isDisplay ? null : (value) => onSetDoneTap(value),
-            ),
-            const Padding(padding: EdgeInsetsGeometry.all(5)),
-            Text(
-              setNumber.toString(),
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.secondary,
+            getCheckboxAndInfoBox(header: true),
+            ...metrics.map(
+              (tm) => Expanded(
+                flex: flex,
+                child: StatDisplay(
+                  text: getHeaderLabelForMetric(tm),
+                  icon: getHeaderIconForMetric(tm),
+                  alignment: MainAxisAlignment.end,
+                  muted: true,
+                ),
               ),
             ),
           ],
         );
 
-    SizedBox endPadding = const SizedBox(width: 15);
-
-    List<Widget> getCardioSetContents() => [
-          getCheckAndIndex(),
-          Expanded(child: SetInfoWidget(info: set.info)),
-          Expanded(child: StatDisplay.duration(set.time, useIcon: false, alignment: MainAxisAlignment.end)),
-          endPadding,
-          Expanded(child: StatDisplay.distance(set.distance, useIcon: false, alignment: MainAxisAlignment.end)),
-          endPadding,
-          Expanded(child: StatDisplay.caloriesBurned(set.calsBurned, useIcon: false, alignment: MainAxisAlignment.end)),
-          endPadding,
-        ];
-
-    List<Widget> getWeightedSetContents() => [
-          getCheckAndIndex(),
-          Expanded(child: SetInfoWidget(info: set.info)),
-          Expanded(child: StatDisplay.weight(set.weight, useIcon: false, alignment: MainAxisAlignment.end)),
-          const SizedBox(width: 60),
-          Expanded(child: StatDisplay.reps(set.reps, useIcon: false, alignment: MainAxisAlignment.end)),
-          endPadding,
-        ];
-
-    Widget getSetWidgetInner() => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-          child: Row(children: isCardio ? getCardioSetContents() : getWeightedSetContents()),
+    Widget getDataRow(List<TrackingMetric> metrics) => Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            getCheckboxAndInfoBox(),
+            ...metrics.map((tm) => getContentsFromTrackingMetric(tm)),
+          ],
         );
+
+    Widget getSetWidgetInner() {
+      final orderedMetrics = exercise.getOrderedTrackingMetrics();
+
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+        child: Column(children: [
+          if (showHeaders) ...[
+            getHeaderRow(orderedMetrics),
+            CustomDivider(shadow: true),
+          ],
+          getDataRow(orderedMetrics),
+        ]),
+      );
+    }
 
     void onEditWorkoutSetTap() async => await BottomSheetHelper.showCloseableBottomSheet(
           context,
           WorkoutSetForm(
-            exerciseIdentifier: exerciseIdentifier,
+            exerciseIdentifier: exercise.identifier,
             workoutId: workoutId,
             onSuccess: reloadParent,
             workoutSet: set,

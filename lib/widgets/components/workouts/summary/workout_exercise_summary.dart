@@ -107,7 +107,7 @@ class _WorkoutExerciseSummaryState extends State<WorkoutExerciseSummary> {
                       children: [
                         Icon(Icons.circle_rounded, size: 8, color: Theme.of(context).colorScheme.primary),
                         const Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
-                        Text(widget.workoutExercise.exercise!.getFullName()),
+                        Text(widget.workoutExercise.exercise!.name),
                       ],
                     ),
                     if (hasSets)

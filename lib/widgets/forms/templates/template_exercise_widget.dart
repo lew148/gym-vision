@@ -18,8 +18,6 @@ import 'package:gymvision/widgets/components/stateless/shimmer_load.dart';
 import 'package:gymvision/widgets/components/stateless/stat_display.dart';
 import 'package:gymvision/widgets/forms/templates/template_set_form.dart';
 import 'package:gymvision/widgets/pages/exercise/exercise_view.dart';
-import 'package:gymvision/static_data/enums.dart';
-import 'package:gymvision/static_data/helpers.dart';
 
 class TemplateExerciseWidget extends StatefulWidget {
   final WorkoutTemplateExercise workoutTemplateExercise;
@@ -205,9 +203,9 @@ class _TemplateExerciseWidgetState extends State<TemplateExerciseWidget> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(exercise.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                      if (exercise.equipment != Equipment.other)
+                      if (exercise.hasEquipment())
                         Text(
-                          exercise.equipment.displayName,
+                          exercise.getEquipmentString(),
                           style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                         ),
                     ],
@@ -222,7 +220,7 @@ class _TemplateExerciseWidgetState extends State<TemplateExerciseWidget> {
               children: [
                 Button(icon: Icons.add_rounded, onTap: onAddSetsButtonTap),
                 OptionsMenu(
-                  title: exercise.getFullName(),
+                  title: exercise.name,
                   buttons: [
                     Button(
                       icon: Icons.visibility_rounded,
