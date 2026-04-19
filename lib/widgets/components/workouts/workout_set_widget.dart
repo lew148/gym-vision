@@ -284,6 +284,8 @@ class WorkoutSetWidget extends StatelessWidget {
             time: set.time,
             distance: set.distance,
             calsBurned: set.calsBurned,
+            addedWeight: set.addedWeight,
+            assistedWeight: set.assistedWeight,
             reps: set.reps,
             done: false,
           ),

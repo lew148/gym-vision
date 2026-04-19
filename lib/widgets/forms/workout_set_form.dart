@@ -297,6 +297,8 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
         WorkoutSet(
           workoutExerciseId: set.workoutExerciseId,
           weight: set.weight,
+          assistedWeight: set.assistedWeight,
+          addedWeight: set.addedWeight,
           time: set.time,
           distance: set.distance,
           calsBurned: set.calsBurned,
@@ -320,6 +322,8 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
           setDuration(set.time);
           setDistance(set.distance?.toString());
           setCalsBurned(set.calsBurned?.toString());
+          setAssistedWeight(NumberHelper.doubleToString(set.assistedWeight));
+          setAddedWeight(NumberHelper.doubleToString(set.addedWeight));
         },
       );
 
@@ -339,9 +343,7 @@ class _WorkoutSetFormState extends State<WorkoutSetForm> {
 
         final Exercise exercise = snapshot.data!;
         final WorkoutSet? last = exercise.exerciseDetails?.last;
-        final WorkoutSet? max = exercise.type == ExerciseType.cardio || exercise.loadType != LoadType.weighted
-            ? null
-            : exercise.exerciseDetails?.max;
+        final WorkoutSet? max = exercise.exerciseDetails?.max;
 
         return Form(
           key: _formKey,

@@ -33,10 +33,19 @@ class TodoistService {
       });
 
       if (name.isNotEmpty) description = description.isEmpty ? name : '$name: $description';
-      description = '$description\n\\---\nApp Version: $appVersion';
+      description = 'App Version: $appVersion${description.isNotEmpty ? '\n$description' : '' }';
 
       request.body =
-          'commands=[{"type": "item_add","uuid": "${requestUuid.toString()}","temp_id": "${tempId.toString()}","args": {"project_id": "$_projectId","content": ${jsonEncode(title)},"description": ${jsonEncode(description)},"labels": ${isBug ? '["$_bugTag"]' : '[]'}}}]';
+          'commands=[{'
+            '"type": "item_add","uuid": "${requestUuid.toString()}",'
+            '"temp_id": "${tempId.toString()}",'
+            '"args": {'
+                '"project_id": "$_projectId",'
+                '"content": ${jsonEncode(title)},'
+                '"description": ${jsonEncode(description)},'
+                '"labels": ${isBug ? '["$_bugTag"]' : '[]'}'
+            '}'
+        '}]';
 
       final response = await request.send();
       return response.statusCode == 200;

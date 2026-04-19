@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:gymvision/classes/db/workouts/workout_set.dart';
+import 'package:gymvision/classes/exercise.dart';
 import 'package:gymvision/db/drift_database.dart';
 import 'package:gymvision/db/table_extensions.dart';
 import 'package:gymvision/helpers/database_helper.dart';
@@ -114,23 +115,79 @@ class WorkoutSetModel {
   }
 
   static Future<WorkoutSet?> getPR(String exerciseIdentifier, {List<WorkoutSet>? sets}) async {
-    final allSets = await getSetsForExercise(exerciseIdentifier);
+    final Exercise? exercise = DefaultExercisesModel.getExerciseByIdentifier(exerciseIdentifier);
+    if (exercise == null) return null;
+
+    final List<WorkoutSet> allSets = await getSetsForExercise(exerciseIdentifier);
     allSets.removeWhere((s) => !s.done);
     if (allSets.isEmpty) return null;
 
+    return switch (exercise.loadType) {
+      LoadType.externalWeight => getMaxForExternalWeight(allSets),
+      LoadType.bodyweightOnly => getMaxForRepsOnly(allSets),
+      LoadType.assisted => getMaxForAssisted(allSets),
+      LoadType.weighted => getMaxForWeighted(allSets),
+      LoadType.noLoad => getMaxForRepsOnly(allSets)
+    };
+  }
+
+  static WorkoutSet? getMaxForExternalWeight(List<WorkoutSet> all) {
     // sort by weight descending and remove lower weights
-    allSets.sort((a, b) => (b.weight ?? 0).compareTo((a.weight ?? 0)));
-    final heaviestWeight = allSets.first.weight;
-    allSets.removeWhere((s) => s.weight != heaviestWeight);
+    all.sort((a, b) => (b.weight ?? 0).compareTo((a.weight ?? 0)));
+    final heaviestWeight = all.first.weight;
+    all.removeWhere((s) => s.weight != heaviestWeight);
 
     // sort by reps descending and remove lower reps
-    allSets.sort((a, b) => b.reps!.compareTo(a.reps!));
-    final mostReps = allSets.first.reps;
-    allSets.removeWhere((s) => s.reps != mostReps);
+    all.sort((a, b) => b.reps!.compareTo(a.reps!));
+    final mostReps = all.first.reps;
+    all.removeWhere((s) => s.reps != mostReps);
 
     // sort by createdAt descending
-    allSets.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
-    return allSets.firstOrNull;
+    all.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
+    return all.firstOrNull;
+  }
+
+  static WorkoutSet? getMaxForAssisted(List<WorkoutSet> all) {
+    // sort by assisted weight ascending and remove lower weights
+    all.sort((a, b) => (a.assistedWeight ?? 0).compareTo((b.assistedWeight ?? 0)));
+    final lightestAssistedWeight = all.first.assistedWeight;
+    all.removeWhere((s) => s.assistedWeight != lightestAssistedWeight);
+
+    // sort by reps descending and remove lower reps
+    all.sort((a, b) => b.reps!.compareTo(a.reps!));
+    final mostReps = all.first.reps;
+    all.removeWhere((s) => s.reps != mostReps);
+
+    // sort by createdAt descending
+    all.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
+    return all.firstOrNull;
+  }
+
+  static WorkoutSet? getMaxForWeighted(List<WorkoutSet> all) {
+    // sort by added weight descending and remove lower weights
+    all.sort((a, b) => (b.addedWeight ?? 0).compareTo((a.addedWeight ?? 0)));
+    final heaviestAddedWeight = all.first.addedWeight;
+    all.removeWhere((s) => s.addedWeight != heaviestAddedWeight);
+
+    // sort by reps descending and remove lower reps
+    all.sort((a, b) => b.reps!.compareTo(a.reps!));
+    final mostReps = all.first.reps;
+    all.removeWhere((s) => s.reps != mostReps);
+
+    // sort by createdAt descending
+    all.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
+    return all.firstOrNull;
+  }
+
+  static WorkoutSet? getMaxForRepsOnly(List<WorkoutSet> all) {
+    // sort by reps descending and remove lower reps
+    all.sort((a, b) => b.reps!.compareTo(a.reps!));
+    final mostReps = all.first.reps;
+    all.removeWhere((s) => s.reps != mostReps);
+
+    // sort by createdAt descending
+    all.sort((a, b) => a.createdAt!.compareTo(b.createdAt!));
+    return all.firstOrNull;
   }
 
   static Future<WorkoutSet?> getLast(String exerciseIdentifier, {List<WorkoutSet>? sets}) async {

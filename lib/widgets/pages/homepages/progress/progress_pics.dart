@@ -60,6 +60,8 @@ class _ProgressPicsState extends State<ProgressPics> {
           if (!snapshot.hasData || snapshot.hasError) return SplashText.wentWrong();
 
           final (String docsPath, List<UserImage> progressPics) = snapshot.data!;
+
+          progressPics.sort((a, b) => b.getTakenAt().compareTo(a.getTakenAt()));
           return Column(children: [
             Expanded(
               child: progressPics.isEmpty

@@ -22,4 +22,6 @@ class UserImage extends DBO {
     required this.imageType,
     this.takenAt,
   });
+
+  DateTime getTakenAt() => takenAt ?? DateTime(1999, 01, 01);
 }
