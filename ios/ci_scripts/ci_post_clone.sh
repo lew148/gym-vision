@@ -1,33 +1,48 @@
 #!/bin/sh
+set -e
 
-# fail this script if any subcommand fails.
-# set -ex
+trap 'echo "[ERROR] Command failed on line $LINENO"' ERR
 
-# print verbose failure on error
-trap 'echo "[ERROR] Command failed on line $LINENO: $BASH_COMMAND"' ERR
+cd "$CI_PRIMARY_REPOSITORY_PATH"
 
-# the default execution directory of this script is the ci_scripts directory.
-cd $CI_PRIMARY_REPOSITORY_PATH # change working directory to the root of your cloned repo.
+# ── Flutter Setup ────────────────────────────────────────────────────────────
+# Cache flutter between runs using CI_DERIVED_DATA_PATH (persists across builds)
+FLUTTER_ROOT="$CI_DERIVED_DATA_PATH/flutter"
 
-git clone https://github.com/flutter/flutter.git --depth 1 -b stable $HOME/flutter
-export PATH="$PATH:$HOME/flutter/bin"
+if [ ! -d "$FLUTTER_ROOT" ]; then
+  echo "Flutter not cached — cloning..."
+  git clone https://github.com/flutter/flutter.git \
+    --depth 1 \
+    -b stable \
+    --single-branch \
+    "$FLUTTER_ROOT"
+else
+  echo "Flutter found in cache — skipping clone"
+fi
 
-# creation of ev file for environment variables
+export PATH="$PATH:$FLUTTER_ROOT/bin"
+
+# ── Validate Required Secrets ─────────────────────────────────────────────────
+: "${SENTRY_DSN:?SENTRY_DSN secret is not set}"
+: "${TODOIST_API_KEY:?TODOIST_API_KEY secret is not set}"
+
+# ── Write .env File ───────────────────────────────────────────────────────────
 cat > .env <<EOL
 SENTRY_DSN=$SENTRY_DSN
 TODOIST_API_KEY=$TODOIST_API_KEY
 EOL
 
-# install Flutter artifacts for iOS (--ios), or macOS (--macos) platforms.
+# ── Flutter Build Prep ────────────────────────────────────────────────────────
 flutter clean
 flutter precache --ios
 flutter pub get
 
-HOMEBREW_NO_AUTO_UPDATE=1
+# ── CocoaPods ─────────────────────────────────────────────────────────────────
+export HOMEBREW_NO_AUTO_UPDATE=1
+export COCOAPODS_DISABLE_STATS=1   # skip telemetry, speeds up pod install
 
-cd ios && pod install
-
-# to flush build
-flutter build ios
+cd ios
+# Restore pod cache if available (avoids redundant downloads)
+pod install --repo-update # ensures specs repo is fresh for TestFlight builds
 
 exit 0
